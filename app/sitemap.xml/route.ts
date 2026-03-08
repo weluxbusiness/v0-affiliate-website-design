@@ -1,4 +1,5 @@
 // Main sitemap index - supports 100k+ pages by splitting into multiple sitemaps
+// Architecture designed for scalability: each sub-sitemap contains max 10,000 URLs
 const baseUrl = 'https://savesmart.bio'
 
 export async function GET() {
@@ -6,12 +7,16 @@ export async function GET() {
   
   // Sitemap index with all sub-sitemaps
   // Each sitemap should contain max 10,000 URLs for optimal performance
+  // Priority order: higher priority sitemaps listed first for faster discovery
   const sitemaps = [
-    // Core pages
+    // Core pages (highest priority)
     `${baseUrl}/sitemap-pages.xml`,
     
     // Store pages: /stores/[store]
     `${baseUrl}/sitemap-stores.xml`,
+    
+    // Brand pages: /brands/[brand] - NEW
+    `${baseUrl}/sitemap-brands.xml`,
     
     // Coupon pages: /coupons/[store]
     `${baseUrl}/sitemap-coupons.xml`,
@@ -32,7 +37,11 @@ export async function GET() {
     `${baseUrl}/sitemap-deals.xml`,
     
     // City-based pages: /deals/[category]/[city]
+    // Note: This can be split into multiple sitemaps if > 50k pages
     `${baseUrl}/sitemap-cities.xml`,
+    
+    // Blog posts
+    `${baseUrl}/sitemap-blog.xml`,
     
     // Legacy SEO pages
     `${baseUrl}/sitemap-seo.xml`,
