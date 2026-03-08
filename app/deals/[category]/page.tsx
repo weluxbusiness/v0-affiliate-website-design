@@ -17,6 +17,8 @@ import {
   generateCategorySeoContent, 
   getCategoryRelatedLinks 
 } from "@/components/seo-content-block"
+import { CategoryCrossLinks } from "@/components/internal-links"
+import { getCategoryBySlug, getCategorySlugs, getStoresForCategory } from "@/lib/seo-data"
 import { 
   Tag,
   Sparkles,
@@ -90,18 +92,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
+// Dynamic params from database with fallback
 export async function generateStaticParams() {
-  return Object.keys(productCategories).map((category) => ({
-    category,
-  }))
+  const categorySlugs = await getCategorySlugs()
+  const fallbackCategories = Object.keys(productCategories)
+  const slugs = categorySlugs.length > 0 ? categorySlugs : fallbackCategories
+  return slugs.map(category => ({ category }))
 }
 
 export default async function CategoryDealsPage({ params }: PageProps) {
   const { category } = await params
   const categorySlug = category.toLowerCase()
+  
+  // Try to get category from database first
+  const dbCategory = await getCategoryBySlug(categorySlug)
   const categoryInfo = productCategories[categorySlug]
-  const categoryName = categoryInfo?.name || categorySlug.replace(/-/g, ' ')
+  const categoryName = dbCategory?.name || categoryInfo?.name || categorySlug.replace(/-/g, ' ')
   const searchTerms = categoryInfo?.searchTerms || [categoryName]
+  
+  // Get stores that have deals in this category for internal linking
+  const storesForCategory = await getStoresForCategory(categorySlug, 10)
+  
+  // Get related categories for cross-linking
+  const relatedCategorySlugs = Object.keys(productCategories).filter(c => c !== categorySlug).slice(0, 8)
   
   // Try searching by search terms first
   const searchResults = await Promise.all(searchTerms.map(term => searchDeals(term, 8)))
@@ -352,7 +365,18 @@ export default async function CategoryDealsPage({ params }: PageProps) {
         <SeoContentBlock
           title={`About ${categoryName} Deals`}
           content={generateCategorySeoContent(categoryName)}
-          relatedLinks={getCategoryRelatedLinks(categorySlug, categoryName)}
+          relatedLinks={[
+            { label: `Best ${categoryName}`, href: `/best/${categorySlug}` },
+            ...getCategoryRelatedLinks(categorySlug, categoryName),
+          ]}
+        />
+
+        {/* Cross Link Section - Internal Linking for SEO */}
+        <CategoryCrossLinks
+          categoryName={categoryName}
+          categorySlug={categorySlug}
+          relatedCategories={relatedCategorySlugs}
+          storesWithDeals={storesForCategory}
         />
 
         <PopularCategories />
