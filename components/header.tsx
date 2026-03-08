@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Menu, X, Sparkles, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -28,30 +28,30 @@ const topCategories = [
 ] as const
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  
-  const toggleMobileMenu = useCallback(() => {
-    setMobileMenuOpen(prev => !prev)
-  }, [])
-  
-  const closeMobileMenu = useCallback(() => {
-    setMobileMenuOpen(false)
-  }, [])
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
 
   // Close menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && mobileMenuOpen) {
-        setMobileMenuOpen(false)
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false)
       }
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [mobileMenuOpen])
+  }, [isOpen])
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (mobileMenuOpen) {
+    if (isOpen) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
@@ -59,7 +59,7 @@ export function Header() {
     return () => {
       document.body.style.overflow = ''
     }
-  }, [mobileMenuOpen])
+  }, [isOpen])
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -123,13 +123,13 @@ export function Header() {
         {/* Mobile/Tablet hamburger button */}
         <button
           type="button"
-          className="lg:hidden flex items-center justify-center h-10 w-10 rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0 min-h-0 min-w-0"
-          onClick={toggleMobileMenu}
-          aria-expanded={mobileMenuOpen}
+          className="lg:hidden flex items-center justify-center h-10 w-10 rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
+          onClick={handleToggle}
+          aria-expanded={isOpen}
           aria-controls="mobile-menu"
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-label={isOpen ? "Close menu" : "Open menu"}
         >
-          {mobileMenuOpen ? (
+          {isOpen ? (
             <X className="h-6 w-6 text-foreground" aria-hidden="true" />
           ) : (
             <Menu className="h-6 w-6 text-foreground" aria-hidden="true" />
@@ -138,12 +138,12 @@ export function Header() {
       </div>
 
       {/* Mobile/Tablet menu overlay */}
-      {mobileMenuOpen && (
+      {isOpen && (
         <>
           {/* Backdrop */}
           <div 
             className="fixed inset-0 top-14 sm:top-16 bg-background/80 backdrop-blur-sm lg:hidden z-40"
-            onClick={closeMobileMenu}
+            onClick={handleClose}
             aria-hidden="true"
           />
           
@@ -159,8 +159,8 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center rounded-lg px-4 py-4 text-base font-medium text-foreground hover:bg-muted active:bg-muted/80 transition-colors min-h-0"
-                  onClick={closeMobileMenu}
+                  className="flex items-center rounded-lg px-4 py-4 text-base font-medium text-foreground hover:bg-muted active:bg-muted/80 transition-colors"
+                  onClick={handleClose}
                 >
                   {link.label}
                 </Link>
@@ -176,8 +176,8 @@ export function Header() {
                     <Link
                       key={category.href}
                       href={category.href}
-                      className="flex items-center justify-center rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground bg-muted/50 hover:bg-muted hover:text-foreground transition-colors min-h-0"
-                      onClick={closeMobileMenu}
+                      className="flex items-center justify-center rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground bg-muted/50 hover:bg-muted hover:text-foreground transition-colors"
+                      onClick={handleClose}
                     >
                       {category.label}
                     </Link>
@@ -195,7 +195,7 @@ export function Header() {
                     href="https://chrome.google.com/webstore" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    onClick={closeMobileMenu}
+                    onClick={handleClose}
                   >
                     Add Free Extension
                   </a>
