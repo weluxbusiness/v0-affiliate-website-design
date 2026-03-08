@@ -44,6 +44,9 @@ const FALLBACK_STORES = [
   'bose', 'beats', 'jbl', 'lg', 'tcl', 'hisense', 'vizio'
 ]
 
+// For related stores section
+const KNOWN_STORES = FALLBACK_STORES
+
 // Dynamic params from database with fallback
 export async function generateStaticParams() {
   const storeSlugs = await getStoreSlugs()
