@@ -83,23 +83,27 @@ export default async function ElectronicsDealsPage() {
         {/* Top Stores */}
         <section className="bg-card border-b border-border py-6">
           <PageContainer>
-            <div className="flex flex-wrap items-center gap-6 justify-center">
-              <span className="text-sm text-muted-foreground">Top Electronics Stores:</span>
+            <p className="text-sm text-muted-foreground text-center mb-4">Top Electronics Stores:</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {topStores.map((storeName) => {
                 const store = getStoreInfo(storeName)
                 return (
-                  <div key={storeName} className="flex items-center gap-2">
-                    <div className={`${store.color} h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm`}>
+                  <Link
+                    key={storeName}
+                    href={`/stores/${storeName.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="flex items-center gap-3 bg-background rounded-lg px-4 py-3 border border-border hover:border-primary/50 hover:shadow-sm transition-all min-h-[56px]"
+                  >
+                    <div className={`${store.color} h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold text-sm shrink-0`}>
                       {storeName.charAt(0)}
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{storeName}</p>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{storeName}</p>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                        {formatRating(store.rating)} ({formatReviewCount(store.reviewCount)})
+                        <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
+                        <span>{formatRating(store.rating)} ({formatReviewCount(store.reviewCount)})</span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 )
               })}
             </div>
