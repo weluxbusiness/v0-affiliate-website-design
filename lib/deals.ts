@@ -565,3 +565,30 @@ export async function getDealsByBrandAndCategory(
   
   return data || []
 }
+
+export async function getDealsByStoreAndCategory(
+  store: string,
+  category: string,
+  limit: number = 50
+): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  
+  // Format store slug for search (e.g., "best-buy" -> "best buy")
+  const storeSearch = store.replace(/-/g, ' ')
+  
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("store", `%${storeSearch}%`)
+    .ilike("category", `%${category}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error fetching ${store} ${category} deals:`, error)
+    return []
+  }
+  
+  return data || []
+}

@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import type { Metadata } from "next"
@@ -6,16 +5,15 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
-import { PageContainer } from "@/components/layout/page-container"
+import { PageContainer, SectionHeading } from "@/components/layout/page-container"
 import { getDealsByStoreAndCategory } from "@/lib/deals"
-import { getStoreInfo, getProductImageUrl, formatStoreName, formatCategoryName } from "@/lib/deal-types"
-import { 
-  SeoContentBlock, 
-  generateStoreCategorySeoContent, 
-  getStoreCategoryRelatedLinks 
-} from "@/components/seo-content-block"
-import { Store, Tag, ChevronRight, Clock } from "lucide-react"
+import { getStoreInfo, getProductImageUrl, formatStoreName } from "@/lib/deal-types"
+import { SeoContentBlock } from "@/components/seo-content-block"
+import { getStoreBySlug, getStoreSlugs, getCategorySlugs, getCategoriesForStore } from "@/lib/seo-data"
+import { generateStoreCategoryIntroContent, formatCategoryName } from "@/lib/seo/content"
+import { Store as StoreIcon, Tag, ChevronRight, Clock, Sparkles, ArrowRight } from "lucide-react"
 
 interface PageProps {
   params: Promise<{ store: string; category: string }>
@@ -39,10 +37,16 @@ const CATEGORIES = [
 ]
 
 export async function generateStaticParams() {
+  const storeSlugs = await getStoreSlugs()
+  const categorySlugs = await getCategorySlugs()
+  
+  const stores = storeSlugs.length > 0 ? storeSlugs.slice(0, 20) : KNOWN_STORES
+  const categories = categorySlugs.length > 0 ? categorySlugs : CATEGORIES.map(c => c.slug)
+  
   const params: { store: string; category: string }[] = []
-  for (const store of KNOWN_STORES) {
-    for (const category of CATEGORIES) {
-      params.push({ store, category: category.slug })
+  for (const store of stores) {
+    for (const category of categories) {
+      params.push({ store, category })
     }
   }
   return params
@@ -54,11 +58,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const categoryName = formatCategoryName(category)
   
   return {
-    title: `${storeName} ${categoryName} Deals | SaveSmart`,
-    description: `Find the best ${categoryName.toLowerCase()} deals from ${storeName}. Save money with verified coupons and exclusive offers.`,
+    title: `${categoryName} Deals at ${storeName} | SaveSmart`,
+    description: `Browse the latest ${categoryName.toLowerCase()} deals at ${storeName}. Compare discounts, coupons and price drops updated daily.`,
     openGraph: {
-      title: `${storeName} ${categoryName} Deals | SaveSmart`,
-      description: `Find the best ${categoryName.toLowerCase()} deals from ${storeName}. Save money with verified coupons and exclusive offers.`,
+      title: `${categoryName} Deals at ${storeName} | SaveSmart`,
+      description: `Find the best ${categoryName.toLowerCase()} deals and discounts at ${storeName}. Prices updated hourly.`,
       type: 'website',
       url: `https://savesmart.bio/stores/${store}/${category}`,
     },
@@ -72,11 +76,29 @@ export const revalidate = 3600
 
 export default async function StoreCategoryPage({ params }: PageProps) {
   const { store, category } = await params
-  const storeName = formatStoreName(store)
-  const categoryName = formatCategoryName(category)
-  const deals = await getDealsByStoreAndCategory(store, category, 50)
+  const storeSlug = store.toLowerCase()
+  const categorySlug = category.toLowerCase()
   
-  const storeInfo = getStoreInfo(storeName)
+  // Fetch store data from database
+  const storeData = await getStoreBySlug(storeSlug)
+  const storeName = storeData?.name || formatStoreName(storeSlug)
+  const categoryName = formatCategoryName(categorySlug)
+  
+  // Fetch deals filtered by both store and category
+  const deals = await getDealsByStoreAndCategory(storeSlug, categorySlug, 50)
+  
+  // Get other categories at this store for internal linking
+  const otherCategories = (await getCategoriesForStore(storeSlug, 12))
+    .filter(c => c.toLowerCase().replace(/\s+/g, '-') !== categorySlug)
+    .slice(0, 8)
+  
+  // Get other stores for this category
+  const otherStores = KNOWN_STORES.filter(s => s !== storeSlug).slice(0, 8)
+  
+  const storeInfo = storeData ? {
+    color: storeData.color || 'from-blue-600 to-blue-700',
+  } : getStoreInfo(storeName)
+  
   const featuredDeals = deals.slice(0, 6)
   const remainingDeals = deals.slice(6)
 
@@ -88,13 +110,43 @@ export default async function StoreCategoryPage({ params }: PageProps) {
     hour: '2-digit',
     minute: '2-digit',
   })
+  
+  // Generate intro content (150-250 words)
+  const introContent = generateStoreCategoryIntroContent(storeName, categoryName)
 
-  // Structured data for SEO - CollectionPage with ItemList
-  const structuredData = {
+  // Structured data - Breadcrumb schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://savesmart.bio"
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: storeName,
+        item: `https://savesmart.bio/stores/${storeSlug}`
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: categoryName,
+        item: `https://savesmart.bio/stores/${storeSlug}/${categorySlug}`
+      }
+    ]
+  }
+
+  // Structured data - CollectionPage
+  const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `${storeName} ${categoryName} Deals`,
-    url: `https://savesmart.bio/stores/${store}/${category}`,
+    name: `${categoryName} Deals at ${storeName}`,
+    url: `https://savesmart.bio/stores/${storeSlug}/${categorySlug}`,
+    description: `Browse ${categoryName.toLowerCase()} deals and discounts at ${storeName}.`,
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: deals.length,
@@ -107,7 +159,11 @@ export default async function StoreCategoryPage({ params }: PageProps) {
       
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
 
       <main className="pt-16">
@@ -124,14 +180,7 @@ export default async function StoreCategoryPage({ params }: PageProps) {
               </Link>
               <span className="text-white/50">/</span>
               <Link 
-                href="/deals" 
-                className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
-              >
-                Deals
-              </Link>
-              <span className="text-white/50">/</span>
-              <Link 
-                href={`/stores/${store}`}
+                href={`/stores/${storeSlug}`}
                 className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
               >
                 {storeName}
@@ -144,19 +193,19 @@ export default async function StoreCategoryPage({ params }: PageProps) {
 
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
-                <Tag className="h-6 w-6" />
+                <StoreIcon className="h-6 w-6" />
               </div>
               <span className="text-sm font-medium uppercase tracking-wider text-white/90">
-                {storeName} + {categoryName}
+                Store + Category
               </span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-balance">
-              {storeName} {categoryName} Deals
+              {categoryName} Deals at {storeName}
             </h1>
             
             <p className="text-lg text-white/90 max-w-2xl mb-6">
-              Find the best {categoryName.toLowerCase()} deals from {storeName}. Save money with verified coupons and exclusive offers.
+              Find the best {categoryName.toLowerCase()} deals and discounts from {storeName}. Compare prices and save on your next purchase.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -178,31 +227,38 @@ export default async function StoreCategoryPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
+        {/* Intro Content - Avoids Thin Content (150-250 words) */}
+        <section className="py-8 md:py-10 border-b border-border">
+          <PageContainer>
+            <div className="prose prose-slate dark:prose-invert max-w-none">
+              <p className="text-muted-foreground leading-relaxed text-base md:text-lg whitespace-pre-line">
+                {introContent}
+              </p>
+            </div>
+          </PageContainer>
+        </section>
+
         {/* No Deals Message */}
         {deals.length === 0 && (
           <section className="py-16">
             <PageContainer>
-              <div className="text-center">
-                <Tag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                <h2 className="text-2xl font-bold text-foreground mb-2">No Deals Available</h2>
-                <p className="text-muted-foreground mb-6">
-                  We don't have any {categoryName.toLowerCase()} deals from {storeName} right now.
-                </p>
-                <div className="flex flex-wrap justify-center gap-3">
-                  <Link
-                    href={`/stores/${store}`}
-                    className="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 font-medium transition-colors"
-                  >
-                    View All {storeName} Deals
-                  </Link>
-                  <Link
-                    href={`/deals/${category}`}
-                    className="inline-flex items-center px-4 py-2 rounded-lg border border-border hover:bg-muted font-medium transition-colors"
-                  >
-                    View All {categoryName} Deals
-                  </Link>
-                </div>
-              </div>
+              <Card className="border-border/50">
+                <CardContent className="py-12 text-center">
+                  <Sparkles className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No deals found</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Check back soon for new {categoryName.toLowerCase()} deals at {storeName}!
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-3">
+                    <Button variant="outline" asChild>
+                      <Link href={`/stores/${storeSlug}`}>Browse All {storeName} Deals</Link>
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <Link href={`/deals/${categorySlug}`}>Browse All {categoryName} Deals</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </PageContainer>
           </section>
         )}
@@ -211,9 +267,9 @@ export default async function StoreCategoryPage({ params }: PageProps) {
         {featuredDeals.length > 0 && (
           <section className="py-10 md:py-12">
             <PageContainer>
-              <h2 className="text-2xl font-bold text-foreground mb-6">
-                Top {storeName} {categoryName} Deals
-              </h2>
+              <SectionHeading>
+                Top {categoryName} Deals at {storeName}
+              </SectionHeading>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {featuredDeals.map((deal) => (
                   <Link 
@@ -261,9 +317,9 @@ export default async function StoreCategoryPage({ params }: PageProps) {
         {remainingDeals.length > 0 && (
           <section className="bg-muted/30 py-10 md:py-12">
             <PageContainer>
-              <h2 className="text-2xl font-bold text-foreground mb-6">
-                All {storeName} {categoryName} Deals
-              </h2>
+              <SectionHeading>
+                All {categoryName} Deals at {storeName}
+              </SectionHeading>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {remainingDeals.map((deal) => (
                   <Link 
@@ -307,56 +363,131 @@ export default async function StoreCategoryPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* SEO Content Block */}
-        <SeoContentBlock
-          title={`About ${storeName} ${categoryName} Deals`}
-          content={generateStoreCategorySeoContent(storeName, categoryName)}
-          relatedLinks={getStoreCategoryRelatedLinks(store, storeName, category, categoryName)}
-        />
-
-        {/* Related Links - Other Categories */}
+        {/* Popular Categories at Store - Internal Linking */}
         <section className="py-10 md:py-12 border-t border-border">
           <PageContainer>
-            <h2 className="text-2xl font-bold text-foreground mb-6">
-              More {storeName} Categories
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              Popular Categories at {storeName}
             </h2>
-            <div className="flex flex-wrap gap-3">
-              {CATEGORIES.filter(c => c.slug !== category).map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={`/stores/${store}/${cat.slug}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border hover:bg-muted text-sm font-medium text-foreground transition-colors"
-                >
-                  {storeName} {cat.name}
-                </Link>
-              ))}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+              {otherCategories.map((cat) => {
+                const catSlug = cat.toLowerCase().replace(/\s+/g, '-')
+                return (
+                  <Link
+                    key={catSlug}
+                    href={`/stores/${storeSlug}/${catSlug}`}
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
+                  >
+                    {formatCategoryName(cat)}
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </Link>
+                )
+              })}
+              <Link
+                href={`/stores/${storeSlug}`}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-primary text-primary hover:bg-primary/5 text-sm font-medium transition-colors"
+              >
+                All {storeName}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </PageContainer>
         </section>
 
-        {/* Related Links - Other Stores for Category */}
-        <section className="pb-10 md:pb-12">
+        {/* Top Stores for Category - Internal Linking */}
+        <section className="py-10 md:py-12 bg-muted/30">
           <PageContainer>
-            <h2 className="text-2xl font-bold text-foreground mb-6">
-              More {categoryName} Deals
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              Top Stores for {categoryName}
             </h2>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href={`/deals/${category}`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium transition-colors"
-              >
-                All {categoryName} Deals
-              </Link>
-              {KNOWN_STORES.filter(s => s !== store).slice(0, 6).map((otherStore) => (
-                <Link
-                  key={otherStore}
-                  href={`/stores/${otherStore}/${category}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border hover:bg-muted text-sm font-medium text-foreground transition-colors"
-                >
-                  {formatStoreName(otherStore)} {categoryName}
-                </Link>
-              ))}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+              {otherStores.map((otherStore) => {
+                const otherStoreInfo = getStoreInfo(formatStoreName(otherStore))
+                return (
+                  <Link
+                    key={otherStore}
+                    href={`/stores/${otherStore}/${categorySlug}`}
+                    className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors"
+                  >
+                    <div className={`${otherStoreInfo.color} h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold text-sm`}>
+                      {formatStoreName(otherStore).charAt(0)}
+                    </div>
+                    <span className="text-xs font-medium text-foreground text-center">
+                      {formatStoreName(otherStore)}
+                    </span>
+                  </Link>
+                )
+              })}
             </div>
+          </PageContainer>
+        </section>
+
+        {/* Related Links */}
+        <section className="py-10 md:py-12 border-t border-border">
+          <PageContainer>
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              Related Pages
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Link
+                href={`/stores/${storeSlug}`}
+                className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <StoreIcon className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="font-medium text-foreground">{storeName} Deals</p>
+                  <p className="text-sm text-muted-foreground">All deals from {storeName}</p>
+                </div>
+              </Link>
+              <Link
+                href={`/deals/${categorySlug}`}
+                className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="font-medium text-foreground">{categoryName} Deals</p>
+                  <p className="text-sm text-muted-foreground">All {categoryName.toLowerCase()} deals</p>
+                </div>
+              </Link>
+              <Link
+                href={`/coupons/${storeSlug}`}
+                className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="font-medium text-foreground">{storeName} Coupons</p>
+                  <p className="text-sm text-muted-foreground">Promo codes for {storeName}</p>
+                </div>
+              </Link>
+              <Link
+                href={`/best/${categorySlug}`}
+                className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Sparkles className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="font-medium text-foreground">Best {categoryName}</p>
+                  <p className="text-sm text-muted-foreground">Top-rated {categoryName.toLowerCase()}</p>
+                </div>
+              </Link>
+            </div>
+          </PageContainer>
+        </section>
+
+        {/* CTA */}
+        <section className="py-10 md:py-12 text-center border-t border-border">
+          <PageContainer>
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Looking for a specific deal?
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              Our AI can help you find exactly what you need at the best price.
+            </p>
+            <Button size="lg" className="gap-2" asChild>
+              <Link href="/deal-finder">
+                <Sparkles className="h-5 w-5" />
+                Ask AI Deal Finder
+              </Link>
+            </Button>
           </PageContainer>
         </section>
       </main>
