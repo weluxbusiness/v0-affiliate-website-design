@@ -177,25 +177,27 @@ export default async function StorePage({ params }: PageProps) {
         </section>
 
         {/* Popular Categories for this Store */}
-        <section className="py-10 md:py-12 border-b border-border">
-          <PageContainer>
-            <h2 className="text-2xl font-bold text-foreground mb-6">
-              Popular Categories at {storeName}
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-              {CATEGORIES.map((category) => (
-                <Link
-                  key={category.slug}
-                  href={`/stores/${store}/${category.slug}`}
-                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
-                >
-                  {category.name}
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </Link>
-              ))}
-            </div>
-          </PageContainer>
-        </section>
+        {storeCategories.length > 0 && (
+          <section className="py-10 md:py-12 border-b border-border">
+            <PageContainer>
+              <h2 className="text-2xl font-bold text-foreground mb-6">
+                Popular Categories at {storeName}
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+                {storeCategories.map((category) => (
+                  <Link
+                    key={category.slug}
+                    href={`/stores/${store}/${category.slug}`}
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
+                  >
+                    {category.name}
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </Link>
+                ))}
+              </div>
+            </PageContainer>
+          </section>
+        )}
 
         {/* Featured Deals */}
         {featuredDeals.length > 0 && (
