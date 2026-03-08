@@ -184,16 +184,23 @@ export default async function StorePage({ params }: PageProps) {
                 Popular Categories at {storeName}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-                {storeCategories.map((category) => (
-                  <Link
-                    key={category.slug}
-                    href={`/stores/${store}/${category.slug}`}
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
-                  >
-                    {category.name}
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                  </Link>
-                ))}
+                {storeCategories.map((categorySlug) => {
+                  // Format slug to display name (e.g., "home-kitchen" -> "Home Kitchen")
+                  const displayName = categorySlug
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')
+                  return (
+                    <Link
+                      key={categorySlug}
+                      href={`/deals/${categorySlug}`}
+                      className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
+                    >
+                      {displayName}
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </Link>
+                  )
+                })}
               </div>
             </PageContainer>
           </section>
