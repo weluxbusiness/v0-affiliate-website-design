@@ -12,7 +12,9 @@ import { PageContainer, DealGrid, SectionHeading } from "@/components/layout/pag
 import { DealCard } from "@/components/deal-card"
 import { searchDeals, getDealsByCategory } from "@/lib/deals"
 import { getStoreInfo, getProductImageUrl, formatStoreName } from "@/lib/deal-types"
-import { SeoContentBlock } from "@/components/seo-content-block"
+import { SeoContentBlock, generateBestProductSeoContent, getBestProductRelatedLinks } from "@/components/seo-content-block"
+import { CategoryCrossLinks } from "@/components/internal-links"
+import { getCategoryBySlug, getCategorySlugs, getStoresForCategory } from "@/lib/seo-data"
 import { 
   Award,
   Clock,
@@ -195,8 +197,11 @@ const PRODUCT_CATEGORIES: Record<string, {
 // All category slugs for static generation
 const ALL_CATEGORIES = Object.keys(PRODUCT_CATEGORIES)
 
+// Dynamic params from database with fallback
 export async function generateStaticParams() {
-  return ALL_CATEGORIES.map(category => ({ category }))
+  const categorySlugs = await getCategorySlugs()
+  const slugs = categorySlugs.length > 0 ? categorySlugs : ALL_CATEGORIES
+  return slugs.map(category => ({ category }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -238,15 +243,28 @@ export const revalidate = 3600
 
 export default async function BestCategoryPage({ params }: PageProps) {
   const { category } = await params
+  
+  // Try to get category from database first
+  const dbCategory = await getCategoryBySlug(category)
   const categoryInfo = PRODUCT_CATEGORIES[category]
   
-  if (!categoryInfo) {
+  // Use database name if available, otherwise fallback to static config
+  const categoryName = dbCategory?.name || categoryInfo?.name || category.replace(/-/g, ' ')
+  
+  if (!categoryInfo && !dbCategory) {
     notFound()
   }
   
+  // Get stores that have deals in this category for internal linking
+  const storesForCategory = await getStoresForCategory(category, 10)
+  
+  // Get related categories for cross-linking
+  const relatedCategorySlugs = Object.keys(PRODUCT_CATEGORIES).filter(c => c !== category).slice(0, 8)
+  
   // Search for deals using category search terms
+  const searchTerms = categoryInfo?.searchTerms || [categoryName]
   const searchResults = await Promise.all(
-    categoryInfo.searchTerms.map(term => searchDeals(term, 15))
+    searchTerms.map(term => searchDeals(term, 15))
   )
   
   // Deduplicate and sort by discount
@@ -271,7 +289,8 @@ export default async function BestCategoryPage({ params }: PageProps) {
     minute: '2-digit',
   })
   
-  const Icon = categoryInfo.icon
+  const Icon = categoryInfo?.icon || Award
+  const description = categoryInfo?.description || dbCategory?.description || `Find the best ${categoryName.toLowerCase()} deals and discounts.`
 
   // Structured data
   const structuredData = {
@@ -379,11 +398,11 @@ export default async function BestCategoryPage({ params }: PageProps) {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-balance">
-              Best {categoryInfo.name} Deals {currentYear}
+              Best {categoryName} Deals {currentYear}
             </h1>
             
             <p className="text-lg text-white/90 max-w-2xl mb-6">
-              {categoryInfo.description}
+              {description}
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -416,7 +435,7 @@ export default async function BestCategoryPage({ params }: PageProps) {
             <PageContainer>
               <SectionHeading>
                 <Award className="h-6 w-6 text-amber-500 inline mr-2" />
-                Top {categoryInfo.name} Deals
+                Top {categoryName} Deals
               </SectionHeading>
               <DealGrid columns={3}>
                 {topDeals.map((deal, index) => (
@@ -480,7 +499,7 @@ export default async function BestCategoryPage({ params }: PageProps) {
         {moreDeals.length > 0 && (
           <section className="bg-muted/30 py-10 md:py-12">
             <PageContainer>
-              <SectionHeading>More {categoryInfo.name} Deals</SectionHeading>
+              <SectionHeading>More {categoryName} Deals</SectionHeading>
               <DealGrid columns={4}>
                 {moreDeals.map((deal) => (
                   <DealCard key={deal.id} deal={deal} />
@@ -561,24 +580,24 @@ export default async function BestCategoryPage({ params }: PageProps) {
 
         {/* SEO Content */}
         <SeoContentBlock
-          title={`About Best ${categoryInfo.name} Deals`}
-          content={`${categoryInfo.description} SaveSmart compares prices across hundreds of retailers including Amazon, Best Buy, Target, Walmart, and specialty stores to find you the best ${categoryInfo.name.toLowerCase()} deals available today. Our AI-powered price tracker monitors prices 24/7 and alerts you when we find a great deal. All prices are verified and updated hourly to ensure accuracy. Whether you're looking for premium brands or budget-friendly options, we help you save money on ${categoryInfo.name.toLowerCase()} with verified discounts and coupon codes.`}
-          relatedLinks={[
-            { label: `${categoryInfo.name} Deals`, href: `/deals/${category}` },
-            ...categoryInfo.relatedCategories.slice(0, 3).map(slug => ({
-              label: `Best ${PRODUCT_CATEGORIES[slug]?.name || slug}`,
-              href: `/best/${slug}`,
-            })),
-            { label: 'Latest Deals', href: '/latest-deals' },
-            { label: 'All Deals', href: '/deals' },
-          ]}
+          title={`About Best ${categoryName} Deals`}
+          content={generateBestProductSeoContent(categoryName)}
+          relatedLinks={getBestProductRelatedLinks(category, categoryName)}
+        />
+
+        {/* Cross Link Section - Internal Linking for SEO */}
+        <CategoryCrossLinks
+          categoryName={categoryName}
+          categorySlug={category}
+          relatedCategories={relatedCategorySlugs}
+          storesWithDeals={storesForCategory}
         />
 
         {/* AI Deal Finder CTA */}
         <section className="py-10 md:py-12 text-center border-t border-border">
           <PageContainer>
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              Looking for a specific {categoryInfo.name.toLowerCase()} deal?
+              Looking for a specific {categoryName.toLowerCase()} deal?
             </h2>
             <p className="text-muted-foreground mb-6">
               Our AI can help you find exactly what you need at the best price.

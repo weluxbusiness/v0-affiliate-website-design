@@ -2,6 +2,9 @@ import { createAnonClient } from '@/lib/supabase/anon'
 
 const baseUrl = 'https://savesmart.bio'
 
+// Revalidate sitemap every hour to pick up new deals
+export const revalidate = 3600
+
 // Fallback URL to ensure sitemap is never empty
 const homepageUrl = `  <url>
     <loc>${baseUrl}/</loc>
