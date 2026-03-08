@@ -8,45 +8,26 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
-import { PopularCategories } from "@/components/popular-categories"
 import { PageContainer, DealGrid, SectionHeading } from "@/components/layout/page-container"
 import { getDealsByCategory, searchDeals } from "@/lib/deals"
-import { getStoreInfo } from "@/lib/deal-types"
+import { SeoContentBlock } from "@/components/seo-content-block"
+import { cities, formatCityName, getPopularCities } from "@/lib/cities"
+import { getCategoryBySlug, getCategorySlugs } from "@/lib/seo-data"
 import { 
-  SeoContentBlock, 
-  generateCategorySeoContent, 
-  getCategoryRelatedLinks 
-} from "@/components/seo-content-block"
-import { CategoryCrossLinks } from "@/components/internal-links"
-import { getCategoryBySlug, getCategorySlugs, getStoresForCategory } from "@/lib/seo-data"
-import { getPopularCities, formatCityName } from "@/lib/cities"
-import { 
-  Tag,
+  MapPin,
   Sparkles,
   Headphones,
   Shirt,
   Home,
   Laptop,
   ShoppingBag,
-  ArrowRight,
+  Tag,
   Clock,
-  MapPin
+  ArrowRight
 } from "lucide-react"
 
 // Revalidate pages every hour
 export const revalidate = 3600
-
-// Known stores for navigation
-const knownStores: Record<string, string> = {
-  'amazon': 'Amazon',
-  'best-buy': 'Best Buy',
-  'nike': 'Nike',
-  'target': 'Target',
-  'apple': 'Apple',
-  'dyson': 'Dyson',
-  'walmart': 'Walmart',
-  'costco': 'Costco',
-}
 
 // Product categories with search terms and icons
 const productCategories: Record<string, { name: string; searchTerms: string[]; icon: typeof Headphones }> = {
@@ -68,57 +49,99 @@ const productCategories: Record<string, { name: string; searchTerms: string[]; i
   'electronics': { name: 'Electronics', searchTerms: ['electronics', 'tech', 'gadget'], icon: Laptop },
   'fashion': { name: 'Fashion', searchTerms: ['fashion', 'clothing', 'apparel'], icon: Shirt },
   'home-kitchen': { name: 'Home & Kitchen', searchTerms: ['home', 'kitchen', 'furniture'], icon: Home },
+  'gaming': { name: 'Gaming', searchTerms: ['gaming', 'playstation', 'xbox', 'nintendo'], icon: Laptop },
+  'fitness': { name: 'Fitness', searchTerms: ['fitness', 'gym', 'workout'], icon: ShoppingBag },
+  'beauty': { name: 'Beauty', searchTerms: ['beauty', 'makeup', 'skincare'], icon: Shirt },
+  'outdoor': { name: 'Outdoor', searchTerms: ['outdoor', 'camping', 'hiking'], icon: Home },
 }
 
 interface PageProps {
-  params: Promise<{ category: string }>
+  params: Promise<{ category: string; city: string }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { category } = await params
+  const { category, city } = await params
   const categorySlug = category.toLowerCase()
+  const citySlug = city.toLowerCase()
+  
+  // Validate city exists
+  if (!cities.includes(citySlug)) {
+    return { title: 'Page Not Found | SaveSmart' }
+  }
+  
   const categoryInfo = productCategories[categorySlug]
-  const categoryName = categoryInfo?.name || categorySlug.replace(/-/g, ' ')
+  const categoryName = categoryInfo?.name || categorySlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+  const cityName = formatCityName(citySlug)
+  const currentYear = new Date().getFullYear()
   
   return {
-    title: `Best ${categoryName} Deals - Compare Prices & Save | SaveSmart`,
-    description: `Compare ${categoryName.toLowerCase()} deals from top retailers. Find the lowest prices, coupon codes, and exclusive discounts.`,
+    title: `Best ${categoryName} Deals in ${cityName} ${currentYear} | SaveSmart`,
+    description: `Find the best ${categoryName.toLowerCase()} deals in ${cityName}. Compare prices from Amazon, Best Buy, Target & more. Updated daily with the latest discounts.`,
     openGraph: {
-      title: `Best ${categoryName} Deals | SaveSmart`,
-      description: `Find the best deals on ${categoryName.toLowerCase()} from Amazon, Best Buy, and more. Prices updated hourly.`,
+      title: `Best ${categoryName} Deals in ${cityName} | SaveSmart`,
+      description: `Compare ${categoryName.toLowerCase()} deals from top retailers in ${cityName}. Prices updated hourly.`,
       type: 'website',
+      url: `https://savesmart.bio/deals/${categorySlug}/${citySlug}`,
     },
     alternates: {
-      canonical: `/deals/${categorySlug}`,
+      canonical: `/deals/${categorySlug}/${citySlug}`,
     },
+    keywords: [
+      `${categoryName.toLowerCase()} deals ${cityName}`,
+      `best ${categoryName.toLowerCase()} ${cityName}`,
+      `${categoryName.toLowerCase()} discounts ${cityName}`,
+      `cheap ${categoryName.toLowerCase()} ${cityName}`,
+      `${categoryName.toLowerCase()} sale ${cityName}`,
+      `buy ${categoryName.toLowerCase()} ${cityName}`,
+    ],
   }
 }
 
-// Dynamic params from database with fallback
+// Generate static params for all category + city combinations
 export async function generateStaticParams() {
   const categorySlugs = await getCategorySlugs()
   const fallbackCategories = Object.keys(productCategories)
-  const slugs = categorySlugs.length > 0 ? categorySlugs : fallbackCategories
-  return slugs.map(category => ({ category }))
+  const allCategories = categorySlugs.length > 0 ? categorySlugs : fallbackCategories
+  
+  // Generate params for all combinations
+  // For build performance, we'll limit to popular cities for static generation
+  const popularCities = getPopularCities(50)
+  
+  const params: { category: string; city: string }[] = []
+  
+  for (const category of allCategories.slice(0, 20)) {
+    for (const city of popularCities) {
+      params.push({ category, city })
+    }
+  }
+  
+  return params
 }
 
-export default async function CategoryDealsPage({ params }: PageProps) {
-  const { category } = await params
+export default async function CityDealsPage({ params }: PageProps) {
+  const { category, city } = await params
   const categorySlug = category.toLowerCase()
+  const citySlug = city.toLowerCase()
+  
+  // Validate city exists
+  if (!cities.includes(citySlug)) {
+    notFound()
+  }
   
   // Try to get category from database first
   const dbCategory = await getCategoryBySlug(categorySlug)
   const categoryInfo = productCategories[categorySlug]
-  const categoryName = dbCategory?.name || categoryInfo?.name || categorySlug.replace(/-/g, ' ')
+  
+  // If neither database nor static config has this category, 404
+  if (!categoryInfo && !dbCategory) {
+    notFound()
+  }
+  
+  const categoryName = dbCategory?.name || categoryInfo?.name || categorySlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+  const cityName = formatCityName(citySlug)
   const searchTerms = categoryInfo?.searchTerms || [categoryName]
   
-  // Get stores that have deals in this category for internal linking
-  const storesForCategory = await getStoresForCategory(categorySlug, 10)
-  
-  // Get related categories for cross-linking
-  const relatedCategorySlugs = Object.keys(productCategories).filter(c => c !== categorySlug).slice(0, 8)
-  
-  // Try searching by search terms first
+  // Get deals - same as category page (deals are national, just localized messaging)
   const searchResults = await Promise.all(searchTerms.map(term => searchDeals(term, 8)))
   let deals = [...new Map(searchResults.flat().map(d => [d.id, d])).values()].slice(0, 20)
   
@@ -127,18 +150,19 @@ export default async function CategoryDealsPage({ params }: PageProps) {
     deals = await getDealsByCategory(categoryName, 20)
   }
   
-  // Check if this is actually a store slug (redirect to store page)
-  if (knownStores[categorySlug]) {
-    notFound()
-  }
-  
   const featuredDeals = deals.slice(0, 3)
   const regularDeals = deals.slice(3)
   
-  const relatedStores = Object.entries(knownStores).slice(0, 8)
-  const relatedCategories = Object.entries(productCategories).slice(0, 8)
-  
   const Icon = categoryInfo?.icon || Tag
+  const currentYear = new Date().getFullYear()
+  
+  // Get other popular cities for internal linking
+  const otherCities = getPopularCities(12).filter(c => c !== citySlug)
+  
+  // Get other categories for internal linking
+  const otherCategories = Object.entries(productCategories)
+    .filter(([slug]) => slug !== categorySlug)
+    .slice(0, 8)
   
   // Generate timestamp for "Last Updated"
   const lastUpdated = new Date().toLocaleDateString('en-US', {
@@ -149,53 +173,50 @@ export default async function CategoryDealsPage({ params }: PageProps) {
     minute: '2-digit',
   })
   
-  // Structured data for SEO - CollectionPage with ItemList
+  // Structured data for SEO
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `${categoryName} Deals`,
-    url: `https://savesmart.bio/deals/${categorySlug}`,
+    name: `${categoryName} Deals in ${cityName}`,
+    description: `Find the best ${categoryName.toLowerCase()} deals in ${cityName}`,
+    url: `https://savesmart.bio/deals/${categorySlug}/${citySlug}`,
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: deals.length,
     },
+    areaServed: {
+      "@type": "City",
+      name: cityName,
+    },
   }
 
-  // FAQ structured data for SEO
+  // Local business FAQ schema for featured snippets
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
       {
         "@type": "Question",
-        name: `What are the best ${categoryName.toLowerCase()} deals today?`,
+        name: `Where can I find the best ${categoryName.toLowerCase()} deals in ${cityName}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `We currently have ${deals.length} active ${categoryName.toLowerCase()} deals from top retailers like Amazon, Best Buy, Target and more. Our deals are sorted by discount percentage, so the best savings appear first. Check back often as new deals are added throughout the day.`,
+          text: `SaveSmart tracks ${categoryName.toLowerCase()} deals from major retailers like Amazon, Best Buy, Target, and Walmart that ship to ${cityName}. We compare prices across all these stores to find you the best discounts, typically ranging from 10-50% off retail prices.`,
         },
       },
       {
         "@type": "Question",
-        name: "How often are deals updated?",
+        name: `Do these ${categoryName.toLowerCase()} deals ship to ${cityName}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Our deals are refreshed every hour to ensure you see the most current prices and discounts. Each listing shows when it was last verified, so you know you're getting up-to-date information.",
+          text: `Yes! All deals listed here are from major national retailers that offer shipping to ${cityName}. Many also offer in-store pickup options at local stores in the ${cityName} area.`,
         },
       },
       {
         "@type": "Question",
-        name: `Which stores offer the biggest ${categoryName.toLowerCase()} discounts?`,
+        name: `How often are ${categoryName.toLowerCase()} deals updated for ${cityName}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `For ${categoryName.toLowerCase()}, we track deals from Amazon, Best Buy, Target, Walmart, and specialty retailers. Discount percentages vary by store and product, but we highlight the best savings so you can compare easily.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How do I know if a deal is legitimate?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "All deals on SaveSmart are verified against retailer websites. We show the original price, sale price, and discount percentage for transparency. Click any deal to be taken directly to the retailer's product page where you can confirm pricing.",
+          text: `We update our ${categoryName.toLowerCase()} deals for ${cityName} hourly to ensure you always see the most current prices and discounts. Check back frequently as new deals are added throughout the day.`,
         },
       },
     ],
@@ -216,11 +237,11 @@ export default async function CategoryDealsPage({ params }: PageProps) {
       
       <main className="pt-16">
         {/* Hero */}
-        <section className="relative bg-gradient-to-br from-blue-600 to-blue-800 text-white py-14 md:py-16 overflow-hidden">
+        <section className="relative bg-gradient-to-br from-emerald-600 to-emerald-800 text-white py-14 md:py-16 overflow-hidden">
           <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,white)]" />
           <PageContainer className="relative">
             {/* Breadcrumbs */}
-            <nav className="mb-6 flex items-center gap-2 text-sm">
+            <nav className="mb-6 flex items-center gap-2 text-sm flex-wrap">
               <Link 
                 href="/" 
                 className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
@@ -235,8 +256,16 @@ export default async function CategoryDealsPage({ params }: PageProps) {
                 Deals
               </Link>
               <span className="text-white/50">/</span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-medium">
+              <Link 
+                href={`/deals/${categorySlug}`}
+                className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+              >
                 {categoryName}
+              </Link>
+              <span className="text-white/50">/</span>
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-medium">
+                <MapPin className="h-3 w-3 mr-1" />
+                {cityName}
               </span>
             </nav>
             
@@ -244,13 +273,16 @@ export default async function CategoryDealsPage({ params }: PageProps) {
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
                 <Icon className="h-6 w-6" />
               </div>
-              <span className="text-white/70 uppercase tracking-wider text-sm font-medium">Category</span>
+              <div className="flex items-center gap-2 text-white/70 uppercase tracking-wider text-sm font-medium">
+                <MapPin className="h-4 w-4" />
+                {cityName}
+              </div>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4">
-              {categoryName} Deals
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4 text-balance">
+              Best {categoryName} Deals in {cityName}
             </h1>
-            <p className="text-xl text-white/80 max-w-2xl mb-4">
-              Compare prices and find the best deals on {categoryName.toLowerCase()} from top retailers.
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mb-4">
+              Compare prices and find the best deals on {categoryName.toLowerCase()} from top retailers shipping to {cityName}.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Badge variant="secondary" className="bg-white/20 text-white border-0">
@@ -258,7 +290,7 @@ export default async function CategoryDealsPage({ params }: PageProps) {
               </Badge>
               <span className="flex items-center gap-1.5 text-sm text-white/70">
                 <Clock className="h-4 w-4" />
-                Last updated: {lastUpdated}
+                Updated: {lastUpdated}
               </span>
             </div>
           </PageContainer>
@@ -275,7 +307,7 @@ export default async function CategoryDealsPage({ params }: PageProps) {
         {featuredDeals.length > 0 && (
           <section className="py-10 md:py-12">
             <PageContainer>
-              <SectionHeading>Top {categoryName} Deals</SectionHeading>
+              <SectionHeading>Top {categoryName} Deals in {cityName}</SectionHeading>
               <DealGrid columns={3}>
                 {featuredDeals.map((deal) => (
                   <DealCard key={deal.id} deal={deal} variant="featured" />
@@ -300,9 +332,9 @@ export default async function CategoryDealsPage({ params }: PageProps) {
                 <CardContent className="py-12 text-center">
                   <Sparkles className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-foreground mb-2">No deals found</h3>
-                  <p className="text-muted-foreground mb-4">Check back soon for new {categoryName.toLowerCase()} deals!</p>
+                  <p className="text-muted-foreground mb-4">Check back soon for new {categoryName.toLowerCase()} deals in {cityName}!</p>
                   <Button variant="outline" asChild>
-                    <Link href="/deals">Browse All Deals</Link>
+                    <Link href={`/deals/${categorySlug}`}>Browse All {categoryName} Deals</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -310,47 +342,52 @@ export default async function CategoryDealsPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
-        {/* Top Stores for Category */}
+        {/* Other Cities for this Category */}
         <section className="py-10 md:py-12 border-t border-border">
           <PageContainer>
-            <h2 className="text-xl font-bold text-foreground mb-6">Top Stores for {categoryName}</h2>
-            <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
-              {relatedStores.map(([storeSlug, storeName]) => {
-                const storeInfo = getStoreInfo(storeName)
-                return (
-                  <Link
-                    key={storeSlug}
-                    href={`/stores/${storeSlug}/${categorySlug}`}
-                    className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
-                  >
-                    <div className={`${storeInfo.color} h-12 w-12 rounded-lg flex items-center justify-center text-white font-bold`}>
-                      {storeName.charAt(0)}
-                    </div>
-                    <span className="text-sm font-medium text-foreground text-center">{storeName}</span>
-                  </Link>
-                )
-              })}
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              {categoryName} Deals in Other Cities
+            </h2>
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+              {otherCities.map((otherCity) => (
+                <Link
+                  key={otherCity}
+                  href={`/deals/${categorySlug}/${otherCity}`}
+                  className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+                >
+                  <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <span className="text-sm font-medium text-foreground truncate">
+                    {formatCityName(otherCity)}
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-4 text-center">
+              <Link 
+                href={`/deals/${categorySlug}`}
+                className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+              >
+                View all {categoryName} deals nationwide
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </PageContainer>
         </section>
 
-        {/* Internal Links - Categories */}
-        <section className="pb-10 md:pb-12">
+        {/* Other Categories in this City */}
+        <section className="py-10 md:py-12 bg-muted/30">
           <PageContainer>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-foreground">Shop by Category</h2>
-            </div>
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              More Deals in {cityName}
+            </h2>
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
-              {relatedCategories.map(([catSlug, cat]) => {
+              {otherCategories.map(([catSlug, cat]) => {
                 const CategoryIcon = cat.icon
-                const isActive = catSlug === categorySlug
                 return (
                   <Link
                     key={catSlug}
-                    href={`/deals/${catSlug}`}
-                    className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-colors ${
-                      isActive ? 'border-primary bg-primary/5' : 'border-border hover:border-primary hover:bg-primary/5'
-                    }`}
+                    href={`/deals/${catSlug}/${citySlug}`}
+                    className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors"
                   >
                     <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
                       <CategoryIcon className="h-5 w-5 text-muted-foreground" />
@@ -363,57 +400,29 @@ export default async function CategoryDealsPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
-        {/* City-based Deals - Internal Links for SEO */}
-        <section className="py-10 md:py-12 border-t border-border">
-          <PageContainer>
-            <h2 className="text-xl font-bold text-foreground mb-2">
-              {categoryName} Deals by City
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Find {categoryName.toLowerCase()} deals near you
-            </p>
-            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-              {getPopularCities(12).map((city) => (
-                <Link
-                  key={city}
-                  href={`/deals/${categorySlug}/${city}`}
-                  className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
-                >
-                  <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-foreground truncate">
-                    {formatCityName(city)}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </PageContainer>
-        </section>
-
         {/* SEO Content Block */}
         <SeoContentBlock
-          title={`About ${categoryName} Deals`}
-          content={generateCategorySeoContent(categoryName)}
+          title={`About ${categoryName} Deals in ${cityName}`}
+          content={`Looking for the best ${categoryName.toLowerCase()} deals in ${cityName}? SaveSmart compares prices across all major retailers including Amazon, Best Buy, Target, Walmart, and more to find you the biggest discounts on ${categoryName.toLowerCase()}. All deals listed here ship directly to ${cityName}, with many retailers offering same-day or next-day delivery options. Our prices are updated hourly to ensure you always see the most current discounts available. Whether you're shopping for a gift or treating yourself, we help ${cityName} shoppers save money on ${categoryName.toLowerCase()} every day.`}
           relatedLinks={[
+            { label: `All ${categoryName} Deals`, href: `/deals/${categorySlug}` },
             { label: `Best ${categoryName}`, href: `/best/${categorySlug}` },
-            ...getCategoryRelatedLinks(categorySlug, categoryName),
+            ...otherCities.slice(0, 3).map(c => ({
+              label: `${categoryName} in ${formatCityName(c)}`,
+              href: `/deals/${categorySlug}/${c}`,
+            })),
           ]}
         />
-
-        {/* Cross Link Section - Internal Linking for SEO */}
-        <CategoryCrossLinks
-          categoryName={categoryName}
-          categorySlug={categorySlug}
-          relatedCategories={relatedCategorySlugs}
-          storesWithDeals={storesForCategory}
-        />
-
-        <PopularCategories />
 
         {/* CTA */}
         <section className="py-10 md:py-12 text-center border-t border-border">
           <PageContainer>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Looking for a specific {categoryName.toLowerCase()} deal?</h2>
-            <p className="text-muted-foreground mb-6">Our AI can help you find exactly what you need at the best price.</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Looking for a specific deal in {cityName}?
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              Our AI can help you find exactly what you need at the best price.
+            </p>
             <Button size="lg" className="gap-2" asChild>
               <Link href="/deal-finder">
                 <Sparkles className="h-5 w-5" />
