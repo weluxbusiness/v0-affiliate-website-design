@@ -138,10 +138,10 @@
     -webkit-overflow-scrolling: touch;
   }
   
-  /* Better touch targets */
-  button, a, [role="button"] {
+  /* Better touch targets - only for interactive elements that need it */
+  button:not(.min-h-0), 
+  [role="button"]:not(.min-h-0) {
     min-height: 44px;
-    min-width: 44px;
   }
   
   /* Tap feedback */
