@@ -1,62 +1,24 @@
-// Main sitemap index - supports 100k+ pages by splitting into multiple sitemaps
-// Architecture designed for scalability: each sub-sitemap contains max 10,000 URLs
+// Main sitemap index - hierarchical structure for 100k+ pages
+// Architecture: 3 top-level groups for optimal crawl efficiency
+// Each sub-sitemap respects 50k URL limit per Google guidelines
 const baseUrl = 'https://savesmart.bio'
+
+export const revalidate = 3600 // ISR: revalidate every hour
 
 export async function GET() {
   const now = new Date().toISOString().split('T')[0]
   
-  // Sitemap index with all sub-sitemaps
-  // Each sitemap should contain max 10,000 URLs for optimal performance
-  // Priority order: higher priority sitemaps listed first for faster discovery
+  // Top-level sitemap groups only
+  // This keeps the main index small and fast for Google to parse
   const sitemaps = [
-    // Core pages (highest priority)
-    `${baseUrl}/sitemap-pages.xml`,
+    // Core pages: homepage, categories, stores, brands, blog landing
+    `${baseUrl}/sitemap-core.xml`,
     
-    // Store pages: /stores/[store]
-    `${baseUrl}/sitemap-stores.xml`,
+    // Programmatic pages: cities, price ranges, brand-categories, deals
+    `${baseUrl}/sitemap-programmatic.xml`,
     
-    // Brand pages: /brands/[brand]
-    `${baseUrl}/sitemap-brands.xml`,
-    
-    // Brand × Category pages: /brands/[brand]/[category]
-    `${baseUrl}/sitemap-brand-categories.xml`,
-    
-    // Coupon pages: /coupons/[store]
-    `${baseUrl}/sitemap-coupons.xml`,
-    
-    // Category pages: /deals/[category]
-    `${baseUrl}/sitemap-categories.xml`,
-    
-    // Category pagination: /deals/[category]/page/[page]
-    `${baseUrl}/sitemap-category-pages.xml`,
-    
-    // Store pagination: /stores/[store]/page/[page]
-    `${baseUrl}/sitemap-store-pages.xml`,
-    
-    // Brand pagination: /brands/[brand]/page/[page]
-    `${baseUrl}/sitemap-brand-pages.xml`,
-    
-    // Best category pages: /best/[category]
-    `${baseUrl}/sitemap-best.xml`,
-    
-    // Store + Category combinations: /stores/[store]/[category]
-    `${baseUrl}/sitemap-store-categories.xml`,
-    
-    // Price range pages
-    `${baseUrl}/sitemap-price.xml`,
-    
-    // Individual deal pages
-    `${baseUrl}/sitemap-deals.xml`,
-    
-    // City-based pages: /deals/[category]/[city]
-    // Note: This can be split into multiple sitemaps if > 50k pages
-    `${baseUrl}/sitemap-cities.xml`,
-    
-    // Blog posts
-    `${baseUrl}/sitemap-blog.xml`,
-    
-    // Legacy SEO pages
-    `${baseUrl}/sitemap-seo.xml`,
+    // Pagination pages: all /page/[n] routes across the site
+    `${baseUrl}/sitemap-pagination.xml`,
   ]
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
