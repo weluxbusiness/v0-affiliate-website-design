@@ -1,10 +1,24 @@
 // Sitemap for best category pages: /best/[category]
+// Dynamically generates from database for scalable 100k+ page support
+import { getCategorySlugsForSitemap } from '@/lib/seo-data'
 import { SITEMAP_CONFIG, generateSitemapXml } from '@/lib/seo/sitemap-config'
 
 const baseUrl = SITEMAP_CONFIG.baseUrl
 
+export const revalidate = 3600 // Revalidate every hour
+
 export async function GET() {
-  const urls = SITEMAP_CONFIG.bestCategories.map(cat => `${baseUrl}/best/${cat}`)
+  // Fetch all active categories for "best" pages with fallback
+  const categories = await getCategorySlugsForSitemap()
+  
+  let urls: string[]
+  
+  if (categories.length === 0) {
+    // Fallback to static config if database unavailable
+    urls = SITEMAP_CONFIG.bestCategories.map(cat => `${baseUrl}/best/${cat}`)
+  } else {
+    urls = categories.map(cat => `${baseUrl}/best/${cat.slug}`)
+  }
   
   const xml = generateSitemapXml(urls, 0.8)
 

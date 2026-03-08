@@ -15,32 +15,26 @@ import {
   generateStoreSeoContent, 
   getStoreRelatedLinks 
 } from "@/components/seo-content-block"
+import { CrossLinkSection } from "@/components/internal-links"
+import { getStoreBySlug, getStoreSlugs, getCategoriesForStore } from "@/lib/seo-data"
 import { Store, Tag, ChevronRight, Clock } from "lucide-react"
 
 interface PageProps {
   params: Promise<{ store: string }>
 }
 
-// Static store list for SSG
-const KNOWN_STORES = [
+// Fallback store list for SSG when DB is empty
+const FALLBACK_STORES = [
   'amazon', 'best-buy', 'nike', 'target', 'apple', 'dyson',
-  'adidas', 'levis', 'walmart', 'costco', 'macys', 'nordstrom'
+  'adidas', 'levis', 'walmart', 'costco', 'macys', 'nordstrom',
+  'home-depot', 'lowes', 'wayfair', 'ikea', 'sephora', 'ulta'
 ]
 
-// Category list for internal linking
-const CATEGORIES = [
-  { slug: 'electronics', name: 'Electronics' },
-  { slug: 'fashion', name: 'Fashion' },
-  { slug: 'home', name: 'Home & Kitchen' },
-  { slug: 'laptops', name: 'Laptops' },
-  { slug: 'headphones', name: 'Headphones' },
-  { slug: 'sneakers', name: 'Sneakers' },
-  { slug: 'fitness', name: 'Fitness' },
-  { slug: 'beauty', name: 'Beauty' },
-]
-
+// Dynamic params from database with fallback
 export async function generateStaticParams() {
-  return KNOWN_STORES.map(store => ({ store }))
+  const storeSlugs = await getStoreSlugs()
+  const slugs = storeSlugs.length > 0 ? storeSlugs : FALLBACK_STORES
+  return slugs.map(store => ({ store }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -66,14 +60,30 @@ export const revalidate = 3600
 
 export default async function StorePage({ params }: PageProps) {
   const { store } = await params
-  const storeName = formatStoreName(store)
+  
+  // Fetch store data from Supabase
+  const storeData = await getStoreBySlug(store)
+  const storeName = storeData?.name || formatStoreName(store)
+  
+  // Fetch deals from deals table
   const deals = await getDealsByStore(store, 50)
+  
+  // Get categories available for this store for internal linking
+  const storeCategories = await getCategoriesForStore(store, 10)
+  
+  // Get related stores for cross-linking
+  const relatedStores = FALLBACK_STORES.filter(s => s !== store).slice(0, 8)
   
   if (deals.length === 0) {
     notFound()
   }
 
-  const storeInfo = getStoreInfo(storeName)
+  const storeInfo = storeData ? {
+    rating: storeData.rating,
+    reviewCount: storeData.review_count,
+    color: storeData.color || 'from-blue-600 to-blue-700',
+  } : getStoreInfo(storeName)
+  
   const featuredDeals = deals.slice(0, 6)
   const remainingDeals = deals.slice(6)
 
@@ -293,28 +303,19 @@ export default async function StorePage({ params }: PageProps) {
         <SeoContentBlock
           title={`About ${storeName} Deals`}
           content={generateStoreSeoContent(storeName)}
-          relatedLinks={getStoreRelatedLinks(store, storeName)}
+          relatedLinks={[
+            { label: `${storeName} Coupons`, href: `/coupons/${store}` },
+            ...getStoreRelatedLinks(store, storeName),
+          ]}
         />
 
-        {/* Related Stores */}
-        <section className="py-10 md:py-12 border-t border-border">
-          <PageContainer>
-            <h2 className="text-2xl font-bold text-foreground mb-6">
-              Shop More Stores
-            </h2>
-            <div className="flex flex-wrap gap-3">
-              {KNOWN_STORES.filter(s => s !== store).slice(0, 8).map((otherStore) => (
-                <Link
-                  key={otherStore}
-                  href={`/stores/${otherStore}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border hover:bg-muted text-sm font-medium text-foreground transition-colors"
-                >
-                  {formatStoreName(otherStore)}
-                </Link>
-              ))}
-            </div>
-          </PageContainer>
-        </section>
+        {/* Cross Link Section - Internal Linking for SEO */}
+        <CrossLinkSection
+          storeName={storeName}
+          storeSlug={store}
+          relatedStores={relatedStores}
+          relatedCategories={storeCategories}
+        />
       </main>
 
       <Footer />

@@ -13,16 +13,26 @@ import { getStoreInfo, formatStoreName } from "@/lib/deal-types"
 import { 
   SeoContentBlock, 
   generateStoreSeoContent, 
-  getStoreRelatedLinks 
+  getStoreRelatedLinks,
+  generateCouponSeoContent,
+  getCouponRelatedLinks 
 } from "@/components/seo-content-block"
+import { InternalLinks, CrossLinkSection } from "@/components/internal-links"
+import { 
+  getStoreBySlug, 
+  getCouponsByStore, 
+  getStoreSlugs,
+  getCategoriesForStore,
+  type Coupon 
+} from "@/lib/seo-data"
 import { Ticket, Clock, CheckCircle, Copy, ExternalLink, Percent, Tag } from "lucide-react"
 
 interface PageProps {
   params: Promise<{ store: string }>
 }
 
-// Static store list for SSG - expanded for programmatic SEO
-const KNOWN_STORES = [
+// Fallback store list for SSG when DB is empty
+const FALLBACK_STORES = [
   'amazon', 'best-buy', 'nike', 'target', 'apple', 'dyson',
   'adidas', 'levis', 'walmart', 'costco', 'macys', 'nordstrom',
   'home-depot', 'lowes', 'wayfair', 'ikea', 'sephora', 'ulta',
@@ -34,8 +44,11 @@ const KNOWN_STORES = [
   'bose', 'beats', 'jbl', 'lg', 'tcl', 'hisense', 'vizio'
 ]
 
+// Dynamic params from database with fallback
 export async function generateStaticParams() {
-  return KNOWN_STORES.map(store => ({ store }))
+  const storeSlugs = await getStoreSlugs()
+  const slugs = storeSlugs.length > 0 ? storeSlugs : FALLBACK_STORES
+  return slugs.map(store => ({ store }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -71,18 +84,37 @@ export const revalidate = 3600
 
 export default async function StoreCouponsPage({ params }: PageProps) {
   const { store } = await params
-  const storeName = formatStoreName(store)
+  
+  // Fetch store data from Supabase
+  const storeData = await getStoreBySlug(store)
+  const storeName = storeData?.name || formatStoreName(store)
+  
+  // Fetch coupons from coupons table
+  const coupons = await getCouponsByStore(store, 50)
+  
+  // Also fetch deals from deals table for additional offers
   const deals = await getDealsByStore(store, 50)
   
-  if (deals.length === 0) {
+  // Get categories available for this store
+  const storeCategories = await getCategoriesForStore(store, 10)
+  
+  // If no coupons AND no deals, show 404
+  if (coupons.length === 0 && deals.length === 0) {
     notFound()
   }
 
-  const storeInfo = getStoreInfo(storeName)
+  const storeInfo = storeData ? {
+    rating: storeData.rating,
+    reviewCount: storeData.review_count,
+    color: storeData.color || 'from-blue-600 to-blue-700',
+  } : getStoreInfo(storeName)
   
   // Separate deals with coupon codes from regular deals
   const couponsWithCodes = deals.filter(d => d.coupon_code)
   const dealsWithoutCodes = deals.filter(d => !d.coupon_code)
+  
+  // Total coupon count (from coupons table + deals with codes)
+  const totalCoupons = coupons.length + couponsWithCodes.length
   
   const currentMonth = new Date().toLocaleString('default', { month: 'long' })
   const currentYear = new Date().getFullYear()
