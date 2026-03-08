@@ -274,7 +274,7 @@ export default async function BestCategoryPage({ params }: PageProps) {
   
   // Fallback to category search if no results
   if (deals.length === 0) {
-    deals = await getDealsByCategory(categoryInfo.name, 30)
+    deals = await getDealsByCategory(categoryName, 30)
   }
   
   const topDeals = deals.slice(0, 6)
@@ -296,8 +296,8 @@ export default async function BestCategoryPage({ params }: PageProps) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `Best ${categoryInfo.name} Deals`,
-    description: categoryInfo.description,
+    name: `Best ${categoryName} Deals`,
+    description: description,
     url: `https://savesmart.bio/best/${category}`,
     mainEntity: {
       "@type": "ItemList",
@@ -319,33 +319,34 @@ export default async function BestCategoryPage({ params }: PageProps) {
     },
   }
 
-  // Buying guide FAQ
+  // Buying guide FAQ - use categoryName which is always defined
+  const categoryNameLower = categoryName.toLowerCase()
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
       {
         "@type": "Question",
-        name: `What are the best ${categoryInfo.name.toLowerCase()} to buy in ${currentYear}?`,
+        name: `What are the best ${categoryNameLower} to buy in ${currentYear}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `We track prices on hundreds of ${categoryInfo.name.toLowerCase()} to find the best values. Our top picks are based on discount percentage, brand reputation, and customer reviews. Check our constantly updated list for the current best deals.`,
+          text: `We track prices on hundreds of ${categoryNameLower} to find the best values. Our top picks are based on discount percentage, brand reputation, and customer reviews. Check our constantly updated list for the current best deals.`,
         },
       },
       {
         "@type": "Question",
-        name: `Where can I find the cheapest ${categoryInfo.name.toLowerCase()}?`,
+        name: `Where can I find the cheapest ${categoryNameLower}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `The best prices on ${categoryInfo.name.toLowerCase()} are often found at Amazon, Best Buy, Target, and manufacturer websites during sales events. SaveSmart compares prices across all major retailers so you don't have to.`,
+          text: `The best prices on ${categoryNameLower} are often found at Amazon, Best Buy, Target, and manufacturer websites during sales events. SaveSmart compares prices across all major retailers so you don't have to.`,
         },
       },
       {
         "@type": "Question",
-        name: `When is the best time to buy ${categoryInfo.name.toLowerCase()}?`,
+        name: `When is the best time to buy ${categoryNameLower}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `The best times to buy ${categoryInfo.name.toLowerCase()} are during Black Friday, Prime Day, and after new product releases when older models are discounted. However, flash sales happen year-round - we track them all.`,
+          text: `The best times to buy ${categoryNameLower} are during Black Friday, Prime Day, and after new product releases when older models are discounted. However, flash sales happen year-round - we track them all.`,
         },
       },
     ],
@@ -386,7 +387,7 @@ export default async function BestCategoryPage({ params }: PageProps) {
               </Link>
               <span className="text-white/50">/</span>
               <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-medium">
-                Best {categoryInfo.name}
+                Best {categoryName}
               </span>
             </nav>
 
