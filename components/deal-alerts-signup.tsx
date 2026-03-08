@@ -116,38 +116,38 @@ export function DealAlertsSignup() {
                     </div>
                     Deal Categories
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <label className={`flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${preferences.electronics ? 'border-primary bg-primary/5 shadow-sm' : 'border-border/50 hover:border-primary/30 hover:bg-muted/30'}`}>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <label className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition-all ${preferences.electronics ? 'border-primary/60 bg-primary/5' : 'border-border hover:border-border/80 hover:bg-muted/20'}`}>
                       <Checkbox 
                         checked={preferences.electronics}
                         onCheckedChange={() => togglePreference("electronics")}
-                        className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        className="h-4 w-4 rounded border-muted-foreground/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm font-medium">Electronics</span>
+                      <span className="text-sm">Electronics</span>
                     </label>
-                    <label className={`flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${preferences.fashion ? 'border-primary bg-primary/5 shadow-sm' : 'border-border/50 hover:border-primary/30 hover:bg-muted/30'}`}>
+                    <label className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition-all ${preferences.fashion ? 'border-primary/60 bg-primary/5' : 'border-border hover:border-border/80 hover:bg-muted/20'}`}>
                       <Checkbox 
                         checked={preferences.fashion}
                         onCheckedChange={() => togglePreference("fashion")}
-                        className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        className="h-4 w-4 rounded border-muted-foreground/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm font-medium">Fashion</span>
+                      <span className="text-sm">Fashion</span>
                     </label>
-                    <label className={`flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${preferences.home ? 'border-primary bg-primary/5 shadow-sm' : 'border-border/50 hover:border-primary/30 hover:bg-muted/30'}`}>
+                    <label className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition-all ${preferences.home ? 'border-primary/60 bg-primary/5' : 'border-border hover:border-border/80 hover:bg-muted/20'}`}>
                       <Checkbox 
                         checked={preferences.home}
                         onCheckedChange={() => togglePreference("home")}
-                        className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        className="h-4 w-4 rounded border-muted-foreground/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm font-medium">Home & Kitchen</span>
+                      <span className="text-sm">Home & Kitchen</span>
                     </label>
-                    <label className={`flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${preferences.daily ? 'border-primary bg-primary/5 shadow-sm' : 'border-border/50 hover:border-primary/30 hover:bg-muted/30'}`}>
+                    <label className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition-all ${preferences.daily ? 'border-primary/60 bg-primary/5' : 'border-border hover:border-border/80 hover:bg-muted/20'}`}>
                       <Checkbox 
                         checked={preferences.daily}
                         onCheckedChange={() => togglePreference("daily")}
-                        className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        className="h-4 w-4 rounded border-muted-foreground/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm font-medium">Daily Digest</span>
+                      <span className="text-sm">Daily Digest</span>
                     </label>
                   </div>
                   
