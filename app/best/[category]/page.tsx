@@ -208,20 +208,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { category } = await params
   const categoryInfo = PRODUCT_CATEGORIES[category]
   
-  if (!categoryInfo) {
-    return {
-      title: 'Best Deals | SaveSmart',
-    }
-  }
+  // Safe fallbacks for when categoryInfo is undefined
+  const categoryName = categoryInfo?.name || category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+  const categoryNameLower = categoryName.toLowerCase()
+  const searchTerms = categoryInfo?.searchTerms || [categoryNameLower]
   
   const currentYear = new Date().getFullYear()
   
   return {
-    title: `Best ${categoryInfo.name} Deals ${currentYear} - Top Discounts | SaveSmart`,
-    description: `Find the best ${categoryInfo.name.toLowerCase()} deals in ${currentYear}. Compare prices from Amazon, Best Buy, Target & more. Save up to 70% with verified discounts.`,
+    title: `Best ${categoryName} Deals ${currentYear} - Top Discounts | SaveSmart`,
+    description: `Find the best ${categoryNameLower} deals in ${currentYear}. Compare prices from Amazon, Best Buy, Target & more. Save up to 70% with verified discounts.`,
     openGraph: {
-      title: `Best ${categoryInfo.name} Deals ${currentYear}`,
-      description: `Compare the best ${categoryInfo.name.toLowerCase()} deals from top retailers. Prices updated hourly.`,
+      title: `Best ${categoryName} Deals ${currentYear}`,
+      description: `Compare the best ${categoryNameLower} deals from top retailers. Prices updated hourly.`,
       type: 'website',
       url: `https://savesmart.bio/best/${category}`,
     },
@@ -229,12 +228,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       canonical: `/best/${category}`,
     },
     keywords: [
-      `best ${categoryInfo.name.toLowerCase()} deals`,
-      `${categoryInfo.name.toLowerCase()} deals ${currentYear}`,
-      `cheap ${categoryInfo.name.toLowerCase()}`,
-      `${categoryInfo.name.toLowerCase()} discounts`,
-      `${categoryInfo.name.toLowerCase()} sale`,
-      ...categoryInfo.searchTerms.map(t => `best ${t} deals`),
+      `best ${categoryNameLower} deals`,
+      `${categoryNameLower} deals ${currentYear}`,
+      `cheap ${categoryNameLower}`,
+      `${categoryNameLower} discounts`,
+      `${categoryNameLower} sale`,
+      ...searchTerms.map(t => `best ${t} deals`),
     ],
   }
 }
@@ -518,7 +517,7 @@ export default async function BestCategoryPage({ params }: PageProps) {
                 <CardContent className="py-12 text-center">
                   <Sparkles className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-foreground mb-2">No deals found</h3>
-                  <p className="text-muted-foreground mb-4">Check back soon for new {categoryInfo.name.toLowerCase()} deals!</p>
+                  <p className="text-muted-foreground mb-4">Check back soon for new {categoryName.toLowerCase()} deals!</p>
                   <Button variant="outline" asChild>
                     <Link href="/deals">Browse All Deals</Link>
                   </Button>
@@ -529,33 +528,35 @@ export default async function BestCategoryPage({ params }: PageProps) {
         )}
 
         {/* Related Categories */}
-        <section className="py-10 md:py-12 border-t border-border">
-          <PageContainer>
-            <h2 className="text-2xl font-bold text-foreground mb-6">Related Categories</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {categoryInfo.relatedCategories.map((relatedSlug) => {
-                const related = PRODUCT_CATEGORIES[relatedSlug]
-                if (!related) return null
-                const RelatedIcon = related.icon
-                return (
-                  <Link
-                    key={relatedSlug}
-                    href={`/best/${relatedSlug}`}
-                    className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
-                  >
-                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
-                      <RelatedIcon className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <span className="font-medium text-foreground">Best {related.name}</span>
-                      <p className="text-xs text-muted-foreground">View Deals</p>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          </PageContainer>
-        </section>
+        {(categoryInfo?.relatedCategories?.length ?? 0) > 0 && (
+          <section className="py-10 md:py-12 border-t border-border">
+            <PageContainer>
+              <h2 className="text-2xl font-bold text-foreground mb-6">Related Categories</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {(categoryInfo?.relatedCategories || []).map((relatedSlug) => {
+                  const related = PRODUCT_CATEGORIES[relatedSlug]
+                  if (!related) return null
+                  const RelatedIcon = related.icon
+                  return (
+                    <Link
+                      key={relatedSlug}
+                      href={`/best/${relatedSlug}`}
+                      className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+                    >
+                      <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                        <RelatedIcon className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-foreground">Best {related.name}</span>
+                        <p className="text-xs text-muted-foreground">View Deals</p>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            </PageContainer>
+          </section>
+        )}
 
         {/* Browse All Best Deals */}
         <section className="py-10 md:py-12 bg-muted/30">
@@ -564,6 +565,7 @@ export default async function BestCategoryPage({ params }: PageProps) {
             <div className="flex flex-wrap gap-3">
               {ALL_CATEGORIES.filter(c => c !== category).slice(0, 16).map((catSlug) => {
                 const cat = PRODUCT_CATEGORIES[catSlug]
+                if (!cat) return null
                 return (
                   <Link
                     key={catSlug}
