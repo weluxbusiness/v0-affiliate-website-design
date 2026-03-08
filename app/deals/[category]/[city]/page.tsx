@@ -12,7 +12,8 @@ import { PageContainer, DealGrid, SectionHeading } from "@/components/layout/pag
 import { getDealsByCategory, searchDeals } from "@/lib/deals"
 import { SeoContentBlock } from "@/components/seo-content-block"
 import { cities, formatCityName, getPopularCities } from "@/lib/cities"
-import { getCategoryBySlug, getCategorySlugs } from "@/lib/seo-data"
+import { getCategoryBySlug, getCategorySlugs, getStoreSlugs } from "@/lib/seo-data"
+import { generateCityIntroContent } from "@/lib/seo/content"
 import { 
   MapPin,
   Sparkles,
@@ -23,7 +24,8 @@ import {
   ShoppingBag,
   Tag,
   Clock,
-  ArrowRight
+  ArrowRight,
+  Store
 } from "lucide-react"
 
 // Revalidate pages every hour
@@ -164,6 +166,12 @@ export default async function CityDealsPage({ params }: PageProps) {
     .filter(([slug]) => slug !== categorySlug)
     .slice(0, 8)
   
+  // Get related stores for crawl loop navigation
+  const relatedStores = (await getStoreSlugs()).slice(0, 6)
+  
+  // Generate dynamic intro content to avoid thin content
+  const introContent = generateCityIntroContent(categoryName, cityName)
+  
   // Generate timestamp for "Last Updated"
   const lastUpdated = new Date().toLocaleDateString('en-US', {
     month: 'short',
@@ -303,6 +311,17 @@ export default async function CityDealsPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
+        {/* Dynamic Intro Content - Avoid Thin Content */}
+        <section className="py-8 md:py-10 border-b border-border">
+          <PageContainer>
+            <div className="prose prose-slate dark:prose-invert max-w-none">
+              <p className="text-muted-foreground leading-relaxed text-base md:text-lg">
+                {introContent}
+              </p>
+            </div>
+          </PageContainer>
+        </section>
+
         {/* Featured Deals */}
         {featuredDeals.length > 0 && (
           <section className="py-10 md:py-12">
@@ -374,8 +393,37 @@ export default async function CityDealsPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
-        {/* Other Categories in this City */}
+        {/* Shop by Store - Crawl Loop Navigation */}
         <section className="py-10 md:py-12 bg-muted/30">
+          <PageContainer>
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              Shop {categoryName} at Top Stores
+            </h2>
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+              {relatedStores.map((storeSlug) => {
+                const storeName = storeSlug
+                  .split("-")
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")
+                return (
+                  <Link
+                    key={storeSlug}
+                    href={`/stores/${storeSlug}`}
+                    className="flex items-center gap-2 p-3 rounded-lg border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors"
+                  >
+                    <Store className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <span className="text-sm font-medium text-foreground truncate">
+                      {storeName}
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          </PageContainer>
+        </section>
+
+        {/* Other Categories in this City */}
+        <section className="py-10 md:py-12 border-t border-border">
           <PageContainer>
             <h2 className="text-xl font-bold text-foreground mb-6">
               More Deals in {cityName}

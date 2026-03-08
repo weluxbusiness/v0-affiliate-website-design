@@ -367,3 +367,24 @@ export async function getPopularCategories(limit = 10): Promise<{ category: stri
 
   return sorted
 }
+
+export async function getDealsByBrand(brand: string, limit = 50): Promise<Deal[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  
+  // Search for brand in title, store, or description
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .or(`store.ilike.%${brand}%,title.ilike.%${brand}%,description.ilike.%${brand}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    console.error(`Error fetching ${brand} deals:`, error)
+    return []
+  }
+
+  return data || []
+}

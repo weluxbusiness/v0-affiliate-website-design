@@ -1,4 +1,30 @@
+# SaveSmart Robots.txt
+# Updated for programmatic SEO at scale
+
 User-agent: *
 Allow: /
 
+# Block API routes and internal paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /account/
+Disallow: /alerts/
+Disallow: /dashboard/
+Disallow: /admin/
+
+# Block query parameters (prevent duplicate content)
+Disallow: /*?*
+Disallow: /*&*
+
+# Allow important search params (if needed in future)
+# Allow: /*?page=
+
+# Block low-value pages from crawl budget
+Disallow: /404
+Disallow: /500
+
+# Sitemap locations
 Sitemap: https://savesmart.bio/sitemap.xml
+
+# Crawl delay for well-behaved bots (optional)
+# Crawl-delay: 1
