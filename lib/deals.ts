@@ -388,3 +388,180 @@ export async function getDealsByBrand(brand: string, limit = 50): Promise<Deal[]
 
   return data || []
 }
+
+// ============================================
+// PAGINATION HELPERS FOR SEO
+// ============================================
+
+export const DEALS_PER_PAGE = 24
+
+export interface PaginatedDealsResult {
+  deals: Deal[]
+  totalCount: number
+  totalPages: number
+  currentPage: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
+
+export async function getDealsByCategoryPaginated(
+  category: string, 
+  page: number = 1
+): Promise<PaginatedDealsResult> {
+  const supabase = createAnonClient()
+  const offset = (page - 1) * DEALS_PER_PAGE
+  
+  // Get total count
+  const { count, error: countError } = await supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .ilike("category", `%${category}%`)
+  
+  if (countError) {
+    console.error(`Error counting ${category} deals:`, countError)
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  const totalCount = count || 0
+  const totalPages = Math.ceil(totalCount / DEALS_PER_PAGE)
+  
+  // Get paginated deals
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("category", `%${category}%`)
+    .order("discount_percentage", { ascending: false })
+    .range(offset, offset + DEALS_PER_PAGE - 1)
+  
+  if (error) {
+    console.error(`Error fetching ${category} deals page ${page}:`, error)
+    return { deals: [], totalCount, totalPages, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  return {
+    deals: data || [],
+    totalCount,
+    totalPages,
+    currentPage: page,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  }
+}
+
+export async function getDealsByStorePaginated(
+  store: string, 
+  page: number = 1
+): Promise<PaginatedDealsResult> {
+  const supabase = createAnonClient()
+  const offset = (page - 1) * DEALS_PER_PAGE
+  
+  // Get total count
+  const { count, error: countError } = await supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .ilike("store", `%${store}%`)
+  
+  if (countError) {
+    console.error(`Error counting ${store} deals:`, countError)
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  const totalCount = count || 0
+  const totalPages = Math.ceil(totalCount / DEALS_PER_PAGE)
+  
+  // Get paginated deals
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("store", `%${store}%`)
+    .order("discount_percentage", { ascending: false })
+    .range(offset, offset + DEALS_PER_PAGE - 1)
+  
+  if (error) {
+    console.error(`Error fetching ${store} deals page ${page}:`, error)
+    return { deals: [], totalCount, totalPages, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  return {
+    deals: data || [],
+    totalCount,
+    totalPages,
+    currentPage: page,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  }
+}
+
+export async function getDealsByBrandPaginated(
+  brand: string, 
+  page: number = 1
+): Promise<PaginatedDealsResult> {
+  const supabase = createAnonClient()
+  const offset = (page - 1) * DEALS_PER_PAGE
+  
+  // Get total count
+  const { count, error: countError } = await supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .or(`store.ilike.%${brand}%,title.ilike.%${brand}%,description.ilike.%${brand}%`)
+  
+  if (countError) {
+    console.error(`Error counting ${brand} deals:`, countError)
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  const totalCount = count || 0
+  const totalPages = Math.ceil(totalCount / DEALS_PER_PAGE)
+  
+  // Get paginated deals
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .or(`store.ilike.%${brand}%,title.ilike.%${brand}%,description.ilike.%${brand}%`)
+    .order("discount_percentage", { ascending: false })
+    .range(offset, offset + DEALS_PER_PAGE - 1)
+  
+  if (error) {
+    console.error(`Error fetching ${brand} deals page ${page}:`, error)
+    return { deals: [], totalCount, totalPages, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  return {
+    deals: data || [],
+    totalCount,
+    totalPages,
+    currentPage: page,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  }
+}
+
+export async function getDealsByBrandAndCategory(
+  brand: string,
+  category: string,
+  limit: number = 50
+): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("category", `%${category}%`)
+    .or(`store.ilike.%${brand}%,title.ilike.%${brand}%,description.ilike.%${brand}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error fetching ${brand} ${category} deals:`, error)
+    return []
+  }
+  
+  return data || []
+}
