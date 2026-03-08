@@ -195,9 +195,9 @@ export default function BlogPage() {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="flex-1 rounded-lg border-0 px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-white"
+                  className="flex-1 rounded-lg border-0 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
                 />
-                <Button className="bg-foreground text-background hover:bg-foreground/90">
+                <Button className="bg-gray-900 text-white hover:bg-gray-800">
                   Subscribe
                 </Button>
               </form>

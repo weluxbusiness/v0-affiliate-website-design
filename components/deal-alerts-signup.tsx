@@ -71,14 +71,16 @@ export function DealAlertsSignup() {
           </p>
         </div>
 
-        <Card className="border-border/50 shadow-lg">
-          <CardContent className="p-6 sm:p-8">
+        <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-gray-50/80 dark:from-gray-900 dark:to-gray-900/80 overflow-hidden">
+          <CardContent className="p-0">
             <form onSubmit={handleSubmit}>
-              <div className="grid gap-6 lg:grid-cols-2">
-                {/* Email Input */}
-                <div className="space-y-4">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
+              <div className="grid lg:grid-cols-2">
+                {/* Email Input - Left Side */}
+                <div className="p-6 sm:p-8 space-y-4 bg-primary/5">
+                  <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                      <Mail className="h-4 w-4 text-primary" />
+                    </div>
                     Your Email Address
                   </label>
                   <Input
@@ -87,67 +89,74 @@ export function DealAlertsSignup() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="h-12"
+                    className="h-12 bg-white dark:bg-gray-800 border-border/50 shadow-sm focus:border-primary focus:ring-primary"
                   />
                   <p className="text-xs text-muted-foreground">
                     We respect your privacy. Unsubscribe anytime.
                   </p>
+                  
+                  {/* Badges moved here */}
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <Badge className="gap-1.5 bg-primary/10 text-primary hover:bg-primary/20 border-0">
+                      <Sparkles className="h-3 w-3" />
+                      Personalized Picks
+                    </Badge>
+                    <Badge className="gap-1.5 bg-secondary/10 text-secondary hover:bg-secondary/20 border-0">
+                      <Zap className="h-3 w-3" />
+                      Flash Sale Alerts
+                    </Badge>
+                  </div>
                 </div>
 
-                {/* Preferences */}
-                <div className="space-y-4">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Tag className="h-4 w-4 text-muted-foreground" />
+                {/* Preferences - Right Side */}
+                <div className="p-6 sm:p-8 space-y-4 border-t lg:border-t-0 lg:border-l border-border/30">
+                  <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary/10">
+                      <Tag className="h-4 w-4 text-secondary" />
+                    </div>
                     Deal Categories
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <label className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${preferences.electronics ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
                       <Checkbox 
                         checked={preferences.electronics}
                         onCheckedChange={() => togglePreference("electronics")}
+                        className="h-4 w-4 rounded border-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm">Electronics</span>
+                      <span className="text-sm font-medium">Electronics</span>
                     </label>
-                    <label className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors">
+                    <label className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${preferences.fashion ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
                       <Checkbox 
                         checked={preferences.fashion}
                         onCheckedChange={() => togglePreference("fashion")}
+                        className="h-4 w-4 rounded border-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm">Fashion</span>
+                      <span className="text-sm font-medium">Fashion</span>
                     </label>
-                    <label className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors">
+                    <label className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${preferences.home ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
                       <Checkbox 
                         checked={preferences.home}
                         onCheckedChange={() => togglePreference("home")}
+                        className="h-4 w-4 rounded border-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm">Home & Kitchen</span>
+                      <span className="text-sm font-medium">Home & Kitchen</span>
                     </label>
-                    <label className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors">
+                    <label className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${preferences.daily ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
                       <Checkbox 
                         checked={preferences.daily}
                         onCheckedChange={() => togglePreference("daily")}
+                        className="h-4 w-4 rounded border-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm">Daily Digest</span>
+                      <span className="text-sm font-medium">Daily Digest</span>
                     </label>
                   </div>
+                  
+                  {/* Subscribe Button */}
+                  <Button type="submit" size="lg" className="w-full gap-2 h-12 mt-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow">
+                    <Bell className="h-4 w-4" />
+                    Subscribe to Alerts
+                  </Button>
                 </div>
-              </div>
-
-              <div className="mt-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="gap-1">
-                    <Sparkles className="h-3 w-3" />
-                    Personalized Picks
-                  </Badge>
-                  <Badge variant="secondary" className="gap-1">
-                    <Zap className="h-3 w-3" />
-                    Flash Sale Alerts
-                  </Badge>
-                </div>
-                <Button type="submit" size="lg" className="gap-2 w-full sm:w-auto">
-                  <Bell className="h-4 w-4" />
-                  Subscribe to Alerts
-                </Button>
               </div>
             </form>
           </CardContent>
