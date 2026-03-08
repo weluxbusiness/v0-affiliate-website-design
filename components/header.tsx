@@ -1,15 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Menu, X, Sparkles, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 const navLinks = [
   { href: "/deals", label: "Deals" },
@@ -29,6 +23,19 @@ const topCategories = [
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
+  const [categoriesOpen, setCategoriesOpen] = useState(false)
+  const categoriesRef = useRef<HTMLDivElement>(null)
+
+  // Close categories dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (categoriesRef.current && !categoriesRef.current.contains(event.target as Node)) {
+        setCategoriesOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -52,19 +59,32 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          
+          {/* Categories Dropdown */}
+          <div className="relative" ref={categoriesRef}>
+            <button
+              onClick={() => setCategoriesOpen(!categoriesOpen)}
+              className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               Categories
-              <ChevronDown className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              {topCategories.map((category) => (
-                <DropdownMenuItem key={category.href} asChild>
-                  <Link href={category.href}>{category.label}</Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <ChevronDown className={`h-4 w-4 transition-transform ${categoriesOpen ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {categoriesOpen && (
+              <div className="absolute top-full right-0 mt-2 w-48 bg-background rounded-lg shadow-lg border border-border z-[100] py-1">
+                {topCategories.map((category) => (
+                  <Link
+                    key={category.href}
+                    href={category.href}
+                    className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                    onClick={() => setCategoriesOpen(false)}
+                  >
+                    {category.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Desktop CTA */}

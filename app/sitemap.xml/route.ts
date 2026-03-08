@@ -31,6 +31,9 @@ export async function GET() {
     // Individual deal pages
     `${baseUrl}/sitemap-deals.xml`,
     
+    // City-based pages: /deals/[category]/[city]
+    `${baseUrl}/sitemap-cities.xml`,
+    
     // Legacy SEO pages
     `${baseUrl}/sitemap-seo.xml`,
   ]
