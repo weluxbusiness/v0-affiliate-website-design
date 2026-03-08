@@ -201,26 +201,6 @@ export async function getDealsFromSameStore(store: string, excludeId: string, li
   return data || []
 }
 
-export async function getDealsByStoreAndCategory(store: string, category: string, limit = 20): Promise<Deal[]> {
-  // Use anon client for ISR compatibility (no cookies)
-  const supabase = createAnonClient()
-  const { data, error } = await supabase
-    .from("deals")
-    .select("*")
-    .eq("is_active", true)
-    .ilike("store", `%${store}%`)
-    .ilike("category", `%${category}%`)
-    .order("discount_percentage", { ascending: false })
-    .limit(limit)
-
-  if (error) {
-    console.error(`Error fetching ${store} ${category} deals:`, error)
-    return []
-  }
-
-  return data || []
-}
-
 export interface PopularStore {
   store: string
   dealCount: number
