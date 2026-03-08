@@ -16,7 +16,7 @@ import {
   getStoreRelatedLinks 
 } from "@/components/seo-content-block"
 import { CrossLinkSection } from "@/components/internal-links"
-import { getStoreBySlug, getStoreSlugs, getCategoriesForStore } from "@/lib/seo-data"
+import { getStoreBySlug, getStoreSlugs, getCategoriesForStore, getBrandSlugs } from "@/lib/seo-data"
 import { Store, Tag, ChevronRight, Clock } from "lucide-react"
 
 interface PageProps {
@@ -73,6 +73,9 @@ export default async function StorePage({ params }: PageProps) {
   
   // Get related stores for cross-linking
   const relatedStores = FALLBACK_STORES.filter(s => s !== store).slice(0, 8)
+  
+  // Get popular brands for internal linking
+  const popularBrands = (await getBrandSlugs()).slice(0, 8)
   
   if (deals.length === 0) {
     notFound()
@@ -303,6 +306,35 @@ export default async function StorePage({ params }: PageProps) {
                     </Card>
                   </Link>
                 ))}
+              </div>
+            </PageContainer>
+          </section>
+        )}
+
+        {/* Popular Brands at Store */}
+        {popularBrands.length > 0 && (
+          <section className="py-10 md:py-12 border-t border-border">
+            <PageContainer>
+              <h2 className="text-2xl font-bold text-foreground mb-6">
+                Popular Brands at {storeName}
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+                {popularBrands.map((brandSlug) => {
+                  const displayName = brandSlug
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')
+                  return (
+                    <Link
+                      key={brandSlug}
+                      href={`/brands/${brandSlug}`}
+                      className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
+                    >
+                      <Tag className="h-4 w-4 text-muted-foreground" />
+                      {displayName}
+                    </Link>
+                  )
+                })}
               </div>
             </PageContainer>
           </section>

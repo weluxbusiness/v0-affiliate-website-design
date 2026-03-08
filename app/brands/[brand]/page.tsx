@@ -257,17 +257,17 @@ export default async function BrandPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
-        {/* Shop by Category - Internal Links */}
+        {/* Brand by Category - Direct Links */}
         <section className="py-10 md:py-12 bg-muted/30">
           <PageContainer>
             <h2 className="text-xl font-bold text-foreground mb-6">
-              Browse {brandName} by Category
+              {brandName} Deals by Category
             </h2>
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
               {relatedCategories.map((catSlug) => (
                 <Link
                   key={catSlug}
-                  href={`/deals/${catSlug}`}
+                  href={`/brands/${brandSlug}/${catSlug}`}
                   className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors"
                 >
                   <span className="text-sm font-medium text-foreground truncate">

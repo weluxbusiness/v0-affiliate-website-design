@@ -15,14 +15,26 @@ export async function GET() {
     // Store pages: /stores/[store]
     `${baseUrl}/sitemap-stores.xml`,
     
-    // Brand pages: /brands/[brand] - NEW
+    // Brand pages: /brands/[brand]
     `${baseUrl}/sitemap-brands.xml`,
+    
+    // Brand × Category pages: /brands/[brand]/[category]
+    `${baseUrl}/sitemap-brand-categories.xml`,
     
     // Coupon pages: /coupons/[store]
     `${baseUrl}/sitemap-coupons.xml`,
     
     // Category pages: /deals/[category]
     `${baseUrl}/sitemap-categories.xml`,
+    
+    // Category pagination: /deals/[category]/page/[page]
+    `${baseUrl}/sitemap-category-pages.xml`,
+    
+    // Store pagination: /stores/[store]/page/[page]
+    `${baseUrl}/sitemap-store-pages.xml`,
+    
+    // Brand pagination: /brands/[brand]/page/[page]
+    `${baseUrl}/sitemap-brand-pages.xml`,
     
     // Best category pages: /best/[category]
     `${baseUrl}/sitemap-best.xml`,

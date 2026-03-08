@@ -134,3 +134,21 @@ export function formatBrandName(slug: string): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ")
 }
+
+// ==================== BRAND × CATEGORY PAGE CONTENT ====================
+
+export function generateBrandCategoryIntroContent(
+  brandName: string,
+  categoryName: string
+): string {
+  const currentYear = new Date().getFullYear()
+  const stores = TOP_STORES.slice(0, 3).join(", ")
+  
+  return `Looking for the best ${brandName} ${categoryName.toLowerCase()} deals? SaveSmart tracks prices across all major retailers to help you find incredible savings on ${brandName} ${categoryName.toLowerCase()} products in ${currentYear}.
+
+${brandName} is renowned for quality ${categoryName.toLowerCase()}, combining innovative features with reliable performance. But premium quality doesn't have to mean premium prices. Our deal-tracking technology monitors prices 24/7 at ${stores}, and other authorized retailers to catch every discount.
+
+From new releases to previous-generation favorites, we feature ${brandName} ${categoryName.toLowerCase()} deals across all price ranges. Many shoppers save 15-40% off retail prices by timing their purchases with seasonal sales events like Black Friday, Prime Day, and holiday promotions.
+
+Each ${brandName} ${categoryName.toLowerCase()} deal shows the original price, current sale price, and exact discount percentage. All listings link directly to authorized retailers where you can verify pricing and complete your purchase with confidence.`
+}
