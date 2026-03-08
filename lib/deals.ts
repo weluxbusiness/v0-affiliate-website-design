@@ -1,0 +1,369 @@
+import "server-only"
+
+// Server-only deal fetching functions
+// This file should only be imported from Server Components (pages, layouts, route handlers)
+import { createClient } from "@/lib/supabase/server"
+import { createAnonClient } from "@/lib/supabase/anon"
+import type { Deal } from "@/lib/deal-types"
+
+export async function getTrendingDeals(limit = 6): Promise<Deal[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error("Error fetching trending deals:", error)
+    return []
+  }
+  
+  return data || []
+}
+
+export async function getDailyDeals(limit = 4): Promise<Deal[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .gte("expires_at", new Date().toISOString())
+    .order("expires_at", { ascending: true })
+    .limit(limit)
+  
+  if (error) {
+    console.error("Error fetching daily deals:", error)
+    return []
+  }
+  
+  return data || []
+}
+
+export async function getDealsByCategory(category: string, limit = 12): Promise<Deal[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("category", `%${category}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error fetching ${category} deals:`, error)
+    return []
+  }
+  
+  return data || []
+}
+
+export async function getAllCategories(): Promise<string[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("category")
+    .eq("is_active", true)
+  
+  if (error) {
+    console.error("Error fetching categories:", error)
+    return []
+  }
+  
+  const categories = [...new Set(data?.map(d => d.category) || [])]
+  return categories
+}
+
+export async function getDealById(id: string): Promise<Deal | null> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("id", id)
+    .single()
+  
+  if (error) {
+    console.error(`Error fetching deal ${id}:`, error)
+    return null
+  }
+  
+  return data
+}
+
+export async function getAllDeals(limit = 20): Promise<Deal[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error("Error fetching all deals:", error)
+    return []
+  }
+  
+  return data ?? []
+}
+
+export async function getDealsByStore(store: string, limit = 12): Promise<Deal[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("store", `%${store}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error fetching ${store} deals:`, error)
+    return []
+  }
+  
+  return data || []
+}
+
+export async function searchDeals(query: string, limit = 12): Promise<Deal[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error searching deals for ${query}:`, error)
+    return []
+  }
+  
+  return data || []
+}
+
+export async function getAllStores(): Promise<string[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("store")
+    .eq("is_active", true)
+  
+  if (error) {
+    console.error("Error fetching stores:", error)
+    return []
+  }
+  
+  const stores = [...new Set(data?.map(d => d.store) || [])]
+  return stores
+}
+
+export async function getLatestDeals(limit = 10): Promise<Deal[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error("Error fetching latest deals:", error)
+    return []
+  }
+  
+  return data || []
+}
+
+export async function getDealsFromSameStore(store: string, excludeId: string, limit = 6): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("store", store)
+    .neq("id", excludeId)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error fetching deals from ${store}:`, error)
+    return []
+  }
+  
+  return data || []
+}
+
+export async function getDealsByStoreAndCategory(store: string, category: string, limit = 20): Promise<Deal[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("store", `%${store}%`)
+    .ilike("category", `%${category}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    console.error(`Error fetching ${store} ${category} deals:`, error)
+    return []
+  }
+
+  return data || []
+}
+
+export interface PopularStore {
+  store: string
+  dealCount: number
+}
+
+export async function getPopularStores(limit = 10): Promise<PopularStore[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  
+  // Fetch all active deals and count by store
+  const { data, error } = await supabase
+    .from("deals")
+    .select("store")
+    .eq("is_active", true)
+
+  if (error) {
+    console.error("Error fetching popular stores:", error)
+    return []
+  }
+
+  // Count deals per store
+  const storeCounts = new Map<string, number>()
+  for (const deal of data || []) {
+    if (deal.store) {
+      const count = storeCounts.get(deal.store) || 0
+      storeCounts.set(deal.store, count + 1)
+    }
+  }
+
+  // Sort by count and return top stores
+  const sorted = Array.from(storeCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([store, dealCount]) => ({ store, dealCount }))
+
+  return sorted
+}
+
+export interface SeoQueryFilters {
+  category?: string
+  brand?: string
+  maxPrice?: number
+}
+
+export async function getDealsForSeoPage(filters: SeoQueryFilters, limit = 50): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  
+  let query = supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+
+  // Apply category filter
+  if (filters.category) {
+    query = query.or(`category.ilike.%${filters.category}%,title.ilike.%${filters.category}%,description.ilike.%${filters.category}%`)
+  }
+
+  // Apply brand filter (search in title, store, or description)
+  if (filters.brand) {
+    query = query.or(`store.ilike.%${filters.brand}%,title.ilike.%${filters.brand}%,description.ilike.%${filters.brand}%`)
+  }
+
+  // Apply max price filter
+  if (filters.maxPrice) {
+    query = query.lte("deal_price", filters.maxPrice)
+  }
+
+  // Order by discount percentage for "best" deals
+  query = query.order("discount_percentage", { ascending: false }).limit(limit)
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error("Error fetching SEO page deals:", error)
+    return []
+  }
+
+  return data || []
+}
+
+export async function getDealsUnderPrice(
+  maxPrice: number, 
+  category?: string, 
+  store?: string, 
+  limit = 50
+): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  
+  let query = supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .lte("deal_price", maxPrice)
+
+  if (category) {
+    query = query.ilike("category", `%${category}%`)
+  }
+
+  if (store) {
+    query = query.ilike("store", `%${store}%`)
+  }
+
+  query = query.order("discount_percentage", { ascending: false }).limit(limit)
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error(`Error fetching deals under $${maxPrice}:`, error)
+    return []
+  }
+
+  return data || []
+}
+
+export async function getPopularCategories(limit = 10): Promise<{ category: string; dealCount: number }[]> {
+  // Use anon client for ISR compatibility (no cookies)
+  const supabase = createAnonClient()
+  
+  // Fetch all active deals and count by category
+  const { data, error } = await supabase
+    .from("deals")
+    .select("category")
+    .eq("is_active", true)
+
+  if (error) {
+    console.error("Error fetching popular categories:", error)
+    return []
+  }
+
+  // Count deals per category
+  const categoryCounts = new Map<string, number>()
+  for (const deal of data || []) {
+    if (deal.category) {
+      const count = categoryCounts.get(deal.category) || 0
+      categoryCounts.set(deal.category, count + 1)
+    }
+  }
+
+  // Sort by count and return top categories
+  const sorted = Array.from(categoryCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([category, dealCount]) => ({ category, dealCount }))
+
+  return sorted
+}

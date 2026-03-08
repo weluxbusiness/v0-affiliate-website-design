@@ -1,0 +1,21 @@
+{
+  "name": "SaveSmart - Save Money Shopping Online",
+  "short_name": "SaveSmart",
+  "description": "Free browser extension that finds coupons, compares prices and helps you save money at thousands of online stores.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
