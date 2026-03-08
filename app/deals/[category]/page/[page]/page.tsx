@@ -105,10 +105,15 @@ export default async function CategoryPaginatedPage({ params }: PageProps) {
   const { deals, totalCount, totalPages, hasNextPage, hasPrevPage } = 
     await getDealsByCategoryPaginated(categoryName, pageNum)
   
-  // 404 if page is beyond available pages
-  if (pageNum > totalPages && totalPages > 0) {
-    notFound()
+  // Redirect to main page if this page shouldn't exist
+  // Page 2+ only valid if there are enough deals to fill page 1
+  if (totalPages <= 1 || pageNum > totalPages) {
+    redirect(`/deals/${categorySlug}`)
   }
+  
+  // Calculate correct range for display
+  const startItem = (pageNum - 1) * DEALS_PER_PAGE + 1
+  const endItem = Math.min(pageNum * DEALS_PER_PAGE, totalCount)
   
   const Icon = categoryInfo?.icon || Tag
   
@@ -200,7 +205,7 @@ export default async function CategoryPaginatedPage({ params }: PageProps) {
               {categoryName} Deals - Page {pageNum}
             </h1>
             <p className="text-lg text-white/80 max-w-2xl mb-4">
-              Showing {(pageNum - 1) * DEALS_PER_PAGE + 1} - {Math.min(pageNum * DEALS_PER_PAGE, totalCount)} of {totalCount} deals
+              Showing {startItem} - {endItem} of {totalCount} deals
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Badge variant="secondary" className="bg-white/20 text-white border-0">
