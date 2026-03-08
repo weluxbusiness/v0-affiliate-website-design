@@ -27,14 +27,9 @@ export async function GET() {
     // Category pages: /deals/[category]
     `${baseUrl}/sitemap-categories.xml`,
     
-    // Category pagination: /deals/[category]/page/[page]
-    `${baseUrl}/sitemap-category-pages.xml`,
-    
-    // Store pagination: /stores/[store]/page/[page]
-    `${baseUrl}/sitemap-store-pages.xml`,
-    
-    // Brand pagination: /brands/[brand]/page/[page]
-    `${baseUrl}/sitemap-brand-pages.xml`,
+    // Unified pagination sitemap: all /page/[page] routes
+    // Covers categories, stores, and brands pagination (page 2+)
+    `${baseUrl}/sitemap-pagination.xml`,
     
     // Best category pages: /best/[category]
     `${baseUrl}/sitemap-best.xml`,
