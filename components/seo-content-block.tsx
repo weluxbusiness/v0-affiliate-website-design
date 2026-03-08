@@ -117,3 +117,55 @@ export function getStoreCategoryRelatedLinks(
     })),
   ]
 }
+
+// SEO content generator for coupon pages
+export function generateCouponSeoContent(storeName: string): string {
+  const month = new Date().toLocaleString('default', { month: 'long' })
+  const year = new Date().getFullYear()
+  
+  return `Find verified ${storeName} coupon codes and promo codes for ${month} ${year}. SaveSmart curates the best ${storeName} discounts to help you save money on every purchase. We test each coupon code before listing it to ensure it works, and we update our ${storeName} coupons multiple times daily. Whether you're looking for percentage discounts, free shipping codes, or exclusive promo codes, our ${storeName} coupon page has you covered. Stack coupons with ongoing sales for maximum savings, and sign up for our deal alerts to never miss a ${storeName} promotion.`
+}
+
+// SEO content generator for best product pages
+export function generateBestProductSeoContent(categoryName: string): string {
+  const year = new Date().getFullYear()
+  
+  return `Discover the best ${categoryName.toLowerCase()} deals of ${year}. SaveSmart compares prices across hundreds of retailers including Amazon, Best Buy, Target, Walmart, and specialty stores to find the absolute best ${categoryName.toLowerCase()} discounts. Our AI-powered price tracker monitors prices 24/7 to catch flash sales and limited-time offers. We rank deals by savings percentage so you can quickly find products with the biggest discounts. Whether you're looking for premium brands or budget-friendly options, our curated list of best ${categoryName.toLowerCase()} deals helps you make informed purchasing decisions while saving money.`
+}
+
+// SEO content generator for price range pages
+export function generatePriceRangeSeoContent(priceRange: string, category?: string): string {
+  const categoryText = category ? `${category.toLowerCase()} ` : ''
+  
+  return `Shop ${categoryText}deals ${priceRange.toLowerCase()}. SaveSmart filters through thousands of deals to surface the best bargains within your budget. Our price-filtered pages make it easy to find great products at prices you can afford. All deals are verified and updated hourly to ensure accuracy. Compare options from top retailers like Amazon, Best Buy, Target, and Walmart to find the perfect ${categoryText}product at the right price. Bookmark this page and check back often for new deals added daily.`
+}
+
+// Get related links for coupon pages
+export function getCouponRelatedLinks(storeSlug: string, storeName: string): { label: string; href: string }[] {
+  const stores = ['amazon', 'best-buy', 'target', 'walmart', 'nike', 'apple']
+  
+  return [
+    { label: `${storeName} Deals`, href: `/stores/${storeSlug}` },
+    { label: 'Latest Deals', href: '/latest-deals' },
+    { label: 'All Deals', href: '/deals' },
+    ...stores.filter(s => s !== storeSlug).slice(0, 4).map(store => ({
+      label: `${store.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Coupons`,
+      href: `/coupons/${store}`
+    })),
+  ]
+}
+
+// Get related links for best product pages
+export function getBestProductRelatedLinks(categorySlug: string, categoryName: string): { label: string; href: string }[] {
+  const categories = ['headphones', 'laptops', 'tvs', 'smartphones', 'sneakers', 'vacuums']
+  
+  return [
+    { label: `${categoryName} Deals`, href: `/deals/${categorySlug}` },
+    { label: 'Latest Deals', href: '/latest-deals' },
+    { label: 'Trending Deals', href: '/trending-deals' },
+    ...categories.filter(c => c !== categorySlug).slice(0, 4).map(cat => ({
+      label: `Best ${cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}`,
+      href: `/best/${cat}`
+    })),
+  ]
+}

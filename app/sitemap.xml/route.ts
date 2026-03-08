@@ -1,17 +1,45 @@
+// Main sitemap index - supports 100k+ pages by splitting into multiple sitemaps
 const baseUrl = 'https://savesmart.bio'
 
 export async function GET() {
+  const now = new Date().toISOString().split('T')[0]
+  
+  // Sitemap index with all sub-sitemaps
+  // Each sitemap should contain max 10,000 URLs for optimal performance
   const sitemaps = [
+    // Core pages
     `${baseUrl}/sitemap-pages.xml`,
-    `${baseUrl}/sitemap-deals.xml`,
-    `${baseUrl}/sitemap-seo.xml`,
+    
+    // Store pages: /stores/[store]
+    `${baseUrl}/sitemap-stores.xml`,
+    
+    // Coupon pages: /coupons/[store]
+    `${baseUrl}/sitemap-coupons.xml`,
+    
+    // Category pages: /deals/[category]
+    `${baseUrl}/sitemap-categories.xml`,
+    
+    // Best category pages: /best/[category]
+    `${baseUrl}/sitemap-best.xml`,
+    
+    // Store + Category combinations: /stores/[store]/[category]
+    `${baseUrl}/sitemap-store-categories.xml`,
+    
+    // Price range pages
     `${baseUrl}/sitemap-price.xml`,
+    
+    // Individual deal pages
+    `${baseUrl}/sitemap-deals.xml`,
+    
+    // Legacy SEO pages
+    `${baseUrl}/sitemap-seo.xml`,
   ]
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemaps.map(loc => `  <sitemap>
     <loc>${loc}</loc>
+    <lastmod>${now}</lastmod>
   </sitemap>`).join('\n')}
 </sitemapindex>`
 
