@@ -35,7 +35,7 @@ function formatProductName(slug: string): string {
 // Generate product specs based on search results
 function generateProductSpecs(productName: string, deals: Awaited<ReturnType<typeof searchDeals>>) {
   const avgPrice = deals.length > 0 
-    ? Math.round(deals.reduce((sum, d) => sum + (d.price || 0), 0) / deals.length)
+    ? Math.round(deals.reduce((sum, d) => sum + (d.deal_price || 0), 0) / deals.length)
     : 0
   const avgDiscount = deals.length > 0
     ? Math.round(deals.reduce((sum, d) => sum + (d.discount_percentage || 0), 0) / deals.length)
@@ -48,7 +48,7 @@ function generateProductSpecs(productName: string, deals: Awaited<ReturnType<typ
     avgDiscount,
     dealCount: deals.length,
     stores,
-    lowestPrice: deals.length > 0 ? Math.min(...deals.map(d => d.price || Infinity)) : 0,
+    lowestPrice: deals.length > 0 ? Math.min(...deals.map(d => d.deal_price || Infinity)) : 0,
     highestDiscount: deals.length > 0 ? Math.max(...deals.map(d => d.discount_percentage || 0)) : 0,
   }
 }
