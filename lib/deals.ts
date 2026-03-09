@@ -780,3 +780,94 @@ export async function getDealsByCategoryBrandStorePaginated(
     return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
   }
 }
+
+// ============================================
+// BEST DEALS QUERIES (for /best/* pages)
+// ============================================
+
+/**
+ * Get best deals for a category (sorted by discount)
+ */
+export async function getBestDealsForCategory(
+  category: string,
+  limit: number = 20
+): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  const categorySearch = category.replace(/-/g, ' ')
+  
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("category", `%${categorySearch}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error fetching best ${category} deals:`, error)
+    return []
+  }
+  
+  return data || []
+}
+
+/**
+ * Get best deals for a category × brand combination
+ */
+export async function getBestDealsForCategoryBrand(
+  category: string,
+  brand: string,
+  limit: number = 20
+): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  const categorySearch = category.replace(/-/g, ' ')
+  const brandSearch = brand.replace(/-/g, ' ')
+  
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("category", `%${categorySearch}%`)
+    .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error fetching best ${brand} ${category} deals:`, error)
+    return []
+  }
+  
+  return data || []
+}
+
+/**
+ * Get best deals for category × brand × store (minimum 5 required)
+ */
+export async function getBestDealsForCategoryBrandStore(
+  category: string,
+  brand: string,
+  store: string,
+  limit: number = 20
+): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  const categorySearch = category.replace(/-/g, ' ')
+  const brandSearch = brand.replace(/-/g, ' ')
+  const storeSearch = store.replace(/-/g, ' ')
+  
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("category", `%${categorySearch}%`)
+    .ilike("store", `%${storeSearch}%`)
+    .ilike("title", `%${brandSearch}%`)
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error(`Error fetching best ${brand} ${category} deals at ${store}:`, error)
+    return []
+  }
+  
+  return data || []
+}

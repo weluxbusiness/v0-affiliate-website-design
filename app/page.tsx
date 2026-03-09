@@ -12,6 +12,7 @@ import { ComparisonTable } from "@/components/comparison-table"
 import { FinalCTA } from "@/components/final-cta"
 import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
+import { HomeBestDeals } from "@/components/home-best-deals"
 import { getTrendingDeals, getDailyDeals, getLatestDeals } from "@/lib/deals"
 
 export default async function HomePage() {
@@ -29,6 +30,7 @@ export default async function HomePage() {
         <HeroSection />
         <TrendingDeals deals={trendingDeals} />
         <HomePopularCategories />
+        <HomeBestDeals />
         <DailyDeals deals={dailyDeals} />
         <LatestDeals deals={latestDeals} />
         <HowItWorks />
