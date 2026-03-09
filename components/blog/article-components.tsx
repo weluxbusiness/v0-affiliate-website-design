@@ -419,20 +419,78 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
 
 // Newsletter Signup Component
 export function NewsletterSignup() {
+  const [email, setEmail] = useState("")
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!email.trim()) return
+    
+    setStatus("loading")
+    setErrorMessage("")
+
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Subscription failed")
+      }
+
+      setStatus("success")
+      setEmail("")
+    } catch (error) {
+      setStatus("error")
+      setErrorMessage(error instanceof Error ? error.message : "Subscription failed. Please try again.")
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div className="rounded-2xl border border-border bg-muted/30 p-6">
+        <div className="flex items-center gap-2 text-emerald-600">
+          <CheckCircle className="h-5 w-5" />
+          <span className="font-bold text-lg">You&apos;re subscribed!</span>
+        </div>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Thanks for subscribing. Check your inbox for confirmation.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="rounded-2xl border border-border bg-muted/30 p-6">
       <h3 className="font-bold text-lg text-foreground">Get Savings Tips Weekly</h3>
       <p className="mt-2 text-sm text-muted-foreground">
         Join 50,000+ subscribers and receive the best deals and money-saving tips directly in your inbox.
       </p>
-      <form className="mt-4 flex gap-2">
+      <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
         <input
           type="email"
           placeholder="Enter your email"
-          className="min-w-0 flex-1 rounded-lg border border-input bg-background px-4 py-2 text-sm"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          disabled={status === "loading"}
+          className="min-w-0 flex-1 rounded-lg border border-input bg-background px-4 py-2 text-sm disabled:opacity-50"
         />
-        <Button type="submit">Subscribe</Button>
+        <Button type="submit" disabled={status === "loading"}>
+          {status === "loading" ? "..." : "Subscribe"}
+        </Button>
       </form>
+      {status === "error" && (
+        <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+      )}
     </div>
   )
 }

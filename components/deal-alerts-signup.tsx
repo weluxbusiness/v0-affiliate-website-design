@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { PageContainer } from "@/components/layout/page-container"
-import { Bell, Mail, Check, Sparkles, Zap, Tag } from "lucide-react"
+import { Bell, Mail, Check, Sparkles, Zap, Tag, Loader2 } from "lucide-react"
 
 export function DealAlertsSignup() {
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const [preferences, setPreferences] = useState({
     electronics: true,
     fashion: false,
@@ -19,11 +21,34 @@ export function DealAlertsSignup() {
     daily: true,
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email.trim()) return
-    // In production, this would call an API to save the subscription
-    setSubmitted(true)
+    
+    setIsLoading(true)
+    setError("")
+
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Subscription failed")
+      }
+
+      setSubmitted(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Subscription failed. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const togglePreference = (key: keyof typeof preferences) => {
@@ -152,10 +177,27 @@ export function DealAlertsSignup() {
                   </div>
                   
                   {/* Subscribe Button */}
-                  <Button type="submit" size="lg" className="w-full gap-2 h-12 mt-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow">
-                    <Bell className="h-4 w-4" />
-                    Subscribe to Alerts
+                  <Button 
+                    type="submit" 
+                    size="lg" 
+                    disabled={isLoading}
+                    className="w-full gap-2 h-12 mt-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Subscribing...
+                      </>
+                    ) : (
+                      <>
+                        <Bell className="h-4 w-4" />
+                        Subscribe to Alerts
+                      </>
+                    )}
                   </Button>
+                  {error && (
+                    <p className="text-sm text-red-500 text-center mt-2">{error}</p>
+                  )}
                 </div>
               </div>
             </form>

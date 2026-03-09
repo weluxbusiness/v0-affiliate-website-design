@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/layout/page-container"
 import { articles, categories, getFeaturedArticles, getRecentArticles } from "@/lib/blog-data"
+import { NewsletterForm } from "@/components/newsletter-form"
 
 export const metadata: Metadata = {
   title: "Shopping Tips & Savings Blog | SaveSmart",
@@ -191,16 +192,7 @@ export default function BlogPage() {
               <p className="mx-auto mt-3 max-w-xl text-primary-foreground/80">
                 Join 50,000+ smart shoppers who get our best deals, tips, and guides delivered to their inbox every week.
               </p>
-              <form className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 rounded-lg border-0 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-                <Button className="bg-gray-900 text-white hover:bg-gray-800">
-                  Subscribe
-                </Button>
-              </form>
+              <NewsletterForm variant="primary" />
               <p className="mt-3 text-xs text-primary-foreground/60">
                 No spam, unsubscribe anytime. Read our privacy policy.
               </p>
