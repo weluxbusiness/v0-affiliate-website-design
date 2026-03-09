@@ -5,9 +5,14 @@ import { getBrandSlugs } from '@/lib/seo-data'
 
 const baseUrl = 'https://savesmart.bio'
 
+// Empty sitemap XML for fallback
+const EMPTY_SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+</urlset>`
+
 export const revalidate = 3600 // ISR: revalidate every hour
 
-// Popular product/brand comparison pairs
+// Popular product/brand comparison pairs (static fallback)
 const POPULAR_COMPARISONS = [
   // Tech comparisons
   'macbook-air-vs-dell-xps',
@@ -43,36 +48,43 @@ const POPULAR_COMPARISONS = [
 ]
 
 export async function GET() {
-  const now = new Date().toISOString().split('T')[0]
-  
-  // Get brand slugs for dynamic comparisons
-  const brands = await getBrandSlugs()
-  const popularBrands = brands.slice(0, 15)
-  
-  // Generate brand vs brand combinations
-  const dynamicComparisons: string[] = []
-  for (let i = 0; i < popularBrands.length; i++) {
-    for (let j = i + 1; j < popularBrands.length; j++) {
-      dynamicComparisons.push(`${popularBrands[i]}-vs-${popularBrands[j]}`)
+  try {
+    const now = new Date().toISOString().split('T')[0]
+    
+    // Get brand slugs for dynamic comparisons (with error handling)
+    let brands: string[] = []
+    try {
+      brands = await getBrandSlugs()
+    } catch (err) {
+      console.error('[sitemap-comparisons] Error fetching brand slugs:', err)
+      brands = []
     }
-  }
-  
-  // Combine static and dynamic, remove duplicates
-  const allComparisons = [...new Set([...POPULAR_COMPARISONS, ...dynamicComparisons])]
-  
-  // Return 404 if no comparisons
-  if (allComparisons.length === 0) {
-    return new Response('No comparison URLs available', {
-      status: 404,
-      headers: {
-        'Content-Type': 'text/plain',
-        'Cache-Control': 'public, max-age=3600, s-maxage=3600',
-      },
-    })
-  }
-  
-  // Generate XML
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    
+    const popularBrands = brands.slice(0, 15)
+    
+    // Generate brand vs brand combinations
+    const dynamicComparisons: string[] = []
+    for (let i = 0; i < popularBrands.length; i++) {
+      for (let j = i + 1; j < popularBrands.length; j++) {
+        dynamicComparisons.push(`${popularBrands[i]}-vs-${popularBrands[j]}`)
+      }
+    }
+    
+    // Combine static and dynamic, remove duplicates, limit to 50k
+    const allComparisons = [...new Set([...POPULAR_COMPARISONS, ...dynamicComparisons])].slice(0, 50000)
+    
+    // Return empty sitemap if no comparisons (don't 404)
+    if (!allComparisons || allComparisons.length === 0) {
+      return new Response(EMPTY_SITEMAP, {
+        headers: {
+          'Content-Type': 'application/xml',
+          'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+        },
+      })
+    }
+    
+    // Generate XML
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allComparisons.map(slug => `  <url>
     <loc>${baseUrl}/compare/${slug}</loc>
@@ -82,10 +94,19 @@ ${allComparisons.map(slug => `  <url>
   </url>`).join('\n')}
 </urlset>`
 
-  return new Response(xml, {
-    headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
-    },
-  })
+    return new Response(xml, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      },
+    })
+  } catch (error) {
+    console.error('[sitemap-comparisons] Unhandled error:', error)
+    return new Response(EMPTY_SITEMAP, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      },
+    })
+  }
 }
