@@ -27,33 +27,39 @@ export async function GET() {
   const includePagination = await hasPaginationUrls()
   
   // Sitemap priority order (Google crawls in order listed)
-  // Priority: Category > Store > Brand > Comparison > Programmatic > Pagination
+  // All sitemaps respect 50k URL limit per Google guidelines
   const sitemaps = [
-    // 1. HIGHEST PRIORITY: Category pages (main navigation, high search volume)
-    `${baseUrl}/sitemap-categories.xml`,
+    // 1. Static pages: homepage, about, privacy, terms, blog index
+    `${baseUrl}/sitemap-pages.xml`,
     
-    // 2. Store pages (brand authority, conversion pages)
-    `${baseUrl}/sitemap-stores.xml`,
+    // 2. Category pages (main navigation, high search volume)
+    `${baseUrl}/sitemap-categories.xml`,
     
     // 3. Brand pages (product discovery)
     `${baseUrl}/sitemap-brands.xml`,
     
-    // 4. Trending pages (time-sensitive, high-traffic)
-    `${baseUrl}/sitemap-trending.xml`,
+    // 4. Store pages (conversion pages)
+    `${baseUrl}/sitemap-stores.xml`,
     
-    // 5. Comparison pages (high-intent keywords)
-    `${baseUrl}/sitemap-comparisons.xml`,
+    // 5. City pages (local SEO)
+    `${baseUrl}/sitemap-cities.xml`,
     
-    // 6. Deal Finder pages (high-intent search terms)
-    `${baseUrl}/sitemap-deal-finder.xml`,
+    // 6. Price range pages
+    `${baseUrl}/sitemap-price.xml`,
     
     // 7. Buying guides (topical authority content)
     `${baseUrl}/sitemap-guides.xml`,
     
-    // 8. Core pages: homepage, static pages, blog
-    `${baseUrl}/sitemap-core.xml`,
+    // 8. Comparison pages (high-intent keywords)
+    `${baseUrl}/sitemap-comparisons.xml`,
     
-    // 9. Programmatic pages: cities, price ranges, brand-categories
+    // 9. Deal Finder pages (high-intent search terms)
+    `${baseUrl}/sitemap-deal-finder.xml`,
+    
+    // 10. Trending pages (time-sensitive, high-traffic)
+    `${baseUrl}/sitemap-trending.xml`,
+    
+    // 11. Programmatic pages: brand-categories, store-categories, category-brands, best, deals
     `${baseUrl}/sitemap-programmatic.xml`,
   ]
   
