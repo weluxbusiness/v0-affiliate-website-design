@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
 import { PageContainer, DealGrid, SectionHeading } from "@/components/layout/page-container"
-import { getDealsByCategoryAndBrandPaginated, getCategoryBrandCombinations, DEALS_PER_PAGE } from "@/lib/deals"
+import { getDealsByCategoryAndBrandPaginated, getCategoryBrandCombinations, DEALS_PER_PAGE, getDealCountForCategoryBrand } from "@/lib/deals"
 import { getBrandSlugs, getCategorySlugs, getStoreSlugs } from "@/lib/seo-data"
 import { 
   formatBrandName, 
@@ -72,6 +72,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const brandName = formatBrandName(brand)
     const categoryName = formatCategoryName(category)
     
+    // Check deal count for noindex decision (thin content protection)
+    const dealCount = await getDealCountForCategoryBrand(category, brand)
+    const shouldIndex = dealCount >= 3
+    
     return {
       title: `${brandName} ${categoryName} Deals – Best Prices & Discounts | SaveSmart`,
       description: `Find the best deals on ${brandName} ${categoryName.toLowerCase()}. Compare prices, discounts, and coupons from top retailers.`,
@@ -83,6 +87,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
       alternates: {
         canonical: `/deals/${category}/${brand}`,
+      },
+      // Noindex pages with < 3 deals to prevent thin content indexation
+      robots: {
+        index: shouldIndex,
+        follow: true, // Always follow links for internal link equity
       },
     }
   } catch {

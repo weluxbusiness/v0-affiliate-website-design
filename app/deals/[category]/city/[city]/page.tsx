@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
 import { PageContainer, DealGrid, SectionHeading } from "@/components/layout/page-container"
-import { getDealsByCategory, searchDeals } from "@/lib/deals"
+import { getDealsByCategory, searchDeals, getDealCountForCategoryCity } from "@/lib/deals"
 import { SeoContentBlock } from "@/components/seo-content-block"
 import { cities, formatCityName, getPopularCities } from "@/lib/cities"
 import { getCategoryBySlug, getCategorySlugs, getStoreSlugs, getBrandSlugs } from "@/lib/seo-data"
@@ -77,6 +77,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cityName = formatCityName(citySlug)
   const currentYear = new Date().getFullYear()
   
+  // Check deal count for noindex decision (thin content protection)
+  const dealCount = await getDealCountForCategoryCity(categorySlug, citySlug)
+  const shouldIndex = dealCount >= 3
+  
   return {
     title: `Best ${categoryName} Deals in ${cityName} ${currentYear} | SaveSmart`,
     description: `Find the best ${categoryName.toLowerCase()} deals in ${cityName}. Compare prices from Amazon, Best Buy, Target & more. Updated daily with the latest discounts.`,
@@ -88,6 +92,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     alternates: {
       canonical: `/deals/${categorySlug}/city/${citySlug}`,
+    },
+    // Noindex pages with < 3 deals to prevent thin content indexation
+    robots: {
+      index: shouldIndex,
+      follow: true, // Always follow links for internal link equity
     },
     keywords: [
       `${categoryName.toLowerCase()} deals ${cityName}`,

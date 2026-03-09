@@ -871,3 +871,83 @@ export async function getBestDealsForCategoryBrandStore(
   
   return data || []
 }
+
+// ============================================
+// DEAL COUNT HELPERS (for noindex decisions)
+// ============================================
+
+/**
+ * Get deal count for category + city (for thin content detection)
+ */
+export async function getDealCountForCategoryCity(
+  category: string,
+  city: string
+): Promise<number> {
+  const supabase = createAnonClient()
+  const categorySearch = category.replace(/-/g, ' ')
+  
+  const { count, error } = await supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .ilike("category", `%${categorySearch}%`)
+  
+  if (error) {
+    console.error(`Error counting deals for ${category} in ${city}:`, error)
+    return 0
+  }
+  
+  return count || 0
+}
+
+/**
+ * Get deal count for category + brand (for thin content detection)
+ */
+export async function getDealCountForCategoryBrand(
+  category: string,
+  brand: string
+): Promise<number> {
+  const supabase = createAnonClient()
+  const categorySearch = category.replace(/-/g, ' ')
+  const brandSearch = brand.replace(/-/g, ' ')
+  
+  const { count, error } = await supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .ilike("category", `%${categorySearch}%`)
+    .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%`)
+  
+  if (error) {
+    console.error(`Error counting deals for ${brand} ${category}:`, error)
+    return 0
+  }
+  
+  return count || 0
+}
+
+/**
+ * Get deal count for store + category (for thin content detection)
+ */
+export async function getDealCountForStoreCategory(
+  store: string,
+  category: string
+): Promise<number> {
+  const supabase = createAnonClient()
+  const storeSearch = store.replace(/-/g, ' ')
+  const categorySearch = category.replace(/-/g, ' ')
+  
+  const { count, error } = await supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .ilike("store", `%${storeSearch}%`)
+    .ilike("category", `%${categorySearch}%`)
+  
+  if (error) {
+    console.error(`Error counting deals for ${store} ${category}:`, error)
+    return 0
+  }
+  
+  return count || 0
+}
