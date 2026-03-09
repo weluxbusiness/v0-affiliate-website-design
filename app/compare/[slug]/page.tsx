@@ -380,10 +380,9 @@ export default async function ComparisonPage({ params }: PageProps) {
 
           {/* FAQ Section */}
           <section className="mb-12">
-            <SectionHeading 
-              title="Frequently Asked Questions" 
-              subtitle="Common questions about this comparison"
-            />
+            <SectionHeading description="Common questions about this comparison">
+              Frequently Asked Questions
+            </SectionHeading>
             <div className="space-y-4">
               <Card>
                 <CardContent className="py-4">
