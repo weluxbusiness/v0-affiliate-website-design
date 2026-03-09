@@ -591,51 +591,66 @@ export async function getDealsByCategoryAndBrandPaginated(
   brand: string,
   page: number = 1
 ): Promise<CategoryBrandPaginatedResult> {
-  const supabase = createAnonClient()
-  const offset = (page - 1) * DEALS_PER_PAGE
-  
-  // Format for search
-  const categorySearch = category.replace(/-/g, ' ')
-  const brandSearch = brand.replace(/-/g, ' ')
-  
-  // Get total count
-  const { count, error: countError } = await supabase
-    .from("deals")
-    .select("*", { count: "exact", head: true })
-    .eq("is_active", true)
-    .ilike("category", `%${categorySearch}%`)
-    .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%,description.ilike.%${brandSearch}%`)
-  
-  if (countError) {
-    console.error(`Error counting ${category} ${brand} deals:`, countError)
+  // Validate inputs
+  if (!category || !brand) {
     return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
   }
   
-  const totalCount = count || 0
-  const totalPages = Math.ceil(totalCount / DEALS_PER_PAGE)
-  
-  // Get paginated deals
-  const { data, error } = await supabase
-    .from("deals")
-    .select("*")
-    .eq("is_active", true)
-    .ilike("category", `%${categorySearch}%`)
-    .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%,description.ilike.%${brandSearch}%`)
-    .order("discount_percentage", { ascending: false })
-    .range(offset, offset + DEALS_PER_PAGE - 1)
-  
-  if (error) {
-    console.error(`Error fetching ${category} ${brand} deals page ${page}:`, error)
-    return { deals: [], totalCount, totalPages, currentPage: page, hasNextPage: false, hasPrevPage: false }
-  }
-  
-  return {
-    deals: data || [],
-    totalCount,
-    totalPages,
-    currentPage: page,
-    hasNextPage: page < totalPages,
-    hasPrevPage: page > 1,
+  try {
+    const supabase = createAnonClient()
+    const offset = (page - 1) * DEALS_PER_PAGE
+    
+    // Format for search (convert slug to searchable text)
+    const categorySearch = category.replace(/-/g, ' ')
+    const brandSearch = brand.replace(/-/g, ' ')
+    
+    // Get total count - use textSearch approach for brand matching
+    const { count, error: countError } = await supabase
+      .from("deals")
+      .select("*", { count: "exact", head: true })
+      .eq("is_active", true)
+      .ilike("category", `%${categorySearch}%`)
+      .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%`)
+    
+    if (countError) {
+      console.error(`[v0] Error counting ${category} ${brand} deals:`, countError.message)
+      return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    const totalCount = count || 0
+    const totalPages = Math.ceil(totalCount / DEALS_PER_PAGE)
+    
+    // If no deals, return early
+    if (totalCount === 0) {
+      return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    // Get paginated deals
+    const { data, error } = await supabase
+      .from("deals")
+      .select("*")
+      .eq("is_active", true)
+      .ilike("category", `%${categorySearch}%`)
+      .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%`)
+      .order("discount_percentage", { ascending: false })
+      .range(offset, offset + DEALS_PER_PAGE - 1)
+    
+    if (error) {
+      console.error(`[v0] Error fetching ${category} ${brand} deals page ${page}:`, error.message)
+      return { deals: [], totalCount, totalPages, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    return {
+      deals: data || [],
+      totalCount,
+      totalPages,
+      currentPage: page,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    }
+  } catch (err) {
+    console.error(`[v0] Unexpected error in getDealsByCategoryAndBrandPaginated:`, err)
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
   }
 }
 

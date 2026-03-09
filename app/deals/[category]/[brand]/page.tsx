@@ -98,7 +98,16 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryBrandPage({ params }: PageProps) {
-  const { category, brand } = await params
+  const resolvedParams = await params
+  
+  // Validate params exist
+  const category = resolvedParams?.category
+  const brand = resolvedParams?.brand
+  
+  if (!category || !brand) {
+    notFound()
+  }
+  
   const categorySlug = category.toLowerCase()
   const brandSlug = brand.toLowerCase()
   
@@ -113,7 +122,7 @@ export default async function CategoryBrandPage({ params }: PageProps) {
   )
   
   // Return 404 if no deals exist for this combination
-  if (totalCount === 0) {
+  if (!deals || totalCount === 0) {
     notFound()
   }
   

@@ -60,13 +60,23 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryBrandPaginationPage({ params }: PageProps) {
-  const { category, brand, page } = await params
+  const resolvedParams = await params
+  
+  // Validate params exist
+  const category = resolvedParams?.category
+  const brand = resolvedParams?.brand
+  const page = resolvedParams?.page
+  
+  if (!category || !brand || !page) {
+    redirect('/deals')
+  }
+  
   const categorySlug = category.toLowerCase()
   const brandSlug = brand.toLowerCase()
   const pageNum = parseInt(page, 10) || 1
   
   // Redirect page 1 to base URL
-  if (pageNum === 1) {
+  if (pageNum === 1 || isNaN(pageNum) || pageNum < 1) {
     redirect(`/deals/${categorySlug}/${brandSlug}`)
   }
   
@@ -78,7 +88,7 @@ export default async function CategoryBrandPaginationPage({ params }: PageProps)
     await getDealsByCategoryAndBrandPaginated(categorySlug, brandSlug, pageNum)
   
   // Redirect to main page if this page shouldn't exist
-  if (totalPages <= 1 || pageNum > totalPages) {
+  if (!deals || totalPages <= 1 || pageNum > totalPages) {
     redirect(`/deals/${categorySlug}/${brandSlug}`)
   }
   
