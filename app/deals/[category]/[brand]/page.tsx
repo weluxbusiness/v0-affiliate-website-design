@@ -330,7 +330,7 @@ export default async function CategoryBrandPage({ params }: PageProps) {
                 <Pagination
                   currentPage={1}
                   totalPages={totalPages}
-                  basePath={`/deals/${categorySlug}/${brandSlug}`}
+                  baseUrl={`/deals/${categorySlug}/${brandSlug}`}
                 />
               </div>
             )}

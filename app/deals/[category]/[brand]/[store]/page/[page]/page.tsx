@@ -200,7 +200,7 @@ export default async function CategoryBrandStorePaginationPage({ params }: PageP
               <Pagination
                 currentPage={pageNum}
                 totalPages={totalPages}
-                basePath={`/deals/${categorySlug}/${brandSlug}/${storeSlug}`}
+                baseUrl={`/deals/${categorySlug}/${brandSlug}/${storeSlug}`}
               />
             </div>
           </PageContainer>

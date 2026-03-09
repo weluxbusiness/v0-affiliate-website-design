@@ -227,7 +227,7 @@ export default async function CategoryBrandPaginationPage({ params }: PageProps)
               <Pagination
                 currentPage={pageNum}
                 totalPages={totalPages}
-                basePath={`/deals/${categorySlug}/${brandSlug}`}
+                baseUrl={`/deals/${categorySlug}/${brandSlug}`}
               />
             </div>
           </PageContainer>
