@@ -171,6 +171,24 @@ Whether you're looking for the latest ${brandName} ${categoryName.toLowerCase()}
 Each deal displays the original price, current sale price, and exact discount percentage. All listings link directly to authorized retailers where you can verify pricing and complete your purchase with confidence.`
 }
 
+// ==================== CATEGORY × BRAND × STORE PAGE CONTENT ====================
+
+export function generateCategoryBrandStoreIntroContent(
+  categoryName: string,
+  brandName: string,
+  storeName: string
+): string {
+  const currentYear = new Date().getFullYear()
+  
+  return `Looking for the best ${brandName} ${categoryName.toLowerCase()} deals at ${storeName}? SaveSmart tracks every discount and promotion to help you find incredible savings on ${brandName} ${categoryName.toLowerCase()} products available at ${storeName} in ${currentYear}.
+
+${storeName} is an authorized retailer for ${brandName} ${categoryName.toLowerCase()}, offering competitive prices, reliable shipping, and authentic products. Our deal-tracking technology monitors ${storeName}'s prices 24/7, catching flash sales, clearance events, and limited-time promotions so you never miss a discount.
+
+Whether you're looking for the latest ${brandName} ${categoryName.toLowerCase()} releases or seeking deals on previous-generation favorites at ${storeName}, we've got you covered. Many shoppers save 15-40% off retail prices by timing their purchases with seasonal sales events like Black Friday, Prime Day, and holiday promotions.
+
+Each deal displays the original price, current sale price, and exact discount percentage. All listings link directly to ${storeName}'s product pages where you can verify pricing and complete your purchase with confidence.`
+}
+
 // ==================== STORE × CATEGORY PAGE CONTENT ====================
 
 export function generateStoreCategoryIntroContent(

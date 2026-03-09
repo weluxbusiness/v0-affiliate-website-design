@@ -32,6 +32,10 @@ export async function GET() {
     // ~500+ pages (categories × brands where deals exist)
     `${baseUrl}/sitemap-category-brands.xml`,
     
+    // Category × Brand × Store pages: /deals/[category]/[brand]/[store]
+    // ~2000+ pages (categories × brands × stores)
+    `${baseUrl}/sitemap-category-brand-stores.xml`,
+    
     // Best category pages: /best/[category]
     // ~20 pages
     `${baseUrl}/sitemap-best.xml`,

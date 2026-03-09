@@ -695,3 +695,88 @@ export async function getCategoryBrandCombinations(): Promise<{ category: string
   
   return Array.from(combinations.values())
 }
+
+// ============================================
+// CATEGORY × BRAND × STORE PAGINATION
+// ============================================
+
+export interface CategoryBrandStorePaginatedResult {
+  deals: Deal[]
+  totalCount: number
+  totalPages: number
+  currentPage: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
+
+export async function getDealsByCategoryBrandStorePaginated(
+  category: string,
+  brand: string,
+  store: string,
+  page: number = 1
+): Promise<CategoryBrandStorePaginatedResult> {
+  // Validate inputs
+  if (!category || !brand || !store) {
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  try {
+    const supabase = createAnonClient()
+    const offset = (page - 1) * DEALS_PER_PAGE
+    
+    // Format for search (convert slug to searchable text)
+    const categorySearch = category.replace(/-/g, ' ')
+    const brandSearch = brand.replace(/-/g, ' ')
+    const storeSearch = store.replace(/-/g, ' ')
+    
+    // Get total count - filter by category, store, and brand in title/description
+    const { count, error: countError } = await supabase
+      .from("deals")
+      .select("*", { count: "exact", head: true })
+      .eq("is_active", true)
+      .ilike("category", `%${categorySearch}%`)
+      .ilike("store", `%${storeSearch}%`)
+      .ilike("title", `%${brandSearch}%`)
+    
+    if (countError) {
+      console.error(`[v0] Error counting ${category} ${brand} ${store} deals:`, countError.message)
+      return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    const totalCount = count || 0
+    const totalPages = Math.ceil(totalCount / DEALS_PER_PAGE)
+    
+    // If no deals, return early
+    if (totalCount === 0) {
+      return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    // Get paginated deals
+    const { data, error } = await supabase
+      .from("deals")
+      .select("*")
+      .eq("is_active", true)
+      .ilike("category", `%${categorySearch}%`)
+      .ilike("store", `%${storeSearch}%`)
+      .ilike("title", `%${brandSearch}%`)
+      .order("discount_percentage", { ascending: false })
+      .range(offset, offset + DEALS_PER_PAGE - 1)
+    
+    if (error) {
+      console.error(`[v0] Error fetching ${category} ${brand} ${store} deals page ${page}:`, error.message)
+      return { deals: [], totalCount, totalPages, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    return {
+      deals: data || [],
+      totalCount,
+      totalPages,
+      currentPage: page,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    }
+  } catch (err) {
+    console.error(`[v0] Unexpected error in getDealsByCategoryBrandStorePaginated:`, err)
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+}
