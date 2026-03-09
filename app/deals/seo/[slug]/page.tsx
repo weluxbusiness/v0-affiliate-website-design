@@ -158,13 +158,21 @@ export default async function DealSeoPage({ params }: PageProps) {
     label: c.label
   }))
   
-  // Store links
-  const storeLinks = [
+  // Store links - include relevant stores based on entity type
+  const knownStores = ['amazon', 'walmart', 'target', 'best-buy', 'nike', 'costco', 'apple', 'adidas', 'home-depot', 'lowes', 'macys', 'nordstrom', 'wayfair', 'ikea', 'dyson']
+  const baseStoreLinks = [
     { href: '/deals/store/amazon', label: 'Amazon' },
     { href: '/deals/store/walmart', label: 'Walmart' },
     { href: '/deals/store/target', label: 'Target' },
     { href: '/deals/store/best-buy', label: 'Best Buy' },
+    { href: '/deals/store/nike', label: 'Nike' },
+    { href: '/deals/store/costco', label: 'Costco' },
   ]
+  // If the entity is a known store/brand, link to its store page first
+  const entityStoreLink = type === 'brand' && knownStores.includes(entity)
+    ? [{ href: `/deals/store/${entity}`, label: formatDisplayName(entity) }]
+    : []
+  const storeLinks = [...entityStoreLink, ...baseStoreLinks.filter(s => s.href !== `/deals/store/${entity}`)].slice(0, 6)
   
   return (
     <div className="min-h-screen bg-background">
