@@ -1,8 +1,6 @@
 // Sitemap for buying guide pages: /guides/[slug]
 // Long-form SEO content pages for topical authority
 
-import { getAllGuideSlugs } from '@/lib/seo/guide-generator'
-
 const baseUrl = 'https://savesmart.bio'
 
 // Empty sitemap XML for fallback
@@ -16,11 +14,13 @@ export async function GET() {
   try {
     const now = new Date().toISOString().split('T')[0]
     
+    // Dynamic import to handle potential module resolution issues
     let guideSlugs: string[] = []
     try {
-      guideSlugs = getAllGuideSlugs()
+      const guideGenerator = await import('@/lib/seo/guide-generator')
+      guideSlugs = guideGenerator.getAllGuideSlugs?.() || []
     } catch (err) {
-      console.error('[sitemap-guides] Error getting guide slugs:', err)
+      console.error('[sitemap-guides] Error importing guide-generator:', err)
       guideSlugs = []
     }
     
