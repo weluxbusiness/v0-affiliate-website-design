@@ -345,7 +345,7 @@ export default async function CategoryHubPage({ params }: PageProps) {
           description: deal.description,
           offers: {
             "@type": "Offer",
-            price: deal.sale_price,
+            price: deal.deal_price,
             priceCurrency: "USD",
             availability: "https://schema.org/InStock",
           },
