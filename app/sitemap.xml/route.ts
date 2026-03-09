@@ -82,6 +82,14 @@ export async function GET() {
     // 12. Deal SEO pages: /deals/seo/[slug] (brand × price + category × price)
     // 6,660+ pages auto-generated from deal-pages dataset
     `${baseUrl}/sitemap-deal-seo.xml`,
+    
+    // 13. Today's deals pages: /deals/today, /deals/today/[entity]
+    // Fresh content updated daily for categories and brands
+    `${baseUrl}/sitemap-today.xml`,
+    
+    // 14. Deal comparison pages: /deals/compare/[brandA]-vs-[brandB]
+    // Brand vs Brand deal comparisons with pros/cons
+    `${baseUrl}/sitemap-deal-compare.xml`,
   ]
   
   // Only include pagination sitemap if it has URLs (lowest priority)

@@ -70,6 +70,7 @@ export const SITEMAP_CONFIG = {
   staticPages: [
     '', // homepage
     'deals',
+    'deals/today', // Today's deals
     'latest-deals',
     'trending-deals',
     'deal-finder',
@@ -80,6 +81,20 @@ export const SITEMAP_CONFIG = {
     'terms-of-service',
     'cookie-policy',
     'affiliate-disclosure'
+  ],
+  
+  // Today's deals entities (categories and brands)
+  todayCategories: [
+    'laptops', 'headphones', 'tvs', 'sneakers', 'smartphones',
+    'gaming-consoles', 'vacuums', 'air-fryers', 'watches', 'tablets',
+    'running-shoes', 'wireless-earbuds', 'monitors', 'gaming-laptops',
+    'coffee-makers', 'robot-vacuums', 'smartwatches', 'cameras'
+  ],
+  
+  todayBrands: [
+    'amazon', 'nike', 'apple', 'samsung', 'sony', 'best-buy', 'target', 
+    'walmart', 'adidas', 'dyson', 'bose', 'lg', 'dell', 'hp', 'lenovo',
+    'microsoft', 'nintendo', 'playstation', 'kitchenaid', 'north-face'
   ]
 }
 
