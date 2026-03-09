@@ -11,6 +11,7 @@ import { BlogSection } from "@/components/blog-section"
 import { ComparisonTable } from "@/components/comparison-table"
 import { FinalCTA } from "@/components/final-cta"
 import { Footer } from "@/components/footer"
+import { HomePopularCategories } from "@/components/home-popular-categories"
 import { getTrendingDeals, getDailyDeals, getLatestDeals } from "@/lib/deals"
 
 export default async function HomePage() {
@@ -27,6 +28,7 @@ export default async function HomePage() {
       <main>
         <HeroSection />
         <TrendingDeals deals={trendingDeals} />
+        <HomePopularCategories />
         <DailyDeals deals={dailyDeals} />
         <LatestDeals deals={latestDeals} />
         <HowItWorks />
