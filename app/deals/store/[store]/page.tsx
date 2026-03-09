@@ -338,7 +338,7 @@ function generateStoreFAQs(storeName: string, storeSlug: string): { question: st
 function generateStoreStructuredData(
   storeName: string,
   storeSlug: string,
-  deals: { title: string; description: string; deal_price: number; slug?: string }[],
+  deals: { title: string; description: string; deal_price: number; slug?: string | null }[],
   faqs: { question: string; answer: string }[]
 ) {
   const baseUrl = 'https://savesmart.bio'
