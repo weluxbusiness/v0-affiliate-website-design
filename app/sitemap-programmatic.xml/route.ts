@@ -46,6 +46,10 @@ export async function GET() {
     
     // Legacy SEO/promo pages: /promo/[slug]
     `${baseUrl}/sitemap-seo.xml`,
+    
+    // Comparison pages: /compare/[slug]
+    // ~200+ pages (brand vs brand comparisons)
+    `${baseUrl}/sitemap-comparisons.xml`,
   ]
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
