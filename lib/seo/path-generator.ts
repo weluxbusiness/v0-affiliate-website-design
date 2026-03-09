@@ -6,6 +6,12 @@
 
 import { cities, getPopularCities } from '@/lib/cities'
 import { getCategorySlugs, getBrandSlugs, getStoreSlugs } from '@/lib/seo-data'
+import { 
+  brands as seoBrands, 
+  categories as seoCategories, 
+  priceRanges as seoPriceRanges,
+  formatDisplayName
+} from '@/data/deal-pages'
 
 // ============================================
 // CONFIGURATION
@@ -86,6 +92,8 @@ export type PathType =
   | 'seasonal'
   | 'comparison'
   | 'best'
+  | 'seo-brand-price'
+  | 'seo-category-price'
 
 // ============================================
 // PATH GENERATORS
@@ -337,17 +345,87 @@ export async function generateBestDealsPaths(): Promise<GeneratedPath[]> {
 }
 
 // ============================================
+// PROGRAMMATIC SEO PATHS (50k+ pages)
+// ============================================
+
+/**
+ * Generate brand × price paths
+ * e.g., /deals/seo/amazon-under-50, /deals/seo/nike-under-100
+ */
+export function generateSeoBrandPricePaths(): GeneratedPath[] {
+  const paths: GeneratedPath[] = []
+  
+  for (const brand of seoBrands) {
+    for (const price of seoPriceRanges) {
+      paths.push({
+        path: `/deals/seo/${brand}-under-${price}`,
+        type: 'seo-brand-price',
+        priority: 0.6,
+        depth: 2,
+        params: { slug: `${brand}-under-${price}` },
+      })
+    }
+  }
+  
+  return paths
+}
+
+/**
+ * Generate category × price paths
+ * e.g., /deals/seo/laptops-under-500, /deals/seo/headphones-under-200
+ */
+export function generateSeoCategoryPricePaths(): GeneratedPath[] {
+  const paths: GeneratedPath[] = []
+  
+  for (const category of seoCategories) {
+    for (const price of seoPriceRanges) {
+      paths.push({
+        path: `/deals/seo/${category}-under-${price}`,
+        type: 'seo-category-price',
+        priority: 0.6,
+        depth: 2,
+        params: { slug: `${category}-under-${price}` },
+      })
+    }
+  }
+  
+  return paths
+}
+
+/**
+ * Get programmatic SEO page count
+ */
+export function getSeoPageCount(): {
+  brandPricePages: number
+  categoryPricePages: number
+  total: number
+} {
+  const brandPricePages = seoBrands.length * seoPriceRanges.length
+  const categoryPricePages = seoCategories.length * seoPriceRanges.length
+  
+  return {
+    brandPricePages,
+    categoryPricePages,
+    total: brandPricePages + categoryPricePages
+  }
+}
+
+// ============================================
 // AGGREGATE GENERATORS
 // ============================================
 
 /**
- * Generate all SEO paths with counts
+ * Generate all SEO paths with counts (including programmatic SEO pages)
  */
 export async function generateAllPaths(): Promise<{
   paths: GeneratedPath[]
   counts: Record<PathType, number>
   total: number
 }> {
+  // Get programmatic SEO paths synchronously (no DB calls needed)
+  const seoBrandPricePaths = generateSeoBrandPricePaths()
+  const seoCategoryPricePaths = generateSeoCategoryPricePaths()
+  
   const [
     categoryPaths,
     categoryCityPaths,
@@ -386,6 +464,8 @@ export async function generateAllPaths(): Promise<{
     ...priceRangePaths,
     ...comparisonPaths,
     ...bestPaths,
+    ...seoBrandPricePaths,
+    ...seoCategoryPricePaths,
   ]
   
   const counts: Record<PathType, number> = {
@@ -402,6 +482,8 @@ export async function generateAllPaths(): Promise<{
     'seasonal': 0,
     'comparison': comparisonPaths.length,
     'best': bestPaths.length,
+    'seo-brand-price': seoBrandPricePaths.length,
+    'seo-category-price': seoCategoryPricePaths.length,
   }
   
   return {

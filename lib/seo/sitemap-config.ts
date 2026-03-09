@@ -1,6 +1,8 @@
 // Sitemap configuration for scalable programmatic SEO
 // Supports 100k+ pages with proper sitemap index splitting
 
+import { brands, categories as dealCategories, priceRanges as dealPriceRanges, getTotalPageCount } from '@/data/deal-pages'
+
 export const SITEMAP_CONFIG = {
   baseUrl: 'https://savesmart.bio',
   maxUrlsPerSitemap: 10000, // Google recommends max 50,000, we use 10,000 for performance
@@ -174,4 +176,103 @@ ${sitemapUrls.map(url => `  <sitemap>
     <lastmod>${now}</lastmod>
   </sitemap>`).join('\n')}
 </sitemapindex>`
+}
+
+// ============================================
+// PROGRAMMATIC SEO PAGES (50k+)
+// ============================================
+
+/**
+ * Generate all brand × price and category × price URLs
+ * e.g., /deals/seo/amazon-under-50, /deals/seo/laptops-under-500
+ */
+export function generateSeoPageUrls(): string[] {
+  const { baseUrl } = SITEMAP_CONFIG
+  const urls: string[] = []
+  
+  // Brand × Price combinations
+  for (const brand of brands) {
+    for (const price of dealPriceRanges) {
+      urls.push(`${baseUrl}/deals/seo/${brand}-under-${price}`)
+    }
+  }
+  
+  // Category × Price combinations
+  for (const category of dealCategories) {
+    for (const price of dealPriceRanges) {
+      urls.push(`${baseUrl}/deals/seo/${category}-under-${price}`)
+    }
+  }
+  
+  return urls
+}
+
+/**
+ * Get SEO page count breakdown
+ */
+export function getSeoPageStats(): {
+  brandPages: number
+  categoryPages: number
+  total: number
+  breakdown: string
+} {
+  const stats = getTotalPageCount()
+  return {
+    ...stats,
+    breakdown: `${brands.length} brands × ${dealPriceRanges.length} prices = ${stats.brandPages} pages\n${dealCategories.length} categories × ${dealPriceRanges.length} prices = ${stats.categoryPages} pages\nTotal: ${stats.total} programmatic SEO pages`
+  }
+}
+
+/**
+ * Generate all URLs including programmatic SEO pages
+ */
+export function generateAllUrlsWithSeo(): {
+  static: string[]
+  stores: string[]
+  coupons: string[]
+  categories: string[]
+  bestCategories: string[]
+  storeCategories: string[]
+  pricePages: string[]
+  storePricePages: string[]
+  seoPages: string[]
+} {
+  const baseUrls = generateAllUrls()
+  const seoUrls = generateSeoPageUrls()
+  
+  return {
+    ...baseUrls,
+    seoPages: seoUrls,
+  }
+}
+
+/**
+ * Get total URL count including programmatic SEO pages
+ */
+export function getTotalUrlCountWithSeo(): {
+  base: number
+  seo: number
+  total: number
+} {
+  const baseCount = getTotalUrlCount()
+  const seoCount = getTotalPageCount().total
+  
+  return {
+    base: baseCount,
+    seo: seoCount,
+    total: baseCount + seoCount
+  }
+}
+
+/**
+ * Split URLs into multiple sitemaps (max 50k URLs each for Google)
+ */
+export function splitUrlsIntoSitemaps(urls: string[], maxPerSitemap = 10000): string[][] {
+  const sitemaps: string[][] = []
+  
+  for (let i = 0; i < urls.length; i += maxPerSitemap) {
+    sitemaps.push(urls.slice(i, i + maxPerSitemap))
+  }
+  
+  return sitemaps
 }
