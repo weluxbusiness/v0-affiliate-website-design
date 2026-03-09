@@ -41,10 +41,13 @@ export async function GET() {
     // 4. Comparison pages (high-intent keywords)
     `${baseUrl}/sitemap-comparisons.xml`,
     
-    // 5. Core pages: homepage, static pages, blog
+    // 5. Buying guides (topical authority content)
+    `${baseUrl}/sitemap-guides.xml`,
+    
+    // 6. Core pages: homepage, static pages, blog
     `${baseUrl}/sitemap-core.xml`,
     
-    // 6. Programmatic pages: cities, price ranges, brand-categories
+    // 7. Programmatic pages: cities, price ranges, brand-categories
     `${baseUrl}/sitemap-programmatic.xml`,
   ]
   
