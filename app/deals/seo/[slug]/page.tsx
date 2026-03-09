@@ -11,6 +11,7 @@ import {
   priceRanges
 } from "@/data/deal-pages"
 import { getDealsUnderPrice, getDealsByBrand } from "@/lib/deals"
+import { generateMetaDescription, generateTitleTag } from "@/lib/seo/content-generator"
 
 // Revalidate every hour for fresh deals
 export const revalidate = 3600
@@ -60,15 +61,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   
   const { type, displayName, price, entity } = parsed
-  const currentYear = new Date().getFullYear()
   
-  const title = type === 'brand'
-    ? `Best ${displayName} Deals Under $${price} (${currentYear}) | SaveSmart`
-    : `Best ${displayName} Deals Under $${price} - Compare Prices | SaveSmart`
-  
-  const description = type === 'brand'
-    ? `Find the best ${displayName} deals under $${price}. Save money with verified discounts, coupons, and offers from top retailers. Updated daily.`
-    : `Compare ${displayName.toLowerCase()} deals under $${price} from Amazon, Best Buy, Target & more. Find the lowest prices and save big today.`
+  // Use optimized title and description from content generator
+  const title = generateTitleTag(parsed)
+  const description = generateMetaDescription(parsed)
   
   return {
     title,
