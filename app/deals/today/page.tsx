@@ -291,7 +291,7 @@ export default async function DealsToday() {
               </div>
               <DealGrid columns={4}>
                 {featuredDeals.map((deal) => (
-                  <DealCard key={deal.id} deal={deal} variant="featured" showFreshness />
+                  <DealCard key={deal.id} deal={deal} variant="featured" />
                 ))}
               </DealGrid>
             </PageContainer>
@@ -305,7 +305,7 @@ export default async function DealsToday() {
             {regularDeals.length > 0 ? (
               <DealGrid columns={4}>
                 {regularDeals.map((deal) => (
-                  <DealCard key={deal.id} deal={deal} showFreshness />
+                  <DealCard key={deal.id} deal={deal} />
                 ))}
               </DealGrid>
             ) : featuredDeals.length === 0 ? (
