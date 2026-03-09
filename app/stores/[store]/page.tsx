@@ -179,7 +179,7 @@ export default async function StorePage({ params }: PageProps) {
           </PageContainer>
         </section>
 
-        {/* Popular Categories for this Store */}
+        {/* Popular Categories at Store - Links to /stores/{store}/{category} */}
         {storeCategories.length > 0 && (
           <section className="py-10 md:py-12 border-b border-border">
             <PageContainer>
@@ -196,7 +196,7 @@ export default async function StorePage({ params }: PageProps) {
                   return (
                     <Link
                       key={categorySlug}
-                      href={`/deals/${categorySlug}`}
+                      href={`/stores/${store}/${categorySlug}`}
                       className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
                     >
                       {displayName}
