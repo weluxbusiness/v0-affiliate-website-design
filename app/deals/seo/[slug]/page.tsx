@@ -7,9 +7,7 @@ import {
   parseDealSlug, 
   formatDisplayName,
   generateAllDealPageParams,
-  getRelatedBrands,
-  getRelatedCategories,
-  getRelatedPriceRanges,
+  getInternalLinks,
   priceRanges
 } from "@/data/deal-pages"
 import { getDealsUnderPrice, getDealsByBrand } from "@/lib/deals"
@@ -131,15 +129,15 @@ export default async function DealSeoPage({ params }: PageProps) {
     deals = await getDealsUnderPrice(price, entity.replace(/-/g, ' '), undefined, 50)
   }
   
-  // Generate internal links for price ranges
-  const relatedPrices = getRelatedPriceRanges(price, 6)
+  // Get comprehensive internal links
+  const internalLinks = getInternalLinks(type, entity, price)
+  
+  // Generate price filter links (including current price for active state)
   const relatedPriceLinks = [
-    // Current price (for active state)
     { href: `/deals/seo/${entity}-under-${price}`, label: `Under $${price}` },
-    // Other prices
-    ...relatedPrices.map(p => ({
-      href: `/deals/seo/${entity}-under-${p}`,
-      label: `Under $${p}`
+    ...internalLinks.nearbyPrices.map(p => ({
+      href: `/deals/seo/${p.slug}`,
+      label: p.label
     }))
   ].sort((a, b) => {
     const priceA = parseInt(a.label.replace(/[^0-9]/g, ''))
@@ -147,16 +145,22 @@ export default async function DealSeoPage({ params }: PageProps) {
     return priceA - priceB
   })
   
-  // Generate related entity links
+  // Same-type related links (brands for brands, categories for categories)
   const relatedEntityLinks = type === 'brand'
-    ? getRelatedBrands(entity, 6).map(brand => ({
-        href: `/deals/seo/${brand}-under-${price}`,
-        label: `${formatDisplayName(brand)} Under $${price}`
+    ? internalLinks.relatedBrands.map(b => ({
+        href: `/deals/seo/${b.slug}`,
+        label: b.label
       }))
-    : getRelatedCategories(entity, 6).map(category => ({
-        href: `/deals/seo/${category}-under-${price}`,
-        label: `${formatDisplayName(category)} Under $${price}`
+    : internalLinks.relatedCategories.map(c => ({
+        href: `/deals/seo/${c.slug}`,
+        label: c.label
       }))
+  
+  // Cross-type links (categories for brands, brands for categories)
+  const crossLinks = internalLinks.crossLinks.map(c => ({
+    href: `/deals/seo/${c.slug}`,
+    label: c.label
+  }))
   
   // Store links
   const storeLinks = [
@@ -175,6 +179,7 @@ export default async function DealSeoPage({ params }: PageProps) {
         deals={deals}
         relatedPriceLinks={relatedPriceLinks}
         relatedEntityLinks={relatedEntityLinks}
+        crossLinks={crossLinks}
         storeLinks={storeLinks}
       />
       

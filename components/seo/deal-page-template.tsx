@@ -27,6 +27,7 @@ interface DealPageTemplateProps {
   deals: Deal[]
   relatedPriceLinks: InternalLink[]
   relatedEntityLinks: InternalLink[]
+  crossLinks: InternalLink[]
   storeLinks: InternalLink[]
 }
 
@@ -188,6 +189,7 @@ export function DealPageTemplate({
   deals,
   relatedPriceLinks,
   relatedEntityLinks,
+  crossLinks,
   storeLinks
 }: DealPageTemplateProps) {
   const { type, displayName, price, entity } = parsed
@@ -408,7 +410,7 @@ export function DealPageTemplate({
             </div>
           </div>
           
-          {/* Related Entities */}
+          {/* Related Entities (same type) */}
           <div className="mb-8">
             <h4 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
               {type === 'brand' ? 'Other Brands' : 'Other Categories'} Under ${price}
@@ -426,6 +428,27 @@ export function DealPageTemplate({
               ))}
             </div>
           </div>
+          
+          {/* Cross-links (categories for brands, brands for categories) */}
+          {crossLinks.length > 0 && (
+            <div className="mb-8">
+              <h4 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+                {type === 'brand' ? `Related Categories` : `Related Brands`} Under ${price}
+              </h4>
+              <div className="flex flex-wrap gap-3">
+                {crossLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary/10 hover:bg-primary/20 text-sm font-medium text-foreground transition-colors"
+                  >
+                    {link.label}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
           
           {/* Shop by Store */}
           <div>
