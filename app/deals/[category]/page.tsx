@@ -376,7 +376,7 @@ export default async function CategoryDealsPage({ params }: PageProps) {
               {getPopularCities(12).map((city) => (
                 <Link
                   key={city}
-                  href={`/deals/${categorySlug}/${city}`}
+                  href={`/deals/${categorySlug}/city/${city}`}
                   className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
                 >
                   <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />

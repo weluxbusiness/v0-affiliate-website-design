@@ -83,10 +83,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `Best ${categoryName} Deals in ${cityName} | SaveSmart`,
       description: `Compare ${categoryName.toLowerCase()} deals from top retailers in ${cityName}. Prices updated hourly.`,
       type: 'website',
-      url: `https://savesmart.bio/deals/${categorySlug}/${citySlug}`,
+      url: `https://savesmart.bio/deals/${categorySlug}/city/${citySlug}`,
     },
     alternates: {
-      canonical: `/deals/${categorySlug}/${citySlug}`,
+      canonical: `/deals/${categorySlug}/city/${citySlug}`,
     },
     keywords: [
       `${categoryName.toLowerCase()} deals ${cityName}`,
@@ -187,7 +187,7 @@ export default async function CityDealsPage({ params }: PageProps) {
     "@type": "CollectionPage",
     name: `${categoryName} Deals in ${cityName}`,
     description: `Find the best ${categoryName.toLowerCase()} deals in ${cityName}`,
-    url: `https://savesmart.bio/deals/${categorySlug}/${citySlug}`,
+    url: `https://savesmart.bio/deals/${categorySlug}/city/${citySlug}`,
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: deals.length,
@@ -371,7 +371,7 @@ export default async function CityDealsPage({ params }: PageProps) {
               {otherCities.map((otherCity) => (
                 <Link
                   key={otherCity}
-                  href={`/deals/${categorySlug}/${otherCity}`}
+                  href={`/deals/${categorySlug}/city/${otherCity}`}
                   className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
                 >
                   <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -434,7 +434,7 @@ export default async function CityDealsPage({ params }: PageProps) {
                 return (
                   <Link
                     key={catSlug}
-                    href={`/deals/${catSlug}/${citySlug}`}
+                    href={`/deals/${catSlug}/city/${citySlug}`}
                     className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors"
                   >
                     <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
@@ -457,7 +457,7 @@ export default async function CityDealsPage({ params }: PageProps) {
             { label: `Best ${categoryName}`, href: `/best/${categorySlug}` },
             ...otherCities.slice(0, 3).map(c => ({
               label: `${categoryName} in ${formatCityName(c)}`,
-              href: `/deals/${categorySlug}/${c}`,
+              href: `/deals/${categorySlug}/city/${c}`,
             })),
           ]}
         />

@@ -35,7 +35,7 @@ export function generateCityCollectionSchema(
     "@type": "CollectionPage",
     name: `${categoryName} Deals in ${cityName}`,
     description: `Find the best ${categoryName.toLowerCase()} deals in ${cityName}`,
-    url: `${BASE_URL}/deals/${categorySlug}/${citySlug}`,
+    url: `${BASE_URL}/deals/${categorySlug}/city/${citySlug}`,
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: itemCount,
