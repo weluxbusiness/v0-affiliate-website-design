@@ -78,7 +78,7 @@ ${allComparisons.map(slug => `  <url>
     <loc>${baseUrl}/compare/${slug}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>`).join('\n')}
 </urlset>`
 

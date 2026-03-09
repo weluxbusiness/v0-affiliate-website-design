@@ -26,17 +26,29 @@ export async function GET() {
   // Check if pagination sitemap has URLs
   const includePagination = await hasPaginationUrls()
   
-  // Top-level sitemap groups only
-  // This keeps the main index small and fast for Google to parse
+  // Sitemap priority order (Google crawls in order listed)
+  // Priority: Category > Store > Brand > Comparison > Programmatic > Pagination
   const sitemaps = [
-    // Core pages: homepage, categories, stores, brands, blog landing
+    // 1. HIGHEST PRIORITY: Category pages (main navigation, high search volume)
+    `${baseUrl}/sitemap-categories.xml`,
+    
+    // 2. Store pages (brand authority, conversion pages)
+    `${baseUrl}/sitemap-stores.xml`,
+    
+    // 3. Brand pages (product discovery)
+    `${baseUrl}/sitemap-brands.xml`,
+    
+    // 4. Comparison pages (high-intent keywords)
+    `${baseUrl}/sitemap-comparisons.xml`,
+    
+    // 5. Core pages: homepage, static pages, blog
     `${baseUrl}/sitemap-core.xml`,
     
-    // Programmatic pages: cities, price ranges, brand-categories, deals
+    // 6. Programmatic pages: cities, price ranges, brand-categories
     `${baseUrl}/sitemap-programmatic.xml`,
   ]
   
-  // Only include pagination sitemap if it has URLs
+  // Only include pagination sitemap if it has URLs (lowest priority)
   if (includePagination) {
     sitemaps.push(`${baseUrl}/sitemap-pagination.xml`)
   }

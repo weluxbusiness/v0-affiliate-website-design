@@ -28,12 +28,12 @@ export async function GET() {
       changefreq: 'weekly',
       priority: '0.8',
     },
-    // Individual brand pages
+    // Individual brand pages - high priority (0.85) for product discovery
     ...brands.map(brand => ({
       loc: `${baseUrl}/brands/${brand}`,
       lastmod: now,
       changefreq: 'daily',
-      priority: '0.7',
+      priority: '0.85',
     })),
   ]
 
