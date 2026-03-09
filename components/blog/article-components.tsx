@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { 
   Lightbulb, 
   AlertCircle, 
@@ -218,11 +219,14 @@ export function RecommendedDeal({
       </div>
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
         {imageUrl && (
-          <div className="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-muted">
-            <img
+          <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-muted">
+            <Image
               src={imageUrl}
               alt={title}
-              className="h-full w-full object-cover"
+              fill
+              sizes="96px"
+              className="object-cover"
+              loading="lazy"
             />
           </div>
         )}
@@ -319,16 +323,21 @@ interface ArticleImageProps {
   src: string
   alt: string
   caption?: string
+  priority?: boolean
 }
 
-export function ArticleImage({ src, alt, caption }: ArticleImageProps) {
+export function ArticleImage({ src, alt, caption, priority = false }: ArticleImageProps) {
   return (
     <figure className="my-8">
-      <div className="overflow-hidden rounded-xl shadow-md">
-        <img
+      <div className="relative aspect-video overflow-hidden rounded-xl shadow-md">
+        <Image
           src={src}
           alt={alt}
-          className="w-full object-cover"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 720px"
+          className="object-cover"
+          loading={priority ? "eager" : "lazy"}
+          priority={priority}
         />
       </div>
       {caption && (

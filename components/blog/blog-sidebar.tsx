@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowRight, Tag, TrendingUp, Newspaper } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -38,12 +39,15 @@ export function BlogSidebar({ popularDeals = [], relatedPosts = [] }: BlogSideba
                   className="group block"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
                       {deal.image_url ? (
-                        <img 
+                        <Image 
                           src={deal.image_url} 
                           alt={deal.title}
-                          className="h-full w-full object-cover"
+                          fill
+                          sizes="56px"
+                          className="object-cover"
+                          loading="lazy"
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">
