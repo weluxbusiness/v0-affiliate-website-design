@@ -572,3 +572,111 @@ export async function getDealsByStoreAndCategory(
   
   return data || []
 }
+
+// ============================================
+// CATEGORY × BRAND PAGINATION
+// ============================================
+
+export interface CategoryBrandPaginatedResult {
+  deals: Deal[]
+  totalCount: number
+  totalPages: number
+  currentPage: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
+
+export async function getDealsByCategoryAndBrandPaginated(
+  category: string,
+  brand: string,
+  page: number = 1
+): Promise<CategoryBrandPaginatedResult> {
+  const supabase = createAnonClient()
+  const offset = (page - 1) * DEALS_PER_PAGE
+  
+  // Format for search
+  const categorySearch = category.replace(/-/g, ' ')
+  const brandSearch = brand.replace(/-/g, ' ')
+  
+  // Get total count
+  const { count, error: countError } = await supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .ilike("category", `%${categorySearch}%`)
+    .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%,description.ilike.%${brandSearch}%`)
+  
+  if (countError) {
+    console.error(`Error counting ${category} ${brand} deals:`, countError)
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  const totalCount = count || 0
+  const totalPages = Math.ceil(totalCount / DEALS_PER_PAGE)
+  
+  // Get paginated deals
+  const { data, error } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .ilike("category", `%${categorySearch}%`)
+    .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%,description.ilike.%${brandSearch}%`)
+    .order("discount_percentage", { ascending: false })
+    .range(offset, offset + DEALS_PER_PAGE - 1)
+  
+  if (error) {
+    console.error(`Error fetching ${category} ${brand} deals page ${page}:`, error)
+    return { deals: [], totalCount, totalPages, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  return {
+    deals: data || [],
+    totalCount,
+    totalPages,
+    currentPage: page,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  }
+}
+
+export async function getCategoryBrandCombinations(): Promise<{ category: string; brand: string }[]> {
+  const supabase = createAnonClient()
+  
+  // Get all active deals with category info
+  const { data, error } = await supabase
+    .from("deals")
+    .select("category, store, title")
+    .eq("is_active", true)
+  
+  if (error || !data) {
+    return []
+  }
+  
+  // Extract unique category × brand combinations
+  const combinations = new Map<string, { category: string; brand: string }>()
+  
+  // Common brand keywords to extract from store/title
+  const knownBrands = [
+    'apple', 'samsung', 'nike', 'adidas', 'sony', 'lg', 'dell', 'hp',
+    'lenovo', 'bose', 'beats', 'microsoft', 'nintendo', 'dyson', 'philips',
+    'panasonic', 'canon', 'nikon', 'asus', 'acer'
+  ]
+  
+  for (const deal of data) {
+    if (!deal.category) continue
+    
+    const categorySlug = deal.category.toLowerCase().replace(/\s+/g, '-')
+    const searchText = `${deal.store} ${deal.title}`.toLowerCase()
+    
+    for (const brand of knownBrands) {
+      if (searchText.includes(brand)) {
+        const key = `${categorySlug}-${brand}`
+        if (!combinations.has(key)) {
+          combinations.set(key, { category: categorySlug, brand })
+        }
+      }
+    }
+  }
+  
+  return Array.from(combinations.values())
+}
