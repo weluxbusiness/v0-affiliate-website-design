@@ -12,7 +12,7 @@ interface LinkCluster {
 
 interface SeoLinkGraphProps {
   // Page context to generate relevant links
-  pageType: "category" | "brand" | "store" | "city" | "price" | "comparison" | "best"
+  pageType: "category" | "brand" | "store" | "city" | "price" | "comparison" | "best" | "trending"
   // Current page slug(s)
   categorySlug?: string
   brandSlug?: string
@@ -416,6 +416,48 @@ function generateClusters(props: SeoLinkGraphProps): LinkCluster[] {
         links: stores.map((store) => ({
           label: formatSlugToName(store),
           href: `/stores/${store}`,
+        })),
+      })
+      break
+
+    case "trending":
+      // Categories
+      clusters.push({
+        title: "Shop by Category",
+        variant: "categories",
+        links: categories.slice(0, maxLinksPerCluster).map((cat) => ({
+          label: formatSlugToName(cat),
+          href: `/deals/${cat}`,
+        })),
+      })
+
+      // Price ranges
+      clusters.push({
+        title: "Shop by Price",
+        variant: "price",
+        links: PRICE_RANGES.map((range) => ({
+          label: range.label,
+          href: `/deals/price/${range.slug}`,
+        })),
+      })
+
+      // Stores
+      clusters.push({
+        title: "Shop at Top Stores",
+        variant: "stores",
+        links: stores.map((store) => ({
+          label: formatSlugToName(store),
+          href: `/stores/${store}`,
+        })),
+      })
+
+      // Brands
+      clusters.push({
+        title: "Popular Brands",
+        variant: "brands",
+        links: brands.map((brand) => ({
+          label: formatSlugToName(brand),
+          href: `/brands/${brand}`,
         })),
       })
       break
