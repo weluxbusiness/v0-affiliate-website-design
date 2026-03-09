@@ -1,4 +1,92 @@
 // ============================================
+// RATE LIMITING
+// ============================================
+
+// Rate limit configuration
+const RATE_LIMIT_WINDOW_MS = 60 * 1000 // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 5 // 5 requests per window
+
+// In-memory store for rate limiting (works for single instance)
+// For production at scale, consider using Upstash Redis
+interface RateLimitEntry {
+  count: number
+  resetTime: number
+}
+
+const rateLimitStore = new Map<string, RateLimitEntry>()
+
+// Cleanup old entries every 5 minutes to prevent memory leaks
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000
+let lastCleanup = Date.now()
+
+function cleanupRateLimitStore() {
+  const now = Date.now()
+  if (now - lastCleanup < CLEANUP_INTERVAL_MS) return
+  
+  lastCleanup = now
+  for (const [key, entry] of rateLimitStore.entries()) {
+    if (now > entry.resetTime) {
+      rateLimitStore.delete(key)
+    }
+  }
+}
+
+/**
+ * Check if the request should be rate limited
+ * Returns { limited: true, retryAfter: seconds } if rate limited
+ */
+function checkRateLimit(ip: string): { limited: boolean; retryAfter?: number; remaining: number } {
+  cleanupRateLimitStore()
+  
+  const now = Date.now()
+  const entry = rateLimitStore.get(ip)
+  
+  // No existing entry or window expired - create new entry
+  if (!entry || now > entry.resetTime) {
+    rateLimitStore.set(ip, {
+      count: 1,
+      resetTime: now + RATE_LIMIT_WINDOW_MS
+    })
+    return { limited: false, remaining: RATE_LIMIT_MAX_REQUESTS - 1 }
+  }
+  
+  // Within window - check count
+  if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
+    const retryAfter = Math.ceil((entry.resetTime - now) / 1000)
+    return { limited: true, retryAfter, remaining: 0 }
+  }
+  
+  // Increment count
+  entry.count++
+  rateLimitStore.set(ip, entry)
+  
+  return { limited: false, remaining: RATE_LIMIT_MAX_REQUESTS - entry.count }
+}
+
+/**
+ * Extract client IP from request headers
+ */
+function getClientIP(req: Request): string {
+  // Vercel/Cloudflare headers
+  const forwardedFor = req.headers.get('x-forwarded-for')
+  if (forwardedFor) {
+    // Take the first IP if there are multiple
+    return forwardedFor.split(',')[0].trim()
+  }
+  
+  // Vercel specific
+  const vercelIP = req.headers.get('x-real-ip')
+  if (vercelIP) return vercelIP
+  
+  // Cloudflare specific
+  const cfIP = req.headers.get('cf-connecting-ip')
+  if (cfIP) return cfIP
+  
+  // Fallback
+  return 'unknown'
+}
+
+// ============================================
 // EMAIL VALIDATION
 // ============================================
 
@@ -111,6 +199,29 @@ interface SubscribeRequest {
 
 export async function POST(req: Request) {
   try {
+    // Check rate limit first
+    const clientIP = getClientIP(req)
+    const rateLimit = checkRateLimit(clientIP)
+    
+    if (rateLimit.limited) {
+      return Response.json(
+        { 
+          success: false, 
+          error: "Too many requests. Please try again later.",
+          retryAfter: rateLimit.retryAfter 
+        },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.retryAfter),
+            'X-RateLimit-Limit': String(RATE_LIMIT_MAX_REQUESTS),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': String(Math.ceil(Date.now() / 1000) + (rateLimit.retryAfter || 60))
+          }
+        }
+      )
+    }
+    
     // Parse request body with error handling
     let body: SubscribeRequest
     try {
@@ -259,11 +370,19 @@ export async function POST(req: Request) {
       )
     }
 
-    return Response.json({ 
-      success: true, 
-      data,
-      message: "Successfully subscribed to deal alerts" 
-    })
+    return Response.json(
+      { 
+        success: true, 
+        data,
+        message: "Successfully subscribed to deal alerts" 
+      },
+      {
+        headers: {
+          'X-RateLimit-Limit': String(RATE_LIMIT_MAX_REQUESTS),
+          'X-RateLimit-Remaining': String(rateLimit.remaining)
+        }
+      }
+    )
   } catch (error) {
     console.error("Newsletter subscription error:", error)
     return Response.json(
