@@ -78,6 +78,10 @@ export async function GET() {
     
     // 11. Programmatic pages: brand-categories, store-categories, category-brands, best, deals
     `${baseUrl}/sitemap-programmatic.xml`,
+    
+    // 12. Deal SEO pages: /deals/seo/[slug] (brand × price + category × price)
+    // 6,660+ pages auto-generated from deal-pages dataset
+    `${baseUrl}/sitemap-deal-seo.xml`,
   ]
   
   // Only include pagination sitemap if it has URLs (lowest priority)
