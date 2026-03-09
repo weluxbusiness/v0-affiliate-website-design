@@ -78,6 +78,22 @@ export async function GET() {
     
     // 11. Programmatic pages: brand-categories, store-categories, category-brands, best, deals
     `${baseUrl}/sitemap-programmatic.xml`,
+    
+    // 12. Deal SEO pages: /deals/seo/[slug] (brand × price + category × price)
+    // 6,660+ pages auto-generated from deal-pages dataset
+    `${baseUrl}/sitemap-deal-seo.xml`,
+    
+    // 13. Today's deals pages: /deals/today, /deals/today/[entity]
+    // Fresh content updated daily for categories and brands
+    `${baseUrl}/sitemap-today.xml`,
+    
+    // 14. Deal comparison pages: /deals/compare/[brandA]-vs-[brandB]
+    // Brand vs Brand deal comparisons with pros/cons
+    `${baseUrl}/sitemap-deal-compare.xml`,
+    
+    // 15. Auto-generated blog posts: /blog/deals/[slug]
+    // SEO blog posts for brands, categories, price ranges, and trending roundups
+    `${baseUrl}/sitemap-blog-deals.xml`,
   ]
   
   // Only include pagination sitemap if it has URLs (lowest priority)

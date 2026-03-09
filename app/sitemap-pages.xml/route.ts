@@ -7,6 +7,9 @@ const staticPages = [
   
   // Main deal pages
   { path: '/deals', changefreq: 'hourly', priority: 0.9 },
+  { path: '/deals/trending', changefreq: 'hourly', priority: 0.9 },
+  { path: '/deals/today', changefreq: 'hourly', priority: 0.9 },
+  { path: '/deals/compare', changefreq: 'daily', priority: 0.8 },
   { path: '/latest-deals', changefreq: 'hourly', priority: 0.9 },
   { path: '/trending-deals', changefreq: 'hourly', priority: 0.9 },
   
@@ -21,6 +24,23 @@ const staticPages = [
   { path: '/trending/tvs', changefreq: 'hourly', priority: 0.85 },
   { path: '/trending/smartphones', changefreq: 'hourly', priority: 0.85 },
   { path: '/trending/smartwatches', changefreq: 'hourly', priority: 0.85 },
+  
+  // Category hub pages
+  { path: '/categories', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/electronics', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/laptops', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/headphones', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/tvs', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/smartphones', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/gaming', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/fashion', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/sneakers', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/home-kitchen', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/smartwatches', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/cameras', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/fitness', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/baby-kids', changefreq: 'daily', priority: 0.85 },
+  { path: '/categories/pets', changefreq: 'daily', priority: 0.85 },
   
   // Content pages
   { path: '/blog', changefreq: 'daily', priority: 0.8 },

@@ -7,12 +7,11 @@ import {
   parseDealSlug, 
   formatDisplayName,
   generateAllDealPageParams,
-  getRelatedBrands,
-  getRelatedCategories,
-  getRelatedPriceRanges,
+  getInternalLinks,
   priceRanges
 } from "@/data/deal-pages"
 import { getDealsUnderPrice, getDealsByBrand } from "@/lib/deals"
+import { generateMetaDescription, generateTitleTag } from "@/lib/seo/content-generator"
 
 // Revalidate every hour for fresh deals
 export const revalidate = 3600
@@ -62,15 +61,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   
   const { type, displayName, price, entity } = parsed
-  const currentYear = new Date().getFullYear()
   
-  const title = type === 'brand'
-    ? `Best ${displayName} Deals Under $${price} (${currentYear}) | SaveSmart`
-    : `Best ${displayName} Deals Under $${price} - Compare Prices | SaveSmart`
-  
-  const description = type === 'brand'
-    ? `Find the best ${displayName} deals under $${price}. Save money with verified discounts, coupons, and offers from top retailers. Updated daily.`
-    : `Compare ${displayName.toLowerCase()} deals under $${price} from Amazon, Best Buy, Target & more. Find the lowest prices and save big today.`
+  // Use optimized title and description from content generator
+  const title = generateTitleTag(parsed)
+  const description = generateMetaDescription(parsed)
   
   return {
     title,
@@ -131,15 +125,15 @@ export default async function DealSeoPage({ params }: PageProps) {
     deals = await getDealsUnderPrice(price, entity.replace(/-/g, ' '), undefined, 50)
   }
   
-  // Generate internal links for price ranges
-  const relatedPrices = getRelatedPriceRanges(price, 6)
+  // Get comprehensive internal links
+  const internalLinks = getInternalLinks(type, entity, price)
+  
+  // Generate price filter links (including current price for active state)
   const relatedPriceLinks = [
-    // Current price (for active state)
     { href: `/deals/seo/${entity}-under-${price}`, label: `Under $${price}` },
-    // Other prices
-    ...relatedPrices.map(p => ({
-      href: `/deals/seo/${entity}-under-${p}`,
-      label: `Under $${p}`
+    ...internalLinks.nearbyPrices.map(p => ({
+      href: `/deals/seo/${p.slug}`,
+      label: p.label
     }))
   ].sort((a, b) => {
     const priceA = parseInt(a.label.replace(/[^0-9]/g, ''))
@@ -147,24 +141,38 @@ export default async function DealSeoPage({ params }: PageProps) {
     return priceA - priceB
   })
   
-  // Generate related entity links
+  // Same-type related links (brands for brands, categories for categories)
   const relatedEntityLinks = type === 'brand'
-    ? getRelatedBrands(entity, 6).map(brand => ({
-        href: `/deals/seo/${brand}-under-${price}`,
-        label: `${formatDisplayName(brand)} Under $${price}`
+    ? internalLinks.relatedBrands.map(b => ({
+        href: `/deals/seo/${b.slug}`,
+        label: b.label
       }))
-    : getRelatedCategories(entity, 6).map(category => ({
-        href: `/deals/seo/${category}-under-${price}`,
-        label: `${formatDisplayName(category)} Under $${price}`
+    : internalLinks.relatedCategories.map(c => ({
+        href: `/deals/seo/${c.slug}`,
+        label: c.label
       }))
   
-  // Store links
-  const storeLinks = [
+  // Cross-type links (categories for brands, brands for categories)
+  const crossLinks = internalLinks.crossLinks.map(c => ({
+    href: `/deals/seo/${c.slug}`,
+    label: c.label
+  }))
+  
+  // Store links - include relevant stores based on entity type
+  const knownStores = ['amazon', 'walmart', 'target', 'best-buy', 'nike', 'costco', 'apple', 'adidas', 'home-depot', 'lowes', 'macys', 'nordstrom', 'wayfair', 'ikea', 'dyson']
+  const baseStoreLinks = [
     { href: '/deals/store/amazon', label: 'Amazon' },
     { href: '/deals/store/walmart', label: 'Walmart' },
     { href: '/deals/store/target', label: 'Target' },
     { href: '/deals/store/best-buy', label: 'Best Buy' },
+    { href: '/deals/store/nike', label: 'Nike' },
+    { href: '/deals/store/costco', label: 'Costco' },
   ]
+  // If the entity is a known store/brand, link to its store page first
+  const entityStoreLink = type === 'brand' && knownStores.includes(entity)
+    ? [{ href: `/deals/store/${entity}`, label: formatDisplayName(entity) }]
+    : []
+  const storeLinks = [...entityStoreLink, ...baseStoreLinks.filter(s => s.href !== `/deals/store/${entity}`)].slice(0, 6)
   
   return (
     <div className="min-h-screen bg-background">
@@ -175,6 +183,7 @@ export default async function DealSeoPage({ params }: PageProps) {
         deals={deals}
         relatedPriceLinks={relatedPriceLinks}
         relatedEntityLinks={relatedEntityLinks}
+        crossLinks={crossLinks}
         storeLinks={storeLinks}
       />
       

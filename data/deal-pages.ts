@@ -342,31 +342,261 @@ export function getTotalPageCount(): {
 }
 
 // ============================================
+// BRAND-CATEGORY RELATIONSHIPS (for cross-linking)
+// ============================================
+
+// Map brands to their most relevant categories
+const brandCategoryMap: Record<string, string[]> = {
+  // Electronics brands
+  'apple': ['laptops', 'macbooks', 'smartphones', 'iphones', 'tablets', 'ipads', 'smartwatches', 'apple-watch', 'headphones', 'airpods'],
+  'samsung': ['smartphones', 'android-phones', 'samsung-phones', 'tvs', 'smart-tvs', '4k-tvs', 'tablets', 'monitors', 'soundbars'],
+  'sony': ['headphones', 'noise-cancelling', 'tvs', 'oled-tvs', 'cameras', 'gaming-consoles', 'ps5-games', 'speakers'],
+  'lg': ['tvs', 'oled-tvs', '4k-tvs', 'monitors', 'soundbars', 'appliances', 'vacuums'],
+  'dell': ['laptops', 'gaming-laptops', 'monitors', 'gaming-monitors', 'desktops', 'gaming-pcs'],
+  'hp': ['laptops', 'printers', 'monitors', 'desktops', 'all-in-one-pcs'],
+  'lenovo': ['laptops', 'gaming-laptops', 'chromebooks', 'tablets', 'desktops', 'monitors'],
+  'microsoft': ['laptops', 'tablets', 'gaming-consoles', 'video-games', 'pc-games', 'gaming-accessories'],
+  'bose': ['headphones', 'noise-cancelling', 'speakers', 'bluetooth-speakers', 'soundbars', 'wireless-earbuds'],
+  'beats': ['headphones', 'wireless-earbuds', 'speakers', 'bluetooth-speakers'],
+  'logitech': ['gaming-mice', 'gaming-keyboards', 'webcams', 'speakers', 'gaming-accessories', 'gaming-headsets'],
+  
+  // Fashion brands
+  'nike': ['sneakers', 'running-shoes', 'basketball-shoes', 'activewear', 'athleisure', 'backpacks', 'hoodies'],
+  'adidas': ['sneakers', 'running-shoes', 'activewear', 'athleisure', 'hoodies', 't-shirts'],
+  'puma': ['sneakers', 'running-shoes', 'activewear', 'athleisure'],
+  'under-armour': ['activewear', 'athleisure', 'running-shoes', 'fitness-equipment'],
+  'north-face': ['jackets', 'coats', 'backpacks', 'hiking-boots', 'outdoor-gear'],
+  'levis': ['jeans', 'pants', 'jackets', 'shorts'],
+  'ralph-lauren': ['dress-shirts', 'suits', 'blazers', 'polo-shirts', 'watches'],
+  
+  // Retailers
+  'amazon': ['laptops', 'headphones', 'tvs', 'tablets', 'smart-home', 'home-decor', 'kitchen-gadgets'],
+  'walmart': ['tvs', 'laptops', 'home-decor', 'furniture', 'toys', 'groceries'],
+  'target': ['home-decor', 'furniture', 'clothing', 'toys', 'beauty', 'kitchen'],
+  'best-buy': ['laptops', 'tvs', 'gaming-consoles', 'headphones', 'cameras', 'smart-home'],
+  'costco': ['tvs', 'laptops', 'appliances', 'furniture', 'outdoor-gear'],
+  
+  // Home brands
+  'dyson': ['vacuums', 'cordless-vacuums', 'air-purifiers', 'hair-tools', 'fans', 'heaters'],
+  'roomba': ['robot-vacuums', 'vacuums', 'smart-home'],
+  'kitchenaid': ['mixers', 'blenders', 'food-processors', 'cookware', 'kitchen-gadgets'],
+  'ninja': ['blenders', 'air-fryers', 'coffee-makers', 'food-processors'],
+  'instant-pot': ['slow-cookers', 'air-fryers', 'rice-cookers', 'kitchen-gadgets'],
+  
+  // Gaming
+  'playstation': ['gaming-consoles', 'ps5-games', 'video-games', 'gaming-accessories', 'gaming-headsets'],
+  'xbox': ['gaming-consoles', 'xbox-games', 'video-games', 'gaming-accessories', 'gaming-headsets'],
+  'nintendo': ['gaming-consoles', 'nintendo-games', 'video-games', 'gaming-accessories'],
+  'razer': ['gaming-laptops', 'gaming-mice', 'gaming-keyboards', 'gaming-headsets', 'gaming-chairs'],
+}
+
+// Map categories to related categories
+const categoryRelationMap: Record<string, string[]> = {
+  'laptops': ['gaming-laptops', 'chromebooks', 'macbooks', 'ultrabooks', 'tablets', 'monitors'],
+  'gaming-laptops': ['laptops', 'gaming-pcs', 'gaming-monitors', 'gaming-keyboards', 'gaming-mice'],
+  'headphones': ['wireless-earbuds', 'airpods', 'noise-cancelling', 'gaming-headsets', 'speakers'],
+  'wireless-earbuds': ['headphones', 'airpods', 'bluetooth-speakers'],
+  'tvs': ['4k-tvs', 'oled-tvs', 'smart-tvs', 'soundbars', 'streaming-devices'],
+  'smartphones': ['iphones', 'android-phones', 'samsung-phones', 'tablets', 'smartwatches'],
+  'sneakers': ['running-shoes', 'basketball-shoes', 'casual-shoes', 'activewear'],
+  'running-shoes': ['sneakers', 'fitness-equipment', 'activewear', 'fitness-trackers'],
+  'vacuums': ['robot-vacuums', 'cordless-vacuums', 'steam-mops', 'air-purifiers'],
+  'air-fryers': ['instant-pots', 'blenders', 'coffee-makers', 'kitchen-gadgets'],
+  'gaming-consoles': ['video-games', 'gaming-accessories', 'gaming-headsets', 'gaming-chairs'],
+}
+
+// ============================================
 // INTERNAL LINKING HELPERS
 // ============================================
 
 /**
  * Get related brand pages for internal linking
+ * Deterministic selection based on brand name for consistent results
  */
 export function getRelatedBrands(currentBrand: string, limit = 6): string[] {
   const filtered = brands.filter(b => b !== currentBrand)
-  // Shuffle and return top N
-  return filtered.sort(() => Math.random() - 0.5).slice(0, limit)
+  // Use deterministic "random" based on brand name hash for consistent results
+  const seed = hashString(currentBrand)
+  const shuffled = seededShuffle([...filtered], seed)
+  return shuffled.slice(0, limit)
 }
 
 /**
  * Get related category pages for internal linking
+ * Deterministic selection based on category name for consistent results
  */
 export function getRelatedCategories(currentCategory: string, limit = 6): string[] {
-  const filtered = categories.filter(c => c !== currentCategory)
-  return filtered.sort(() => Math.random() - 0.5).slice(0, limit)
+  // First, try to get semantically related categories
+  const related = categoryRelationMap[currentCategory] || []
+  const validRelated = related.filter(c => categories.includes(c as Category))
+  
+  if (validRelated.length >= limit) {
+    return validRelated.slice(0, limit)
+  }
+  
+  // Fill remaining with other categories
+  const filtered = categories.filter(c => c !== currentCategory && !validRelated.includes(c))
+  const seed = hashString(currentCategory)
+  const shuffled = seededShuffle([...filtered], seed)
+  
+  return [...validRelated, ...shuffled].slice(0, limit)
 }
 
 /**
  * Get related price ranges for internal linking
+ * Returns nearby prices (lower and higher) for better navigation
  */
 export function getRelatedPriceRanges(currentPrice: number, limit = 5): number[] {
-  return priceRanges.filter(p => p !== currentPrice).slice(0, limit)
+  const currentIndex = priceRanges.indexOf(currentPrice as PriceRange)
+  if (currentIndex === -1) {
+    return priceRanges.slice(0, limit)
+  }
+  
+  const nearby: number[] = []
+  
+  // Add 2-3 lower prices
+  for (let i = currentIndex - 1; i >= 0 && nearby.length < 3; i--) {
+    nearby.unshift(priceRanges[i])
+  }
+  
+  // Add 2-3 higher prices
+  for (let i = currentIndex + 1; i < priceRanges.length && nearby.length < limit; i++) {
+    nearby.push(priceRanges[i])
+  }
+  
+  return nearby
+}
+
+/**
+ * Get categories related to a brand for cross-linking
+ * e.g., Nike -> sneakers, running-shoes, activewear
+ */
+export function getCategoriesForBrand(brand: string, limit = 6): string[] {
+  const relatedCategories = brandCategoryMap[brand] || []
+  const validCategories = relatedCategories.filter(c => categories.includes(c as Category))
+  
+  if (validCategories.length >= limit) {
+    return validCategories.slice(0, limit)
+  }
+  
+  // Fill with popular categories
+  const popularCategories = ['laptops', 'headphones', 'sneakers', 'tvs', 'smartphones', 'watches']
+  const filtered = popularCategories.filter(c => !validCategories.includes(c))
+  
+  return [...validCategories, ...filtered].slice(0, limit)
+}
+
+/**
+ * Get brands related to a category for cross-linking
+ * e.g., sneakers -> Nike, Adidas, Puma
+ */
+export function getBrandsForCategory(category: string, limit = 6): string[] {
+  const relatedBrands: string[] = []
+  
+  // Find brands that have this category in their map
+  for (const [brand, cats] of Object.entries(brandCategoryMap)) {
+    if (cats.includes(category)) {
+      relatedBrands.push(brand)
+    }
+  }
+  
+  if (relatedBrands.length >= limit) {
+    return relatedBrands.slice(0, limit)
+  }
+  
+  // Fill with popular brands
+  const popularBrands = ['amazon', 'walmart', 'target', 'best-buy', 'nike', 'apple', 'samsung']
+  const filtered = popularBrands.filter(b => !relatedBrands.includes(b))
+  
+  return [...relatedBrands, ...filtered].slice(0, limit)
+}
+
+/**
+ * Get comprehensive internal links for a deal page
+ * Returns all related pages: nearby prices, related brands, related categories
+ */
+export interface InternalLinks {
+  nearbyPrices: { slug: string; price: number; label: string }[]
+  relatedBrands: { slug: string; brand: string; label: string }[]
+  relatedCategories: { slug: string; category: string; label: string }[]
+  crossLinks: { slug: string; entity: string; label: string }[] // Categories for brands or brands for categories
+}
+
+export function getInternalLinks(
+  type: 'brand' | 'category',
+  entity: string,
+  price: number
+): InternalLinks {
+  const nearbyPrices = getRelatedPriceRanges(price, 5).map(p => ({
+    slug: `${entity}-under-${p}`,
+    price: p,
+    label: `Under $${p}`
+  }))
+  
+  const relatedBrands = getRelatedBrands(type === 'brand' ? entity : '', 6).map(brand => ({
+    slug: `${brand}-under-${price}`,
+    brand,
+    label: formatDisplayName(brand)
+  }))
+  
+  const relatedCategories = getRelatedCategories(type === 'category' ? entity : '', 6).map(category => ({
+    slug: `${category}-under-${price}`,
+    category,
+    label: formatDisplayName(category)
+  }))
+  
+  // Cross-links: if current page is a brand, link to related categories and vice versa
+  const crossLinks = type === 'brand'
+    ? getCategoriesForBrand(entity, 6).map(category => ({
+        slug: `${category}-under-${price}`,
+        entity: category,
+        label: formatDisplayName(category)
+      }))
+    : getBrandsForCategory(entity, 6).map(brand => ({
+        slug: `${brand}-under-${price}`,
+        entity: brand,
+        label: formatDisplayName(brand)
+      }))
+  
+  return {
+    nearbyPrices,
+    relatedBrands,
+    relatedCategories,
+    crossLinks
+  }
+}
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+/**
+ * Simple string hash for deterministic "randomness"
+ */
+function hashString(str: string): number {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash
+  }
+  return Math.abs(hash)
+}
+
+/**
+ * Seeded shuffle for deterministic ordering
+ */
+function seededShuffle<T>(array: T[], seed: number): T[] {
+  const result = [...array]
+  let currentSeed = seed
+  
+  for (let i = result.length - 1; i > 0; i--) {
+    currentSeed = (currentSeed * 1103515245 + 12345) & 0x7fffffff
+    const j = currentSeed % (i + 1)
+    ;[result[i], result[j]] = [result[j], result[i]]
+  }
+  
+  return result
 }
 
 /**

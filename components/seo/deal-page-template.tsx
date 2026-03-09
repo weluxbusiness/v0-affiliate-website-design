@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Deal } from "@/lib/deal-types"
 import type { ParsedDealSlug } from "@/data/deal-pages"
+import { generateSEOIntro } from "@/lib/seo/content-generator"
 
 // ============================================
 // TYPES
@@ -27,6 +28,7 @@ interface DealPageTemplateProps {
   deals: Deal[]
   relatedPriceLinks: InternalLink[]
   relatedEntityLinks: InternalLink[]
+  crossLinks: InternalLink[]
   storeLinks: InternalLink[]
 }
 
@@ -99,7 +101,7 @@ export function generateSchemaMarkup(
 ) {
   const { type, entity, displayName, price } = parsed
   const baseUrl = "https://savesmart.bio"
-  const pageUrl = `${baseUrl}/deals/${entity}-under-${price}`
+  const pageUrl = `${baseUrl}/deals/seo/${entity}-under-${price}`
   
   // Collection page schema
   const collectionSchema = {
@@ -165,7 +167,7 @@ export function generateSchemaMarkup(
         "@type": "ListItem",
         position: 3,
         name: type === 'brand' ? displayName : displayName,
-        item: `${baseUrl}/deals/${entity}`
+        item: `${baseUrl}/deals/seo/${entity}-under-${price}`
       },
       {
         "@type": "ListItem",
@@ -188,11 +190,13 @@ export function DealPageTemplate({
   deals,
   relatedPriceLinks,
   relatedEntityLinks,
+  crossLinks,
   storeLinks
 }: DealPageTemplateProps) {
   const { type, displayName, price, entity } = parsed
   const faqs = generateFAQs(parsed, deals.length)
   const schemas = generateSchemaMarkup(parsed, deals, faqs)
+  const seoIntro = generateSEOIntro(parsed)
   
   const heroGradient = type === 'brand' 
     ? 'from-blue-600 to-blue-800' 
@@ -254,11 +258,11 @@ export function DealPageTemplate({
             Best {displayName} Deals Under ${price}
           </h1>
           
-          {/* Intro Paragraph */}
+          {/* Intro Paragraph - Short version for hero */}
           <p className="text-lg md:text-xl text-white/80 max-w-2xl mb-6">
             {type === 'brand' 
-              ? `Save big on ${displayName} products under $${price}. Compare prices from Amazon, Walmart, Target, and more retailers.`
-              : `Find the best ${displayName.toLowerCase()} deals under $${price}. We compare prices across hundreds of stores to help you save.`
+              ? `Discover the best ${displayName} deals under $${price}. Compare verified prices from Amazon, Walmart, Target, Best Buy, and 50+ more retailers.`
+              : `Shop ${displayName.toLowerCase()} under $${price} from top brands. We compare prices across 100+ stores and verify every deal hourly.`
             }
           </p>
           
@@ -325,31 +329,19 @@ export function DealPageTemplate({
         </PageContainer>
       </section>
       
-      {/* SEO Content Section */}
+      {/* SEO Content Section - Unique 120-200 word intro */}
       <section className="py-10 md:py-12 bg-muted/30">
         <PageContainer>
           <div className="max-w-3xl">
             <h2 className="text-2xl font-bold text-foreground mb-4">
               About {displayName} Deals Under ${price}
             </h2>
-            <div className="prose prose-muted max-w-none">
-              {type === 'brand' ? (
-                <p className="text-muted-foreground leading-relaxed">
-                  Looking for {displayName} products that won&apos;t break the bank? Our curated collection of {displayName} deals under ${price} 
-                  helps budget-conscious shoppers find quality products at affordable prices. We track prices across Amazon, Walmart, Target, 
-                  Best Buy, and dozens of other authorized retailers to ensure you&apos;re getting the best possible deal. Whether you&apos;re shopping 
-                  for gifts, everyday essentials, or treating yourself, there&apos;s something for everyone in our under ${price} collection. 
-                  All deals are verified hourly and include authentic {displayName} products from authorized sellers.
+            <div className="prose prose-muted max-w-none space-y-4">
+              {seoIntro.split('\n\n').map((paragraph, index) => (
+                <p key={index} className="text-muted-foreground leading-relaxed">
+                  {paragraph}
                 </p>
-              ) : (
-                <p className="text-muted-foreground leading-relaxed">
-                  {displayName} deals under ${price} offer exceptional value for budget-conscious shoppers. SaveSmart compares prices 
-                  across hundreds of retailers including Amazon, Best Buy, Walmart, and Target to find the best discounts. Our AI-powered 
-                  system tracks price fluctuations and alerts you when items reach their lowest price point. Whether you&apos;re a student, 
-                  first-time buyer, or simply looking for great value, our under ${price} {displayName.toLowerCase()} collection offers 
-                  excellent options from trusted brands. All deals are verified and updated hourly for accuracy.
-                </p>
-              )}
+              ))}
             </div>
           </div>
         </PageContainer>
@@ -408,7 +400,7 @@ export function DealPageTemplate({
             </div>
           </div>
           
-          {/* Related Entities */}
+          {/* Related Entities (same type) */}
           <div className="mb-8">
             <h4 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
               {type === 'brand' ? 'Other Brands' : 'Other Categories'} Under ${price}
@@ -426,6 +418,27 @@ export function DealPageTemplate({
               ))}
             </div>
           </div>
+          
+          {/* Cross-links (categories for brands, brands for categories) */}
+          {crossLinks.length > 0 && (
+            <div className="mb-8">
+              <h4 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+                {type === 'brand' ? `Related Categories` : `Related Brands`} Under ${price}
+              </h4>
+              <div className="flex flex-wrap gap-3">
+                {crossLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary/10 hover:bg-primary/20 text-sm font-medium text-foreground transition-colors"
+                  >
+                    {link.label}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
           
           {/* Shop by Store */}
           <div>

@@ -58,7 +58,7 @@ export function NewsletterForm({ variant = "default" }: NewsletterFormProps) {
   const isPrimary = variant === "primary"
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
+    <form onSubmit={handleSubmit} className="relative mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
       <input
         type="email"
         placeholder="Enter your email"

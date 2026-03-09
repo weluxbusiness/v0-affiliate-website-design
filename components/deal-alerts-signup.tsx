@@ -18,8 +18,10 @@ export function DealAlertsSignup() {
     electronics: true,
     fashion: false,
     home: false,
-    daily: true,
+    gaming: false,
+    smartphones: false,
   })
+  const [frequency, setFrequency] = useState<'daily' | 'weekly' | 'instant'>('daily')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,7 +36,17 @@ export function DealAlertsSignup() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ 
+          email,
+          preferences: {
+            electronics: preferences.electronics,
+            fashion: preferences.fashion,
+            home: preferences.home,
+            gaming: preferences.gaming,
+            smartphones: preferences.smartphones,
+          },
+          frequency,
+        }),
       })
 
       const data = await response.json()
@@ -166,14 +178,64 @@ export function DealAlertsSignup() {
                       />
                       <span className="text-sm font-medium">Home & Kitchen</span>
                     </label>
-                    <label className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${preferences.daily ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
+                    <label className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${preferences.gaming ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
                       <Checkbox 
-                        checked={preferences.daily}
-                        onCheckedChange={() => togglePreference("daily")}
+                        checked={preferences.gaming}
+                        onCheckedChange={() => togglePreference("gaming")}
                         className="h-4 w-4 rounded border-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
-                      <span className="text-sm font-medium">Daily Digest</span>
+                      <span className="text-sm font-medium">Gaming</span>
                     </label>
+                    <label className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${preferences.smartphones ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
+                      <Checkbox 
+                        checked={preferences.smartphones}
+                        onCheckedChange={() => togglePreference("smartphones")}
+                        className="h-4 w-4 rounded border-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                      />
+                      <span className="text-sm font-medium">Smartphones</span>
+                    </label>
+                  </div>
+                  
+                  {/* Email Frequency */}
+                  <div className="pt-4 border-t border-border/30">
+                    <label className="text-sm font-semibold text-foreground mb-3 block">
+                      How often should we email you?
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setFrequency('instant')}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          frequency === 'instant' 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-muted hover:bg-muted/80 text-foreground'
+                        }`}
+                      >
+                        Instant Alerts
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFrequency('daily')}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          frequency === 'daily' 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-muted hover:bg-muted/80 text-foreground'
+                        }`}
+                      >
+                        Daily Digest
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFrequency('weekly')}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          frequency === 'weekly' 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-muted hover:bg-muted/80 text-foreground'
+                        }`}
+                      >
+                        Weekly Roundup
+                      </button>
+                    </div>
                   </div>
                   
                   {/* Subscribe Button */}

@@ -951,3 +951,189 @@ export async function getDealCountForStoreCategory(
   
   return count || 0
 }
+
+// ============================================
+// TODAY'S DEALS QUERIES (for /deals/today/* pages)
+// ============================================
+
+/**
+ * Get all deals from today (added or updated within last 24 hours)
+ * Falls back to most recent deals if none from today
+ */
+export async function getTodaysDeals(limit: number = 36): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  
+  // Calculate 24 hours ago
+  const yesterday = new Date()
+  yesterday.setHours(yesterday.getHours() - 24)
+  
+  // First, try to get deals from the last 24 hours
+  const { data: recentDeals, error: recentError } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .gte("created_at", yesterday.toISOString())
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (recentError) {
+    console.error("Error fetching today's deals:", recentError)
+    return []
+  }
+  
+  // If we have enough recent deals, return them
+  if (recentDeals && recentDeals.length >= limit / 2) {
+    return recentDeals
+  }
+  
+  // Otherwise, supplement with the most recent deals
+  const existingIds = recentDeals?.map(d => d.id) || []
+  
+  const { data: supplementalDeals, error: suppError } = await supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .not("id", "in", `(${existingIds.length > 0 ? existingIds.join(',') : 'null'})`)
+    .order("created_at", { ascending: false })
+    .limit(limit - (recentDeals?.length || 0))
+  
+  if (suppError) {
+    console.error("Error fetching supplemental deals:", suppError)
+    return recentDeals || []
+  }
+  
+  return [...(recentDeals || []), ...(supplementalDeals || [])]
+}
+
+/**
+ * Get today's deals filtered by entity (brand or category)
+ */
+export async function getTodaysDealsByEntity(
+  entity: string,
+  type: 'brand' | 'category',
+  limit: number = 36
+): Promise<Deal[]> {
+  const supabase = createAnonClient()
+  const searchTerm = entity.replace(/-/g, ' ')
+  
+  // Calculate 24 hours ago
+  const yesterday = new Date()
+  yesterday.setHours(yesterday.getHours() - 24)
+  
+  // Build query based on type
+  let query = supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+  
+  if (type === 'brand') {
+    // For brands, search in store, title, and description
+    query = query.or(`store.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+  } else {
+    // For categories, search in category field and title
+    query = query.or(`category.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%`)
+  }
+  
+  // First, try to get deals from the last 24 hours
+  const { data: recentDeals, error: recentError } = await query
+    .gte("created_at", yesterday.toISOString())
+    .order("discount_percentage", { ascending: false })
+    .limit(limit)
+  
+  if (recentError) {
+    console.error(`Error fetching today's ${entity} deals:`, recentError)
+    return []
+  }
+  
+  // If we have enough recent deals, return them
+  if (recentDeals && recentDeals.length >= limit / 2) {
+    return recentDeals
+  }
+  
+  // Otherwise, get more deals without the date filter
+  let supplementQuery = supabase
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+  
+  if (type === 'brand') {
+    supplementQuery = supplementQuery.or(`store.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+  } else {
+    supplementQuery = supplementQuery.or(`category.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%`)
+  }
+  
+  const existingIds = recentDeals?.map(d => d.id) || []
+  
+  if (existingIds.length > 0) {
+    supplementQuery = supplementQuery.not("id", "in", `(${existingIds.join(',')})`)
+  }
+  
+  const { data: supplementalDeals, error: suppError } = await supplementQuery
+    .order("created_at", { ascending: false })
+    .limit(limit - (recentDeals?.length || 0))
+  
+  if (suppError) {
+    console.error(`Error fetching supplemental ${entity} deals:`, suppError)
+    return recentDeals || []
+  }
+  
+  return [...(recentDeals || []), ...(supplementalDeals || [])]
+}
+
+/**
+ * Get count of today's deals (for display purposes)
+ */
+export async function getTodaysDealCount(): Promise<number> {
+  const supabase = createAnonClient()
+  
+  const yesterday = new Date()
+  yesterday.setHours(yesterday.getHours() - 24)
+  
+  const { count, error } = await supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .gte("created_at", yesterday.toISOString())
+  
+  if (error) {
+    console.error("Error counting today's deals:", error)
+    return 0
+  }
+  
+  return count || 0
+}
+
+/**
+ * Get count of today's deals for a specific entity
+ */
+export async function getTodaysDealCountByEntity(
+  entity: string,
+  type: 'brand' | 'category'
+): Promise<number> {
+  const supabase = createAnonClient()
+  const searchTerm = entity.replace(/-/g, ' ')
+  
+  const yesterday = new Date()
+  yesterday.setHours(yesterday.getHours() - 24)
+  
+  let query = supabase
+    .from("deals")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true)
+    .gte("created_at", yesterday.toISOString())
+  
+  if (type === 'brand') {
+    query = query.or(`store.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%`)
+  } else {
+    query = query.or(`category.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%`)
+  }
+  
+  const { count, error } = await query
+  
+  if (error) {
+    console.error(`Error counting today's ${entity} deals:`, error)
+    return 0
+  }
+  
+  return count || 0
+}
