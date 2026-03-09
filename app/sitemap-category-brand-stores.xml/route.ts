@@ -42,6 +42,18 @@ export async function GET() {
     if (urls.length >= maxUrls) break
   }
 
+  // Return 404 if no URLs exist
+  // This prevents Google Search Console errors for empty sitemaps
+  if (urls.length === 0) {
+    return new Response('No category-brand-store URLs available', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      },
+    })
+  }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(url => `  <url>
