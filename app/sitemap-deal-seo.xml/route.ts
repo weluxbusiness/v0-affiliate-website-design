@@ -29,7 +29,7 @@ export async function GET() {
   
   // Generate sitemap index pointing to multiple sub-sitemaps
   const sitemapUrls = Array.from({ length: sitemapCount }, (_, i) => 
-    `${baseUrl}/sitemap-deal-seo-${i + 1}.xml`
+    `${baseUrl}/sitemaps/deal-seo/${i + 1}`
   )
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
