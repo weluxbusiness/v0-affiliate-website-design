@@ -18,7 +18,8 @@ import {
   getCategoryRelatedLinks 
 } from "@/components/seo-content-block"
 import { CategoryCrossLinks } from "@/components/internal-links"
-import { getCategoryBySlug, getCategorySlugs, getStoresForCategory } from "@/lib/seo-data"
+import { getCategoryBySlug, getCategorySlugs, getStoresForCategory, getBrandSlugs } from "@/lib/seo-data"
+import { formatBrandName } from "@/lib/seo/content"
 import { getPopularCities, formatCityName } from "@/lib/cities"
 import { 
   Tag,
@@ -117,6 +118,9 @@ export default async function CategoryDealsPage({ params }: PageProps) {
   
   // Get related categories for cross-linking
   const relatedCategorySlugs = Object.keys(productCategories).filter(c => c !== categorySlug).slice(0, 8)
+  
+  // Get popular brands for internal linking to /deals/{category}/{brand}
+  const popularBrands = (await getBrandSlugs()).slice(0, 8)
   
   // Try searching by search terms first
   const searchResults = await Promise.all(searchTerms.map(term => searchDeals(term, 8)))
@@ -309,6 +313,29 @@ export default async function CategoryDealsPage({ params }: PageProps) {
             ) : null}
           </PageContainer>
         </section>
+
+        {/* Popular Brands in Category - Internal Links */}
+        {popularBrands.length > 0 && (
+          <section className="py-10 md:py-12 border-t border-border">
+            <PageContainer>
+              <h2 className="text-xl font-bold text-foreground mb-6">Popular {categoryName} Brands</h2>
+              <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+                {popularBrands.map((brandSlug) => (
+                  <Link
+                    key={brandSlug}
+                    href={`/deals/${categorySlug}/${brandSlug}`}
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+                  >
+                    <Tag className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium text-foreground truncate">
+                      {formatBrandName(brandSlug)}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </PageContainer>
+          </section>
+        )}
 
         {/* Top Stores for Category */}
         <section className="py-10 md:py-12 border-t border-border">

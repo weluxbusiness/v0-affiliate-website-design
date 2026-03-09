@@ -257,23 +257,46 @@ export default async function BrandPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
-        {/* Brand by Category - Direct Links */}
+        {/* Popular Categories for Brand - Internal Links to /deals/{category}/{brand} */}
         <section className="py-10 md:py-12 bg-muted/30">
           <PageContainer>
             <h2 className="text-xl font-bold text-foreground mb-6">
-              {brandName} Deals by Category
+              Popular Categories for {brandName}
             </h2>
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
               {relatedCategories.map((catSlug) => (
                 <Link
                   key={catSlug}
-                  href={`/brands/${brandSlug}/${catSlug}`}
+                  href={`/deals/${catSlug}/${brandSlug}`}
                   className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors"
                 >
                   <span className="text-sm font-medium text-foreground truncate">
                     {formatBrandName(catSlug)}
                   </span>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </Link>
+              ))}
+            </div>
+          </PageContainer>
+        </section>
+
+        {/* Top Stores for Brand - Internal Links */}
+        <section className="py-10 md:py-12 border-t border-border">
+          <PageContainer>
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              Top Stores for {brandName}
+            </h2>
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+              {relatedStores.map((storeSlug) => (
+                <Link
+                  key={storeSlug}
+                  href={`/stores/${storeSlug}`}
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+                >
+                  <Store className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium text-foreground truncate">
+                    {formatBrandName(storeSlug)}
+                  </span>
                 </Link>
               ))}
             </div>

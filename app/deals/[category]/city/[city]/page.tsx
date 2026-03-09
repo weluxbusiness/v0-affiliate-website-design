@@ -12,7 +12,8 @@ import { PageContainer, DealGrid, SectionHeading } from "@/components/layout/pag
 import { getDealsByCategory, searchDeals } from "@/lib/deals"
 import { SeoContentBlock } from "@/components/seo-content-block"
 import { cities, formatCityName, getPopularCities } from "@/lib/cities"
-import { getCategoryBySlug, getCategorySlugs, getStoreSlugs } from "@/lib/seo-data"
+import { getCategoryBySlug, getCategorySlugs, getStoreSlugs, getBrandSlugs } from "@/lib/seo-data"
+import { formatBrandName } from "@/lib/seo/content"
 import { generateCityIntroContent } from "@/lib/seo/content"
 import { 
   MapPin,
@@ -167,7 +168,10 @@ export default async function CityDealsPage({ params }: PageProps) {
     .slice(0, 8)
   
   // Get related stores for crawl loop navigation
-  const relatedStores = (await getStoreSlugs()).slice(0, 6)
+  const relatedStores = (await getStoreSlugs()).slice(0, 8)
+  
+  // Get popular brands for internal linking
+  const popularBrands = (await getBrandSlugs()).slice(0, 8)
   
   // Generate dynamic intro content to avoid thin content
   const introContent = generateCityIntroContent(categoryName, cityName)
@@ -393,13 +397,38 @@ export default async function CityDealsPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
-        {/* Shop by Store - Crawl Loop Navigation */}
-        <section className="py-10 md:py-12 bg-muted/30">
+        {/* Popular Brands - Internal Links to /deals/{category}/{brand} */}
+        {popularBrands.length > 0 && (
+          <section className="py-10 md:py-12 bg-muted/30">
+            <PageContainer>
+              <h2 className="text-xl font-bold text-foreground mb-6">
+                Popular {categoryName} Brands in {cityName}
+              </h2>
+              <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+                {popularBrands.map((brandSlug) => (
+                  <Link
+                    key={brandSlug}
+                    href={`/deals/${categorySlug}/${brandSlug}`}
+                    className="flex items-center gap-2 p-3 rounded-lg border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors"
+                  >
+                    <Tag className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <span className="text-sm font-medium text-foreground truncate">
+                      {formatBrandName(brandSlug)}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </PageContainer>
+          </section>
+        )}
+
+        {/* Top Stores in City - Internal Links */}
+        <section className="py-10 md:py-12 border-t border-border">
           <PageContainer>
             <h2 className="text-xl font-bold text-foreground mb-6">
-              Shop {categoryName} at Top Stores
+              Top Stores in {cityName}
             </h2>
-            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
               {relatedStores.map((storeSlug) => {
                 const storeName = storeSlug
                   .split("-")
@@ -409,7 +438,7 @@ export default async function CityDealsPage({ params }: PageProps) {
                   <Link
                     key={storeSlug}
                     href={`/stores/${storeSlug}`}
-                    className="flex items-center gap-2 p-3 rounded-lg border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors"
+                    className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
                   >
                     <Store className="h-4 w-4 text-muted-foreground shrink-0" />
                     <span className="text-sm font-medium text-foreground truncate">
