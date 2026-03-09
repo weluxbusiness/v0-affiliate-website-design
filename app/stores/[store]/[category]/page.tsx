@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
 import { PageContainer, SectionHeading } from "@/components/layout/page-container"
-import { getDealsByStoreAndCategory } from "@/lib/deals"
+import { getDealsByStoreAndCategory, getDealCountForStoreCategory } from "@/lib/deals"
 import { getStoreInfo, getProductImageUrl, formatStoreName } from "@/lib/deal-types"
 import { SeoContentBlock } from "@/components/seo-content-block"
 import { getStoreBySlug, getStoreSlugs, getCategorySlugs, getCategoriesForStore } from "@/lib/seo-data"
@@ -57,6 +57,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const storeName = formatStoreName(store)
   const categoryName = formatCategoryName(category)
   
+  // Check deal count for noindex decision (thin content protection)
+  const dealCount = await getDealCountForStoreCategory(store, category)
+  const shouldIndex = dealCount >= 3
+  
   return {
     title: `${categoryName} Deals at ${storeName} | SaveSmart`,
     description: `Browse the latest ${categoryName.toLowerCase()} deals at ${storeName}. Compare discounts, coupons and price drops updated daily.`,
@@ -68,6 +72,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     alternates: {
       canonical: `/stores/${store}/${category}`,
+    },
+    // Noindex pages with < 3 deals to prevent thin content indexation
+    robots: {
+      index: shouldIndex,
+      follow: true, // Always follow links for internal link equity
     },
   }
 }
