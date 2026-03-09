@@ -153,6 +153,24 @@ From new releases to previous-generation favorites, we feature ${brandName} ${ca
 Each ${brandName} ${categoryName.toLowerCase()} deal shows the original price, current sale price, and exact discount percentage. All listings link directly to authorized retailers where you can verify pricing and complete your purchase with confidence.`
 }
 
+// ==================== CATEGORY × BRAND PAGE CONTENT ====================
+
+export function generateCategoryBrandIntroContent(
+  categoryName: string,
+  brandName: string
+): string {
+  const currentYear = new Date().getFullYear()
+  const stores = TOP_STORES.slice(0, 3).join(", ")
+  
+  return `Discover the best ${categoryName.toLowerCase()} deals from ${brandName} in ${currentYear}. SaveSmart tracks prices across all major retailers to help you find incredible savings on ${brandName} ${categoryName.toLowerCase()} products.
+
+${brandName} is a trusted name in ${categoryName.toLowerCase()}, known for quality, innovation, and reliability. Our deal-tracking technology monitors prices 24/7 at ${stores}, and other authorized retailers to ensure you never miss a discount on ${brandName} products.
+
+Whether you're looking for the latest ${brandName} ${categoryName.toLowerCase()} releases or seeking deals on previous-generation favorites, we've got you covered. Many shoppers save 15-40% off retail prices by timing their purchases with seasonal sales events.
+
+Each deal displays the original price, current sale price, and exact discount percentage. All listings link directly to authorized retailers where you can verify pricing and complete your purchase with confidence.`
+}
+
 // ==================== STORE × CATEGORY PAGE CONTENT ====================
 
 export function generateStoreCategoryIntroContent(

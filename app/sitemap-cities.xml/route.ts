@@ -33,7 +33,7 @@ export async function GET() {
     for (const city of popularCities) {
       urls.push(`
     <url>
-      <loc>${baseUrl}/deals/${category}/${city}</loc>
+      <loc>${baseUrl}/deals/${category}/city/${city}</loc>
       <lastmod>${now}</lastmod>
       <changefreq>daily</changefreq>
       <priority>0.6</priority>

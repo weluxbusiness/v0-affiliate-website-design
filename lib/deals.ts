@@ -572,3 +572,126 @@ export async function getDealsByStoreAndCategory(
   
   return data || []
 }
+
+// ============================================
+// CATEGORY × BRAND PAGINATION
+// ============================================
+
+export interface CategoryBrandPaginatedResult {
+  deals: Deal[]
+  totalCount: number
+  totalPages: number
+  currentPage: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
+
+export async function getDealsByCategoryAndBrandPaginated(
+  category: string,
+  brand: string,
+  page: number = 1
+): Promise<CategoryBrandPaginatedResult> {
+  // Validate inputs
+  if (!category || !brand) {
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+  
+  try {
+    const supabase = createAnonClient()
+    const offset = (page - 1) * DEALS_PER_PAGE
+    
+    // Format for search (convert slug to searchable text)
+    const categorySearch = category.replace(/-/g, ' ')
+    const brandSearch = brand.replace(/-/g, ' ')
+    
+    // Get total count - use textSearch approach for brand matching
+    const { count, error: countError } = await supabase
+      .from("deals")
+      .select("*", { count: "exact", head: true })
+      .eq("is_active", true)
+      .ilike("category", `%${categorySearch}%`)
+      .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%`)
+    
+    if (countError) {
+      console.error(`[v0] Error counting ${category} ${brand} deals:`, countError.message)
+      return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    const totalCount = count || 0
+    const totalPages = Math.ceil(totalCount / DEALS_PER_PAGE)
+    
+    // If no deals, return early
+    if (totalCount === 0) {
+      return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    // Get paginated deals
+    const { data, error } = await supabase
+      .from("deals")
+      .select("*")
+      .eq("is_active", true)
+      .ilike("category", `%${categorySearch}%`)
+      .or(`store.ilike.%${brandSearch}%,title.ilike.%${brandSearch}%`)
+      .order("discount_percentage", { ascending: false })
+      .range(offset, offset + DEALS_PER_PAGE - 1)
+    
+    if (error) {
+      console.error(`[v0] Error fetching ${category} ${brand} deals page ${page}:`, error.message)
+      return { deals: [], totalCount, totalPages, currentPage: page, hasNextPage: false, hasPrevPage: false }
+    }
+    
+    return {
+      deals: data || [],
+      totalCount,
+      totalPages,
+      currentPage: page,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    }
+  } catch (err) {
+    console.error(`[v0] Unexpected error in getDealsByCategoryAndBrandPaginated:`, err)
+    return { deals: [], totalCount: 0, totalPages: 0, currentPage: page, hasNextPage: false, hasPrevPage: false }
+  }
+}
+
+export async function getCategoryBrandCombinations(): Promise<{ category: string; brand: string }[]> {
+  const supabase = createAnonClient()
+  
+  // Get all active deals with category info
+  const { data, error } = await supabase
+    .from("deals")
+    .select("category, store, title")
+    .eq("is_active", true)
+  
+  if (error || !data) {
+    return []
+  }
+  
+  // Extract unique category × brand combinations
+  const combinations = new Map<string, { category: string; brand: string }>()
+  
+  // Common brand keywords to extract from store/title
+  const knownBrands = [
+    'apple', 'samsung', 'nike', 'adidas', 'sony', 'lg', 'dell', 'hp',
+    'lenovo', 'bose', 'beats', 'microsoft', 'nintendo', 'dyson', 'philips',
+    'panasonic', 'canon', 'nikon', 'asus', 'acer'
+  ]
+  
+  for (const deal of data) {
+    if (!deal.category) continue
+    
+    const categorySlug = deal.category.toLowerCase().replace(/\s+/g, '-')
+    const searchText = `${deal.store} ${deal.title}`.toLowerCase()
+    
+    for (const brand of knownBrands) {
+      if (searchText.includes(brand)) {
+        const key = `${categorySlug}-${brand}`
+        if (!combinations.has(key)) {
+          combinations.set(key, { category: categorySlug, brand })
+        }
+      }
+    }
+  }
+  
+  return Array.from(combinations.values())
+}

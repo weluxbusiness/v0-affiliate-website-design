@@ -60,7 +60,7 @@ export function generateCityMetadata(
       title: `Best ${categoryName} Deals in ${cityName} | ${SITE_NAME}`,
       description: `Compare ${categoryName.toLowerCase()} deals from top retailers in ${cityName}. Prices updated hourly.`,
       type: "website",
-      url: `${BASE_URL}/deals/${categorySlug}/${citySlug}`,
+      url: `${BASE_URL}/deals/${categorySlug}/city/${citySlug}`,
       siteName: SITE_NAME,
     },
     twitter: {
@@ -69,7 +69,7 @@ export function generateCityMetadata(
       description,
     },
     alternates: {
-      canonical: `/deals/${categorySlug}/${citySlug}`,
+      canonical: `/deals/${categorySlug}/city/${citySlug}`,
     },
     keywords: [
       `${categoryName.toLowerCase()} deals ${cityName}`,
