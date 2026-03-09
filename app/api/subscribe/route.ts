@@ -1,3 +1,83 @@
+// ============================================
+// EMAIL VALIDATION
+// ============================================
+
+// RFC 5322 compliant email regex (simplified but robust)
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/
+
+// Common disposable email domains to block spam
+const DISPOSABLE_DOMAINS = new Set([
+  'tempmail.com', 'throwaway.email', 'guerrillamail.com', 'mailinator.com',
+  'temp-mail.org', '10minutemail.com', 'fakeinbox.com', 'trashmail.com',
+  'getnada.com', 'yopmail.com', 'sharklasers.com', 'spam4.me', 'discard.email',
+  'mailnesia.com', 'tmpmail.org', 'tempail.com', 'emailondeck.com'
+])
+
+// Validation result type
+interface ValidationResult {
+  valid: boolean
+  error?: string
+}
+
+/**
+ * Validates email format and checks for disposable domains
+ */
+function validateEmail(email: unknown): ValidationResult {
+  // Check if email exists and is a string
+  if (!email || typeof email !== 'string') {
+    return { valid: false, error: 'Email is required' }
+  }
+  
+  // Trim and normalize
+  const normalizedEmail = email.trim().toLowerCase()
+  
+  // Check length (RFC 5321 limits)
+  if (normalizedEmail.length < 3 || normalizedEmail.length > 254) {
+    return { valid: false, error: 'Invalid email length' }
+  }
+  
+  // Check format with regex
+  if (!EMAIL_REGEX.test(normalizedEmail)) {
+    return { valid: false, error: 'Invalid email format' }
+  }
+  
+  // Extract domain
+  const domain = normalizedEmail.split('@')[1]
+  
+  // Check for disposable email domains
+  if (DISPOSABLE_DOMAINS.has(domain)) {
+    return { valid: false, error: 'Disposable email addresses are not allowed' }
+  }
+  
+  // Check for suspicious patterns
+  if (domain.includes('test') || domain.includes('example') || domain === 'localhost') {
+    return { valid: false, error: 'Invalid email domain' }
+  }
+  
+  // Check local part length (max 64 chars per RFC 5321)
+  const localPart = normalizedEmail.split('@')[0]
+  if (localPart.length > 64) {
+    return { valid: false, error: 'Invalid email format' }
+  }
+  
+  return { valid: true }
+}
+
+/**
+ * Sanitizes string input to prevent injection
+ */
+function sanitizeString(input: unknown): string | null {
+  if (typeof input !== 'string') return null
+  return input
+    .trim()
+    .slice(0, 255) // Limit length
+    .replace(/[<>]/g, '') // Remove potential HTML
+}
+
+// ============================================
+// CATEGORY PREFERENCES
+// ============================================
+
 // Category preference mapping to MailerLite group IDs
 // These IDs should be created in MailerLite dashboard and updated here
 const CATEGORY_GROUP_IDS: Record<string, string> = {
@@ -31,12 +111,44 @@ interface SubscribeRequest {
 
 export async function POST(req: Request) {
   try {
-    const body: SubscribeRequest = await req.json()
+    // Parse request body with error handling
+    let body: SubscribeRequest
+    try {
+      body = await req.json()
+    } catch {
+      return Response.json(
+        { success: false, error: "Invalid request body" },
+        { status: 400 }
+      )
+    }
+    
     const { email, preferences, frequency } = body
 
-    if (!email || typeof email !== "string") {
+    // Validate email format and check for disposable domains
+    const emailValidation = validateEmail(email)
+    if (!emailValidation.valid) {
       return Response.json(
-        { success: false, error: "Email is required" },
+        { success: false, error: emailValidation.error },
+        { status: 400 }
+      )
+    }
+    
+    // Normalize email
+    const normalizedEmail = (email as string).trim().toLowerCase()
+    
+    // Validate frequency if provided
+    const validFrequencies = ['daily', 'weekly', 'instant']
+    if (frequency && !validFrequencies.includes(frequency)) {
+      return Response.json(
+        { success: false, error: "Invalid frequency option" },
+        { status: 400 }
+      )
+    }
+    
+    // Validate preferences object if provided
+    if (preferences && typeof preferences !== 'object') {
+      return Response.json(
+        { success: false, error: "Invalid preferences format" },
         { status: 400 }
       )
     }
@@ -87,7 +199,7 @@ export async function POST(req: Request) {
       fields?: Record<string, string | boolean>
       groups?: string[]
     } = {
-      email,
+      email: normalizedEmail,
       status: "active",
     }
     
@@ -118,7 +230,7 @@ export async function POST(req: Request) {
       if (response.status === 409 || data.message?.includes('already')) {
         // Update existing subscriber with new preferences
         const updateResponse = await fetch(
-          `https://connect.mailerlite.com/api/subscribers/${encodeURIComponent(email)}`,
+          `https://connect.mailerlite.com/api/subscribers/${encodeURIComponent(normalizedEmail)}`,
           {
             method: "PUT",
             headers: {
