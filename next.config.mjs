@@ -92,14 +92,18 @@ export default withSentryConfig(nextConfig, {
   // Route Sentry events through Next.js to avoid ad blockers
   tunnelRoute: "/monitoring",
 
-  // Automatically annotate React components to show their full name in breadcrumbs and session replay
-  reactComponentAnnotation: {
-    enabled: true,
-  },
-
   // Hide source maps from browser devtools in production
   hideSourceMaps: true,
 
-  // Disable logger to reduce bundle size
-  disableLogger: true,
+  // Webpack-specific options (not supported with Turbopack)
+  webpack: {
+    // Automatically annotate React components for better breadcrumbs and session replay
+    reactComponentAnnotation: {
+      enabled: true,
+    },
+    // Remove debug logging to reduce bundle size
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
 })
