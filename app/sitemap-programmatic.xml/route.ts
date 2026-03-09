@@ -8,18 +8,10 @@ export const revalidate = 3600 // ISR: revalidate every hour
 export async function GET() {
   const now = new Date().toISOString().split('T')[0]
   
-  // Sub-sitemaps for programmatic content
+  // Sub-sitemaps for programmatic content (cross-dimensional pages)
   // Each can contain up to 50k URLs
-  // When a sitemap exceeds 50k, split into numbered parts (e.g., sitemap-cities-1.xml)
+  // Note: cities, price, guides, comparisons, deal-finder, trending are in main sitemap.xml
   const sitemaps = [
-    // City-based pages: /deals/[category]/[city]
-    // ~8,000 pages (20 categories × 400 cities)
-    `${baseUrl}/sitemap-cities.xml`,
-    
-    // Price range pages: /deals/price/[slug]
-    // ~50-100 pages
-    `${baseUrl}/sitemap-price.xml`,
-    
     // Brand × Category pages: /brands/[brand]/[category]
     // ~700 pages (45 brands × 15 categories)
     `${baseUrl}/sitemap-brand-categories.xml`,
@@ -36,20 +28,19 @@ export async function GET() {
     // ~2000+ pages (categories × brands × stores)
     `${baseUrl}/sitemap-category-brand-stores.xml`,
     
-    // Best category pages: /best/[category]
-    // ~20 pages
+    // Best category pages: /best/[category], /best/[category]/[brand]
+    // ~500 pages
     `${baseUrl}/sitemap-best.xml`,
     
     // Individual deal pages: /deal/[slug]
     // Variable count based on database
     `${baseUrl}/sitemap-deals.xml`,
     
+    // Coupon pages: /coupons/[store]
+    `${baseUrl}/sitemap-coupons.xml`,
+    
     // Legacy SEO/promo pages: /promo/[slug]
     `${baseUrl}/sitemap-seo.xml`,
-    
-    // Comparison pages: /compare/[slug]
-    // ~200+ pages (brand vs brand comparisons)
-    `${baseUrl}/sitemap-comparisons.xml`,
   ]
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

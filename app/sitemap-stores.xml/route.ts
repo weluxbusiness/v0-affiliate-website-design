@@ -20,7 +20,8 @@ export async function GET() {
     urls = stores.map(store => `${baseUrl}/stores/${store.slug}`)
   }
   
-  const xml = generateSitemapXml(urls, 0.8)
+  // Store pages get high priority (0.9) - brand authority and conversion pages
+  const xml = generateSitemapXml(urls, 0.9)
 
   return new Response(xml, {
     headers: {

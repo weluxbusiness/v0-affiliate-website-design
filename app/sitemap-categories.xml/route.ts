@@ -20,7 +20,8 @@ export async function GET() {
     urls = categories.map(cat => `${baseUrl}/deals/${cat.slug}`)
   }
   
-  const xml = generateSitemapXml(urls, 0.8)
+  // Category pages get highest priority (1.0) - main navigation and high search volume
+  const xml = generateSitemapXml(urls, 1.0)
 
   return new Response(xml, {
     headers: {
