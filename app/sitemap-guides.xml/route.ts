@@ -1,6 +1,8 @@
 // Sitemap for buying guide pages: /guides/[slug]
 // Long-form SEO content pages for topical authority
 
+import { GUIDE_TOPICS } from '@/lib/seo/guide-generator'
+
 const baseUrl = 'https://savesmart.bio'
 
 // Empty sitemap XML for fallback
@@ -14,15 +16,8 @@ export async function GET() {
   try {
     const now = new Date().toISOString().split('T')[0]
     
-    // Dynamic import to handle potential module resolution issues
-    let guideSlugs: string[] = []
-    try {
-      const guideGenerator = await import('@/lib/seo/guide-generator')
-      guideSlugs = guideGenerator.getAllGuideSlugs?.() || []
-    } catch (err) {
-      console.error('[sitemap-guides] Error importing guide-generator:', err)
-      guideSlugs = []
-    }
+    // Get all guide slugs from the generator
+    const guideSlugs = GUIDE_TOPICS.map(guide => guide.slug)
     
     // Return empty sitemap if no guides exist
     if (!guideSlugs || guideSlugs.length === 0) {
@@ -69,7 +64,7 @@ ${urls.map(({ loc, lastmod, changefreq, priority }) => `  <url>
       },
     })
   } catch (error) {
-    console.error('[sitemap-guides] Unhandled error:', error)
+    console.error('[sitemap-guides] Error:', error)
     return new Response(EMPTY_SITEMAP, {
       headers: {
         'Content-Type': 'application/xml',

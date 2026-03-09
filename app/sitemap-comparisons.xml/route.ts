@@ -12,51 +12,31 @@ const EMPTY_SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
-// Popular product/brand comparison pairs (static fallback)
+// Popular product/brand comparison pairs (static)
 const POPULAR_COMPARISONS = [
-  // Tech comparisons
   'macbook-air-vs-dell-xps',
   'iphone-vs-samsung-galaxy',
   'airpods-vs-sony-wf',
-  'airpods-pro-vs-bose-quietcomfort',
   'playstation-vs-xbox',
   'nintendo-switch-vs-steam-deck',
   'apple-watch-vs-fitbit',
-  'apple-watch-vs-samsung-galaxy-watch',
-  'macbook-pro-vs-dell-xps',
-  'ipad-vs-samsung-tab',
-  'bose-vs-sony-headphones',
-  'samsung-vs-lg-tv',
-  'roku-vs-fire-tv',
-  'google-pixel-vs-iphone',
-  
-  // Home appliance comparisons
   'dyson-vs-shark',
   'roomba-vs-dyson',
-  'ninja-vs-vitamix',
-  'keurig-vs-nespresso',
-  'instant-pot-vs-ninja-foodi',
-  'kitchenaid-vs-cuisinart',
-  
-  // Fashion/footwear comparisons
   'nike-vs-adidas',
   'new-balance-vs-nike',
-  'north-face-vs-patagonia',
-  'levis-vs-wrangler',
-  'ray-ban-vs-oakley',
-  'under-armour-vs-nike',
+  'bose-vs-sony-headphones',
+  'samsung-vs-lg-tv',
 ]
 
 export async function GET() {
   try {
     const now = new Date().toISOString().split('T')[0]
     
-    // Get brand slugs for dynamic comparisons (with error handling)
+    // Get brand slugs for dynamic comparisons
     let brands: string[] = []
     try {
       brands = await getBrandSlugs()
-    } catch (err) {
-      console.error('[sitemap-comparisons] Error fetching brand slugs:', err)
+    } catch {
       brands = []
     }
     
@@ -71,9 +51,8 @@ export async function GET() {
     }
     
     // Combine static and dynamic, remove duplicates, limit to 50k
-    const allComparisons = [...new Set([...POPULAR_COMPARISONS, ...dynamicComparisons])].slice(0, 50000)
+    const allComparisons = [...new Set([...POPULAR_COMPARISONS, ...dynamicComparisons])].slice(0, 49999)
     
-    // Return empty sitemap if no comparisons (don't 404)
     if (!allComparisons || allComparisons.length === 0) {
       return new Response(EMPTY_SITEMAP, {
         headers: {
@@ -83,9 +62,14 @@ export async function GET() {
       })
     }
     
-    // Generate XML
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/compare</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 ${allComparisons.map(slug => `  <url>
     <loc>${baseUrl}/compare/${slug}</loc>
     <lastmod>${now}</lastmod>
@@ -101,7 +85,7 @@ ${allComparisons.map(slug => `  <url>
       },
     })
   } catch (error) {
-    console.error('[sitemap-comparisons] Unhandled error:', error)
+    console.error('[sitemap-comparisons] Error:', error)
     return new Response(EMPTY_SITEMAP, {
       headers: {
         'Content-Type': 'application/xml',
