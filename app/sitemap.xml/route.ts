@@ -38,19 +38,22 @@ export async function GET() {
     // 3. Brand pages (product discovery)
     `${baseUrl}/sitemap-brands.xml`,
     
-    // 4. Comparison pages (high-intent keywords)
+    // 4. Trending pages (time-sensitive, high-traffic)
+    `${baseUrl}/sitemap-trending.xml`,
+    
+    // 5. Comparison pages (high-intent keywords)
     `${baseUrl}/sitemap-comparisons.xml`,
     
-    // 5. Deal Finder pages (high-intent search terms)
+    // 6. Deal Finder pages (high-intent search terms)
     `${baseUrl}/sitemap-deal-finder.xml`,
     
-    // 6. Buying guides (topical authority content)
+    // 7. Buying guides (topical authority content)
     `${baseUrl}/sitemap-guides.xml`,
     
-    // 7. Core pages: homepage, static pages, blog
+    // 8. Core pages: homepage, static pages, blog
     `${baseUrl}/sitemap-core.xml`,
     
-    // 8. Programmatic pages: cities, price ranges, brand-categories
+    // 9. Programmatic pages: cities, price ranges, brand-categories
     `${baseUrl}/sitemap-programmatic.xml`,
   ]
   
