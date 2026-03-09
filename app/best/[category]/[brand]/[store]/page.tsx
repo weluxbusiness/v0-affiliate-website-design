@@ -399,7 +399,7 @@ export default async function BestCategoryBrandStorePage({ params }: PageProps) 
           <PageContainer>
             <SeoContentBlock
               title={`Best ${brandName} ${categoryName} Deals at ${storeName}`}
-              intro={`Find more ${brandName} deals at ${storeName} and other retailers.`}
+              content={`Find more ${brandName} deals at ${storeName} and other retailers. Compare prices across multiple stores to ensure you're getting the best value on ${brandName} products.`}
               relatedLinks={[
                 { label: `Best ${brandName} ${categoryName}`, href: `/best/${categorySlug}/${brandSlug}` },
                 { label: `Best ${categoryName}`, href: `/best/${categorySlug}` },

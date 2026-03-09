@@ -382,7 +382,7 @@ export default async function BestCategoryBrandPage({ params }: PageProps) {
           <PageContainer>
             <SeoContentBlock
               title={`Best ${brandName} ${categoryName} Deals`}
-              intro={`Find more ${brandName} deals and ${categoryName.toLowerCase()} discounts.`}
+              content={`Find more ${brandName} deals and ${categoryName.toLowerCase()} discounts. SaveSmart curates the best ${brandName} ${categoryName.toLowerCase()} deals from top retailers.`}
               relatedLinks={[
                 { label: `Best ${categoryName}`, href: `/best/${categorySlug}` },
                 { label: `${brandName} Deals`, href: `/brands/${brandSlug}` },
