@@ -62,8 +62,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       canonical: `/deals/${categorySlug}/page/${pageNum}`,
     },
     robots: {
-      index: pageNum <= 10, // Only index first 10 pages
-      follow: true,
+      index: pageNum <= 5, // Only index first 5 pages (crawl budget optimization)
+      follow: true, // Always follow for internal link equity
     },
   }
 }

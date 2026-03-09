@@ -53,6 +53,25 @@ function generateProductSpecs(productName: string, deals: Awaited<ReturnType<typ
   }
 }
 
+// Popular product comparisons for static generation
+const POPULAR_COMPARISONS = [
+  'macbook-air-vs-dell-xps',
+  'iphone-vs-samsung-galaxy',
+  'airpods-vs-sony-wf',
+  'playstation-vs-xbox',
+  'nintendo-switch-vs-steam-deck',
+  'dyson-vs-shark',
+  'apple-watch-vs-fitbit',
+  'bose-vs-sony',
+  'nike-vs-adidas',
+  'samsung-vs-lg-tv',
+]
+
+// Generate static params for popular comparisons
+export async function generateStaticParams() {
+  return POPULAR_COMPARISONS.map(slug => ({ slug }))
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const parsed = parseComparisonSlug(slug)
