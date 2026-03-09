@@ -25,7 +25,8 @@ import {
   Sparkles,
   Clock,
   Store,
-  ArrowRight
+  ArrowRight,
+  Award
 } from "lucide-react"
 
 // Revalidate pages every hour
@@ -231,6 +232,37 @@ export default async function BrandPage({ params }: PageProps) {
                 </CardContent>
               </Card>
             ) : null}
+          </PageContainer>
+        </section>
+
+        {/* Best Brand Deals CTA - Links to /best/category/brand pages */}
+        <section className="py-10 md:py-12 border-t border-border">
+          <PageContainer>
+            <div className="p-6 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-white/20 rounded-lg">
+                  <Award className="h-8 w-8" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold mb-1">Best {brandName} Deals</h2>
+                  <p className="text-white/90">Shop the best {brandName} deals by category</p>
+                </div>
+              </div>
+              <div className="grid gap-2 grid-cols-2 sm:grid-cols-4">
+                {relatedCategories.slice(0, 4).map((catSlug) => (
+                  <Link
+                    key={catSlug}
+                    href={`/best/${catSlug}/${brandSlug}`}
+                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+                  >
+                    <span className="text-sm font-medium truncate">
+                      Best {formatBrandName(catSlug)}
+                    </span>
+                    <ArrowRight className="h-4 w-4 shrink-0" />
+                  </Link>
+                ))}
+              </div>
+            </div>
           </PageContainer>
         </section>
 

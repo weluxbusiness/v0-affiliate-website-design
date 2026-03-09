@@ -31,7 +31,8 @@ import {
   ShoppingBag,
   ArrowRight,
   Clock,
-  MapPin
+  MapPin,
+  Award
 } from "lucide-react"
 
 // Revalidate pages every hour
@@ -311,6 +312,29 @@ export default async function CategoryDealsPage({ params }: PageProps) {
                 </CardContent>
               </Card>
             ) : null}
+          </PageContainer>
+        </section>
+
+        {/* Best Deals CTA - Link to /best/{category} */}
+        <section className="py-10 md:py-12 border-t border-border">
+          <PageContainer>
+            <Link 
+              href={`/best/${categorySlug}`}
+              className="block p-6 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-lg">
+                    <Award className="h-8 w-8" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold mb-1">Best {categoryName} Deals</h2>
+                    <p className="text-white/90">Our top picks with the biggest discounts</p>
+                  </div>
+                </div>
+                <ArrowRight className="h-6 w-6 hidden sm:block" />
+              </div>
+            </Link>
           </PageContainer>
         </section>
 
