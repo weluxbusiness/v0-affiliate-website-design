@@ -90,6 +90,10 @@ export async function GET() {
     // 14. Deal comparison pages: /deals/compare/[brandA]-vs-[brandB]
     // Brand vs Brand deal comparisons with pros/cons
     `${baseUrl}/sitemap-deal-compare.xml`,
+    
+    // 15. Auto-generated blog posts: /blog/deals/[slug]
+    // SEO blog posts for brands, categories, price ranges, and trending roundups
+    `${baseUrl}/sitemap-blog-deals.xml`,
   ]
   
   // Only include pagination sitemap if it has URLs (lowest priority)
