@@ -339,10 +339,9 @@ export default async function ComparisonPage({ params }: PageProps) {
           <div className="grid lg:grid-cols-2 gap-8 mb-12">
             {/* Product A Deals */}
             <div>
-              <SectionHeading 
-                title={`Best ${productAName} Deals`} 
-                subtitle={`${dealsA.length} deals found`}
-              />
+              <SectionHeading description={`${dealsA.length} deals found`}>
+                Best {productAName} Deals
+              </SectionHeading>
               <div className="grid gap-4">
                 {dealsA.slice(0, 4).map((deal) => (
                   <DealCard key={deal.id} deal={deal} variant="compact" />
@@ -360,10 +359,9 @@ export default async function ComparisonPage({ params }: PageProps) {
 
             {/* Product B Deals */}
             <div>
-              <SectionHeading 
-                title={`Best ${productBName} Deals`} 
-                subtitle={`${dealsB.length} deals found`}
-              />
+              <SectionHeading description={`${dealsB.length} deals found`}>
+                Best {productBName} Deals
+              </SectionHeading>
               <div className="grid gap-4">
                 {dealsB.slice(0, 4).map((deal) => (
                   <DealCard key={deal.id} deal={deal} variant="compact" />
