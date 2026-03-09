@@ -101,7 +101,7 @@ export function generateSchemaMarkup(
 ) {
   const { type, entity, displayName, price } = parsed
   const baseUrl = "https://savesmart.bio"
-  const pageUrl = `${baseUrl}/deals/${entity}-under-${price}`
+  const pageUrl = `${baseUrl}/deals/seo/${entity}-under-${price}`
   
   // Collection page schema
   const collectionSchema = {
@@ -167,7 +167,7 @@ export function generateSchemaMarkup(
         "@type": "ListItem",
         position: 3,
         name: type === 'brand' ? displayName : displayName,
-        item: `${baseUrl}/deals/${entity}`
+        item: `${baseUrl}/deals/seo/${entity}-under-${price}`
       },
       {
         "@type": "ListItem",
