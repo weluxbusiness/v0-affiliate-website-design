@@ -1,3 +1,5 @@
+import { withSentryConfig } from "@sentry/nextjs"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -72,4 +74,32 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+// Wrap with Sentry for error monitoring and source maps
+export default withSentryConfig(nextConfig, {
+  // Sentry organization and project
+  org: process.env.SENTRY_ORG || "savesmart",
+  project: process.env.SENTRY_PROJECT || "savesmart-web",
+
+  // Auth token for source map uploads (set in CI/CD)
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
+
+  // Upload source maps for better stack traces
+  widenClientFileUpload: true,
+
+  // Route Sentry events through Next.js to avoid ad blockers
+  tunnelRoute: "/monitoring",
+
+  // Automatically annotate React components to show their full name in breadcrumbs and session replay
+  reactComponentAnnotation: {
+    enabled: true,
+  },
+
+  // Hide source maps from browser devtools in production
+  hideSourceMaps: true,
+
+  // Disable logger to reduce bundle size
+  disableLogger: true,
+})
