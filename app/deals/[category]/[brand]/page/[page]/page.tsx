@@ -32,21 +32,33 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { category, brand, page } = await params
-  const pageNum = parseInt(page, 10)
-  const brandName = formatBrandName(brand)
-  const categoryName = formatCategoryName(category)
-  
-  return {
-    title: `${brandName} ${categoryName} Deals - Page ${pageNum} | SaveSmart`,
-    description: `Page ${pageNum} of ${brandName} ${categoryName.toLowerCase()} deals. Compare prices and discounts from top retailers.`,
-    robots: {
-      index: pageNum <= 5, // Only index first 5 pages
-      follow: true,
-    },
-    alternates: {
-      canonical: `/deals/${category}/${brand}/page/${pageNum}`,
-    },
+  try {
+    const resolvedParams = await params
+    const category = resolvedParams?.category || ''
+    const brand = resolvedParams?.brand || ''
+    const page = resolvedParams?.page || '1'
+    
+    if (!category || !brand) {
+      return { title: 'Deals | SaveSmart' }
+    }
+    
+    const pageNum = parseInt(page, 10) || 1
+    const brandName = formatBrandName(brand)
+    const categoryName = formatCategoryName(category)
+    
+    return {
+      title: `${brandName} ${categoryName} Deals - Page ${pageNum} | SaveSmart`,
+      description: `Page ${pageNum} of ${brandName} ${categoryName.toLowerCase()} deals. Compare prices and discounts from top retailers.`,
+      robots: {
+        index: pageNum <= 5, // Only index first 5 pages
+        follow: true,
+      },
+      alternates: {
+        canonical: `/deals/${category}/${brand}/page/${pageNum}`,
+      },
+    }
+  } catch {
+    return { title: 'Deals | SaveSmart' }
   }
 }
 
@@ -60,7 +72,13 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryBrandPaginationPage({ params }: PageProps) {
-  const resolvedParams = await params
+  // Safely resolve params
+  let resolvedParams
+  try {
+    resolvedParams = await params
+  } catch {
+    redirect('/deals')
+  }
   
   // Validate params exist
   const category = resolvedParams?.category
@@ -83,12 +101,23 @@ export default async function CategoryBrandPaginationPage({ params }: PageProps)
   const brandName = formatBrandName(brandSlug)
   const categoryName = formatCategoryName(categorySlug)
   
-  // Fetch paginated deals
-  const { deals, totalCount, totalPages, hasNextPage, hasPrevPage } = 
-    await getDealsByCategoryAndBrandPaginated(categorySlug, brandSlug, pageNum)
+  // Fetch paginated deals with error handling
+  let result
+  try {
+    result = await getDealsByCategoryAndBrandPaginated(categorySlug, brandSlug, pageNum)
+  } catch {
+    redirect(`/deals/${categorySlug}/${brandSlug}`)
+  }
+  
+  // Validate result
+  if (!result || !result.deals) {
+    redirect(`/deals/${categorySlug}/${brandSlug}`)
+  }
+  
+  const { deals, totalCount, totalPages } = result
   
   // Redirect to main page if this page shouldn't exist
-  if (!deals || totalPages <= 1 || pageNum > totalPages) {
+  if (!deals || deals.length === 0 || totalPages <= 1 || pageNum > totalPages) {
     redirect(`/deals/${categorySlug}/${brandSlug}`)
   }
   

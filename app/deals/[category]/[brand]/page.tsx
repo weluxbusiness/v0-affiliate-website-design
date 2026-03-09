@@ -57,22 +57,39 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { category, brand } = await params
-  const brandName = formatBrandName(brand)
-  const categoryName = formatCategoryName(category)
-  
-  return {
-    title: `${brandName} ${categoryName} Deals – Best Prices & Discounts | SaveSmart`,
-    description: `Find the best deals on ${brandName} ${categoryName.toLowerCase()}. Compare prices, discounts, and coupons from top retailers.`,
-    openGraph: {
-      title: `${brandName} ${categoryName} Deals – Best Prices & Discounts`,
-      description: `Discover amazing deals on ${brandName} ${categoryName.toLowerCase()}. Compare prices from Amazon, Best Buy, and more.`,
-      type: 'website',
-      url: `https://savesmart.bio/deals/${category}/${brand}`,
-    },
-    alternates: {
-      canonical: `/deals/${category}/${brand}`,
-    },
+  try {
+    const resolvedParams = await params
+    const category = resolvedParams?.category || ''
+    const brand = resolvedParams?.brand || ''
+    
+    if (!category || !brand) {
+      return {
+        title: 'Deals | SaveSmart',
+        description: 'Find the best deals on top brands.',
+      }
+    }
+    
+    const brandName = formatBrandName(brand)
+    const categoryName = formatCategoryName(category)
+    
+    return {
+      title: `${brandName} ${categoryName} Deals – Best Prices & Discounts | SaveSmart`,
+      description: `Find the best deals on ${brandName} ${categoryName.toLowerCase()}. Compare prices, discounts, and coupons from top retailers.`,
+      openGraph: {
+        title: `${brandName} ${categoryName} Deals – Best Prices & Discounts`,
+        description: `Discover amazing deals on ${brandName} ${categoryName.toLowerCase()}. Compare prices from Amazon, Best Buy, and more.`,
+        type: 'website',
+        url: `https://savesmart.bio/deals/${category}/${brand}`,
+      },
+      alternates: {
+        canonical: `/deals/${category}/${brand}`,
+      },
+    }
+  } catch {
+    return {
+      title: 'Deals | SaveSmart',
+      description: 'Find the best deals on top brands.',
+    }
   }
 }
 
@@ -98,7 +115,13 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryBrandPage({ params }: PageProps) {
-  const resolvedParams = await params
+  // Safely resolve params
+  let resolvedParams
+  try {
+    resolvedParams = await params
+  } catch {
+    notFound()
+  }
   
   // Validate params exist
   const category = resolvedParams?.category
@@ -114,15 +137,23 @@ export default async function CategoryBrandPage({ params }: PageProps) {
   const brandName = formatBrandName(brandSlug)
   const categoryName = formatCategoryName(categorySlug)
   
-  // Fetch paginated deals (page 1)
-  const { deals, totalCount, totalPages } = await getDealsByCategoryAndBrandPaginated(
-    categorySlug,
-    brandSlug,
-    1
-  )
+  // Fetch paginated deals (page 1) with error handling
+  let result
+  try {
+    result = await getDealsByCategoryAndBrandPaginated(categorySlug, brandSlug, 1)
+  } catch {
+    notFound()
+  }
+  
+  // Validate result
+  if (!result || !result.deals) {
+    notFound()
+  }
+  
+  const { deals, totalCount, totalPages } = result
   
   // Return 404 if no deals exist for this combination
-  if (!deals || totalCount === 0) {
+  if (!deals || deals.length === 0 || totalCount === 0) {
     notFound()
   }
   
