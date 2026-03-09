@@ -7,6 +7,9 @@ const staticPages = [
   
   // Main deal pages
   { path: '/deals', changefreq: 'hourly', priority: 0.9 },
+  { path: '/deals/trending', changefreq: 'hourly', priority: 0.9 },
+  { path: '/deals/today', changefreq: 'hourly', priority: 0.9 },
+  { path: '/deals/compare', changefreq: 'daily', priority: 0.8 },
   { path: '/latest-deals', changefreq: 'hourly', priority: 0.9 },
   { path: '/trending-deals', changefreq: 'hourly', priority: 0.9 },
   
