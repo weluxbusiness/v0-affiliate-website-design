@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 
 const geistSans = Geist({ 
@@ -96,6 +97,7 @@ export default function RootLayout({
       <body className="font-sans antialiased min-h-screen bg-background text-foreground pt-16" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
