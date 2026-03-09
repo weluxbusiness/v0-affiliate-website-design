@@ -414,10 +414,9 @@ export default async function ComparisonPage({ params }: PageProps) {
 
           {/* Related Comparisons */}
           <section>
-            <SectionHeading 
-              title="Related Comparisons" 
-              subtitle="Explore more product comparisons"
-            />
+            <SectionHeading description="Explore more product comparisons">
+              Related Comparisons
+            </SectionHeading>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { a: "macbook-pro", b: "dell-xps" },
