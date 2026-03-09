@@ -5,8 +5,26 @@ const baseUrl = 'https://savesmart.bio'
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
+// Check if pagination sitemap has any URLs
+async function hasPaginationUrls(): Promise<boolean> {
+  try {
+    const response = await fetch(`${baseUrl}/sitemap-pagination.xml`, {
+      method: 'HEAD',
+      cache: 'no-store',
+    })
+    // Returns 404 when empty, 200 when has URLs
+    return response.ok
+  } catch {
+    // If fetch fails, assume no pagination URLs to avoid broken sitemap reference
+    return false
+  }
+}
+
 export async function GET() {
   const now = new Date().toISOString().split('T')[0]
+  
+  // Check if pagination sitemap has URLs
+  const includePagination = await hasPaginationUrls()
   
   // Top-level sitemap groups only
   // This keeps the main index small and fast for Google to parse
@@ -16,10 +34,12 @@ export async function GET() {
     
     // Programmatic pages: cities, price ranges, brand-categories, deals
     `${baseUrl}/sitemap-programmatic.xml`,
-    
-    // Pagination pages: all /page/[n] routes across the site
-    `${baseUrl}/sitemap-pagination.xml`,
   ]
+  
+  // Only include pagination sitemap if it has URLs
+  if (includePagination) {
+    sitemaps.push(`${baseUrl}/sitemap-pagination.xml`)
+  }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

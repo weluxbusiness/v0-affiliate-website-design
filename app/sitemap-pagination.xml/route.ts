@@ -122,15 +122,26 @@ export async function GET() {
   // Enforce sitemap limit (should split if > 50k URLs)
   const limitedUrls = allUrls.slice(0, MAX_URLS_PER_SITEMAP)
   
-  // Generate XML
+  // Return 404 if no pagination URLs exist
+  // This prevents Google Search Console "Missing XML tag" errors for empty sitemaps
+  if (limitedUrls.length === 0) {
+    return new Response('No pagination URLs available', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      },
+    })
+  }
+  
+  // Generate valid XML with proper formatting
+  const urlEntries = limitedUrls.map(({ loc, lastmod }) => 
+    `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.6</priority>\n  </url>`
+  ).join('\n')
+  
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${limitedUrls.map(({ loc, lastmod }) => `  <url>
-    <loc>${loc}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>`).join('\n')}
+${urlEntries}
 </urlset>`
 
   return new Response(xml, {
