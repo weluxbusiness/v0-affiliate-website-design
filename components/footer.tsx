@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Sparkles, Mail } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
+import { SocialLinks, SocialTrustElement } from "@/components/social-links"
 
 const SUPPORT_EMAIL = "support@savesmart.bio"
 
@@ -82,6 +83,12 @@ export function Footer() {
                 {SUPPORT_EMAIL}
               </a>
             </div>
+            
+            {/* Social Links Section */}
+            <div className="mt-6">
+              <h2 className="text-sm font-semibold text-foreground">Follow Us</h2>
+              <SocialLinks className="mt-3" />
+            </div>
           </div>
 
           {footerSections.map((section) => (
@@ -104,6 +111,11 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t border-border pt-8">
+          {/* Trust Element */}
+          <div className="mb-6 flex justify-center">
+            <SocialTrustElement />
+          </div>
+          
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm text-muted-foreground">
               © {currentYear} SaveSmart. All rights reserved.

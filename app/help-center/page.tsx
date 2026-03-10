@@ -5,6 +5,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/layout/page-container"
+import { SocialLinks } from "@/components/social-links"
 import { 
   Search,
   Download,
@@ -14,6 +15,7 @@ import {
   HelpCircle,
   MessageCircle,
   Mail,
+  Instagram,
   ChevronRight,
   CheckCircle2
 } from "lucide-react"
@@ -279,6 +281,17 @@ export default function HelpCenterPage() {
                     Send Email
                   </a>
                 </Button>
+              </div>
+              
+              <div className="rounded-2xl border border-border bg-card p-6 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Instagram className="h-7 w-7" />
+                </div>
+                <h3 className="mt-4 font-semibold text-foreground">Follow Us</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Stay updated with daily deals and shopping tips
+                </p>
+                <SocialLinks variant="compact" className="mt-4 justify-center" />
               </div>
             </div>
           </PageContainer>

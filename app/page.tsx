@@ -30,9 +30,9 @@ const organizationSchema = {
   description: "SaveSmart helps you find the best deals, discounts, and coupons from top retailers. Compare prices and save money on electronics, fashion, home goods, and more.",
   foundingDate: "2024",
   sameAs: [
+    "https://www.instagram.com/savesmart.bio/",
     "https://twitter.com/savesmartdeals",
     "https://facebook.com/savesmartdeals",
-    "https://instagram.com/savesmartdeals",
     "https://pinterest.com/savesmartdeals",
     "https://linkedin.com/company/savesmart"
   ],
