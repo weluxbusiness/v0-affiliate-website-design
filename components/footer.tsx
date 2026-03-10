@@ -1,6 +1,8 @@
 import Link from "next/link"
-import { Sparkles } from "lucide-react"
+import { Sparkles, Mail } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
+
+const SUPPORT_EMAIL = "support@savesmart.bio"
 
 const footerSections = [
   {
@@ -68,6 +70,18 @@ export function Footer() {
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               The free shopping assistant that helps millions save money every day with automatic coupons and price comparisons.
             </p>
+            
+            {/* Contact Section */}
+            <div className="mt-6">
+              <h2 className="text-sm font-semibold text-foreground">Contact</h2>
+              <a 
+                href={`mailto:${SUPPORT_EMAIL}`}
+                className="mt-3 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <Mail className="h-4 w-4" aria-hidden="true" />
+                {SUPPORT_EMAIL}
+              </a>
+            </div>
           </div>
 
           {footerSections.map((section) => (

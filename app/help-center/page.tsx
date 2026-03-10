@@ -59,7 +59,7 @@ const categories = [
     articles: [
       { title: "What data does SaveSmart collect?", content: "We collect minimal data needed to find deals: the store you're shopping at and basic product info. We never collect payment details or personal information." },
       { title: "How we protect your information", content: "All data is encrypted in transit and at rest. We use industry-standard security practices and never sell your personal data to third parties." },
-      { title: "Deleting your data", content: "Uninstall the extension to stop all data collection. To delete your account data, contact support@savesmart.com with your request." },
+      { title: "Deleting your data", content: "Uninstall the extension to stop all data collection. To delete your account data, contact support@savesmart.bio with your request." },
       { title: "Third-party sharing policies", content: "We share anonymized, aggregated data with retail partners to improve deals. Your personal information is never shared without consent." },
     ]
   },
@@ -255,7 +255,7 @@ export default function HelpCenterPage() {
                       (window as unknown as { $crisp: { push: (args: unknown[]) => void } }).$crisp.push(['do', 'chat:open'])
                     } else {
                       // Fallback to email if chat not available
-                      window.location.href = 'mailto:support@savesmart.com?subject=Support%20Request'
+                      window.location.href = 'mailto:support@savesmart.bio?subject=Support%20Request'
                     }
                   }}
                 >
@@ -272,10 +272,10 @@ export default function HelpCenterPage() {
                   Send us an email and we&apos;ll respond within 24 hours
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  support@savesmart.com
+                  support@savesmart.bio
                 </p>
                 <Button variant="outline" className="mt-4 w-full" asChild>
-                  <a href="mailto:support@savesmart.com?subject=Support%20Request">
+                  <a href="mailto:support@savesmart.bio?subject=Support%20Request">
                     Send Email
                   </a>
                 </Button>

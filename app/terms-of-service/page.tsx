@@ -171,8 +171,10 @@ export default function TermsOfServicePage() {
                 If you have questions about these Terms, please contact us at:
               </p>
               <div className="mt-4 rounded-xl border border-border bg-card p-6">
-                <p className="text-foreground font-medium">SaveSmart Legal Team</p>
-                <p className="mt-2 text-muted-foreground">Email: legal@savesmart.com</p>
+                <p className="text-foreground font-medium">SaveSmart Support Team</p>
+                <p className="mt-2 text-muted-foreground">
+                  Email: <a href="mailto:support@savesmart.bio" className="text-primary hover:underline">support@savesmart.bio</a>
+                </p>
                 <p className="text-muted-foreground">Address: 123 Tech Street, San Francisco, CA 94102</p>
               </div>
             </section>

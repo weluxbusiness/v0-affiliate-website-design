@@ -148,8 +148,10 @@ export default function AffiliateDisclosurePage() {
                 If you have any questions about our affiliate relationships or this disclosure, please don&apos;t hesitate to contact us:
               </p>
               <div className="mt-4 rounded-xl border border-border bg-card p-6">
-                <p className="text-foreground font-medium">SaveSmart Team</p>
-                <p className="mt-2 text-muted-foreground">Email: hello@savesmart.com</p>
+                <p className="text-foreground font-medium">SaveSmart Support Team</p>
+                <p className="mt-2 text-muted-foreground">
+                  Email: <a href="mailto:support@savesmart.bio" className="text-primary hover:underline">support@savesmart.bio</a>
+                </p>
                 <p className="text-muted-foreground">Address: 123 Tech Street, San Francisco, CA 94102</p>
               </div>
             </section>
