@@ -117,7 +117,7 @@ export default function PrivacyPolicyPage() {
                 <li><strong className="text-foreground">Data Portability:</strong> Request a copy of your data in a portable format</li>
               </ul>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                To exercise these rights, please contact us at privacy@savesmart.com.
+                To exercise these rights, please contact us at <a href="mailto:support@savesmart.bio" className="text-primary hover:underline">support@savesmart.bio</a>.
               </p>
             </section>
 
@@ -158,8 +158,10 @@ export default function PrivacyPolicyPage() {
                 If you have questions about this Privacy Policy or our privacy practices, please contact us at:
               </p>
               <div className="mt-4 rounded-xl border border-border bg-card p-6">
-                <p className="text-foreground font-medium">SaveSmart Privacy Team</p>
-                <p className="mt-2 text-muted-foreground">Email: privacy@savesmart.com</p>
+                <p className="text-foreground font-medium">SaveSmart Support Team</p>
+                <p className="mt-2 text-muted-foreground">
+                  Email: <a href="mailto:support@savesmart.bio" className="text-primary hover:underline">support@savesmart.bio</a>
+                </p>
                 <p className="text-muted-foreground">Address: 123 Tech Street, San Francisco, CA 94102</p>
               </div>
             </section>
