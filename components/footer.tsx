@@ -1,29 +1,9 @@
 import Link from "next/link"
-import { Sparkles, Mail, Instagram, Twitter, Facebook } from "lucide-react"
+import { Sparkles, Mail } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
+import { SocialLinks, SocialTrustElement } from "@/components/social-links"
 
 const SUPPORT_EMAIL = "support@savesmart.bio"
-
-const socialLinks = [
-  { 
-    name: "Instagram", 
-    href: "https://www.instagram.com/savesmart.bio/", 
-    icon: Instagram,
-    ariaLabel: "Follow SaveSmart on Instagram"
-  },
-  { 
-    name: "Twitter", 
-    href: "https://twitter.com/savesmartdeals", 
-    icon: Twitter,
-    ariaLabel: "Follow SaveSmart on Twitter"
-  },
-  { 
-    name: "Facebook", 
-    href: "https://facebook.com/savesmartdeals", 
-    icon: Facebook,
-    ariaLabel: "Follow SaveSmart on Facebook"
-  },
-] as const
 
 const footerSections = [
   {
@@ -107,20 +87,7 @@ export function Footer() {
             {/* Social Links Section */}
             <div className="mt-6">
               <h2 className="text-sm font-semibold text-foreground">Follow Us</h2>
-              <div className="mt-3 flex items-center gap-3">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.ariaLabel}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-                  >
-                    <social.icon className="h-4 w-4" aria-hidden="true" />
-                  </a>
-                ))}
-              </div>
+              <SocialLinks className="mt-3" />
             </div>
           </div>
 
@@ -144,6 +111,11 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t border-border pt-8">
+          {/* Trust Element */}
+          <div className="mb-6 flex justify-center">
+            <SocialTrustElement />
+          </div>
+          
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm text-muted-foreground">
               © {currentYear} SaveSmart. All rights reserved.
