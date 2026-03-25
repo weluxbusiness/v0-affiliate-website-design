@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
           website_url: game.websiteUrl,
           popularity_score: game.popularityScore,
           player_count: game.playerCount,
-          meta_title: game.seo?.title,
-          meta_description: game.seo?.description,
+          meta_title: game.metaTitle ?? game.name,
+          meta_description: game.metaDescription ?? game.description,
           is_active: true,
         })
         
