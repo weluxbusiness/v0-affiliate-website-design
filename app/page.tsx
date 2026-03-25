@@ -1,19 +1,16 @@
+import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { HowItWorks } from "@/components/how-it-works"
 import { BenefitsSection } from "@/components/benefits-section"
 import { TrendingDeals } from "@/components/trending-deals"
-import { DailyDeals } from "@/components/daily-deals"
-import { LatestDeals } from "@/components/latest-deals"
 import { DealAlertsSignup } from "@/components/deal-alerts-signup"
 import { SocialProof } from "@/components/social-proof"
-import { BlogSection } from "@/components/blog-section"
 import { ComparisonTable } from "@/components/comparison-table"
 import { FinalCTA } from "@/components/final-cta"
 import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
-import { HomeBestDeals } from "@/components/home-best-deals"
-import { getTrendingDeals, getDailyDeals, getLatestDeals } from "@/lib/deals"
+import { getTrendingDeals } from "@/lib/deals"
 
 // Organization schema for rich search results
 const organizationSchema = {
@@ -65,14 +62,30 @@ const websiteSchema = {
   }
 }
 
-export default async function HomePage() {
-  // Fetch data at server level - keeps server-only code separate from client components
-  const [trendingDeals, dailyDeals, latestDeals] = await Promise.all([
-    getTrendingDeals(6),
-    getDailyDeals(4),
-    getLatestDeals(10),
-  ])
+// Loading fallback for deals section
+function DealsLoading() {
+  return (
+    <div className="py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 w-48 bg-muted rounded" />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-64 bg-muted rounded-xl" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
+async function TrendingDealsSection() {
+  const trendingDeals = await getTrendingDeals(6)
+  return <TrendingDeals deals={trendingDeals} />
+}
+
+export default function HomePage() {
   return (
     <>
       {/* Organization Schema */}
@@ -89,18 +102,31 @@ export default async function HomePage() {
       <div className="min-h-screen bg-background">
         <Header />
         <main>
+          {/* Above the fold - critical */}
           <HeroSection />
-          <TrendingDeals deals={trendingDeals} />
+          
+          {/* Primary content - deals */}
+          <Suspense fallback={<DealsLoading />}>
+            <TrendingDealsSection />
+          </Suspense>
+          
+          {/* Category navigation */}
           <HomePopularCategories />
-          <HomeBestDeals />
-          <DailyDeals deals={dailyDeals} />
-          <LatestDeals deals={latestDeals} />
+          
+          {/* Value proposition */}
           <HowItWorks />
           <BenefitsSection />
+          
+          {/* Lead capture */}
           <DealAlertsSignup />
+          
+          {/* Trust building */}
           <SocialProof />
-          <BlogSection />
+          
+          {/* Competitive positioning */}
           <ComparisonTable />
+          
+          {/* Final conversion */}
           <FinalCTA />
         </main>
         <Footer />

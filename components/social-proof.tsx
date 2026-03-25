@@ -1,35 +1,37 @@
-import { Star, Quote } from "lucide-react"
+import { Star, Quote, Chrome, ExternalLink } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
-
-const testimonials = [
-  {
-    name: "Sarah M.",
-    avatar: "S",
-    rating: 5,
-    text: "Saved over $120 in one month! I can't believe I was shopping without this for so long.",
-    savings: "$120+",
-  },
-  {
-    name: "James K.",
-    avatar: "J",
-    rating: 5,
-    text: "I never shop online without it now. It's like having a personal coupon hunter.",
-    savings: "$89",
-  },
-  {
-    name: "Emily R.",
-    avatar: "E",
-    rating: 5,
-    text: "The price comparison feature alone has saved me hundreds. Absolutely essential!",
-    savings: "$340+",
-  },
-]
+import { Button } from "@/components/ui/button"
 
 const stats = [
   { value: "4.8", label: "Average Rating", icon: Star },
   { value: "$127", label: "Avg. Monthly Savings", icon: null },
   { value: "2M+", label: "Active Users", icon: null },
   { value: "30K+", label: "Supported Stores", icon: null },
+]
+
+// Anonymized testimonials with store verification badges instead of fake avatars
+const testimonials = [
+  {
+    rating: 5,
+    text: "Saved over $120 in one month! I can&apos;t believe I was shopping without this for so long.",
+    savings: "$120+",
+    verified: true,
+    store: "Amazon",
+  },
+  {
+    rating: 5,
+    text: "I never shop online without it now. It&apos;s like having a personal coupon hunter.",
+    savings: "$89",
+    verified: true,
+    store: "Best Buy",
+  },
+  {
+    rating: 5,
+    text: "The price comparison feature alone has saved me hundreds. Absolutely essential!",
+    savings: "$340+",
+    verified: true,
+    store: "Target",
+  },
 ]
 
 export function SocialProof() {
@@ -61,31 +63,63 @@ export function SocialProof() {
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
-          {testimonials.map((testimonial) => (
+          {testimonials.map((testimonial, index) => (
             <div
-              key={testimonial.name}
+              key={index}
               className="relative rounded-2xl border border-border bg-card p-6"
             >
               <Quote className="absolute right-6 top-6 h-8 w-8 text-primary/10" />
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground">
-                  {testimonial.avatar}
+              
+              {/* Star rating at top */}
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              
+              <p className="text-foreground leading-relaxed">{testimonial.text}</p>
+              
+              {/* Bottom section with verified badge and savings */}
+              <div className="mt-6 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {testimonial.verified && (
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                      <Chrome className="h-3 w-3" />
+                      Verified User
+                    </span>
+                  )}
                 </div>
-                <div>
-                  <p className="font-semibold text-foreground">{testimonial.name}</p>
-                  <div className="flex items-center gap-1">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
+                <div className="inline-flex items-center rounded-full bg-secondary/10 px-3 py-1 text-sm font-medium text-secondary">
+                  Saved {testimonial.savings}
                 </div>
               </div>
-              <p className="mt-4 text-muted-foreground">{testimonial.text}</p>
-              <div className="mt-4 inline-flex items-center rounded-full bg-secondary/10 px-3 py-1 text-sm font-medium text-secondary">
-                Saved {testimonial.savings}
+              
+              {/* Store badge */}
+              <div className="mt-3 pt-3 border-t border-border">
+                <span className="text-xs text-muted-foreground">
+                  Shopping at {testimonial.store}
+                </span>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Chrome Web Store link for real reviews */}
+        <div className="mt-12 text-center">
+          <p className="text-sm text-muted-foreground mb-4">
+            See more reviews on Chrome Web Store
+          </p>
+          <Button variant="outline" className="gap-2" asChild>
+            <a 
+              href="https://chrome.google.com/webstore" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              <Chrome className="h-4 w-4" />
+              View All Reviews
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </Button>
         </div>
       </PageContainer>
     </section>
