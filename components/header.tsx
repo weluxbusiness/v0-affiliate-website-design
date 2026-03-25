@@ -7,9 +7,22 @@ import { Button } from "@/components/ui/button"
 
 const navLinks = [
   { href: "/deals", label: "Deals" },
+  { href: "/gaming", label: "Gaming" },
   { href: "/deal-finder", label: "AI Deal Finder" },
   { href: "/blog", label: "Blog" },
   { href: "/how-it-works", label: "How It Works" },
+]
+
+const gamingLinks = [
+  { href: "/gaming", label: "All Gaming Deals" },
+  { href: "/gaming/promo-codes", label: "Promo Codes" },
+  { href: "/gaming/free-rewards", label: "Free Rewards" },
+  { href: "/gaming/new-player-deals", label: "New Player Deals" },
+  { href: "/gaming/today", label: "Today's Codes" },
+  { href: "/gaming/roblox", label: "Roblox Codes" },
+  { href: "/gaming/fortnite", label: "Fortnite Codes" },
+  { href: "/gaming/genshin-impact", label: "Genshin Impact" },
+  { href: "/gaming/pokemon-go", label: "Pokemon GO" },
 ]
 
 const topCategories = [
@@ -24,13 +37,18 @@ const topCategories = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesOpen, setCategoriesOpen] = useState(false)
+  const [gamingOpen, setGamingOpen] = useState(false)
   const categoriesRef = useRef<HTMLDivElement>(null)
+  const gamingRef = useRef<HTMLDivElement>(null)
 
-  // Close categories dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (categoriesRef.current && !categoriesRef.current.contains(event.target as Node)) {
         setCategoriesOpen(false)
+      }
+      if (gamingRef.current && !gamingRef.current.contains(event.target as Node)) {
+        setGamingOpen(false)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
@@ -51,13 +69,40 @@ export function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
-            <Link 
-              key={link.href}
-              href={link.href} 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {link.label}
-            </Link>
+            link.label === "Gaming" ? (
+              <div key={link.href} className="relative" ref={gamingRef}>
+                <button
+                  onClick={() => setGamingOpen(!gamingOpen)}
+                  className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Gaming
+                  <ChevronDown className={`h-4 w-4 transition-transform ${gamingOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {gamingOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-52 bg-background rounded-lg shadow-lg border border-border z-[100] py-1">
+                    {gamingLinks.map((gameLink) => (
+                      <Link
+                        key={gameLink.href}
+                        href={gameLink.href}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                        onClick={() => setGamingOpen(false)}
+                      >
+                        {gameLink.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link 
+                key={link.href}
+                href={link.href} 
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            )
           ))}
           
           {/* Categories Dropdown */}
@@ -124,6 +169,22 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            
+            <div className="pt-2 border-t border-border mt-2">
+              <p className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">
+                Gaming
+              </p>
+              {gamingLinks.slice(0, 5).map((gameLink) => (
+                <Link
+                  key={gameLink.href}
+                  href={gameLink.href}
+                  className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg block transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {gameLink.label}
+                </Link>
+              ))}
+            </div>
             
             <div className="pt-2 border-t border-border mt-2">
               <p className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">
