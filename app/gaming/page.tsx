@@ -34,6 +34,8 @@ import {
   hasExternalAffiliateLink
 } from "@/lib/gaming-data"
 import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
+import { FAQSection, gamingFAQs, generateFAQSchema } from "@/components/seo/faq-section"
+import { TrustBadges } from "@/components/seo/trust-badges"
 
 export const revalidate = 300 // Revalidate every 5 minutes
 
@@ -392,6 +394,19 @@ export default async function GamingPage() {
           </div>
         </PageContainer>
       </section>
+
+      {/* FAQ Section for SEO */}
+      <FAQSection
+        title="Gaming Promo Codes FAQ"
+        faqs={gamingFAQs}
+        className="border-t border-border"
+      />
+
+      {/* FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFAQSchema(gamingFAQs)) }}
+      />
 
       <Footer />
     </div>

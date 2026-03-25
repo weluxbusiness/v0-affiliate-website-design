@@ -16,6 +16,8 @@ import {
   getStoreRelatedLinks 
 } from "@/components/seo-content-block"
 import { CrossLinkSection } from "@/components/internal-links"
+import { FAQSection, storeFAQs, generateFAQSchema } from "@/components/seo/faq-section"
+import { TrustBadges, UpdatedTodayBadge } from "@/components/seo/trust-badges"
 import { getStoreBySlug, getStoreSlugs, getCategoriesForStore, getBrandSlugs } from "@/lib/seo-data"
 import { Store, Tag, ChevronRight, Clock } from "lucide-react"
 
@@ -111,6 +113,10 @@ export default async function StorePage({ params }: PageProps) {
     },
   }
 
+  // FAQ schema for rich snippets
+  const faqs = storeFAQs(storeName)
+  const faqSchema = generateFAQSchema(faqs)
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -118,6 +124,10 @@ export default async function StorePage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <main className="pt-16">
@@ -168,6 +178,11 @@ export default async function StorePage({ params }: PageProps) {
                 <Clock className="h-4 w-4" />
                 Last updated: {lastUpdated}
               </span>
+            </div>
+            
+            {/* Trust Badges */}
+            <div className="mt-6">
+              <TrustBadges variant="inline" className="text-white/80" />
             </div>
           </PageContainer>
         </section>
@@ -356,6 +371,13 @@ export default async function StorePage({ params }: PageProps) {
           storeSlug={store}
           relatedStores={relatedStores}
           relatedCategories={storeCategories}
+        />
+
+        {/* FAQ Section for SEO */}
+        <FAQSection
+          title={`${storeName} Deals FAQ`}
+          faqs={faqs}
+          className="border-t border-border bg-muted/30"
         />
       </main>
 

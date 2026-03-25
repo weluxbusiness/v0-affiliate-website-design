@@ -18,6 +18,8 @@ import {
   getCategoryRelatedLinks 
 } from "@/components/seo-content-block"
 import { CategoryCrossLinks } from "@/components/internal-links"
+import { FAQSection, categoryFAQs } from "@/components/seo/faq-section"
+import { TrustBadges } from "@/components/seo/trust-badges"
 import { getCategoryBySlug, getCategorySlugs, getStoresForCategory, getBrandSlugs } from "@/lib/seo-data"
 import { formatBrandName } from "@/lib/seo/content"
 import { getPopularCities, formatCityName } from "@/lib/cities"
@@ -266,6 +268,11 @@ export default async function CategoryDealsPage({ params }: PageProps) {
                 Last updated: {lastUpdated}
               </span>
             </div>
+            
+            {/* Trust Badges */}
+            <div className="mt-6">
+              <TrustBadges variant="inline" className="text-white/80" />
+            </div>
           </PageContainer>
         </section>
 
@@ -456,6 +463,13 @@ export default async function CategoryDealsPage({ params }: PageProps) {
           categorySlug={categorySlug}
           relatedCategories={relatedCategorySlugs}
           storesWithDeals={storesForCategory}
+        />
+
+        {/* FAQ Section for SEO */}
+        <FAQSection
+          title={`${categoryName} Deals FAQ`}
+          faqs={categoryFAQs(categoryName)}
+          className="border-t border-border bg-muted/30"
         />
 
         <PopularCategories />

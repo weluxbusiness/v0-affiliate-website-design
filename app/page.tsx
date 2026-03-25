@@ -11,6 +11,8 @@ import { FinalCTA } from "@/components/final-cta"
 import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
 import { HomeGamingDeals } from "@/components/home-gaming-deals"
+import { HomePopularStores } from "@/components/home-popular-stores"
+import { FAQSection, dealsFAQs, generateFAQSchema } from "@/components/seo/faq-section"
 import { getTrendingDeals } from "@/lib/deals"
 
 // Organization schema for rich search results
@@ -99,6 +101,11 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
+      {/* FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFAQSchema(dealsFAQs)) }}
+      />
       
       <div className="min-h-screen bg-background">
         <Header />
@@ -117,6 +124,9 @@ export default function HomePage() {
           {/* Category navigation */}
           <HomePopularCategories />
           
+          {/* Popular Stores */}
+          <HomePopularStores />
+          
           {/* Value proposition */}
           <HowItWorks />
           <BenefitsSection />
@@ -129,6 +139,13 @@ export default function HomePage() {
           
           {/* Competitive positioning */}
           <ComparisonTable />
+          
+          {/* FAQ Section for SEO */}
+          <FAQSection
+            title="Frequently Asked Questions"
+            faqs={dealsFAQs}
+            className="border-t border-border"
+          />
           
           {/* Final conversion */}
           <FinalCTA />

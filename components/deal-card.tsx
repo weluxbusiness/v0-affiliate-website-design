@@ -173,62 +173,73 @@ export const DealCard = memo(function DealCard({ deal, variant = "default" }: De
     )
   }
 
-  // Default variant
+  // Default variant - entire card is clickable
   return (
-    <Card className="overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg group h-full flex flex-col">
-      <div className="relative aspect-video">
-        <ProductImage deal={deal} className="h-full w-full" />
-        <div className="absolute top-2 right-2 z-10">
-          <Badge className="bg-secondary text-secondary-foreground text-xs shadow-lg">
-            {deal.discount_percentage}% OFF
-          </Badge>
-        </div>
-        {/* Store badge */}
-        <div className="absolute bottom-2 left-2 z-10">
-          <div className={`${storeInfo.color} text-white text-xs font-semibold px-2 py-1 rounded shadow`}>
-            {deal.store}
+    <a 
+      href={deal.affiliate_link} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="block h-full"
+    >
+      <Card className="overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02] group h-full flex flex-col cursor-pointer">
+        <div className="relative aspect-video">
+          <ProductImage deal={deal} className="h-full w-full" />
+          <div className="absolute top-2 right-2 z-10">
+            <Badge className="bg-secondary text-secondary-foreground text-xs shadow-lg">
+              {deal.discount_percentage}% OFF
+            </Badge>
           </div>
-        </div>
-      </div>
-      <CardContent className="p-4 flex flex-col flex-1">
-        <div className="flex items-center justify-between gap-2 mb-2">
-          <Badge variant="outline" className="text-xs">{deal.category}</Badge>
-          <CountdownTimer expiresAt={deal.expires_at} compact />
-        </div>
-        <h4 className="font-semibold text-foreground leading-tight mb-1 line-clamp-2 group-hover:text-primary transition-colors">
-          {deal.title}
-        </h4>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
-          <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-          <span>{formatRating(storeInfo.rating)}</span>
-          <span className="text-border">|</span>
-          <span>{formatReviewCount(storeInfo.reviewCount)} reviews</span>
-        </div>
-        <div className="flex-1" />
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-muted-foreground line-through text-sm">${deal.original_price.toFixed(2)}</span>
-          <span className="font-bold text-secondary text-lg">${deal.deal_price.toFixed(2)}</span>
-          <span className="text-xs text-muted-foreground ml-auto">Save ${savings.toFixed(2)}</span>
-        </div>
-        {deal.coupon_code && (
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center gap-1.5 border border-dashed border-primary/50 rounded px-2 py-1 bg-primary/5 flex-1">
-              <Tag className="h-3 w-3 text-primary" />
-              <code className="text-xs font-mono font-semibold text-primary">{deal.coupon_code}</code>
+          {/* Store badge */}
+          <div className="absolute bottom-2 left-2 z-10">
+            <div className={`${storeInfo.color} text-white text-xs font-semibold px-2 py-1 rounded shadow`}>
+              {deal.store}
             </div>
-            <Button size="sm" variant="ghost" onClick={copyCode} className="h-7 w-7 p-0">
-              {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-            </Button>
           </div>
-        )}
-        <Button className="w-full gap-2" size="sm" asChild>
-          <a href={deal.affiliate_link} target="_blank" rel="noopener noreferrer">
+        </div>
+        <CardContent className="p-4 flex flex-col flex-1">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <Badge variant="outline" className="text-xs">{deal.category}</Badge>
+            <CountdownTimer expiresAt={deal.expires_at} compact />
+          </div>
+          <h4 className="font-semibold text-foreground leading-tight mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+            {deal.title}
+          </h4>
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
+            <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+            <span>{formatRating(storeInfo.rating)}</span>
+            <span className="text-border">|</span>
+            <span>{formatReviewCount(storeInfo.reviewCount)} reviews</span>
+          </div>
+          <div className="flex-1" />
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-muted-foreground line-through text-sm">${deal.original_price.toFixed(2)}</span>
+            <span className="font-bold text-secondary text-lg">${deal.deal_price.toFixed(2)}</span>
+            <span className="text-xs text-muted-foreground ml-auto">Save ${savings.toFixed(2)}</span>
+          </div>
+          {deal.coupon_code && (
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-1.5 border border-dashed border-primary/50 rounded px-2 py-1 bg-primary/5 flex-1">
+                <Tag className="h-3 w-3 text-primary" />
+                <code className="text-xs font-mono font-semibold text-primary">{deal.coupon_code}</code>
+              </div>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); copyCode(); }} 
+                className="h-7 w-7 p-0"
+              >
+                {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+              </Button>
+            </div>
+          )}
+          <Button className="w-full gap-2 pointer-events-none" size="sm">
             <ShoppingBag className="h-4 w-4" />
             Get Deal
-          </a>
-        </Button>
-      </CardContent>
-    </Card>
+            <ExternalLink className="h-3 w-3" />
+          </Button>
+        </CardContent>
+      </Card>
+    </a>
   )
 })
 
