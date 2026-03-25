@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
@@ -16,14 +17,17 @@ import {
   Zap,
   Clock,
   TrendingUp,
-  RefreshCw
+  RefreshCw,
+  Star,
+  Flame
 } from "lucide-react"
 import { 
   gamesData,
   getTrendingCodes,
   getRecentlyUpdatedGames,
   getActivePromoCodes,
-  getBestPromoCode
+  getBestPromoCode,
+  getGameLogoUrl
 } from "@/lib/gaming-data"
 
 // ISR with 5 minute revalidation for "daily" updates

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
@@ -19,7 +20,8 @@ import {
 import { 
   gamesData,
   getGamesWithFreeRewards,
-  getActivePromoCodes
+  getActivePromoCodes,
+  getGameLogoUrl
 } from "@/lib/gaming-data"
 import type { GameReward } from "@/lib/gaming-data"
 
@@ -280,24 +282,45 @@ export default function GamingFreeRewardsPage() {
           </div>
 
           <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {gamesWithRewards.slice(0, 8).map((game) => (
-              <Link
-                key={game.id}
-                href={`/gaming/${game.slug}`}
-                className="flex flex-col items-center gap-3 p-5 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center group"
-              >
-                <Gamepad2 className="h-10 w-10 text-primary" />
-                <div>
-                  <h3 className="font-medium text-foreground group-hover:text-primary transition-colors">
-                    {game.shortName || game.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {game.rewards.filter(r => r.type === 'Free' || r.type === 'Daily').length} free rewards
-                  </p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </Link>
-            ))}
+            {gamesWithRewards.slice(0, 8).map((game) => {
+              const logoUrl = getGameLogoUrl(game)
+              const hasLogo = game.logoUrl
+              
+              return (
+                <Link
+                  key={game.id}
+                  href={`/gaming/${game.slug}`}
+                  className="flex flex-col items-center gap-3 p-5 rounded-xl border border-border bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-md hover:scale-[1.02] transition-all duration-200 text-center group cursor-pointer"
+                >
+                  {/* Game Logo */}
+                  <div className="relative h-14 w-14 rounded-xl overflow-hidden ring-2 ring-border/50 shadow-md bg-muted/50">
+                    {hasLogo ? (
+                      <Image
+                        src={logoUrl}
+                        alt={game.name}
+                        width={56}
+                        height={56}
+                        className="rounded-xl object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center bg-primary/10">
+                        <Gamepad2 className="h-7 w-7 text-primary" />
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                      {game.shortName || game.name}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {game.rewards.filter(r => r.type === 'Free' || r.type === 'Daily').length} free rewards
+                    </p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                </Link>
+              )
+            })}
           </div>
 
           <div className="text-center mt-8">

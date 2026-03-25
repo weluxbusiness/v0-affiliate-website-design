@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { 
   ChevronRight, 
   Gamepad2, 
@@ -10,7 +11,8 @@ import {
   Zap,
   Tag,
   Trophy,
-  Star
+  Star,
+  Flame
 } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
@@ -18,7 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
-import { getBestPromoCode, getActivePromoCodes, sortPromoCodesByValue } from "@/lib/gaming-data"
+import { getBestPromoCode, getActivePromoCodes, sortPromoCodesByValue, getGameLogoUrl } from "@/lib/gaming-data"
 
 // ============================================
 // TYPES
@@ -234,8 +236,26 @@ export function GamePageTemplate({
             </span>
           </nav>
 
-          {/* Game Info */}
+          {/* Game Info with Logo */}
           <div className="flex flex-col md:flex-row gap-6 items-start">
+            {/* Game Logo - Large Visual Anchor */}
+            <div className="relative h-24 w-24 md:h-28 md:w-28 shrink-0 rounded-2xl overflow-hidden ring-4 ring-white/20 shadow-2xl bg-white/10">
+              {game.logoUrl ? (
+                <Image
+                  src={getGameLogoUrl(game)}
+                  alt={game.name}
+                  width={112}
+                  height={112}
+                  className="rounded-2xl object-cover"
+                  priority
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center bg-white/10">
+                  <Gamepad2 className="h-12 w-12 text-white" />
+                </div>
+              )}
+            </div>
+
             <div className="flex-1">
               {/* Category Badges */}
               <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -407,21 +427,44 @@ export function GamePageTemplate({
             </div>
 
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-              {relatedGames.map((relatedGame) => (
-                <Link
-                  key={relatedGame.id}
-                  href={`/gaming/${relatedGame.slug}`}
-                  className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center"
-                >
-                  <Gamepad2 className="h-8 w-8 text-primary" />
-                  <span className="text-sm font-medium text-foreground line-clamp-2">
-                    {relatedGame.shortName || relatedGame.name}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {getActivePromoCodes(relatedGame.promoCodes).length} codes
-                  </span>
-                </Link>
-              ))}
+              {relatedGames.map((relatedGame) => {
+                const relatedLogoUrl = getGameLogoUrl(relatedGame)
+                const hasRelatedLogo = relatedGame.logoUrl
+                const relatedCodeCount = getActivePromoCodes(relatedGame.promoCodes).length
+                
+                return (
+                  <Link
+                    key={relatedGame.id}
+                    href={`/gaming/${relatedGame.slug}`}
+                    className="flex flex-col items-center gap-3 p-4 rounded-xl border border-border bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-md hover:scale-[1.03] transition-all duration-200 text-center group cursor-pointer"
+                  >
+                    {/* Game Logo */}
+                    <div className="relative h-12 w-12 rounded-xl overflow-hidden ring-2 ring-border/50 shadow-sm bg-muted/50">
+                      {hasRelatedLogo ? (
+                        <Image
+                          src={relatedLogoUrl}
+                          alt={relatedGame.name}
+                          width={48}
+                          height={48}
+                          className="rounded-xl object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center bg-primary/10">
+                          <Gamepad2 className="h-6 w-6 text-primary" />
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                      {relatedGame.shortName || relatedGame.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Tag className="h-3 w-3" />
+                      {relatedCodeCount} codes
+                    </span>
+                  </Link>
+                )
+              })}
             </div>
           </PageContainer>
         </section>
