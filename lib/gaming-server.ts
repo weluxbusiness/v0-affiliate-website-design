@@ -76,7 +76,7 @@ export async function getGame(slug: string): Promise<Game | null> {
       console.error('Failed to fetch game from DB:', error)
     }
   }
-  return getStaticGameBySlug(slug)
+  return getStaticGameBySlug(slug) ?? null
 }
 
 // Get codes for a specific game
