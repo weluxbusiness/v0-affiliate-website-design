@@ -15,14 +15,19 @@ import {
   Zap,
   Calendar,
   ArrowRight,
-  Flame
+  Flame,
+  Play,
+  ExternalLink
 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { 
   gamesData,
   getActivePromoCodes,
   getTotalActiveCodesCount,
   sortPromoCodesByValue,
-  getGameLogoUrl
+  getGameLogoUrl,
+  getGameAffiliateUrl,
+  hasExternalAffiliateLink
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -154,9 +159,11 @@ export default function GamingPromoCodesPage() {
               {gameCodesMap.map(({ game, codes }) => {
                 const logoUrl = getGameLogoUrl(game)
                 const hasLogo = game.logoUrl
+                const affiliateUrl = getGameAffiliateUrl(game)
+                const isExternal = hasExternalAffiliateLink(game)
                 
                 return (
-                  <div key={game.id} className="bg-card rounded-xl border border-border/50 p-6 hover:border-primary/20 transition-colors">
+                  <div key={game.id} className="bg-card rounded-xl border border-border/50 p-6 hover:border-green-500/20 transition-colors">
                     {/* Game Header with Logo */}
                     <div className="flex items-center justify-between mb-6">
                       <Link 
@@ -197,13 +204,20 @@ export default function GamingPromoCodesPage() {
                           </p>
                         </div>
                       </Link>
-                      <Link 
-                        href={`/gaming/${game.slug}`}
-                        className="text-sm font-medium text-primary hover:underline flex items-center gap-1 group"
+                      <Button 
+                        asChild 
+                        className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
                       >
-                        View All
-                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                        <a 
+                          href={affiliateUrl} 
+                          target={isExternal ? "_blank" : undefined}
+                          rel={isExternal ? "noopener noreferrer" : undefined}
+                        >
+                          <Play className="h-4 w-4 mr-2 fill-current" />
+                          Play Now
+                          {isExternal && <ExternalLink className="h-4 w-4 ml-2" />}
+                        </a>
+                      </Button>
                     </div>
 
                     {/* Codes Grid */}

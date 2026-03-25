@@ -14,12 +14,15 @@ import {
   Gift,
   Zap,
   Flame,
-  Star
+  Star,
+  ExternalLink,
+  Play
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
 import { GameLogo } from "@/components/gaming/game-logo"
 import type { PromoCode, Game } from "@/lib/gaming-data"
+import { getGameAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
 
 // Extended type to support both static data and database records
 export type PromoCodeWithId = PromoCode & {
@@ -115,8 +118,11 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   if (variant === "featured") {
+    const affiliateUrl = game ? getGameAffiliateUrl(game) : null
+    const isExternal = game ? hasExternalAffiliateLink(game) : false
+
     return (
-      <Card className="overflow-hidden border-2 border-primary/50 bg-gradient-to-br from-primary/5 to-secondary/5 hover:shadow-lg transition-all duration-300">
+      <Card className="overflow-hidden border-2 border-primary/50 bg-gradient-to-br from-primary/5 to-secondary/5 hover:shadow-xl transition-all duration-300">
         <CardContent className="p-5">
           {/* Game Logo + Best Code Badge */}
           <div className="flex items-center gap-3 mb-4">
@@ -142,9 +148,9 @@ export const PromoCodeCard = memo(function PromoCodeCard({
                 )}
               </div>
               {showGame && game && (
-                <Link href={`/gaming/${game.slug}`} className="text-lg font-bold text-foreground hover:text-primary transition-colors">
+                <p className="text-lg font-bold text-foreground">
                   {game.name}
-                </Link>
+                </p>
               )}
             </div>
           </div>
@@ -157,7 +163,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
                 {code.code}
               </code>
             </div>
-            <Button onClick={handleCopy} className="shrink-0 h-12 px-5">
+            <Button onClick={handleCopy} variant="outline" className="shrink-0 h-12 px-5">
               {copied ? (
                 <>
                   <Check className="h-4 w-4 mr-2" />
@@ -173,9 +179,27 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </div>
 
           {/* Reward */}
-          <div className="mb-3">
-            <p className="font-medium text-foreground">{code.reward}</p>
+          <div className="mb-4">
+            <p className="font-semibold text-foreground text-lg">{code.reward}</p>
           </div>
+
+          {/* Primary CTA - Play Now */}
+          {showGame && game && affiliateUrl && (
+            <Button 
+              asChild 
+              className="w-full h-12 text-base font-semibold bg-green-600 hover:bg-green-700 text-white mb-4 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+            >
+              <a 
+                href={affiliateUrl} 
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+              >
+                <Play className="h-5 w-5 mr-2 fill-current" />
+                Play {game.shortName || game.name}
+                {isExternal && <ExternalLink className="h-4 w-4 ml-2" />}
+              </a>
+            </Button>
+          )}
 
           {/* Footer */}
           <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -201,9 +225,12 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   // Default variant - with game logo for visual hierarchy
+  const affiliateUrl = game ? getGameAffiliateUrl(game) : null
+  const isExternal = game ? hasExternalAffiliateLink(game) : false
+
   const cardContent = (
     <Card className={cn(
-      "overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02] group cursor-pointer",
+      "overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02] group",
       code.isExclusive && "border-secondary/30 bg-secondary/5"
     )}>
       <CardContent className="p-4">
@@ -217,7 +244,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               className="shadow-sm"
             />
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+              <h3 className="font-semibold text-foreground truncate">
                 {game.shortName || game.name}
               </h3>
               <p className="text-xs text-muted-foreground">
@@ -275,6 +302,11 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </div>
         )}
 
+        {/* Reward - Highlight First */}
+        <p className="font-semibold text-foreground mb-3">
+          {code.reward}
+        </p>
+
         {/* Code Box */}
         <div className="flex items-center gap-2 mb-3">
           <div className="flex-1 flex items-center gap-2 border border-dashed border-primary/40 rounded-lg px-3 py-2 bg-primary/5">
@@ -285,7 +317,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </div>
           <Button 
             size="sm" 
-            variant={copied ? "secondary" : "default"} 
+            variant="outline"
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -301,10 +333,25 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </Button>
         </div>
 
-        {/* Reward Description */}
-        <p className="font-medium text-foreground text-sm mb-2">
-          {code.reward}
-        </p>
+        {/* Primary CTA - Play Now (Affiliate) */}
+        {showGame && game && affiliateUrl && (
+          <Button 
+            asChild 
+            className="w-full h-10 font-semibold bg-green-600 hover:bg-green-700 text-white mb-3 shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
+            size="sm"
+          >
+            <a 
+              href={affiliateUrl} 
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener noreferrer" : undefined}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Play className="h-4 w-4 mr-2 fill-current" />
+              Play Now
+              {isExternal && <ExternalLink className="h-3 w-3 ml-2" />}
+            </a>
+          </Button>
+        )}
 
         {/* Footer Info */}
         <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border">
@@ -333,7 +380,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
     </Card>
   )
 
-  // Wrap in Link if we have a game to link to
+  // Wrap in Link to internal page for navigation (affiliate is separate button)
   if (showGame && game) {
     return (
       <Link href={`/gaming/${game.slug}`} className="block">

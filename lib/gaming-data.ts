@@ -67,6 +67,16 @@ export function getGameLogoUrl(game: Game): string {
   return game.logoUrl || DEFAULT_GAME_LOGO
 }
 
+// Helper to get affiliate link or fallback to internal page
+export function getGameAffiliateUrl(game: Game): string {
+  return game.affiliateLink || `/gaming/${game.slug}`
+}
+
+// Check if game has external affiliate link
+export function hasExternalAffiliateLink(game: Game): boolean {
+  return !!game.affiliateLink && game.affiliateLink.startsWith('http')
+}
+
 // ============================================
 // HELPER FUNCTIONS
 // ============================================

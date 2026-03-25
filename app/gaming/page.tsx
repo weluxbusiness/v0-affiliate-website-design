@@ -18,7 +18,9 @@ import {
   Calendar,
   ChevronRight,
   ArrowRight,
-  Flame
+  Flame,
+  Play,
+  ExternalLink
 } from "lucide-react"
 import { 
   gamesData, 
@@ -27,7 +29,9 @@ import {
   getActivePromoCodes,
   getAllCategories,
   getTotalActiveCodesCount,
-  getGameLogoUrl
+  getGameLogoUrl,
+  getGameAffiliateUrl,
+  hasExternalAffiliateLink
 } from "@/lib/gaming-data"
 import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
 
@@ -197,62 +201,81 @@ export default async function GamingPage() {
               const codeCount = getActivePromoCodes(game.promoCodes).length
               const logoUrl = getGameLogoUrl(game)
               const hasLogo = game.logoUrl
+              const affiliateUrl = getGameAffiliateUrl(game)
+              const isExternal = hasExternalAffiliateLink(game)
               
               return (
-                <Card key={game.id} className="overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 group cursor-pointer">
-                  <CardContent className="p-0">
-                    <Link href={`/gaming/${game.slug}`} className="block">
-                      <div className="p-5">
-                        {/* Game Logo - Primary Visual Anchor */}
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden ring-2 ring-border/50 shadow-md bg-muted/50">
-                            {hasLogo ? (
-                              <Image
-                                src={logoUrl}
-                                alt={game.name}
-                                width={56}
-                                height={56}
-                                className="rounded-xl object-cover"
-                                loading="lazy"
-                              />
-                            ) : (
-                              <div className="h-full w-full flex items-center justify-center bg-primary/10">
-                                <Gamepad2 className="h-7 w-7 text-primary" />
-                              </div>
-                            )}
+                <Card key={game.id} className="overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-200 group">
+                  <CardContent className="p-5">
+                    {/* Game Logo - Primary Visual Anchor */}
+                    <Link href={`/gaming/${game.slug}`} className="flex items-center gap-4 mb-4">
+                      <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden ring-2 ring-border/50 shadow-md bg-muted/50">
+                        {hasLogo ? (
+                          <Image
+                            src={logoUrl}
+                            alt={game.name}
+                            width={56}
+                            height={56}
+                            className="rounded-xl object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center bg-primary/10">
+                            <Gamepad2 className="h-7 w-7 text-primary" />
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-foreground group-hover:text-primary transition-colors truncate text-lg">
-                              {game.shortName || game.name}
-                            </h3>
-                            <p className="text-xs text-muted-foreground">
-                              {game.categories[0]} | {game.platforms[0]}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        {/* Description */}
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                          {game.description.slice(0, 80)}...
-                        </p>
-
-                        {/* Stats + Arrow */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-0">
-                              <Tag className="h-3 w-3 mr-1" />
-                              {codeCount} codes
-                            </Badge>
-                            {codeCount > 2 && (
-                              <Badge variant="secondary" className="text-xs bg-orange-500/10 text-orange-600 border-0">
-                                <Flame className="h-3 w-3 mr-1" />
-                                Hot
-                              </Badge>
-                            )}
-                          </div>
-                          <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                        </div>
+                        )}
                       </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-foreground group-hover:text-primary transition-colors truncate text-lg">
+                          {game.shortName || game.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          {game.categories[0]} | {game.platforms[0]}
+                        </p>
+                      </div>
+                    </Link>
+                    
+                    {/* Reward Highlight - Not description */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-0">
+                        <Tag className="h-3 w-3 mr-1" />
+                        {codeCount} codes
+                      </Badge>
+                      {codeCount > 2 && (
+                        <Badge variant="secondary" className="text-xs bg-orange-500/10 text-orange-600 border-0">
+                          <Flame className="h-3 w-3 mr-1" />
+                          Hot
+                        </Badge>
+                      )}
+                      <Badge variant="secondary" className="text-xs bg-green-500/10 text-green-600 border-0">
+                        <Gift className="h-3 w-3 mr-1" />
+                        Free Rewards
+                      </Badge>
+                    </div>
+
+                    {/* Primary CTA - Play Now (Affiliate) */}
+                    <Button 
+                      asChild 
+                      className="w-full h-11 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                    >
+                      <a 
+                        href={affiliateUrl} 
+                        target={isExternal ? "_blank" : undefined}
+                        rel={isExternal ? "noopener noreferrer" : undefined}
+                      >
+                        <Play className="h-5 w-5 mr-2 fill-current" />
+                        Play Now
+                        {isExternal && <ExternalLink className="h-4 w-4 ml-2" />}
+                      </a>
+                    </Button>
+
+                    {/* View Codes Link */}
+                    <Link 
+                      href={`/gaming/${game.slug}`}
+                      className="flex items-center justify-center gap-1 mt-3 text-sm font-medium text-primary hover:underline"
+                    >
+                      View Codes
+                      <ArrowRight className="h-4 w-4" />
                     </Link>
                   </CardContent>
                 </Card>

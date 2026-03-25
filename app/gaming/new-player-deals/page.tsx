@@ -17,14 +17,18 @@ import {
   Calendar,
   ArrowRight,
   Sparkles,
-  Flame
+  Flame,
+  Play,
+  ExternalLink
 } from "lucide-react"
 import { 
   gamesData,
   getGamesWithNewPlayerDeals,
   getActivePromoCodes,
   sortPromoCodesByValue,
-  getGameLogoUrl
+  getGameLogoUrl,
+  getGameAffiliateUrl,
+  hasExternalAffiliateLink
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -171,11 +175,13 @@ export default function NewPlayerDealsPage() {
               {newPlayerData.map(({ game, codes, rewards }) => {
                 const logoUrl = getGameLogoUrl(game)
                 const hasLogo = game.logoUrl
+                const affiliateUrl = getGameAffiliateUrl(game)
+                const isExternal = hasExternalAffiliateLink(game)
                 
                 return (
                   <div key={game.id} className="bg-card rounded-xl border border-border/50 p-6 hover:border-amber-500/20 transition-colors">
                     {/* Game Header with Logo */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                       <Link 
                         href={`/gaming/${game.slug}`}
                         className="flex items-center gap-4 group"
@@ -212,13 +218,30 @@ export default function NewPlayerDealsPage() {
                           </p>
                         </div>
                       </Link>
-                      <Link 
-                        href={`/gaming/${game.slug}`}
-                        className="text-sm font-medium text-primary hover:underline flex items-center gap-1 group"
-                      >
-                        View All Codes
-                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                      <div className="flex items-center gap-3">
+                        {/* Play Now CTA */}
+                        <Button 
+                          asChild 
+                          className="h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                        >
+                          <a 
+                            href={affiliateUrl} 
+                            target={isExternal ? "_blank" : undefined}
+                            rel={isExternal ? "noopener noreferrer" : undefined}
+                          >
+                            <Play className="h-4 w-4 mr-2 fill-current" />
+                            Play Now
+                            {isExternal && <ExternalLink className="h-3.5 w-3.5 ml-2" />}
+                          </a>
+                        </Button>
+                        <Link 
+                          href={`/gaming/${game.slug}`}
+                          className="text-sm font-medium text-primary hover:underline flex items-center gap-1 group"
+                        >
+                          View Codes
+                          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
                     </div>
 
                   {/* New Player Rewards Info */}

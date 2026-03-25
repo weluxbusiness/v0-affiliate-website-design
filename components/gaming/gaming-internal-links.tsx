@@ -12,7 +12,9 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import type { Game, GameCategory } from "@/lib/gaming-data"
-import { getGameLogoUrl } from "@/lib/gaming-data"
+import { getGameLogoUrl, getGameAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
+import { Button } from "@/components/ui/button"
+import { ExternalLink, Play } from "lucide-react"
 
 // ============================================
 // GAMING INTERNAL LINKS COMPONENT
@@ -261,14 +263,13 @@ interface GameCardCompactProps {
 export function GameCardCompact({ game, codeCount, showBadge = false }: GameCardCompactProps) {
   const logoUrl = getGameLogoUrl(game)
   const hasLogo = game.logoUrl
+  const affiliateUrl = getGameAffiliateUrl(game)
+  const isExternal = hasExternalAffiliateLink(game)
 
   return (
-    <Link
-      href={`/gaming/${game.slug}`}
-      className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-md hover:scale-[1.02] transition-all duration-200 group cursor-pointer"
-    >
-      {/* Game Logo */}
-      <div className="relative h-12 w-12 shrink-0 rounded-lg overflow-hidden ring-1 ring-border/50 bg-muted/50 shadow-sm">
+    <div className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-md transition-all duration-200 group">
+      {/* Game Logo - Links to game page */}
+      <Link href={`/gaming/${game.slug}`} className="relative h-12 w-12 shrink-0 rounded-lg overflow-hidden ring-1 ring-border/50 bg-muted/50 shadow-sm hover:ring-primary/50 transition-all">
         {hasLogo ? (
           <Image
             src={logoUrl}
@@ -283,10 +284,10 @@ export function GameCardCompact({ game, codeCount, showBadge = false }: GameCard
             <Gamepad2 className="h-6 w-6 text-primary" />
           </div>
         )}
-      </div>
+      </Link>
 
-      {/* Game Info */}
-      <div className="flex-1 min-w-0">
+      {/* Game Info - Links to game page */}
+      <Link href={`/gaming/${game.slug}`} className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
             {game.shortName || game.name}
@@ -306,11 +307,25 @@ export function GameCardCompact({ game, codeCount, showBadge = false }: GameCard
           <span className="text-border">|</span>
           <span>{game.categories[0]}</span>
         </div>
-      </div>
+      </Link>
 
-      {/* Arrow */}
-      <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
-    </Link>
+      {/* Play Now CTA - Affiliate Link */}
+      <Button 
+        asChild 
+        size="sm"
+        className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+      >
+        <a 
+          href={affiliateUrl} 
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+        >
+          <Play className="h-4 w-4 mr-1 fill-current" />
+          Play
+          {isExternal && <ExternalLink className="h-3 w-3 ml-1" />}
+        </a>
+      </Button>
+    </div>
   )
 }
 
@@ -328,14 +343,13 @@ interface TrendingCodeItemProps {
 export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCodeItemProps) {
   const logoUrl = getGameLogoUrl(game)
   const hasLogo = game.logoUrl
+  const affiliateUrl = getGameAffiliateUrl(game)
+  const isExternal = hasExternalAffiliateLink(game)
 
   return (
-    <Link
-      href={`/gaming/${game.slug}`}
-      className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-md hover:scale-[1.02] transition-all duration-200 group cursor-pointer"
-    >
-      {/* Game Logo */}
-      <div className="relative h-10 w-10 shrink-0 rounded-lg overflow-hidden ring-1 ring-border/50 bg-muted/50 shadow-sm">
+    <div className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:border-green-500/30 hover:shadow-md transition-all duration-200 group">
+      {/* Game Logo - Links to game page */}
+      <Link href={`/gaming/${game.slug}`} className="relative h-10 w-10 shrink-0 rounded-lg overflow-hidden ring-1 ring-border/50 bg-muted/50 shadow-sm hover:ring-primary/50 transition-all">
         {hasLogo ? (
           <Image
             src={logoUrl}
@@ -350,10 +364,10 @@ export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCod
             <Gamepad2 className="h-5 w-5 text-primary" />
           </div>
         )}
-      </div>
+      </Link>
 
-      {/* Code Info */}
-      <div className="flex-1 min-w-0">
+      {/* Code Info - Links to game page */}
+      <Link href={`/gaming/${game.slug}`} className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <code className="font-mono font-semibold text-primary text-sm">
             {code}
@@ -365,10 +379,25 @@ export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCod
             </Badge>
           )}
         </div>
-        <p className="text-sm text-muted-foreground truncate">{reward}</p>
+        <p className="text-sm font-medium text-foreground truncate">{reward}</p>
         <p className="text-xs text-muted-foreground mt-1">{game.shortName || game.name}</p>
-      </div>
-      <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
-    </Link>
+      </Link>
+
+      {/* Play Now CTA */}
+      <Button 
+        asChild 
+        size="sm"
+        className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+      >
+        <a 
+          href={affiliateUrl} 
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+        >
+          <Play className="h-4 w-4 mr-1 fill-current" />
+          Play
+        </a>
+      </Button>
+    </div>
   )
 }
