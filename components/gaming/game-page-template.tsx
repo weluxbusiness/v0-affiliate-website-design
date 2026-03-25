@@ -1,0 +1,480 @@
+import Link from "next/link"
+import { 
+  ChevronRight, 
+  Gamepad2, 
+  Gift, 
+  Users, 
+  Calendar,
+  ExternalLink,
+  HelpCircle,
+  Zap,
+  Tag,
+  Trophy,
+  Star
+} from "lucide-react"
+import { PageContainer } from "@/components/layout/page-container"
+import { PromoCodeCard } from "@/components/gaming/promo-code-card"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
+import { getBestPromoCode, getActivePromoCodes, sortPromoCodesByValue } from "@/lib/gaming-data"
+
+// ============================================
+// TYPES
+// ============================================
+
+interface InternalLink {
+  href: string
+  label: string
+}
+
+interface GamePageTemplateProps {
+  game: Game
+  relatedGames: Game[]
+  categoryLinks: InternalLink[]
+}
+
+// ============================================
+// SCHEMA GENERATION
+// ============================================
+
+export function generateGameSchemaMarkup(game: Game, codes: PromoCode[]) {
+  const baseUrl = "https://savesmart.bio"
+  const pageUrl = `${baseUrl}/gaming/${game.slug}`
+
+  // FAQPage schema
+  const faqSchema = game.faqs && game.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: game.faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer
+      }
+    }))
+  } : null
+
+  // ItemList schema for promo codes
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${game.name} Promo Codes`,
+    description: `Active promo codes and rewards for ${game.name}`,
+    numberOfItems: codes.length,
+    itemListElement: codes.slice(0, 10).map((code, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Offer",
+        name: code.code,
+        description: code.reward,
+        url: pageUrl
+      }
+    }))
+  }
+
+  // WebPage schema
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: `${game.name} Promo Codes & Rewards`,
+    description: game.description,
+    url: pageUrl,
+    mainEntity: {
+      "@type": "VideoGame",
+      name: game.name,
+      description: game.description,
+      gamePlatform: game.platforms,
+      genre: game.categories,
+      publisher: {
+        "@type": "Organization",
+        name: game.publisher
+      },
+      developer: {
+        "@type": "Organization", 
+        name: game.developer
+      }
+    }
+  }
+
+  // Breadcrumb schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: baseUrl
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Gaming",
+        item: `${baseUrl}/gaming`
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: game.name,
+        item: pageUrl
+      }
+    ]
+  }
+
+  return { faqSchema, itemListSchema, webPageSchema, breadcrumbSchema }
+}
+
+// ============================================
+// SUB-COMPONENTS
+// ============================================
+
+function RewardCard({ reward }: { reward: GameReward }) {
+  const typeColors: Record<GameReward['type'], string> = {
+    'Free': 'bg-secondary/10 text-secondary',
+    'New Player': 'bg-primary/10 text-primary',
+    'Daily': 'bg-blue-500/10 text-blue-600',
+    'Event': 'bg-amber-500/10 text-amber-600',
+    'Referral': 'bg-pink-500/10 text-pink-600',
+    'Achievement': 'bg-green-500/10 text-green-600',
+  }
+
+  return (
+    <Card className="border-border/50 hover:border-primary/20 transition-colors">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary/10">
+            <Gift className="h-5 w-5 text-secondary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h4 className="font-medium text-foreground text-sm">
+                {reward.title}
+              </h4>
+              <Badge variant="outline" className={typeColors[reward.type]}>
+                {reward.type}
+              </Badge>
+            </div>
+            <p className="text-xs text-muted-foreground line-clamp-2">
+              {reward.description}
+            </p>
+            {reward.value && (
+              <p className="text-xs font-medium text-primary mt-1">
+                {reward.value}
+              </p>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// ============================================
+// MAIN TEMPLATE
+// ============================================
+
+export function GamePageTemplate({
+  game,
+  relatedGames,
+  categoryLinks
+}: GamePageTemplateProps) {
+  const activeCodes = sortPromoCodesByValue(getActivePromoCodes(game.promoCodes))
+  const bestCode = getBestPromoCode(game.promoCodes)
+  const schemas = generateGameSchemaMarkup(game, activeCodes)
+
+  return (
+    <main className="min-h-screen bg-background">
+      {/* Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.webPageSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumbSchema) }}
+      />
+      {schemas.faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.faqSchema) }}
+        />
+      )}
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-12 md:py-16 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+        <PageContainer>
+          {/* Breadcrumbs */}
+          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm">
+            <Link 
+              href="/" 
+              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+            >
+              Home
+            </Link>
+            <ChevronRight className="h-4 w-4 text-white/50" />
+            <Link 
+              href="/gaming" 
+              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+            >
+              Gaming
+            </Link>
+            <ChevronRight className="h-4 w-4 text-white/50" />
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-medium">
+              {game.shortName || game.name}
+            </span>
+          </nav>
+
+          {/* Game Info */}
+          <div className="flex flex-col md:flex-row gap-6 items-start">
+            <div className="flex-1">
+              {/* Category Badges */}
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                {game.categories.slice(0, 3).map(cat => (
+                  <Badge key={cat} className="bg-white/10 text-white border-0">
+                    {cat}
+                  </Badge>
+                ))}
+                {game.playerCount && (
+                  <Badge variant="outline" className="border-white/30 text-white">
+                    <Users className="h-3 w-3 mr-1" />
+                    {game.playerCount}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Title */}
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
+                {game.name} Promo Codes & Rewards
+              </h1>
+
+              {/* Description */}
+              <p className="text-lg text-white/80 max-w-2xl mb-6">
+                {game.description}
+              </p>
+
+              {/* Stats */}
+              <div className="flex flex-wrap items-center gap-4 text-sm">
+                <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
+                  <Tag className="h-4 w-4" />
+                  <span>{activeCodes.length} Active Codes</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
+                  <Trophy className="h-4 w-4" />
+                  <span>{game.rewards.length} Rewards</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>Updated {new Date(game.lastUpdated).toLocaleDateString()}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <div className="shrink-0">
+              <Button size="lg" variant="secondary" asChild className="gap-2">
+                <a href={game.affiliateLink} target="_blank" rel="noopener noreferrer">
+                  <Gamepad2 className="h-5 w-5" />
+                  Play {game.shortName || game.name}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+            </div>
+          </div>
+        </PageContainer>
+      </section>
+
+      {/* Best Code Highlight */}
+      {bestCode && (
+        <section className="py-8 border-b border-border bg-muted/30">
+          <PageContainer>
+            <div className="max-w-2xl mx-auto">
+              <PromoCodeCard code={bestCode} game={game} variant="featured" />
+            </div>
+          </PageContainer>
+        </section>
+      )}
+
+      {/* Promo Codes Section */}
+      <section className="py-10 md:py-12">
+        <PageContainer>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <Tag className="h-5 w-5 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground">
+              All {game.name} Promo Codes
+            </h2>
+          </div>
+
+          {activeCodes.length > 0 ? (
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {activeCodes.map((code) => (
+                <PromoCodeCard key={code.id} code={code} />
+              ))}
+            </div>
+          ) : (
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                <Tag className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  No active codes right now
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  Check back soon - we update codes daily!
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </PageContainer>
+      </section>
+
+      {/* Rewards Section */}
+      {game.rewards.length > 0 && (
+        <section className="py-10 md:py-12 bg-muted/30">
+          <PageContainer>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/10">
+                <Gift className="h-5 w-5 text-secondary" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">
+                Free Rewards & Bonuses
+              </h2>
+            </div>
+
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+              {game.rewards.map((reward) => (
+                <RewardCard key={reward.id} reward={reward} />
+              ))}
+            </div>
+          </PageContainer>
+        </section>
+      )}
+
+      {/* FAQ Section */}
+      {game.faqs && game.faqs.length > 0 && (
+        <section className="py-10 md:py-12">
+          <PageContainer>
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                  <HelpCircle className="h-5 w-5 text-primary" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Frequently Asked Questions
+                </h2>
+              </div>
+
+              <div className="space-y-4">
+                {game.faqs.map((faq, index) => (
+                  <Card key={index} className="border-border/50">
+                    <CardContent className="pt-6">
+                      <h3 className="font-semibold text-foreground mb-2">
+                        {faq.question}
+                      </h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </PageContainer>
+        </section>
+      )}
+
+      {/* Related Games */}
+      {relatedGames.length > 0 && (
+        <section className="py-10 md:py-12 border-t border-border">
+          <PageContainer>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <Star className="h-5 w-5 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">
+                Similar Games with Codes
+              </h2>
+            </div>
+
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+              {relatedGames.map((relatedGame) => (
+                <Link
+                  key={relatedGame.id}
+                  href={`/gaming/${relatedGame.slug}`}
+                  className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center"
+                >
+                  <Gamepad2 className="h-8 w-8 text-primary" />
+                  <span className="text-sm font-medium text-foreground line-clamp-2">
+                    {relatedGame.shortName || relatedGame.name}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {getActivePromoCodes(relatedGame.promoCodes).length} codes
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </PageContainer>
+        </section>
+      )}
+
+      {/* Category Links */}
+      <section className="py-10 md:py-12 bg-muted/30">
+        <PageContainer>
+          <h3 className="text-xl font-bold text-foreground mb-6">
+            Explore More Gaming Deals
+          </h3>
+
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/gaming/promo-codes"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium text-foreground transition-colors"
+            >
+              <Tag className="h-4 w-4" />
+              All Promo Codes
+            </Link>
+            <Link
+              href="/gaming/free-rewards"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium text-foreground transition-colors"
+            >
+              <Gift className="h-4 w-4" />
+              Free Rewards
+            </Link>
+            <Link
+              href="/gaming/new-player-deals"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium text-foreground transition-colors"
+            >
+              <Zap className="h-4 w-4" />
+              New Player Deals
+            </Link>
+            <Link
+              href="/gaming/today"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium text-foreground transition-colors"
+            >
+              <Calendar className="h-4 w-4" />
+              Today&apos;s Codes
+            </Link>
+            {categoryLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </PageContainer>
+      </section>
+    </main>
+  )
+}

@@ -1,0 +1,206 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { PageContainer } from "@/components/layout/page-container"
+import { PromoCodeCard } from "@/components/gaming/promo-code-card"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { 
+  Tag, 
+  ChevronRight,
+  Gamepad2,
+  Gift,
+  Zap,
+  Calendar
+} from "lucide-react"
+import { 
+  gamesData,
+  getActivePromoCodes,
+  getTotalActiveCodesCount,
+  sortPromoCodesByValue
+} from "@/lib/gaming-data"
+
+export const revalidate = 300
+
+export const metadata: Metadata = {
+  title: "All Gaming Promo Codes - Working Codes for 100+ Games | SaveSmart",
+  description: "Browse all working promo codes for popular games including Genshin Impact, Fortnite, RAID Shadow Legends, Roblox, and more. Verified and updated daily.",
+  keywords: [
+    "gaming promo codes",
+    "game codes 2024",
+    "working game codes",
+    "free game codes",
+    "mobile game codes",
+    "pc game codes"
+  ],
+  openGraph: {
+    title: "All Gaming Promo Codes | SaveSmart",
+    description: "Browse all working promo codes for popular games. Verified and updated daily.",
+    url: "https://savesmart.bio/gaming/promo-codes",
+  },
+  alternates: {
+    canonical: "/gaming/promo-codes",
+  },
+}
+
+export default function GamingPromoCodesPage() {
+  const totalCodes = getTotalActiveCodesCount()
+
+  // Group codes by game
+  const gameCodesMap = gamesData
+    .map(game => ({
+      game,
+      codes: sortPromoCodesByValue(getActivePromoCodes(game.promoCodes))
+    }))
+    .filter(item => item.codes.length > 0)
+    .sort((a, b) => b.game.popularityScore - a.game.popularityScore)
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-12 md:py-16 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+        <PageContainer>
+          {/* Breadcrumbs */}
+          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm">
+            <Link 
+              href="/" 
+              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+            >
+              Home
+            </Link>
+            <ChevronRight className="h-4 w-4 text-white/50" />
+            <Link 
+              href="/gaming" 
+              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+            >
+              Gaming
+            </Link>
+            <ChevronRight className="h-4 w-4 text-white/50" />
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-medium">
+              Promo Codes
+            </span>
+          </nav>
+
+          <div className="flex items-center gap-2 mb-4">
+            <Badge className="bg-white/10 text-white border-0">
+              <Tag className="h-3 w-3 mr-1" />
+              Promo Codes
+            </Badge>
+            <Badge variant="outline" className="border-white/30 text-white">
+              {totalCodes}+ Active Codes
+            </Badge>
+          </div>
+
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
+            All Gaming Promo Codes
+          </h1>
+
+          <p className="text-lg text-white/80 max-w-2xl">
+            Browse all working promo codes for {gamesData.length}+ popular games. 
+            Every code is verified and updated daily.
+          </p>
+        </PageContainer>
+      </section>
+
+      {/* Quick Navigation */}
+      <section className="py-6 border-b border-border bg-muted/30">
+        <PageContainer>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/gaming"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium transition-colors"
+            >
+              <Gamepad2 className="h-4 w-4" />
+              All Games
+            </Link>
+            <Link
+              href="/gaming/free-rewards"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium transition-colors"
+            >
+              <Gift className="h-4 w-4" />
+              Free Rewards
+            </Link>
+            <Link
+              href="/gaming/new-player-deals"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium transition-colors"
+            >
+              <Zap className="h-4 w-4" />
+              New Player Deals
+            </Link>
+            <Link
+              href="/gaming/today"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium transition-colors"
+            >
+              <Calendar className="h-4 w-4" />
+              Today&apos;s Codes
+            </Link>
+          </div>
+        </PageContainer>
+      </section>
+
+      {/* Codes by Game */}
+      <section className="py-10 md:py-12">
+        <PageContainer>
+          {gameCodesMap.length > 0 ? (
+            <div className="space-y-12">
+              {gameCodesMap.map(({ game, codes }) => (
+                <div key={game.id}>
+                  {/* Game Header */}
+                  <div className="flex items-center justify-between mb-6">
+                    <Link 
+                      href={`/gaming/${game.slug}`}
+                      className="flex items-center gap-3 group"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                        <Gamepad2 className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                          {game.name} Codes
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                          {codes.length} active codes | {game.categories[0]}
+                        </p>
+                      </div>
+                    </Link>
+                    <Link 
+                      href={`/gaming/${game.slug}`}
+                      className="text-sm font-medium text-primary hover:underline"
+                    >
+                      View All
+                    </Link>
+                  </div>
+
+                  {/* Codes Grid */}
+                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    {codes.slice(0, 3).map((code) => (
+                      <PromoCodeCard key={code.id} code={code} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                <Tag className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  No codes available
+                </h3>
+                <p className="text-muted-foreground">
+                  Check back soon - we update codes daily!
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </PageContainer>
+      </section>
+
+      <Footer />
+    </div>
+  )
+}
