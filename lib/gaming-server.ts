@@ -1,5 +1,5 @@
 import { getGames, getPromoCodes, getGameRewards, getGameBySlug, getPromoCodesForGame, getTodaysCodes, getGamingStats } from './gaming-db'
-import { games as staticGames, promoCodes as staticCodes, getGameBySlug as getStaticGameBySlug, getCodesForGame as getStaticCodesForGame, getActiveCodesForGame } from './gaming-data'
+import { gamesData as staticGames, getGameBySlug as getStaticGameBySlug, getActivePromoCodes } from './gaming-data'
 import type { Game, PromoCode } from './gaming-data'
 
 // Use database by default, fall back to static data if DB is empty
@@ -92,7 +92,10 @@ export async function getCodesForGame(gameSlug: string): Promise<(PromoCode & { 
       console.error('Failed to fetch codes from DB:', error)
     }
   }
-  return getActiveCodesForGame(gameSlug)
+  // Fallback: get codes from static data
+  const game = getStaticGameBySlug(gameSlug)
+  if (!game) return []
+  return getActivePromoCodes(game.promoCodes)
 }
 
 // Get all promo codes
@@ -111,9 +114,12 @@ export async function getAllCodes(options?: { limit?: number; gameSlug?: string 
       console.error('Failed to fetch codes from DB:', error)
     }
   }
-  let codes = Object.values(staticCodes).flat()
+  // Fallback: collect all codes from static games
+  let codes: PromoCode[] = staticGames.flatMap(game => 
+    getActivePromoCodes(game.promoCodes).map(code => ({ ...code, gameId: game.slug }))
+  )
   if (options?.gameSlug) {
-    codes = codes.filter(c => c.gameId === options.gameSlug)
+    codes = codes.filter(c => (c as PromoCode & { gameId?: string }).gameId === options.gameSlug)
   }
   if (options?.limit) {
     codes = codes.slice(0, options.limit)
@@ -134,7 +140,9 @@ export async function getTodaysPromoCodes(limit = 20): Promise<(PromoCode & { id
     }
   }
   // Fallback: return most recent codes from static data
-  const allCodes = Object.values(staticCodes).flat()
+  const allCodes = staticGames.flatMap(game => 
+    getActivePromoCodes(game.promoCodes).map(code => ({ ...code, gameId: game.slug, addedDate: code.addedAt }))
+  )
   return allCodes
     .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
     .slice(0, limit)
@@ -156,9 +164,10 @@ export async function getStats(): Promise<{
       console.error('Failed to fetch stats from DB:', error)
     }
   }
+  const totalCodes = staticGames.reduce((sum, game) => sum + getActivePromoCodes(game.promoCodes).length, 0)
   return {
     totalGames: staticGames.length,
-    totalCodes: Object.values(staticCodes).flat().length,
+    totalCodes,
     totalRewards: 0,
   }
 }

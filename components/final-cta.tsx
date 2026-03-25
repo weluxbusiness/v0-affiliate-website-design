@@ -1,6 +1,6 @@
-import { Chrome, Shield, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Shield, Sparkles } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
+import { ExtensionCTAButton } from "@/components/extension-cta-button"
 
 export function FinalCTA() {
   return (
@@ -18,20 +18,16 @@ export function FinalCTA() {
         </h2>
         
         <p className="mx-auto mt-6 max-w-2xl text-lg text-primary-foreground/80">
-          Install SaveSmart today and never miss a deal again. It only takes 30 seconds and it's completely free.
+          Install SaveSmart today and never miss a deal again. It only takes 30 seconds and it&apos;s completely free.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Button
+          <ExtensionCTAButton
             size="lg"
             className="gap-2 bg-primary-foreground px-8 text-primary shadow-xl hover:bg-primary-foreground/90"
-            asChild
           >
-            <a href="https://chrome.google.com/webstore" target="_blank" rel="noopener noreferrer">
-              <Chrome className="h-5 w-5" />
-              Install Free Shopping Tool
-            </a>
-          </Button>
+            Install Free Chrome Extension
+          </ExtensionCTAButton>
         </div>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-primary-foreground/70">

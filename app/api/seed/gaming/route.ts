@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { upsertGame, bulkUpsertPromoCodes } from '@/lib/gaming-db'
-import { games, promoCodes } from '@/lib/gaming-data'
+import { gamesData, getActivePromoCodes } from '@/lib/gaming-data'
 
 export async function POST(request: NextRequest) {
   // Verify authorization
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Seed all games from static data
-    for (const game of games) {
+    for (const game of gamesData) {
       try {
         const dbGame = await upsertGame({
           slug: game.slug,
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         results.games_seeded++
         
         // Seed promo codes for this game
-        const gameCodes = promoCodes[game.id] || []
+        const gameCodes = getActivePromoCodes(game.promoCodes)
         if (gameCodes.length > 0) {
           const codesToInsert = gameCodes.map(code => ({
             game_id: dbGame.id,
@@ -83,11 +83,12 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
+  const totalCodes = gamesData.reduce((sum, game) => sum + getActivePromoCodes(game.promoCodes).length, 0)
   return NextResponse.json({
     description: 'Seed the database with gaming data from static files',
     method: 'POST',
     authorization: 'Bearer <CRON_SECRET or SEED_API_KEY>',
-    available_games: games.length,
-    available_codes: Object.values(promoCodes).flat().length,
+    available_games: gamesData.length,
+    available_codes: totalCodes,
   })
 }
