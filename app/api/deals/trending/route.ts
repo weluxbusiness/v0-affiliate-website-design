@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 import { createAnonClient } from "@/lib/supabase/anon"
 import type { Deal } from "@/lib/deal-types"
 
+// Force dynamic to avoid build-time request.url issues
+export const dynamic = "force-dynamic"
+
 // Store popularity scores for trending algorithm
 const STORE_POPULARITY: Record<string, number> = {
   "amazon": 100,

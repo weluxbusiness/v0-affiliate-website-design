@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+// Force dynamic to avoid build-time request.url issues
+export const dynamic = "force-dynamic"
+
 const BASE_URL = 'https://savesmart.bio'
 
 // Auto-generate SEO pages for all stores and categories

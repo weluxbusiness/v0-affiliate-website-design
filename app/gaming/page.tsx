@@ -34,7 +34,8 @@ import {
   hasExternalAffiliateLink
 } from "@/lib/gaming-data"
 import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
-import { FAQSection, gamingFAQs, generateFAQSchema } from "@/components/seo/faq-section"
+import { FAQSection } from "@/components/seo/faq-section"
+import { gamingFAQs, generateFAQSchema } from "@/lib/faq-data"
 import { TrustBadges } from "@/components/seo/trust-badges"
 
 export const revalidate = 300 // Revalidate every 5 minutes

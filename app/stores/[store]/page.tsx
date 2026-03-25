@@ -16,7 +16,8 @@ import {
   getStoreRelatedLinks 
 } from "@/components/seo-content-block"
 import { CrossLinkSection } from "@/components/internal-links"
-import { FAQSection, storeFAQs, generateFAQSchema } from "@/components/seo/faq-section"
+import { FAQSection } from "@/components/seo/faq-section"
+import { storeFAQs, generateFAQSchema } from "@/lib/faq-data"
 import { TrustBadges, UpdatedTodayBadge } from "@/components/seo/trust-badges"
 import { getStoreBySlug, getStoreSlugs, getCategoriesForStore, getBrandSlugs } from "@/lib/seo-data"
 import { Store, Tag, ChevronRight, Clock } from "lucide-react"

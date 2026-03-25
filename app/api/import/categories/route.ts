@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { generateSlug } from '@/lib/data/seed-data'
 
+// Force dynamic to avoid build-time request.url issues
+export const dynamic = "force-dynamic"
+
 // POST: Import categories from external source or JSON
 export async function POST(request: Request) {
   try {

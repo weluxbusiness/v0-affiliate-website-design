@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+// Force dynamic to avoid build-time request.url issues
+export const dynamic = "force-dynamic"
+
 // POST: Import coupons from external source or JSON
 export async function POST(request: Request) {
   try {

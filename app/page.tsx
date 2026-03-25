@@ -12,7 +12,8 @@ import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
 import { HomeGamingDeals } from "@/components/home-gaming-deals"
 import { HomePopularStores } from "@/components/home-popular-stores"
-import { FAQSection, dealsFAQs, generateFAQSchema } from "@/components/seo/faq-section"
+import { FAQSection } from "@/components/seo/faq-section"
+import { dealsFAQs, generateFAQSchema } from "@/lib/faq-data"
 import { getTrendingDeals } from "@/lib/deals"
 
 // Organization schema for rich search results

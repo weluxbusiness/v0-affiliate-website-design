@@ -18,7 +18,8 @@ import {
   getCategoryRelatedLinks 
 } from "@/components/seo-content-block"
 import { CategoryCrossLinks } from "@/components/internal-links"
-import { FAQSection, categoryFAQs } from "@/components/seo/faq-section"
+import { FAQSection } from "@/components/seo/faq-section"
+import { categoryFAQs } from "@/lib/faq-data"
 import { TrustBadges } from "@/components/seo/trust-badges"
 import { getCategoryBySlug, getCategorySlugs, getStoresForCategory, getBrandSlugs } from "@/lib/seo-data"
 import { formatBrandName } from "@/lib/seo/content"

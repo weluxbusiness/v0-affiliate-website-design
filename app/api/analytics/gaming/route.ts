@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { trackEvent, incrementCodeUses } from '@/lib/gaming-db'
 import { createHash } from 'crypto'
 
+// Force dynamic to avoid build-time request.url issues
+export const dynamic = "force-dynamic"
+
 // Helper to hash IP for privacy
 function hashIP(ip: string): string {
   return createHash('sha256').update(ip + process.env.IP_HASH_SALT || 'welux-salt').digest('hex').slice(0, 16)
