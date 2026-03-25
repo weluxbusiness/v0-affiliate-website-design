@@ -56,7 +56,6 @@ export async function POST(request: NextRequest) {
             is_verified: code.isVerified,
             is_exclusive: code.isExclusive,
             is_active: true,
-            source: code.source,
           }))
           
           const inserted = await bulkUpsertPromoCodes(codesToInsert)
