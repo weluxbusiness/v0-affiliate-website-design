@@ -24,10 +24,9 @@ function normalizeDbGame(dbGame: Awaited<ReturnType<typeof getGameBySlug>>): Gam
     websiteUrl: dbGame.website_url ?? '',
     popularityScore: dbGame.popularity_score,
     playerCount: dbGame.player_count ?? '',
-    seo: {
-      title: dbGame.meta_title || `${dbGame.name} Promo Codes`,
-      description: dbGame.meta_description || `Get the latest ${dbGame.name} promo codes and free rewards.`,
-    },
+    metaTitle: dbGame.meta_title ?? `${dbGame.name} Promo Codes`,
+    metaDescription: dbGame.meta_description ?? `Get the latest ${dbGame.name} promo codes and free rewards.`,
+    promoCodes: [],
   }
 }
 
