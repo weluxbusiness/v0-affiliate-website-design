@@ -297,8 +297,8 @@ export const DEAL_FINDER_PAGES: DealFinderPage[] = [
 ]
 
 // Get deal finder page by slug
-export function getDealFinderPage(slug: string): DealFinderPage | undefined {
-  return DEAL_FINDER_PAGES.find(page => page.slug === slug)
+export function getDealFinderPage(slug: string): DealFinderPage | null {
+  return DEAL_FINDER_PAGES.find(page => page.slug === slug) ?? null
 }
 
 // Get all deal finder page slugs

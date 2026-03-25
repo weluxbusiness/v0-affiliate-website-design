@@ -1769,16 +1769,16 @@ Browse our [electronics deals](/deals/electronics) for the latest smartphone dis
   },
 ]
 
-export function getArticleBySlug(slug: string): Article | undefined {
-  return articles.find((article) => article.slug === slug)
+export function getArticleBySlug(slug: string): Article | null {
+  return articles.find((article) => article.slug === slug) ?? null
 }
 
 export function getArticlesByCategory(categorySlug: string): Article[] {
   return articles.filter((article) => article.category === categorySlug)
 }
 
-export function getCategoryBySlug(slug: string): Category | undefined {
-  return categories.find((category) => category.slug === slug)
+export function getCategoryBySlug(slug: string): Category | null {
+  return categories.find((category) => category.slug === slug) ?? null
 }
 
 export function getFeaturedArticles(): Article[] {

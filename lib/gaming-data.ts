@@ -168,8 +168,8 @@ export function getPopularGames(limit: number = 10): Game[] {
     .slice(0, limit)
 }
 
-export function getGameBySlug(slug: string): Game | undefined {
-  return gamesData.find(game => game.slug === slug)
+export function getGameBySlug(slug: string): Game | null {
+  return gamesData.find(game => game.slug === slug) ?? null
 }
 
 export function getRelatedGames(currentGame: Game, limit: number = 6): Game[] {
