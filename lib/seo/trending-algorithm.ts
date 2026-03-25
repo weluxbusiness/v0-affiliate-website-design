@@ -189,8 +189,8 @@ export const TRENDING_PAGES: TrendingPage[] = [
 ]
 
 // Get page definition by slug
-export function getTrendingPageBySlug(slug: string): TrendingPage | undefined {
-  return TRENDING_PAGES.find(p => p.slug === slug)
+export function getTrendingPageBySlug(slug: string): TrendingPage | null {
+  return TRENDING_PAGES.find(p => p.slug === slug) ?? null
 }
 
 // Get all trending page slugs for static generation
