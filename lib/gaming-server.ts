@@ -12,39 +12,40 @@ function normalizeDbGame(dbGame: Awaited<ReturnType<typeof getGameBySlug>>): Gam
     id: dbGame.slug,
     name: dbGame.name,
     slug: dbGame.slug,
-    shortName: dbGame.short_name ?? '',
+    shortName: dbGame.short_name ?? undefined,
     description: dbGame.description ?? '',
     categories: dbGame.categories as Game['categories'],
     platforms: dbGame.platforms as Game['platforms'],
     imageUrl: dbGame.image_url ?? '/images/games/default.webp',
-    iconUrl: dbGame.icon_url ?? '',
-    developer: dbGame.developer ?? '',
-    publisher: dbGame.publisher ?? '',
+    iconUrl: dbGame.icon_url ?? undefined,
+    developer: dbGame.developer ?? 'Unknown',
+    publisher: dbGame.publisher ?? 'Unknown',
     affiliateLink: dbGame.affiliate_link ?? '',
-    websiteUrl: dbGame.website_url ?? '',
-    popularityScore: dbGame.popularity_score,
-    playerCount: dbGame.player_count ?? '',
+    websiteUrl: dbGame.website_url ?? undefined,
+    popularityScore: dbGame.popularity_score ?? 50,
+    playerCount: dbGame.player_count ?? undefined,
     metaTitle: dbGame.meta_title ?? `${dbGame.name} Promo Codes`,
     metaDescription: dbGame.meta_description ?? `Get the latest ${dbGame.name} promo codes and free rewards.`,
     promoCodes: [],
+    rewards: [],
+    lastUpdated: dbGame.updated_at ?? new Date().toISOString(),
   }
 }
 
 // Normalize database promo code to static format
-function normalizeDbCode(dbCode: Awaited<ReturnType<typeof getPromoCodes>>[number]): PromoCode & { id: string; game_id: string } {
+function normalizeDbCode(dbCode: Awaited<ReturnType<typeof getPromoCodes>>[number]): PromoCode & { game_id: string } {
   return {
     id: dbCode.id,
     game_id: dbCode.game_id,
-    gameId: dbCode.games?.slug ?? '',
     code: dbCode.code,
     reward: dbCode.reward,
-    rewardValue: dbCode.reward_value,
+    rewardValue: dbCode.reward_value ?? undefined,
     rewardType: dbCode.reward_type as PromoCode['rewardType'],
-    expiresAt: dbCode.expires_at ?? '',
-    isVerified: dbCode.is_verified,
-    isExclusive: dbCode.is_exclusive,
-    addedAt: dbCode.created_at,
-    successRate: dbCode.success_rate ?? 0,
+    expiresAt: dbCode.expires_at ?? undefined,
+    isVerified: dbCode.is_verified ?? false,
+    isExclusive: dbCode.is_exclusive ?? undefined,
+    addedAt: dbCode.created_at ?? new Date().toISOString(),
+    successRate: dbCode.success_rate ?? undefined,
   }
 }
 
@@ -113,11 +114,12 @@ export async function getAllCodes(options?: { limit?: number; gameSlug?: string 
     }
   }
   // Fallback: collect all codes from static games
-  let codes: PromoCode[] = staticGames.flatMap(game => 
-    getActivePromoCodes(game.promoCodes).map(code => ({ ...code, gameId: game.slug }))
+  let codes = staticGames.flatMap(game => 
+    getActivePromoCodes(game.promoCodes)
   )
   if (options?.gameSlug) {
-    codes = codes.filter(c => (c as PromoCode & { gameId?: string }).gameId === options.gameSlug)
+    const game = getStaticGameBySlug(options.gameSlug)
+    codes = game ? getActivePromoCodes(game.promoCodes) : []
   }
   if (options?.limit) {
     codes = codes.slice(0, options.limit)
@@ -139,10 +141,10 @@ export async function getTodaysPromoCodes(limit = 20): Promise<(PromoCode & { id
   }
   // Fallback: return most recent codes from static data
   const allCodes = staticGames.flatMap(game => 
-    getActivePromoCodes(game.promoCodes).map(code => ({ ...code, gameId: game.slug, addedDate: code.addedAt }))
+    getActivePromoCodes(game.promoCodes)
   )
   return allCodes
-    .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
+    .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
     .slice(0, limit)
 }
 
@@ -182,6 +184,6 @@ export async function getFeaturedGames(limit = 6): Promise<Game[]> {
 export async function getRecentCodes(limit = 10): Promise<(PromoCode & { id?: string; game_id?: string })[]> {
   const allCodes = await getAllCodes()
   return allCodes
-    .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
+    .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
     .slice(0, limit)
 }
