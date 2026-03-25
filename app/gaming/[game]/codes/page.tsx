@@ -120,13 +120,13 @@ export default async function GameCodesPage({ params }: PageProps) {
           </nav>
           
           <div className="flex items-center gap-2 mb-4">
-            <Badge className="bg-white/10 text-white border-0">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
               <Tag className="h-3 w-3 mr-1" />
               All Promo Codes
-            </Badge>
-            <Badge variant="outline" className="border-white/30 text-white">
+            </span>
+            <span className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium">
               {activeCodes.length} Active
-            </Badge>
+            </span>
           </div>
           
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">

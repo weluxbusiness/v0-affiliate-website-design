@@ -111,13 +111,16 @@ export default function NewPlayerDealsPage() {
           </nav>
 
           <div className="flex items-center gap-2 mb-4">
-            <Badge className="bg-white/10 text-white border-0">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
               <Zap className="h-3 w-3 mr-1" />
               New Player Deals
-            </Badge>
-            <Badge variant="outline" className="border-white/30 text-white">
+            </span>
+            <Link 
+              href="/gaming"
+              className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-colors cursor-pointer"
+            >
               {newPlayerData.length}+ Games
-            </Badge>
+            </Link>
           </div>
 
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">

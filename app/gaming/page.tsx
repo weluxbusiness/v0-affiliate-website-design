@@ -104,13 +104,19 @@ export default async function GamingPage() {
           {/* Hero Content */}
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 mb-4">
-              <Badge className="bg-white/10 text-white border-0">
+              <Link 
+                href="/gaming/promo-codes"
+                className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white text-sm font-medium hover:bg-white/20 transition-colors cursor-pointer"
+              >
                 <Gamepad2 className="h-3 w-3 mr-1" />
                 Gaming Deals
-              </Badge>
-              <Badge variant="outline" className="border-white/30 text-white">
+              </Link>
+              <Link 
+                href="/gaming/today"
+                className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-colors cursor-pointer"
+              >
                 {totalCodes}+ Active Codes
-              </Badge>
+              </Link>
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-balance">
