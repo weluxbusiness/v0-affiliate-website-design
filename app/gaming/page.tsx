@@ -26,6 +26,7 @@ import {
   getAllCategories,
   getTotalActiveCodesCount
 } from "@/lib/gaming-data"
+import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
 
 export const revalidate = 300 // Revalidate every 5 minutes
 
@@ -53,14 +54,23 @@ export const metadata: Metadata = {
   },
 }
 
-export default function GamingPage() {
-  const popularGames = getPopularGames(12)
+export default async function GamingPage() {
+  // Fetch data from database (with static fallback)
+  const [dbGames, dbFeaturedGames, dbRecentCodes, dbStats] = await Promise.all([
+    getAllGames(),
+    getFeaturedGames(4),
+    getRecentCodes(6),
+    getStats(),
+  ])
+  
+  // Use database data if available, otherwise fall back to static
+  const popularGames = dbGames.length > 0 ? dbGames.slice(0, 12) : getPopularGames(12)
   const trendingCodes = getTrendingCodes(6)
   const categories = getAllCategories()
-  const totalCodes = getTotalActiveCodesCount()
+  const totalCodes = dbStats.totalCodes > 0 ? dbStats.totalCodes : getTotalActiveCodesCount()
 
   // Get featured games (top 4 by popularity)
-  const featuredGames = popularGames.slice(0, 4)
+  const featuredGames = dbFeaturedGames.length > 0 ? dbFeaturedGames : popularGames.slice(0, 4)
 
   return (
     <div className="min-h-screen bg-background">
@@ -154,10 +164,11 @@ export default function GamingPage() {
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {trendingCodes.map(({ game, code }) => (
               <PromoCodeCard 
-                key={`${game.id}-${code.id}`}
+                key={`${game.id}-${code.code}`}
                 code={code}
                 game={game}
                 showGame={true}
+                pageSlug="/gaming"
               />
             ))}
           </div>

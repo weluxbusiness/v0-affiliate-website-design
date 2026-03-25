@@ -14,14 +14,22 @@ import {
   Zap
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
 import type { PromoCode, Game } from "@/lib/gaming-data"
 
+// Extended type to support both static data and database records
+export interface PromoCodeWithId extends PromoCode {
+  id?: string
+  game_id?: string
+}
+
 interface PromoCodeCardProps {
-  code: PromoCode
-  game?: Game
+  code: PromoCodeWithId
+  game?: Game & { id?: string }
   variant?: "default" | "compact" | "featured"
   showGame?: boolean
   onCopy?: (code: string) => void
+  pageSlug?: string
 }
 
 function formatTimeRemaining(expiresAt: string): string {
@@ -55,16 +63,27 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   game,
   variant = "default",
   showGame = false,
-  onCopy
+  onCopy,
+  pageSlug
 }: PromoCodeCardProps) {
   const [copied, setCopied] = useState(false)
+  const { trackCodeCopy } = useGamingAnalytics()
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(code.code)
     setCopied(true)
     onCopy?.(code.code)
+    
+    // Track the copy event
+    trackCodeCopy({
+      game_id: code.game_id || game?.id,
+      promo_code_id: code.id,
+      code: code.code,
+      page_slug: pageSlug,
+    })
+    
     setTimeout(() => setCopied(false), 2000)
-  }, [code.code, onCopy])
+  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy])
 
   const expiringSoon = isExpiringSoon(code.expiresAt)
 
