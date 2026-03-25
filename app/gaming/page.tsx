@@ -130,13 +130,13 @@ export default async function GamingPage() {
                   All Promo Codes
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10" asChild>
+              <Button size="lg" asChild className="bg-white/20 hover:bg-white/30 text-white border-0">
                 <Link href="/gaming/free-rewards">
                   <Gift className="h-5 w-5 mr-2" />
                   Free Rewards
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10" asChild>
+              <Button size="lg" asChild className="bg-white/20 hover:bg-white/30 text-white border-0">
                 <Link href="/gaming/new-player-deals">
                   <Zap className="h-5 w-5 mr-2" />
                   New Player Deals
