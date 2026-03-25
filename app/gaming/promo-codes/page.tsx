@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
@@ -12,13 +13,21 @@ import {
   Gamepad2,
   Gift,
   Zap,
-  Calendar
+  Calendar,
+  ArrowRight,
+  Flame,
+  Play,
+  ExternalLink
 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { 
   gamesData,
   getActivePromoCodes,
   getTotalActiveCodesCount,
-  sortPromoCodesByValue
+  sortPromoCodesByValue,
+  getGameLogoUrl,
+  getGameAffiliateUrl,
+  hasExternalAffiliateLink
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -65,7 +74,7 @@ export default function GamingPromoCodesPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
           {/* Breadcrumbs */}
-          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm">
+          <nav aria-label="Breadcrumb" className="relative z-10 mb-6 flex flex-wrap items-center gap-2 text-sm">
             <Link 
               href="/" 
               className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
@@ -86,13 +95,16 @@ export default function GamingPromoCodesPage() {
           </nav>
 
           <div className="flex items-center gap-2 mb-4">
-            <Badge className="bg-white/10 text-white border-0">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
               <Tag className="h-3 w-3 mr-1" />
               Promo Codes
-            </Badge>
-            <Badge variant="outline" className="border-white/30 text-white">
+            </span>
+            <Link 
+              href="/gaming/today"
+              className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-colors cursor-pointer"
+            >
               {totalCodes}+ Active Codes
-            </Badge>
+            </Link>
           </div>
 
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
@@ -147,42 +159,79 @@ export default function GamingPromoCodesPage() {
         <PageContainer>
           {gameCodesMap.length > 0 ? (
             <div className="space-y-12">
-              {gameCodesMap.map(({ game, codes }) => (
-                <div key={game.id}>
-                  {/* Game Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <Link 
-                      href={`/gaming/${game.slug}`}
-                      className="flex items-center gap-3 group"
-                    >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                        <Gamepad2 className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                          {game.name} Codes
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                          {codes.length} active codes | {game.categories[0]}
-                        </p>
-                      </div>
-                    </Link>
-                    <Link 
-                      href={`/gaming/${game.slug}`}
-                      className="text-sm font-medium text-primary hover:underline"
-                    >
-                      View All
-                    </Link>
-                  </div>
+              {gameCodesMap.map(({ game, codes }) => {
+                const logoUrl = getGameLogoUrl(game)
+                const hasLogo = game.logoUrl
+                const affiliateUrl = getGameAffiliateUrl(game)
+                const isExternal = hasExternalAffiliateLink(game)
+                
+                return (
+                  <div key={game.id} className="bg-card rounded-xl border border-border/50 p-6 hover:border-green-500/20 transition-colors">
+                    {/* Game Header with Logo */}
+                    <div className="flex items-center justify-between mb-6">
+                      <Link 
+                        href={`/gaming/${game.slug}`}
+                        className="flex items-center gap-4 group"
+                      >
+                        {/* Game Logo - Primary Visual */}
+                        <div className="relative h-12 w-12 shrink-0 rounded-xl overflow-hidden ring-2 ring-border/50 shadow-md bg-muted/50">
+                          {hasLogo ? (
+                            <Image
+                              src={logoUrl}
+                              alt={game.name}
+                              width={48}
+                              height={48}
+                              className="rounded-xl object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center bg-primary/10">
+                              <Gamepad2 className="h-6 w-6 text-primary" />
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                              {game.shortName || game.name}
+                            </h2>
+                            {codes.length > 2 && (
+                              <Badge variant="secondary" className="text-xs bg-orange-500/10 text-orange-600 border-0">
+                                <Flame className="h-3 w-3 mr-1" />
+                                Hot
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {codes.length} active codes | {game.categories[0]}
+                          </p>
+                        </div>
+                      </Link>
+                      <Button 
+                        asChild 
+                        className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                      >
+                        <a 
+                          href={affiliateUrl} 
+                          target={isExternal ? "_blank" : undefined}
+                          rel={isExternal ? "noopener noreferrer" : undefined}
+                        >
+                          <Play className="h-4 w-4 mr-2 fill-current" />
+                          Play Now
+                          {isExternal && <ExternalLink className="h-4 w-4 ml-2" />}
+                        </a>
+                      </Button>
+                    </div>
 
-                  {/* Codes Grid */}
-                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {codes.slice(0, 3).map((code) => (
-                      <PromoCodeCard key={code.id} code={code} />
-                    ))}
+                    {/* Codes Grid */}
+                    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                      {codes.slice(0, 3).map((code) => (
+                        <PromoCodeCard key={code.id} code={code} />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           ) : (
             <Card className="border-dashed">

@@ -10,6 +10,7 @@ import { ComparisonTable } from "@/components/comparison-table"
 import { FinalCTA } from "@/components/final-cta"
 import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
+import { HomeGamingDeals } from "@/components/home-gaming-deals"
 import { getTrendingDeals } from "@/lib/deals"
 
 // Organization schema for rich search results
@@ -109,6 +110,9 @@ export default function HomePage() {
           <Suspense fallback={<DealsLoading />}>
             <TrendingDealsSection />
           </Suspense>
+          
+          {/* Gaming Deals */}
+          <HomeGamingDeals />
           
           {/* Category navigation */}
           <HomePopularCategories />

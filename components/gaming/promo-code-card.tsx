@@ -1,6 +1,7 @@
 "use client"
 
 import { memo, useState, useCallback } from "react"
+import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -11,11 +12,17 @@ import {
   Sparkles,
   ShieldCheck,
   Gift,
-  Zap
+  Zap,
+  Flame,
+  Star,
+  ExternalLink,
+  Play
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
+import { GameLogo } from "@/components/gaming/game-logo"
 import type { PromoCode, Game } from "@/lib/gaming-data"
+import { getGameAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
 
 // Extended type to support both static data and database records
 export type PromoCodeWithId = PromoCode & {
@@ -111,21 +118,41 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   if (variant === "featured") {
+    const affiliateUrl = game ? getGameAffiliateUrl(game) : null
+    const isExternal = game ? hasExternalAffiliateLink(game) : false
+
     return (
-      <Card className="overflow-hidden border-2 border-primary/50 bg-gradient-to-br from-primary/5 to-secondary/5">
+      <Card className="overflow-hidden border-2 border-primary/50 bg-gradient-to-br from-primary/5 to-secondary/5 hover:shadow-xl transition-all duration-300">
         <CardContent className="p-5">
-          {/* Best Code Badge */}
-          <div className="flex items-center gap-2 mb-3">
-            <Badge className="bg-primary text-primary-foreground">
-              <Zap className="h-3 w-3 mr-1" />
-              Best Code Today
-            </Badge>
-            {code.isVerified && (
-              <Badge variant="outline" className="text-secondary border-secondary/50">
-                <ShieldCheck className="h-3 w-3 mr-1" />
-                Verified
-              </Badge>
+          {/* Game Logo + Best Code Badge */}
+          <div className="flex items-center gap-3 mb-4">
+            {showGame && game && (
+              <GameLogo 
+                src={game.logoUrl} 
+                alt={game.name} 
+                size="xl"
+                className="shadow-md ring-2 ring-primary/20"
+              />
             )}
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <Badge className="bg-primary text-primary-foreground">
+                  <Zap className="h-3 w-3 mr-1" />
+                  Best Code
+                </Badge>
+                {code.isVerified && (
+                  <Badge variant="outline" className="text-secondary border-secondary/50">
+                    <ShieldCheck className="h-3 w-3 mr-1" />
+                    Verified
+                  </Badge>
+                )}
+              </div>
+              {showGame && game && (
+                <p className="text-lg font-bold text-foreground">
+                  {game.name}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Code Display */}
@@ -136,7 +163,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
                 {code.code}
               </code>
             </div>
-            <Button onClick={handleCopy} className="shrink-0 h-12 px-5">
+            <Button onClick={handleCopy} variant="outline" className="shrink-0 h-12 px-5">
               {copied ? (
                 <>
                   <Check className="h-4 w-4 mr-2" />
@@ -152,14 +179,27 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </div>
 
           {/* Reward */}
-          <div className="mb-3">
-            <p className="font-medium text-foreground">{code.reward}</p>
-            {showGame && game && (
-              <p className="text-sm text-muted-foreground mt-1">
-                For {game.name}
-              </p>
-            )}
+          <div className="mb-4">
+            <p className="font-semibold text-foreground text-lg">{code.reward}</p>
           </div>
+
+          {/* Primary CTA - Play Now */}
+          {showGame && game && affiliateUrl && (
+            <Button 
+              asChild 
+              className="w-full h-12 text-base font-semibold bg-green-600 hover:bg-green-700 text-white mb-4 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+            >
+              <a 
+                href={affiliateUrl} 
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+              >
+                <Play className="h-5 w-5 mr-2 fill-current" />
+                Play {game.shortName || game.name}
+                {isExternal && <ExternalLink className="h-4 w-4 ml-2" />}
+              </a>
+            </Button>
+          )}
 
           {/* Footer */}
           <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -174,7 +214,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
             )}
             {code.successRate && (
               <span className="flex items-center gap-1">
-                <Sparkles className="h-3 w-3 text-secondary" />
+                <Star className="h-3 w-3 text-amber-500" />
                 {code.successRate}% success rate
               </span>
             )}
@@ -184,34 +224,88 @@ export const PromoCodeCard = memo(function PromoCodeCard({
     )
   }
 
-  // Default variant
-  return (
+  // Default variant - with game logo for visual hierarchy
+  const affiliateUrl = game ? getGameAffiliateUrl(game) : null
+  const isExternal = game ? hasExternalAffiliateLink(game) : false
+
+  const cardContent = (
     <Card className={cn(
-      "overflow-hidden border-border/50 transition-all duration-300 hover:shadow-md hover:border-primary/20 group",
+      "overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02] group",
       code.isExclusive && "border-secondary/30 bg-secondary/5"
     )}>
       <CardContent className="p-4">
-        {/* Header Badges */}
-        <div className="flex items-center gap-2 mb-3">
-          {code.isVerified && (
-            <Badge variant="outline" className="text-secondary border-secondary/50 text-xs">
-              <ShieldCheck className="h-3 w-3 mr-1" />
-              Verified
-            </Badge>
-          )}
-          {code.isExclusive && (
-            <Badge className="bg-secondary/20 text-secondary border-0 text-xs">
-              <Sparkles className="h-3 w-3 mr-1" />
-              Exclusive
-            </Badge>
-          )}
-          {expiringSoon && (
-            <Badge variant="destructive" className="text-xs">
-              <Clock className="h-3 w-3 mr-1" />
-              Expiring Soon
-            </Badge>
-          )}
-        </div>
+        {/* Game Logo + Header */}
+        {showGame && game && (
+          <div className="flex items-center gap-3 mb-3 pb-3 border-b border-border/50">
+            <GameLogo 
+              src={game.logoUrl} 
+              alt={game.name} 
+              size="lg"
+              className="shadow-sm"
+            />
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-foreground truncate">
+                {game.shortName || game.name}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {game.categories[0]}
+              </p>
+            </div>
+            {code.isVerified && (
+              <Badge variant="outline" className="text-secondary border-secondary/50 text-xs shrink-0">
+                <ShieldCheck className="h-3 w-3 mr-1" />
+                Verified
+              </Badge>
+            )}
+          </div>
+        )}
+
+        {/* Header Badges (when not showing game) */}
+        {!showGame && (
+          <div className="flex items-center gap-2 mb-3">
+            {code.isVerified && (
+              <Badge variant="outline" className="text-secondary border-secondary/50 text-xs">
+                <ShieldCheck className="h-3 w-3 mr-1" />
+                Verified
+              </Badge>
+            )}
+            {code.isExclusive && (
+              <Badge className="bg-secondary/20 text-secondary border-0 text-xs">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Exclusive
+              </Badge>
+            )}
+            {expiringSoon && (
+              <Badge variant="destructive" className="text-xs">
+                <Clock className="h-3 w-3 mr-1" />
+                Expiring Soon
+              </Badge>
+            )}
+          </div>
+        )}
+
+        {/* Badges when showing game */}
+        {showGame && (
+          <div className="flex items-center gap-2 mb-3">
+            {code.isExclusive && (
+              <Badge className="bg-secondary/20 text-secondary border-0 text-xs">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Exclusive
+              </Badge>
+            )}
+            {expiringSoon && (
+              <Badge variant="destructive" className="text-xs">
+                <Flame className="h-3 w-3 mr-1" />
+                Expiring Soon
+              </Badge>
+            )}
+          </div>
+        )}
+
+        {/* Reward - Highlight First */}
+        <p className="font-semibold text-foreground mb-3">
+          {code.reward}
+        </p>
 
         {/* Code Box */}
         <div className="flex items-center gap-2 mb-3">
@@ -223,8 +317,12 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </div>
           <Button 
             size="sm" 
-            variant={copied ? "secondary" : "default"} 
-            onClick={handleCopy}
+            variant="outline"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              handleCopy()
+            }}
             className="shrink-0"
           >
             {copied ? (
@@ -235,16 +333,24 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </Button>
         </div>
 
-        {/* Reward Description */}
-        <p className="font-medium text-foreground text-sm mb-2">
-          {code.reward}
-        </p>
-
-        {/* Game Name (if showing) */}
-        {showGame && game && (
-          <p className="text-xs text-muted-foreground mb-2">
-            {game.name}
-          </p>
+        {/* Primary CTA - Play Now (Affiliate) */}
+        {showGame && game && affiliateUrl && (
+          <Button 
+            asChild 
+            className="w-full h-10 font-semibold bg-green-600 hover:bg-green-700 text-white mb-3 shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
+            size="sm"
+          >
+            <a 
+              href={affiliateUrl} 
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener noreferrer" : undefined}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Play className="h-4 w-4 mr-2 fill-current" />
+              Play Now
+              {isExternal && <ExternalLink className="h-3 w-3 ml-2" />}
+            </a>
+          </Button>
         )}
 
         {/* Footer Info */}
@@ -264,12 +370,26 @@ export const PromoCodeCard = memo(function PromoCodeCard({
             </span>
           )}
           {code.successRate && (
-            <span>{code.successRate}% success</span>
+            <span className="flex items-center gap-1">
+              <Star className="h-3 w-3 text-amber-500" />
+              {code.successRate}% success
+            </span>
           )}
         </div>
       </CardContent>
     </Card>
   )
+
+  // Wrap in Link to internal page for navigation (affiliate is separate button)
+  if (showGame && game) {
+    return (
+      <Link href={`/gaming/${game.slug}`} className="block">
+        {cardContent}
+      </Link>
+    )
+  }
+
+  return cardContent
 })
 
 export function PromoCodeCardSkeleton() {

@@ -175,7 +175,7 @@ export default async function GameRewardsPage({ params }: PageProps) {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
           {/* Breadcrumbs */}
-          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm">
+          <nav aria-label="Breadcrumb" className="relative z-10 mb-6 flex flex-wrap items-center gap-2 text-sm">
             <Link 
               href="/" 
               className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
@@ -203,13 +203,13 @@ export default async function GameRewardsPage({ params }: PageProps) {
           </nav>
           
           <div className="flex items-center gap-2 mb-4">
-            <Badge className="bg-white/10 text-white border-0">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
               <Gift className="h-3 w-3 mr-1" />
               Free Rewards
-            </Badge>
-            <Badge variant="outline" className="border-white/30 text-white">
+            </span>
+            <span className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium">
               {game.rewards.length} Rewards
-            </Badge>
+            </span>
           </div>
           
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">

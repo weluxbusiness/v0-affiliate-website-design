@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
@@ -15,13 +16,19 @@ import {
   Gift,
   Calendar,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Flame,
+  Play,
+  ExternalLink
 } from "lucide-react"
 import { 
   gamesData,
   getGamesWithNewPlayerDeals,
   getActivePromoCodes,
-  sortPromoCodesByValue
+  sortPromoCodesByValue,
+  getGameLogoUrl,
+  getGameAffiliateUrl,
+  hasExternalAffiliateLink
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -83,7 +90,7 @@ export default function NewPlayerDealsPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
           {/* Breadcrumbs */}
-          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm">
+          <nav aria-label="Breadcrumb" className="relative z-10 mb-6 flex flex-wrap items-center gap-2 text-sm">
             <Link 
               href="/" 
               className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
@@ -104,13 +111,16 @@ export default function NewPlayerDealsPage() {
           </nav>
 
           <div className="flex items-center gap-2 mb-4">
-            <Badge className="bg-white/10 text-white border-0">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
               <Zap className="h-3 w-3 mr-1" />
               New Player Deals
-            </Badge>
-            <Badge variant="outline" className="border-white/30 text-white">
+            </span>
+            <Link 
+              href="/gaming"
+              className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-colors cursor-pointer"
+            >
               {newPlayerData.length}+ Games
-            </Badge>
+            </Link>
           </div>
 
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
@@ -165,33 +175,77 @@ export default function NewPlayerDealsPage() {
         <PageContainer>
           {newPlayerData.length > 0 ? (
             <div className="space-y-12">
-              {newPlayerData.map(({ game, codes, rewards }) => (
-                <div key={game.id}>
-                  {/* Game Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <Link 
-                      href={`/gaming/${game.slug}`}
-                      className="flex items-center gap-3 group"
-                    >
-                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-500/10">
-                        <Sparkles className="h-6 w-6 text-amber-500" />
+              {newPlayerData.map(({ game, codes, rewards }) => {
+                const logoUrl = getGameLogoUrl(game)
+                const hasLogo = game.logoUrl
+                const affiliateUrl = getGameAffiliateUrl(game)
+                const isExternal = hasExternalAffiliateLink(game)
+                
+                return (
+                  <div key={game.id} className="bg-card rounded-xl border border-border/50 p-6 hover:border-amber-500/20 transition-colors">
+                    {/* Game Header with Logo */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                      <Link 
+                        href={`/gaming/${game.slug}`}
+                        className="flex items-center gap-4 group"
+                      >
+                        {/* Game Logo - Primary Visual */}
+                        <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden ring-2 ring-amber-500/30 shadow-md bg-muted/50">
+                          {hasLogo ? (
+                            <Image
+                              src={logoUrl}
+                              alt={game.name}
+                              width={56}
+                              height={56}
+                              className="rounded-xl object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center bg-amber-500/10">
+                              <Sparkles className="h-7 w-7 text-amber-500" />
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                              {game.shortName || game.name}
+                            </h2>
+                            <Badge variant="secondary" className="text-xs bg-amber-500/10 text-amber-600 border-0">
+                              <Zap className="h-3 w-3 mr-1" />
+                              Starter
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {codes.length} starter codes | {game.categories[0]}
+                          </p>
+                        </div>
+                      </Link>
+                      <div className="flex items-center gap-3">
+                        {/* Play Now CTA */}
+                        <Button 
+                          asChild 
+                          className="h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                        >
+                          <a 
+                            href={affiliateUrl} 
+                            target={isExternal ? "_blank" : undefined}
+                            rel={isExternal ? "noopener noreferrer" : undefined}
+                          >
+                            <Play className="h-4 w-4 mr-2 fill-current" />
+                            Play Now
+                            {isExternal && <ExternalLink className="h-3.5 w-3.5 ml-2" />}
+                          </a>
+                        </Button>
+                        <Link 
+                          href={`/gaming/${game.slug}`}
+                          className="text-sm font-medium text-primary hover:underline flex items-center gap-1 group"
+                        >
+                          View Codes
+                          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
                       </div>
-                      <div>
-                        <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                          {game.name}
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                          {codes.length} starter codes | {game.categories[0]}
-                        </p>
-                      </div>
-                    </Link>
-                    <Link 
-                      href={`/gaming/${game.slug}`}
-                      className="text-sm font-medium text-primary hover:underline"
-                    >
-                      View All Codes
-                    </Link>
-                  </div>
+                    </div>
 
                   {/* New Player Rewards Info */}
                   {rewards.length > 0 && (
@@ -210,14 +264,15 @@ export default function NewPlayerDealsPage() {
                     </div>
                   )}
 
-                  {/* Codes Grid */}
-                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {codes.slice(0, 3).map((code) => (
-                      <PromoCodeCard key={code.id} code={code} />
-                    ))}
+                    {/* Codes Grid */}
+                    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                      {codes.slice(0, 3).map((code) => (
+                        <PromoCodeCard key={code.id} code={code} />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           ) : (
             <Card className="border-dashed">

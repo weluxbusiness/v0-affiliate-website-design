@@ -43,6 +43,7 @@ export interface Game {
   platforms: ('PC' | 'Mobile' | 'PlayStation' | 'Xbox' | 'Nintendo Switch' | 'iOS' | 'Android')[]
   imageUrl?: string
   iconUrl?: string
+  logoUrl?: string // Game logo for visual identification (40-56px display)
   developer: string
   publisher: string
   releaseDate?: string
@@ -56,6 +57,24 @@ export interface Game {
   metaTitle?: string
   metaDescription?: string
   faqs?: { question: string; answer: string }[]
+}
+
+// Default fallback logo
+export const DEFAULT_GAME_LOGO = '/images/games/default-game-logo.svg'
+
+// Helper to get logo URL with fallback
+export function getGameLogoUrl(game: Game): string {
+  return game.logoUrl || DEFAULT_GAME_LOGO
+}
+
+// Helper to get affiliate link or fallback to internal page
+export function getGameAffiliateUrl(game: Game): string {
+  return game.affiliateLink || `/gaming/${game.slug}`
+}
+
+// Check if game has external affiliate link
+export function hasExternalAffiliateLink(game: Game): boolean {
+  return !!game.affiliateLink && game.affiliateLink.startsWith('http')
 }
 
 // ============================================
@@ -239,6 +258,7 @@ export const gamesData: Game[] = [
     categories: ['RPG', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/raid-shadow-legends.webp',
     developer: 'Plarium',
     publisher: 'Plarium',
     promoCodes: [
@@ -319,6 +339,7 @@ export const gamesData: Game[] = [
     categories: ['RPG', 'Gacha', 'Mobile', 'PC', 'Console'],
     platforms: ['PC', 'Mobile', 'PlayStation', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/genshin-impact.webp',
     developer: 'miHoYo',
     publisher: 'HoYoverse',
     promoCodes: [
@@ -417,6 +438,7 @@ export const gamesData: Game[] = [
     categories: ['Battle Royale', 'FPS', 'PC', 'Console', 'Mobile'],
     platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1589241062272-c0a000072dfa?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/fortnite.webp',
     developer: 'Epic Games',
     publisher: 'Epic Games',
     promoCodes: [
@@ -494,6 +516,7 @@ export const gamesData: Game[] = [
     categories: ['FPS', 'Mobile', 'Battle Royale'],
     platforms: ['Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0b?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/call-of-duty-mobile.webp',
     developer: 'TiMi Studio Group',
     publisher: 'Activision',
     promoCodes: [
@@ -570,6 +593,7 @@ export const gamesData: Game[] = [
     categories: ['Simulation', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'Xbox', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1493711662062-fa541f7f3d24?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/roblox.webp',
     developer: 'Roblox Corporation',
     publisher: 'Roblox Corporation',
     promoCodes: [
@@ -649,6 +673,7 @@ export const gamesData: Game[] = [
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'PlayStation', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/honkai-star-rail.webp',
     developer: 'miHoYo',
     publisher: 'HoYoverse',
     promoCodes: [
@@ -725,6 +750,7 @@ export const gamesData: Game[] = [
     categories: ['Battle Royale', 'FPS', 'PC', 'Console'],
     platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile'],
     imageUrl: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/apex-legends.webp',
     developer: 'Respawn Entertainment',
     publisher: 'Electronic Arts',
     promoCodes: [
@@ -774,6 +800,7 @@ export const gamesData: Game[] = [
     categories: ['Mobile', 'RPG'],
     platforms: ['Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/pokemon-go.webp',
     developer: 'Niantic',
     publisher: 'Niantic',
     promoCodes: [
@@ -834,6 +861,7 @@ export const gamesData: Game[] = [
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/clash-of-clans.webp',
     developer: 'Supercell',
     publisher: 'Supercell',
     promoCodes: [
@@ -882,6 +910,7 @@ export const gamesData: Game[] = [
     categories: ['Simulation', 'PC', 'Console', 'Mobile'],
     platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1587573089734-09cb69c0f2b4?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/minecraft.webp',
     developer: 'Mojang Studios',
     publisher: 'Xbox Game Studios',
     promoCodes: [
@@ -931,6 +960,7 @@ export const gamesData: Game[] = [
     categories: ['FPS', 'PC'],
     platforms: ['PC'],
     imageUrl: 'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/valorant.webp',
     developer: 'Riot Games',
     publisher: 'Riot Games',
     promoCodes: [
@@ -987,6 +1017,7 @@ export const gamesData: Game[] = [
     categories: ['PC', 'MMORPG'],
     platforms: ['PC'],
     imageUrl: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/league-of-legends.webp',
     developer: 'Riot Games',
     publisher: 'Riot Games',
     promoCodes: [
@@ -1043,6 +1074,7 @@ export const gamesData: Game[] = [
     categories: ['Battle Royale', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/free-fire.webp',
     developer: '111 Dots Studio',
     publisher: 'Garena',
     promoCodes: [
@@ -1101,6 +1133,7 @@ export const gamesData: Game[] = [
     categories: ['Battle Royale', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1542549237432-a176cb9d5e6e?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/pubg-mobile.webp',
     developer: 'LightSpeed & Quantum Studios',
     publisher: 'Tencent Games',
     promoCodes: [

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
@@ -14,12 +15,17 @@ import {
   Zap,
   Calendar,
   ArrowRight,
-  Star
+  Star,
+  Play,
+  ExternalLink
 } from "lucide-react"
 import { 
   gamesData,
   getGamesWithFreeRewards,
-  getActivePromoCodes
+  getActivePromoCodes,
+  getGameLogoUrl,
+  getGameAffiliateUrl,
+  hasExternalAffiliateLink
 } from "@/lib/gaming-data"
 import type { GameReward } from "@/lib/gaming-data"
 
@@ -126,7 +132,7 @@ export default function GamingFreeRewardsPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
           {/* Breadcrumbs */}
-          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm">
+          <nav aria-label="Breadcrumb" className="relative z-10 mb-6 flex flex-wrap items-center gap-2 text-sm">
             <Link 
               href="/" 
               className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
@@ -147,13 +153,13 @@ export default function GamingFreeRewardsPage() {
           </nav>
 
           <div className="flex items-center gap-2 mb-4">
-            <Badge className="bg-white/10 text-white border-0">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
               <Gift className="h-3 w-3 mr-1" />
               Free Rewards
-            </Badge>
-            <Badge variant="outline" className="border-white/30 text-white">
+            </span>
+            <span className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium">
               {allRewards.length}+ Rewards
-            </Badge>
+            </span>
           </div>
 
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
@@ -279,25 +285,73 @@ export default function GamingFreeRewardsPage() {
             </h2>
           </div>
 
-          <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {gamesWithRewards.slice(0, 8).map((game) => (
-              <Link
-                key={game.id}
-                href={`/gaming/${game.slug}`}
-                className="flex flex-col items-center gap-3 p-5 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center group"
-              >
-                <Gamepad2 className="h-10 w-10 text-primary" />
-                <div>
-                  <h3 className="font-medium text-foreground group-hover:text-primary transition-colors">
-                    {game.shortName || game.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {game.rewards.filter(r => r.type === 'Free' || r.type === 'Daily').length} free rewards
-                  </p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </Link>
-            ))}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {gamesWithRewards.slice(0, 8).map((game) => {
+              const logoUrl = getGameLogoUrl(game)
+              const hasLogo = game.logoUrl
+              const affiliateUrl = getGameAffiliateUrl(game)
+              const isExternal = hasExternalAffiliateLink(game)
+              
+              return (
+                <Card key={game.id} className="overflow-hidden border-border/50 hover:border-secondary/30 hover:shadow-lg transition-all duration-200 group">
+                  <CardContent className="p-4">
+                    {/* Game Logo */}
+                    <Link href={`/gaming/${game.slug}`} className="flex items-center gap-3 mb-3">
+                      <div className="relative h-12 w-12 shrink-0 rounded-xl overflow-hidden ring-2 ring-border/50 shadow-md bg-muted/50">
+                        {hasLogo ? (
+                          <Image
+                            src={logoUrl}
+                            alt={game.name}
+                            width={48}
+                            height={48}
+                            className="rounded-xl object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center bg-secondary/10">
+                            <Gift className="h-6 w-6 text-secondary" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                          {game.shortName || game.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          {game.rewards.filter(r => r.type === 'Free' || r.type === 'Daily').length} free rewards
+                        </p>
+                      </div>
+                    </Link>
+
+                    {/* Play Now CTA */}
+                    <Button 
+                      asChild 
+                      className="w-full h-9 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                      size="sm"
+                    >
+                      <a 
+                        href={affiliateUrl} 
+                        target={isExternal ? "_blank" : undefined}
+                        rel={isExternal ? "noopener noreferrer" : undefined}
+                      >
+                        <Play className="h-4 w-4 mr-1.5 fill-current" />
+                        Play Now
+                        {isExternal && <ExternalLink className="h-3.5 w-3.5 ml-1.5" />}
+                      </a>
+                    </Button>
+
+                    {/* View Rewards Link */}
+                    <Link 
+                      href={`/gaming/${game.slug}`}
+                      className="flex items-center justify-center gap-1 mt-2 text-xs font-medium text-primary hover:underline"
+                    >
+                      View Rewards
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
 
           <div className="text-center mt-8">

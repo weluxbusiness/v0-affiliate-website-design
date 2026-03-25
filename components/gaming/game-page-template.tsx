@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { 
   ChevronRight, 
   Gamepad2, 
@@ -10,7 +11,9 @@ import {
   Zap,
   Tag,
   Trophy,
-  Star
+  Star,
+  Flame,
+  Play
 } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
@@ -18,7 +21,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
-import { getBestPromoCode, getActivePromoCodes, sortPromoCodesByValue } from "@/lib/gaming-data"
+import { getBestPromoCode, getActivePromoCodes, sortPromoCodesByValue, getGameLogoUrl, getGameAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
 
 // ============================================
 // TYPES
@@ -133,42 +136,58 @@ export function generateGameSchemaMarkup(game: Game, codes: PromoCode[]) {
 // SUB-COMPONENTS
 // ============================================
 
-function RewardCard({ reward }: { reward: GameReward }) {
+function RewardCard({ reward, affiliateUrl, isExternal }: { reward: GameReward; affiliateUrl: string; isExternal: boolean }) {
   const typeColors: Record<GameReward['type'], string> = {
-    'Free': 'bg-secondary/10 text-secondary',
+    'Free': 'bg-green-500/10 text-green-600',
     'New Player': 'bg-primary/10 text-primary',
     'Daily': 'bg-blue-500/10 text-blue-600',
     'Event': 'bg-amber-500/10 text-amber-600',
     'Referral': 'bg-pink-500/10 text-pink-600',
-    'Achievement': 'bg-green-500/10 text-green-600',
+    'Achievement': 'bg-purple-500/10 text-purple-600',
   }
 
   return (
-    <Card className="border-border/50 hover:border-primary/20 transition-colors">
+    <Card className="border-border/50 hover:border-green-500/30 hover:shadow-md transition-all">
       <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary/10">
-            <Gift className="h-5 w-5 text-secondary" />
+        <div className="flex items-start gap-3 mb-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-500/10">
+            <Gift className="h-5 w-5 text-green-600" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <h4 className="font-medium text-foreground text-sm">
+              <h4 className="font-semibold text-foreground">
                 {reward.title}
               </h4>
               <Badge variant="outline" className={typeColors[reward.type]}>
                 {reward.type}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground line-clamp-2">
+            <p className="text-sm text-muted-foreground line-clamp-2">
               {reward.description}
             </p>
             {reward.value && (
-              <p className="text-xs font-medium text-primary mt-1">
+              <p className="text-sm font-semibold text-green-600 mt-1">
                 {reward.value}
               </p>
             )}
           </div>
         </div>
+        {/* Get Reward CTA */}
+        <Button 
+          asChild 
+          size="sm"
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
+        >
+          <a 
+            href={reward.link || affiliateUrl} 
+            target={isExternal ? "_blank" : undefined}
+            rel={isExternal ? "noopener noreferrer" : undefined}
+          >
+            <Gift className="h-4 w-4 mr-2" />
+            Get Reward
+            {isExternal && <ExternalLink className="h-3 w-3 ml-2" />}
+          </a>
+        </Button>
       </CardContent>
     </Card>
   )
@@ -214,7 +233,7 @@ export function GamePageTemplate({
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
           {/* Breadcrumbs */}
-          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm">
+          <nav aria-label="Breadcrumb" className="relative z-10 mb-6 flex flex-wrap items-center gap-2 text-sm">
             <Link 
               href="/" 
               className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
@@ -234,8 +253,26 @@ export function GamePageTemplate({
             </span>
           </nav>
 
-          {/* Game Info */}
+          {/* Game Info with Logo */}
           <div className="flex flex-col md:flex-row gap-6 items-start">
+            {/* Game Logo - Large Visual Anchor */}
+            <div className="relative h-24 w-24 md:h-28 md:w-28 shrink-0 rounded-2xl overflow-hidden ring-4 ring-white/20 shadow-2xl bg-white/10">
+              {game.logoUrl ? (
+                <Image
+                  src={getGameLogoUrl(game)}
+                  alt={game.name}
+                  width={112}
+                  height={112}
+                  className="rounded-2xl object-cover"
+                  priority
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center bg-white/10">
+                  <Gamepad2 className="h-12 w-12 text-white" />
+                </div>
+              )}
+            </div>
+
             <div className="flex-1">
               {/* Category Badges */}
               <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -279,15 +316,24 @@ export function GamePageTemplate({
               </div>
             </div>
 
-            {/* CTA Button */}
-            <div className="shrink-0">
-              <Button size="lg" variant="secondary" asChild className="gap-2">
-                <a href={game.affiliateLink} target="_blank" rel="noopener noreferrer">
-                  <Gamepad2 className="h-5 w-5" />
+            {/* Primary CTA - Play Now (Affiliate) */}
+            <div className="shrink-0 flex flex-col gap-2">
+              <Button 
+                size="lg" 
+                asChild 
+                className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
+              >
+                <a 
+                  href={getGameAffiliateUrl(game)} 
+                  target={hasExternalAffiliateLink(game) ? "_blank" : undefined}
+                  rel={hasExternalAffiliateLink(game) ? "noopener noreferrer" : undefined}
+                >
+                  <Play className="h-6 w-6 fill-current" />
                   Play {game.shortName || game.name}
-                  <ExternalLink className="h-4 w-4" />
+                  {hasExternalAffiliateLink(game) && <ExternalLink className="h-4 w-4" />}
                 </a>
               </Button>
+              <p className="text-xs text-white/60 text-center">Free to play</p>
             </div>
           </div>
         </PageContainer>
@@ -353,7 +399,12 @@ export function GamePageTemplate({
 
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
               {game.rewards.map((reward) => (
-                <RewardCard key={reward.id} reward={reward} />
+                <RewardCard 
+                  key={reward.id} 
+                  reward={reward} 
+                  affiliateUrl={getGameAffiliateUrl(game)}
+                  isExternal={hasExternalAffiliateLink(game)}
+                />
               ))}
             </div>
           </PageContainer>
@@ -406,22 +457,65 @@ export function GamePageTemplate({
               </h2>
             </div>
 
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-              {relatedGames.map((relatedGame) => (
-                <Link
-                  key={relatedGame.id}
-                  href={`/gaming/${relatedGame.slug}`}
-                  className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center"
-                >
-                  <Gamepad2 className="h-8 w-8 text-primary" />
-                  <span className="text-sm font-medium text-foreground line-clamp-2">
-                    {relatedGame.shortName || relatedGame.name}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {getActivePromoCodes(relatedGame.promoCodes).length} codes
-                  </span>
-                </Link>
-              ))}
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {relatedGames.map((relatedGame) => {
+                const relatedLogoUrl = getGameLogoUrl(relatedGame)
+                const hasRelatedLogo = relatedGame.logoUrl
+                const relatedCodeCount = getActivePromoCodes(relatedGame.promoCodes).length
+                const relatedAffiliateUrl = getGameAffiliateUrl(relatedGame)
+                const relatedIsExternal = hasExternalAffiliateLink(relatedGame)
+                
+                return (
+                  <div
+                    key={relatedGame.id}
+                    className="flex flex-col p-4 rounded-xl border border-border bg-card hover:border-green-500/30 hover:shadow-md transition-all duration-200"
+                  >
+                    {/* Game Logo + Name */}
+                    <Link href={`/gaming/${relatedGame.slug}`} className="flex items-center gap-3 mb-3">
+                      <div className="relative h-10 w-10 shrink-0 rounded-lg overflow-hidden ring-2 ring-border/50 shadow-sm bg-muted/50">
+                        {hasRelatedLogo ? (
+                          <Image
+                            src={relatedLogoUrl}
+                            alt={relatedGame.name}
+                            width={40}
+                            height={40}
+                            className="rounded-lg object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center bg-primary/10">
+                            <Gamepad2 className="h-5 w-5 text-primary" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm font-semibold text-foreground hover:text-primary transition-colors line-clamp-1">
+                          {relatedGame.shortName || relatedGame.name}
+                        </span>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Tag className="h-3 w-3" />
+                          {relatedCodeCount} codes
+                        </span>
+                      </div>
+                    </Link>
+                    {/* Play CTA */}
+                    <Button 
+                      asChild 
+                      size="sm"
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-sm hover:shadow-md hover:scale-[1.01] transition-all"
+                    >
+                      <a 
+                        href={relatedAffiliateUrl} 
+                        target={relatedIsExternal ? "_blank" : undefined}
+                        rel={relatedIsExternal ? "noopener noreferrer" : undefined}
+                      >
+                        <Play className="h-4 w-4 mr-1 fill-current" />
+                        Play
+                      </a>
+                    </Button>
+                  </div>
+                )
+              })}
             </div>
           </PageContainer>
         </section>
