@@ -18,7 +18,7 @@ import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
 import type { PromoCode, Game } from "@/lib/gaming-data"
 
 // Extended type to support both static data and database records
-export interface PromoCodeWithId extends PromoCode {
+export type PromoCodeWithId = PromoCode & {
   id?: string
   game_id?: string
 }
