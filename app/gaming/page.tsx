@@ -22,7 +22,8 @@ import {
   Calendar,
   TrendingUp,
   DollarSign,
-  BookOpen
+  BookOpen,
+  ChevronRight
 } from "lucide-react"
 import { 
   gamesData, 
