@@ -75,7 +75,7 @@ ${urls.map(url => `  <url>
 /**
  * Generate all /deals/seo/* URLs from the dataset
  */
-export function generateAllDealSeoUrls(): string[] {
+function generateAllDealSeoUrls(): string[] {
   const urls: string[] = []
   
   // Brand × Price combinations
@@ -98,7 +98,7 @@ export function generateAllDealSeoUrls(): string[] {
 /**
  * Get a paginated slice of URLs for sub-sitemaps
  */
-export function getDealSeoUrlsSlice(page: number): string[] {
+function getDealSeoUrlsSlice(page: number): string[] {
   const allUrls = generateAllDealSeoUrls()
   const start = (page - 1) * MAX_URLS_PER_SITEMAP
   const end = start + MAX_URLS_PER_SITEMAP
@@ -108,7 +108,7 @@ export function getDealSeoUrlsSlice(page: number): string[] {
 /**
  * Get statistics about the sitemap
  */
-export function getDealSeoSitemapStats() {
+function getDealSeoSitemapStats() {
   const { brandPages, categoryPages, total } = getTotalPageCount()
   const sitemapCount = Math.ceil(total / MAX_URLS_PER_SITEMAP)
   
