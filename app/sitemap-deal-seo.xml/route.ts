@@ -8,13 +8,21 @@ import {
   getDealSeoSitemapStats,
   MAX_URLS_PER_SITEMAP,
 } from '@/lib/sitemaps/dealSeo'
+import { getLatestDealUpdateTime } from '@/lib/deals-cached'
 
 const baseUrl = 'https://savesmart.bio'
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
 export async function GET() {
-  const now = new Date().toISOString().split('T')[0]
+  // Use actual latest deal update for freshness signal
+  let lastMod: string
+  try {
+    const latestUpdate = await getLatestDealUpdateTime()
+    lastMod = latestUpdate.split('T')[0] // YYYY-MM-DD format
+  } catch {
+    lastMod = new Date().toISOString().split('T')[0]
+  }
   const stats = getDealSeoSitemapStats()
   
   // Calculate number of sub-sitemaps needed
@@ -22,7 +30,7 @@ export async function GET() {
   
   // If total URLs fit in one sitemap, return a single sitemap instead of index
   if (sitemapCount === 1) {
-    return generateSingleSitemap(now)
+    return generateSingleSitemap(lastMod)
   }
   
   // Generate sitemap index pointing to multiple sub-sitemaps
@@ -34,7 +42,7 @@ export async function GET() {
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemapUrls.map(url => `  <sitemap>
     <loc>${url}</loc>
-    <lastmod>${now}</lastmod>
+    <lastmod>${lastMod}</lastmod>
   </sitemap>`).join('\n')}
 </sitemapindex>`
 
@@ -49,14 +57,14 @@ ${sitemapUrls.map(url => `  <sitemap>
 /**
  * Generate a single sitemap with all URLs when count is under 5000
  */
-function generateSingleSitemap(now: string) {
+function generateSingleSitemap(lastMod: string) {
   const urls = generateAllDealSeoUrls()
   
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(url => `  <url>
     <loc>${url}</loc>
-    <lastmod>${now}</lastmod>
+    <lastmod>${lastMod}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>`).join('\n')}

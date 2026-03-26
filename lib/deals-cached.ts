@@ -276,3 +276,27 @@ export const getCachedDealSlugs = unstable_cache(
   ["deal-slugs-sitemap"],
   { revalidate: ONE_DAY, tags: ["sitemap"] }
 )
+
+// Get latest deal update timestamp for sitemap freshness signals
+export const getLatestDealUpdateTime = unstable_cache(
+  async (): Promise<string> => {
+    const supabase = createAnonClient()
+    
+    const { data, error } = await supabase
+      .from("deals")
+      .select("updated_at")
+      .eq("is_active", true)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .single()
+    
+    if (error || !data) {
+      // Fallback to current time if query fails
+      return new Date().toISOString()
+    }
+    
+    return data.updated_at
+  },
+  ["latest-deal-update"],
+  { revalidate: ONE_HOUR, tags: ["sitemap"] }
+)
