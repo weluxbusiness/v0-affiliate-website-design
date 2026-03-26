@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${deal.title} - ${deal.discount_percentage}% Off`,
       description,
       images: [{ url: getProductImageUrl(deal), width: 600, height: 400, alt: deal.title }],
-      type: "product",
+      type: "website",
       url: `https://savesmart.bio/deal/${slug}`,
     },
     twitter: {
