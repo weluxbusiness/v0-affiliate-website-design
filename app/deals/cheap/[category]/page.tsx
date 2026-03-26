@@ -14,23 +14,50 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
-// Categories with cheap deal focus
+// Categories with cheap deal focus - expanded for SEO coverage
 const CHEAP_CATEGORIES: Record<string, { name: string; maxPrice: number; searchTerms: string[] }> = {
+  // Electronics
   'headphones': { name: 'Headphones', maxPrice: 50, searchTerms: ['headphones', 'earbuds'] },
   'earbuds': { name: 'Earbuds', maxPrice: 30, searchTerms: ['earbuds', 'wireless earbuds'] },
+  'wireless-earbuds': { name: 'Wireless Earbuds', maxPrice: 40, searchTerms: ['wireless earbuds', 'bluetooth earbuds'] },
   'laptops': { name: 'Laptops', maxPrice: 300, searchTerms: ['laptop', 'chromebook'] },
+  'chromebooks': { name: 'Chromebooks', maxPrice: 200, searchTerms: ['chromebook'] },
   'tablets': { name: 'Tablets', maxPrice: 150, searchTerms: ['tablet', 'fire tablet'] },
+  'fire-tablets': { name: 'Fire Tablets', maxPrice: 80, searchTerms: ['fire tablet', 'amazon tablet'] },
+  'monitors': { name: 'Monitors', maxPrice: 150, searchTerms: ['monitor', 'display'] },
+  'tvs': { name: 'TVs', maxPrice: 300, searchTerms: ['tv', 'television'] },
+  'speakers': { name: 'Speakers', maxPrice: 50, searchTerms: ['speaker', 'bluetooth speaker'] },
+  'bluetooth-speakers': { name: 'Bluetooth Speakers', maxPrice: 40, searchTerms: ['bluetooth speaker', 'portable speaker'] },
+  'keyboards': { name: 'Keyboards', maxPrice: 50, searchTerms: ['keyboard', 'mechanical'] },
+  'mice': { name: 'Computer Mice', maxPrice: 30, searchTerms: ['mouse', 'gaming mouse'] },
+  'webcams': { name: 'Webcams', maxPrice: 50, searchTerms: ['webcam', 'web camera'] },
+  'phone-cases': { name: 'Phone Cases', maxPrice: 20, searchTerms: ['phone case', 'iphone case'] },
+  'chargers': { name: 'Chargers', maxPrice: 25, searchTerms: ['charger', 'cable', 'usb-c'] },
+  'power-banks': { name: 'Power Banks', maxPrice: 30, searchTerms: ['power bank', 'portable charger'] },
+  'smartwatches': { name: 'Smartwatches', maxPrice: 100, searchTerms: ['smartwatch', 'fitness tracker'] },
+  'fitness-trackers': { name: 'Fitness Trackers', maxPrice: 50, searchTerms: ['fitness tracker', 'fitness band'] },
+  // Fashion
   'sneakers': { name: 'Sneakers', maxPrice: 60, searchTerms: ['sneakers', 'shoes'] },
+  'running-shoes': { name: 'Running Shoes', maxPrice: 70, searchTerms: ['running shoes', 'athletic shoes'] },
   'jeans': { name: 'Jeans', maxPrice: 40, searchTerms: ['jeans', 'denim'] },
   'jackets': { name: 'Jackets', maxPrice: 50, searchTerms: ['jacket', 'coat'] },
   't-shirts': { name: 'T-Shirts', maxPrice: 20, searchTerms: ['t-shirt', 'tee', 'shirt'] },
+  'hoodies': { name: 'Hoodies', maxPrice: 40, searchTerms: ['hoodie', 'sweatshirt'] },
+  'shorts': { name: 'Shorts', maxPrice: 25, searchTerms: ['shorts', 'athletic shorts'] },
   'backpacks': { name: 'Backpacks', maxPrice: 40, searchTerms: ['backpack', 'bag'] },
-  'watches': { name: 'Watches', maxPrice: 50, searchTerms: ['watch', 'smartwatch'] },
-  'speakers': { name: 'Speakers', maxPrice: 50, searchTerms: ['speaker', 'bluetooth speaker'] },
-  'keyboards': { name: 'Keyboards', maxPrice: 50, searchTerms: ['keyboard', 'mechanical'] },
-  'mice': { name: 'Computer Mice', maxPrice: 30, searchTerms: ['mouse', 'gaming mouse'] },
-  'phone-cases': { name: 'Phone Cases', maxPrice: 20, searchTerms: ['phone case', 'iphone case'] },
-  'chargers': { name: 'Chargers', maxPrice: 25, searchTerms: ['charger', 'cable', 'usb-c'] },
+  'watches': { name: 'Watches', maxPrice: 50, searchTerms: ['watch', 'analog watch'] },
+  'sunglasses': { name: 'Sunglasses', maxPrice: 30, searchTerms: ['sunglasses', 'shades'] },
+  // Home & Kitchen
+  'air-fryers': { name: 'Air Fryers', maxPrice: 60, searchTerms: ['air fryer'] },
+  'coffee-makers': { name: 'Coffee Makers', maxPrice: 40, searchTerms: ['coffee maker', 'coffee machine'] },
+  'blenders': { name: 'Blenders', maxPrice: 40, searchTerms: ['blender', 'mixer'] },
+  'vacuums': { name: 'Vacuums', maxPrice: 100, searchTerms: ['vacuum', 'vacuum cleaner'] },
+  'pillows': { name: 'Pillows', maxPrice: 30, searchTerms: ['pillow', 'bed pillow'] },
+  'bedding': { name: 'Bedding', maxPrice: 50, searchTerms: ['bedding', 'sheets', 'comforter'] },
+  // Gaming
+  'gaming-headsets': { name: 'Gaming Headsets', maxPrice: 50, searchTerms: ['gaming headset', 'gaming headphones'] },
+  'controllers': { name: 'Controllers', maxPrice: 40, searchTerms: ['controller', 'gamepad'] },
+  'gaming-mice': { name: 'Gaming Mice', maxPrice: 40, searchTerms: ['gaming mouse'] },
 }
 
 export async function generateStaticParams() {

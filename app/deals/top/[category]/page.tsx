@@ -76,6 +76,57 @@ const TOP_CATEGORIES: Record<string, { name: string; searchTerms: string[]; desc
     searchTerms: ['air fryer', 'ninja', 'instant'],
     description: 'Top air fryer deals from Ninja, Instant Pot, and Philips.'
   },
+  // Extended categories for SEO
+  'earbuds': { 
+    name: 'Earbuds', 
+    searchTerms: ['earbuds', 'airpods', 'wireless earbuds'],
+    description: 'Top earbuds deals on AirPods, Galaxy Buds, and Sony earbuds.'
+  },
+  'speakers': { 
+    name: 'Speakers', 
+    searchTerms: ['speaker', 'bluetooth speaker', 'soundbar'],
+    description: 'Best speaker deals from JBL, Bose, Sonos, and Marshall.'
+  },
+  'keyboards': { 
+    name: 'Keyboards', 
+    searchTerms: ['keyboard', 'mechanical keyboard', 'gaming keyboard'],
+    description: 'Top keyboard deals on mechanical, gaming, and wireless keyboards.'
+  },
+  'mattresses': { 
+    name: 'Mattresses', 
+    searchTerms: ['mattress', 'memory foam', 'hybrid mattress'],
+    description: 'Best mattress deals from Casper, Purple, and Tempur-Pedic.'
+  },
+  'coffee-makers': { 
+    name: 'Coffee Makers', 
+    searchTerms: ['coffee maker', 'espresso', 'keurig', 'nespresso'],
+    description: 'Top coffee maker deals from Keurig, Nespresso, and Breville.'
+  },
+  'fitness': { 
+    name: 'Fitness Equipment', 
+    searchTerms: ['fitness', 'workout', 'exercise', 'gym'],
+    description: 'Best fitness equipment deals on treadmills, weights, and home gym gear.'
+  },
+  'home-office': { 
+    name: 'Home Office', 
+    searchTerms: ['office', 'desk', 'office chair', 'standing desk'],
+    description: 'Top home office deals on desks, chairs, and office accessories.'
+  },
+  'outdoor': { 
+    name: 'Outdoor Gear', 
+    searchTerms: ['outdoor', 'camping', 'hiking', 'patio'],
+    description: 'Best outdoor deals on camping gear, patio furniture, and grills.'
+  },
+  'beauty': { 
+    name: 'Beauty & Personal Care', 
+    searchTerms: ['beauty', 'skincare', 'makeup', 'hair'],
+    description: 'Top beauty deals on skincare, makeup, and personal care devices.'
+  },
+  'toys': { 
+    name: 'Toys & Games', 
+    searchTerms: ['toys', 'lego', 'games', 'kids'],
+    description: 'Best toy deals on LEGO, board games, and educational toys.'
+  },
 }
 
 export async function generateStaticParams() {

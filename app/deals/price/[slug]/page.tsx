@@ -29,16 +29,46 @@ function formatCategory(category: string): string {
   return category.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 }
 
-// Comprehensive categories for price pages
+// Comprehensive categories for price pages - expanded for SEO coverage
 const PRICE_CATEGORIES = [
-  'laptops', 'headphones', 'sneakers', 'electronics', 'fashion', 'gaming',
-  'tvs', 'smartphones', 'tablets', 'watches', 'earbuds', 'monitors',
-  'air-fryers', 'vacuums', 'coffee-makers', 'furniture', 'mattresses',
-  'jackets', 'jeans', 'running-shoes', 'backpacks', 'cameras'
+  // Electronics
+  'laptops', 'gaming-laptops', 'chromebooks', 'macbooks',
+  'headphones', 'wireless-headphones', 'gaming-headsets', 'earbuds', 'wireless-earbuds',
+  'tvs', '4k-tvs', 'smart-tvs', 'oled-tvs',
+  'smartphones', 'iphones', 'android-phones', 'samsung-phones',
+  'tablets', 'ipads', 'android-tablets',
+  'monitors', 'gaming-monitors', '4k-monitors', 'ultrawide-monitors',
+  'cameras', 'dslr-cameras', 'mirrorless-cameras', 'action-cameras',
+  'smartwatches', 'fitness-trackers', 'apple-watches',
+  'speakers', 'bluetooth-speakers', 'soundbars', 'home-theater',
+  'keyboards', 'mechanical-keyboards', 'gaming-keyboards',
+  'mice', 'gaming-mice', 'wireless-mice',
+  'webcams', 'microphones', 'streaming-gear',
+  // Gaming
+  'gaming', 'gaming-chairs', 'gaming-desks', 'gaming-pcs', 'graphics-cards',
+  'ps5-games', 'xbox-games', 'nintendo-switch-games', 'pc-games',
+  'controllers', 'gaming-accessories',
+  // Fashion
+  'fashion', 'sneakers', 'running-shoes', 'basketball-shoes', 'casual-shoes',
+  'jackets', 'winter-jackets', 'rain-jackets', 'puffer-jackets',
+  'jeans', 'pants', 'shorts', 'activewear',
+  'backpacks', 'luggage', 'bags', 'wallets',
+  'sunglasses', 'watches', 'jewelry',
+  // Home & Kitchen
+  'home', 'furniture', 'mattresses', 'bedding', 'pillows',
+  'air-fryers', 'instant-pots', 'blenders', 'coffee-makers', 'espresso-machines',
+  'vacuums', 'robot-vacuums', 'air-purifiers', 'humidifiers',
+  'cookware', 'kitchen-appliances', 'small-appliances',
+  // Sports & Outdoors
+  'sports', 'fitness', 'workout-equipment', 'yoga-mats', 'dumbbells',
+  'bikes', 'e-bikes', 'scooters',
+  'camping', 'hiking', 'outdoor-gear',
+  // Office
+  'office', 'desks', 'office-chairs', 'standing-desks', 'printers'
 ]
 
 // All price points including lower budget options
-const PRICE_POINTS = [25, 50, 100, 200, 300, 500, 1000]
+const PRICE_POINTS = [25, 50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1500, 2000]
 
 // Static params for common price pages
 export async function generateStaticParams() {
