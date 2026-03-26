@@ -4,6 +4,7 @@ import { getGames, logScrape } from '@/lib/gaming-db'
 // Vercel Cron configuration
 export const runtime = 'nodejs'
 export const maxDuration = 300 // 5 minutes max
+export const dynamic = 'force-dynamic'
 
 // Games to scrape in each run (rotate through them)
 const GAMES_PER_RUN = 3

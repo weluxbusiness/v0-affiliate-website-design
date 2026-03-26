@@ -154,47 +154,58 @@ export async function getPromoCodes(options?: {
   limit?: number
   rewardType?: string
 }) {
-  const supabase = await createClient()
-  
-  let query = supabase
-    .from('promo_codes')
-    .select(`
-      *,
-      games!inner(slug, name, icon_url)
-    `)
-  
-  if (options?.gameId) {
-    query = query.eq('game_id', options.gameId)
+  try {
+    // Guard against null/undefined gameId
+    if (options?.gameId && (options.gameId === 'null' || options.gameId === 'undefined')) {
+      console.warn("getPromoCodes called with invalid gameId:", options.gameId)
+      return []
+    }
+    
+    const supabase = await createClient()
+    
+    let query = supabase
+      .from('promo_codes')
+      .select(`
+        *,
+        games!inner(slug, name, icon_url)
+      `)
+    
+    if (options?.gameId) {
+      query = query.eq('game_id', options.gameId)
+    }
+    
+    if (options?.gameSlug) {
+      query = query.eq('games.slug', options.gameSlug)
+    }
+    
+    if (options?.activeOnly !== false) {
+      query = query.eq('is_active', true)
+    }
+    
+    if (options?.verifiedOnly) {
+      query = query.eq('is_verified', true)
+    }
+    
+    if (options?.rewardType) {
+      query = query.eq('reward_type', options.rewardType)
+    }
+    
+    // Filter expired codes
+    query = query.or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    
+    query = query.order('created_at', { ascending: false })
+    
+    if (options?.limit) {
+      query = query.limit(options.limit)
+    }
+    
+    const { data, error } = await query
+    if (error) throw error
+    return data as (DbPromoCode & { games: { slug: string; name: string; icon_url: string | null } })[]
+  } catch (error) {
+    console.error("Error in getPromoCodes:", error)
+    return []
   }
-  
-  if (options?.gameSlug) {
-    query = query.eq('games.slug', options.gameSlug)
-  }
-  
-  if (options?.activeOnly !== false) {
-    query = query.eq('is_active', true)
-  }
-  
-  if (options?.verifiedOnly) {
-    query = query.eq('is_verified', true)
-  }
-  
-  if (options?.rewardType) {
-    query = query.eq('reward_type', options.rewardType)
-  }
-  
-  // Filter expired codes
-  query = query.or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
-  
-  query = query.order('created_at', { ascending: false })
-  
-  if (options?.limit) {
-    query = query.limit(options.limit)
-  }
-  
-  const { data, error } = await query
-  if (error) throw error
-  return data as (DbPromoCode & { games: { slug: string; name: string; icon_url: string | null } })[]
 }
 
 export async function getPromoCodesForGame(gameSlug: string) {
@@ -282,43 +293,54 @@ export async function getGameRewards(options?: {
   rewardType?: string
   limit?: number
 }) {
-  const supabase = await createClient()
-  
-  let query = supabase
-    .from('game_rewards')
-    .select(`
-      *,
-      games!inner(slug, name, icon_url)
-    `)
-  
-  if (options?.gameId) {
-    query = query.eq('game_id', options.gameId)
+  try {
+    // Guard against null/undefined gameId
+    if (options?.gameId && (options.gameId === 'null' || options.gameId === 'undefined')) {
+      console.warn("getGameRewards called with invalid gameId:", options.gameId)
+      return []
+    }
+    
+    const supabase = await createClient()
+    
+    let query = supabase
+      .from('game_rewards')
+      .select(`
+        *,
+        games!inner(slug, name, icon_url)
+      `)
+    
+    if (options?.gameId) {
+      query = query.eq('game_id', options.gameId)
+    }
+    
+    if (options?.gameSlug) {
+      query = query.eq('games.slug', options.gameSlug)
+    }
+    
+    if (options?.activeOnly !== false) {
+      query = query.eq('is_active', true)
+    }
+    
+    if (options?.rewardType) {
+      query = query.eq('reward_type', options.rewardType)
+    }
+    
+    // Filter expired rewards
+    query = query.or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    
+    query = query.order('created_at', { ascending: false })
+    
+    if (options?.limit) {
+      query = query.limit(options.limit)
+    }
+    
+    const { data, error } = await query
+    if (error) throw error
+    return data as (DbGameReward & { games: { slug: string; name: string; icon_url: string | null } })[]
+  } catch (error) {
+    console.error("Error in getGameRewards:", error)
+    return []
   }
-  
-  if (options?.gameSlug) {
-    query = query.eq('games.slug', options.gameSlug)
-  }
-  
-  if (options?.activeOnly !== false) {
-    query = query.eq('is_active', true)
-  }
-  
-  if (options?.rewardType) {
-    query = query.eq('reward_type', options.rewardType)
-  }
-  
-  // Filter expired rewards
-  query = query.or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
-  
-  query = query.order('created_at', { ascending: false })
-  
-  if (options?.limit) {
-    query = query.limit(options.limit)
-  }
-  
-  const { data, error } = await query
-  if (error) throw error
-  return data as (DbGameReward & { games: { slug: string; name: string; icon_url: string | null } })[]
 }
 
 export async function upsertGameReward(reward: Partial<DbGameReward> & { game_id: string; title: string }) {
@@ -445,12 +467,19 @@ export async function logScrape(log: {
   error_message?: string
   duration_ms?: number
 }) {
-  const supabase = await createClient()
-  const { error } = await supabase
-    .from('scrape_logs')
-    .insert(log)
-  
-  if (error) throw error
+  try {
+    const supabase = await createClient()
+    const { error } = await supabase
+      .from('scrape_logs')
+      .insert(log)
+    
+    if (error) {
+      console.error("Error in logScrape:", error)
+    }
+  } catch (error) {
+    console.error("Error in logScrape:", error)
+    // Non-critical - don't throw
+  }
 }
 
 // Stats helpers

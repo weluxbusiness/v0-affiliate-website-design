@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { upsertGame, bulkUpsertPromoCodes } from '@/lib/gaming-db'
 import { gamesData, getActivePromoCodes } from '@/lib/gaming-data'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   // Verify authorization
   const authHeader = request.headers.get('authorization')

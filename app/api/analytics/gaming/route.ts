@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { trackEvent, incrementCodeUses } from '@/lib/gaming-db'
 import { createHash } from 'crypto'
 
+export const dynamic = 'force-dynamic'
+
 // Helper to hash IP for privacy
 function hashIP(ip: string): string {
   return createHash('sha256').update(ip + process.env.IP_HASH_SALT || 'welux-salt').digest('hex').slice(0, 16)
@@ -95,7 +97,7 @@ export async function GET(request: NextRequest) {
       .select('event_type, created_at')
       .gte('created_at', startDate.toISOString())
     
-    if (gameSlug) {
+    if (gameSlug && gameSlug !== 'null' && gameSlug !== 'undefined') {
       // Join with games to filter by slug
       const { data: game } = await supabase
         .from('games')
@@ -103,7 +105,7 @@ export async function GET(request: NextRequest) {
         .eq('slug', gameSlug)
         .single()
       
-      if (game) {
+      if (game?.id) {
         query = query.eq('game_id', game.id)
       }
     }
