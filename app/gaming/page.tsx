@@ -23,7 +23,8 @@ import {
   TrendingUp,
   DollarSign,
   BookOpen,
-  ChevronRight
+  ChevronRight,
+  Flame
 } from "lucide-react"
 import { 
   gamesData, 
