@@ -53,11 +53,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${deal.title} - ${deal.discount_percentage}% Off | SaveSmart`,
     description,
     keywords: [deal.title, deal.store, deal.category, 'deal', 'discount', 'coupon', 'savings'].join(', '),
+    alternates: {
+      canonical: `/deal/${slug}`,
+    },
     openGraph: {
       title: `${deal.title} - ${deal.discount_percentage}% Off`,
       description,
       images: [{ url: getProductImageUrl(deal), width: 600, height: 400, alt: deal.title }],
-      type: "website",
+      type: "product",
+      url: `https://savesmart.bio/deal/${slug}`,
     },
     twitter: {
       card: "summary_large_image",
