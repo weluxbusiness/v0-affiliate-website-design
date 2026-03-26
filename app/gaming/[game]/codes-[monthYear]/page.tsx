@@ -33,7 +33,9 @@ const MONTHS = [
   'july', 'august', 'september', 'october', 'november', 'december'
 ]
 
-function parseMonthYear(monthYear: string): { month: string; year: number; monthIndex: number } | null {
+function parseMonthYear(monthYear: string | undefined): { month: string; year: number; monthIndex: number } | null {
+  if (!monthYear || typeof monthYear !== 'string') return null
+  
   const match = monthYear.match(/^([a-z]+)-(\d{4})$/)
   if (!match) return null
   
