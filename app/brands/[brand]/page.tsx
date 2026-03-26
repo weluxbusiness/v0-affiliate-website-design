@@ -32,15 +32,39 @@ import {
 // Revalidate pages every hour
 export const revalidate = 3600
 
-// Popular brands for static generation
+// Popular brands for static generation - expanded for SEO coverage
 const POPULAR_BRANDS = [
-  "apple", "samsung", "nike", "adidas", "sony", "lg", "dell", "hp",
-  "lenovo", "bose", "beats", "microsoft", "nintendo", "playstation",
-  "xbox", "dyson", "kitchenaid", "cuisinart", "ninja", "instant-pot",
-  "keurig", "nespresso", "ray-ban", "oakley", "levis", "north-face",
-  "columbia", "patagonia", "under-armour", "new-balance", "puma",
-  "reebok", "converse", "vans", "canon", "nikon", "gopro", "fitbit",
-  "garmin", "roku", "amazon", "google", "philips", "braun", "oral-b"
+  // Tech Giants
+  "apple", "samsung", "google", "microsoft", "amazon", "sony", "lg",
+  // Computer Brands
+  "dell", "hp", "lenovo", "asus", "acer", "msi", "razer",
+  // Audio Brands
+  "bose", "beats", "sony", "sennheiser", "jbl", "sonos", "bang-olufsen", "skullcandy",
+  // Gaming Brands
+  "nintendo", "playstation", "xbox", "razer", "logitech", "steelseries", "corsair", "hyperx",
+  // Camera Brands
+  "canon", "nikon", "sony", "gopro", "dji", "fujifilm", "panasonic",
+  // Fitness & Wearables
+  "fitbit", "garmin", "whoop", "oura", "polar", "suunto",
+  // Home & Kitchen
+  "dyson", "kitchenaid", "cuisinart", "ninja", "instant-pot", "keurig", "nespresso",
+  "shark", "roomba", "vitamix", "breville", "oxo", "le-creuset",
+  // Streaming & Smart Home
+  "roku", "amazon", "google", "apple", "ring", "nest", "ecobee", "philips-hue",
+  // Fashion - Athletic
+  "nike", "adidas", "under-armour", "new-balance", "puma", "reebok", "asics", "brooks",
+  // Fashion - Casual
+  "converse", "vans", "jordan", "yeezy", "crocs", "birkenstock", "allbirds",
+  // Fashion - Outdoor
+  "north-face", "columbia", "patagonia", "arcteryx", "rei", "marmot",
+  // Fashion - Denim & Basics
+  "levis", "gap", "old-navy", "uniqlo", "h-m", "zara",
+  // Eyewear
+  "ray-ban", "oakley", "costa", "maui-jim", "warby-parker",
+  // Personal Care
+  "philips", "braun", "oral-b", "dyson", "theragun", "hyperice",
+  // Luxury
+  "apple", "bose", "bang-olufsen", "marshall", "bowers-wilkins"
 ]
 
 interface PageProps {

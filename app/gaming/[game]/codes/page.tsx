@@ -5,6 +5,10 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
+import { BreadcrumbNav, generateGamingBreadcrumbs } from "@/components/seo/breadcrumb-nav"
+import { LastUpdated } from "@/components/seo/last-updated"
+import { InternalLinksWidget } from "@/components/seo/internal-links-widget"
+import { ContextualLinksList, gamingContextualLinks } from "@/components/seo/contextual-links"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -152,33 +156,13 @@ export default async function GameCodesPage({ params }: PageProps) {
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-12 md:py-16 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
-          {/* Breadcrumbs */}
-          <nav aria-label="Breadcrumb" className="relative z-10 mb-6 flex flex-wrap items-center gap-2 text-sm">
-            <Link 
-              href="/" 
-              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
-            >
-              Home
-            </Link>
-            <ChevronRight className="h-4 w-4 text-white/50" />
-            <Link 
-              href="/gaming" 
-              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
-            >
-              Gaming
-            </Link>
-            <ChevronRight className="h-4 w-4 text-white/50" />
-            <Link 
-              href={`/gaming/${game.slug}`}
-              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
-            >
-              {game.shortName || game.name}
-            </Link>
-            <ChevronRight className="h-4 w-4 text-white/50" />
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-medium">
-              All Codes
-            </span>
-          </nav>
+          {/* Breadcrumb with JSON-LD Schema */}
+          <div className="relative z-10 mb-6">
+            <BreadcrumbNav 
+              items={generateGamingBreadcrumbs(game.slug, game.shortName || game.name, 'codes')}
+              className="text-white/70 [&_a]:text-white/70 [&_a:hover]:text-white [&_span]:text-white"
+            />
+          </div>
           
           <div className="flex items-center gap-2 mb-4">
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
@@ -188,6 +172,7 @@ export default async function GameCodesPage({ params }: PageProps) {
             <span className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium">
               {activeCodes.length} Active
             </span>
+            <LastUpdated className="text-white/70 [&_time]:text-white/90" />
           </div>
           
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
@@ -334,6 +319,25 @@ export default async function GameCodesPage({ params }: PageProps) {
           </PageContainer>
         </section>
       )}
+      
+      {/* Internal Links Widget */}
+      <section className="py-8 border-t border-border">
+        <PageContainer>
+          <InternalLinksWidget 
+            pageType="gaming" 
+            currentSlug={game.slug}
+          />
+        </PageContainer>
+      </section>
+      
+      {/* Contextual Links */}
+      <section className="py-8 border-t border-border">
+        <PageContainer>
+          <ContextualLinksList 
+            links={gamingContextualLinks.filter(l => !l.href.includes(game.slug))}
+          />
+        </PageContainer>
+      </section>
       
       {/* Quick Links */}
       <section className="py-10 md:py-12 bg-muted/30">

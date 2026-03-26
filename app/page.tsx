@@ -12,6 +12,8 @@ import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
 import { HomeGamingDeals } from "@/components/home-gaming-deals"
 import { FAQSection } from "@/components/seo"
+import { TrendingNowSection } from "@/components/seo/trending-now-section"
+import { RecentlyUpdatedSection } from "@/components/seo/recently-updated-section"
 import { homepageFAQs } from "@/lib/seo/faq-data"
 import { getTrendingDeals } from "@/lib/deals"
 
@@ -126,6 +128,9 @@ export default function HomePage() {
           {/* Above the fold - critical */}
           <HeroSection />
           
+          {/* SEO Boost: Trending Now - Internal links for crawl priority */}
+          <TrendingNowSection />
+          
           {/* Primary content - deals */}
           <Suspense fallback={<DealsLoading />}>
             <TrendingDealsSection />
@@ -157,6 +162,9 @@ export default function HomePage() {
             subtitle="Everything you need to know about finding the best deals with SaveSmart"
             className="border-t border-border"
           />
+          
+          {/* Recently Updated - Freshness signal for SEO */}
+          <RecentlyUpdatedSection />
           
           {/* Final conversion */}
           <FinalCTA />

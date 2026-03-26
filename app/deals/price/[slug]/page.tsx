@@ -5,11 +5,20 @@ import { Tag, ArrowRight, Clock, Store, DollarSign } from "lucide-react"
 
 import { getDealsUnderPrice } from "@/lib/deals"
 import { getStoreInfo, getProductImageUrl, formatCategoryName } from "@/lib/deal-types"
+import { getSEOContent } from "@/lib/seo/programmatic-seo-content"
 import { PageContainer } from "@/components/layout/page-container"
 import { DealCard } from "@/components/deal-card"
+import { ProgrammaticSEOBlock } from "@/components/seo/programmatic-seo-block"
+import { BreadcrumbNav, generateDealsBreadcrumbs } from "@/components/seo/breadcrumb-nav"
+import { LastUpdated } from "@/components/seo/last-updated"
+import { InternalLinksWidget } from "@/components/seo/internal-links-widget"
+import { ContextualLinksList, dealContextualLinks } from "@/components/seo/contextual-links"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+
+// Force revalidation every 24 hours for SEO freshness
+export const revalidate = 86400
 
 // Parse slug like "laptops-under-500" or "sneakers-under-100"
 function parsePriceSlug(slug: string): { category: string; price: number } | null {
@@ -29,16 +38,46 @@ function formatCategory(category: string): string {
   return category.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 }
 
-// Comprehensive categories for price pages
+// Comprehensive categories for price pages - expanded for SEO coverage
 const PRICE_CATEGORIES = [
-  'laptops', 'headphones', 'sneakers', 'electronics', 'fashion', 'gaming',
-  'tvs', 'smartphones', 'tablets', 'watches', 'earbuds', 'monitors',
-  'air-fryers', 'vacuums', 'coffee-makers', 'furniture', 'mattresses',
-  'jackets', 'jeans', 'running-shoes', 'backpacks', 'cameras'
+  // Electronics
+  'laptops', 'gaming-laptops', 'chromebooks', 'macbooks',
+  'headphones', 'wireless-headphones', 'gaming-headsets', 'earbuds', 'wireless-earbuds',
+  'tvs', '4k-tvs', 'smart-tvs', 'oled-tvs',
+  'smartphones', 'iphones', 'android-phones', 'samsung-phones',
+  'tablets', 'ipads', 'android-tablets',
+  'monitors', 'gaming-monitors', '4k-monitors', 'ultrawide-monitors',
+  'cameras', 'dslr-cameras', 'mirrorless-cameras', 'action-cameras',
+  'smartwatches', 'fitness-trackers', 'apple-watches',
+  'speakers', 'bluetooth-speakers', 'soundbars', 'home-theater',
+  'keyboards', 'mechanical-keyboards', 'gaming-keyboards',
+  'mice', 'gaming-mice', 'wireless-mice',
+  'webcams', 'microphones', 'streaming-gear',
+  // Gaming
+  'gaming', 'gaming-chairs', 'gaming-desks', 'gaming-pcs', 'graphics-cards',
+  'ps5-games', 'xbox-games', 'nintendo-switch-games', 'pc-games',
+  'controllers', 'gaming-accessories',
+  // Fashion
+  'fashion', 'sneakers', 'running-shoes', 'basketball-shoes', 'casual-shoes',
+  'jackets', 'winter-jackets', 'rain-jackets', 'puffer-jackets',
+  'jeans', 'pants', 'shorts', 'activewear',
+  'backpacks', 'luggage', 'bags', 'wallets',
+  'sunglasses', 'watches', 'jewelry',
+  // Home & Kitchen
+  'home', 'furniture', 'mattresses', 'bedding', 'pillows',
+  'air-fryers', 'instant-pots', 'blenders', 'coffee-makers', 'espresso-machines',
+  'vacuums', 'robot-vacuums', 'air-purifiers', 'humidifiers',
+  'cookware', 'kitchen-appliances', 'small-appliances',
+  // Sports & Outdoors
+  'sports', 'fitness', 'workout-equipment', 'yoga-mats', 'dumbbells',
+  'bikes', 'e-bikes', 'scooters',
+  'camping', 'hiking', 'outdoor-gear',
+  // Office
+  'office', 'desks', 'office-chairs', 'standing-desks', 'printers'
 ]
 
 // All price points including lower budget options
-const PRICE_POINTS = [25, 50, 100, 200, 300, 500, 1000]
+const PRICE_POINTS = [25, 50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1500, 2000]
 
 // Static params for common price pages
 export async function generateStaticParams() {
@@ -110,6 +149,9 @@ export default async function PriceDealsPage({ params }: PageProps) {
     .filter(c => c !== categorySlug)
     .slice(0, 4)
   
+  // Get custom SEO content if available
+  const seoContent = getSEOContent('price', `${categorySlug}-under-${price}`)
+  
   return (
     <main className="min-h-screen bg-background">
       <script
@@ -149,14 +191,27 @@ export default async function PriceDealsPage({ params }: PageProps) {
             </span>
           </nav>
           
-          {/* Badge */}
-          <div className="flex items-center gap-2 mb-4">
+          {/* Breadcrumb with JSON-LD Schema */}
+          <div className="mb-4">
+            <BreadcrumbNav 
+              items={[
+                { name: 'Deals', url: '/deals' },
+                { name: categoryName, url: `/deals/${categorySlug}` },
+                { name: `Under $${price}`, url: `/deals/price/${categorySlug}-under-${price}` },
+              ]} 
+              className="text-white/70 [&_a]:text-white/70 [&_a:hover]:text-white [&_span]:text-white"
+            />
+          </div>
+          
+          {/* Badge + Last Updated */}
+          <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
               <DollarSign className="h-5 w-5 text-emerald-300" />
               <span className="text-sm font-semibold text-white uppercase tracking-wide">
                 Budget Deals
               </span>
             </div>
+            <LastUpdated className="text-white/70 [&_time]:text-white/90" />
           </div>
           
           {/* Title */}
@@ -231,24 +286,48 @@ export default async function PriceDealsPage({ params }: PageProps) {
         </PageContainer>
       </section>
       
-      {/* SEO Content */}
-      <section className="py-10 md:py-12 bg-muted/30">
+      {/* SEO Content Section */}
+      <section className="py-10 md:py-12 bg-muted/20">
         <PageContainer>
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-foreground mb-4">
-              About {categoryName} Deals Under ${price}
-            </h2>
-            <div className="prose prose-muted max-w-none">
-              <p className="text-muted-foreground leading-relaxed">
-                {categoryName} deals under ${price} are a great option for budget-conscious shoppers looking for quality products without breaking the bank. 
-                SaveSmart scours hundreds of retailers including Amazon, Best Buy, Walmart, and Target to find verified discounts on top-rated {categoryName.toLowerCase()} products. 
-                Our deals typically feature savings of 20-60% off retail prices, with many items including free shipping. 
-                We use AI-powered price tracking to monitor price fluctuations and alert you when items reach their lowest price point. 
-                Whether you&apos;re a student, first-time buyer, or simply looking for great value, our under ${price} {categoryName.toLowerCase()} collection offers 
-                excellent options from trusted brands. All deals are verified and updated hourly to ensure you&apos;re seeing accurate pricing information.
-              </p>
-            </div>
+          {/* SEO Content - Dynamic or Default */}
+          <div className="bg-muted/30 rounded-xl p-6 md:p-8">
+            {seoContent ? (
+              <ProgrammaticSEOBlock content={seoContent} />
+            ) : (
+              <>
+                <h2 className="text-xl font-semibold text-foreground mb-4">
+                  About {categoryName} Deals Under ${price}
+                </h2>
+                <div className="prose prose-muted max-w-none">
+                  <p className="text-muted-foreground leading-relaxed">
+                    {categoryName} deals under ${price} are a great option for budget-conscious shoppers looking for quality products without breaking the bank. 
+                    SaveSmart scours hundreds of retailers including Amazon, Best Buy, Walmart, and Target to find verified discounts on top-rated {categoryName.toLowerCase()} products. 
+                    Our deals typically feature savings of 20-60% off retail prices, with many items including free shipping. 
+                    We use AI-powered price tracking to monitor price fluctuations and alert you when items reach their lowest price point. 
+                    Whether you&apos;re a student, first-time buyer, or simply looking for great value, our under ${price} {categoryName.toLowerCase()} collection offers 
+                    excellent options from trusted brands. All deals are verified and updated hourly to ensure you&apos;re seeing accurate pricing information.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
+          
+          {/* Contextual Internal Links */}
+          <ContextualLinksList 
+            links={dealContextualLinks.filter(l => !l.href.includes(categorySlug))} 
+            className="mt-8"
+          />
+        </PageContainer>
+      </section>
+      
+      {/* Internal Links Widget */}
+      <section className="py-8 border-t border-border">
+        <PageContainer>
+          <InternalLinksWidget 
+            pageType="deals" 
+            currentSlug={`${categorySlug}-under-${price}`}
+            category={categorySlug}
+          />
         </PageContainer>
       </section>
       
