@@ -110,6 +110,10 @@ export async function GET() {
     
     // 20. Brand pagination pages
     `${baseUrl}/sitemap-brand-pages.xml`,
+    
+    // 21. Deal variants: cheap, top, price-based pages
+    // Budget-friendly and top-rated deal pages across categories
+    `${baseUrl}/sitemap-deals-variants.xml`,
   ]
   
   // Only include pagination sitemap if it has URLs (lowest priority)

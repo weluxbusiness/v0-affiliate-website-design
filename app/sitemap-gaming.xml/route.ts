@@ -43,7 +43,15 @@ export async function GET(): Promise<Response> {
       { url: "/gaming/top-games", priority: "0.8", changefreq: "daily" },
     ]
 
-    // Dynamic game pages - /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards
+    // Get current month info for monthly code pages
+    const now = new Date()
+    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+    const currentMonth = months[now.getMonth()]
+    const currentYear = now.getFullYear()
+    const nextMonth = months[(now.getMonth() + 1) % 12]
+    const nextMonthYear = now.getMonth() === 11 ? currentYear + 1 : currentYear
+
+    // Dynamic game pages - /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards, etc.
     const gamePages = gameSlugs.flatMap(({ slug, lastUpdated }) => [
       {
         url: `/gaming/${slug}`,
@@ -60,6 +68,26 @@ export async function GET(): Promise<Response> {
       {
         url: `/gaming/${slug}/rewards`,
         lastmod: lastUpdated,
+        priority: "0.6",
+        changefreq: "weekly",
+      },
+      // Daily codes page
+      {
+        url: `/gaming/${slug}/codes-today`,
+        lastmod: now.toISOString(),
+        priority: "0.8",
+        changefreq: "hourly",
+      },
+      // Monthly codes pages
+      {
+        url: `/gaming/${slug}/codes-${currentMonth}-${currentYear}`,
+        lastmod: now.toISOString(),
+        priority: "0.7",
+        changefreq: "daily",
+      },
+      {
+        url: `/gaming/${slug}/codes-${nextMonth}-${nextMonthYear}`,
+        lastmod: now.toISOString(),
         priority: "0.6",
         changefreq: "weekly",
       },

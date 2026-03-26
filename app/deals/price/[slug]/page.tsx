@@ -29,13 +29,21 @@ function formatCategory(category: string): string {
   return category.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 }
 
+// Comprehensive categories for price pages
+const PRICE_CATEGORIES = [
+  'laptops', 'headphones', 'sneakers', 'electronics', 'fashion', 'gaming',
+  'tvs', 'smartphones', 'tablets', 'watches', 'earbuds', 'monitors',
+  'air-fryers', 'vacuums', 'coffee-makers', 'furniture', 'mattresses',
+  'jackets', 'jeans', 'running-shoes', 'backpacks', 'cameras'
+]
+
+// All price points including lower budget options
+const PRICE_POINTS = [25, 50, 100, 200, 300, 500, 1000]
+
 // Static params for common price pages
 export async function generateStaticParams() {
-  const categories = ['laptops', 'headphones', 'sneakers', 'electronics', 'fashion', 'gaming']
-  const prices = [100, 200, 300, 500, 1000]
-  
-  return categories.flatMap(category => 
-    prices.map(price => ({ slug: `${category}-under-${price}` }))
+  return PRICE_CATEGORIES.flatMap(category => 
+    PRICE_POINTS.map(price => ({ slug: `${category}-under-${price}` }))
   )
 }
 
@@ -172,7 +180,7 @@ export default async function PriceDealsPage({ params }: PageProps) {
         <PageContainer>
           <div className="flex flex-wrap items-center gap-3">
             <span className="text-sm font-medium text-muted-foreground">Price:</span>
-            {[100, 200, 300, 500, 1000].map((p) => (
+            {[25, 50, 100, 200, 300, 500, 1000].map((p) => (
               <Link
                 key={p}
                 href={`/deals/price/${categorySlug}-under-${p}`}
