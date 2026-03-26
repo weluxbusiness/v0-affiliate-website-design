@@ -30,7 +30,7 @@ export function ProductSchema({ deal, url }: ProductSchemaProps) {
     image: deal.image_url,
     brand: {
       "@type": "Brand",
-      name: deal.brand || deal.store,
+      name: deal.store,
     },
     offers: {
       "@type": "Offer",
