@@ -28,7 +28,9 @@ export async function GET(): Promise<Response> {
       gameSlugs = getGameSlugsForSitemap()
     }
     
-    const now = new Date().toISOString()
+    // Timestamp for sitemap
+    const currentDate = new Date()
+    const lastModified = currentDate.toISOString()
 
     // Static gaming pages - SEO priority pages
     const staticPages = [
@@ -44,12 +46,11 @@ export async function GET(): Promise<Response> {
     ]
 
     // Get current month info for monthly code pages
-    const now = new Date()
     const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
-    const currentMonth = months[now.getMonth()]
-    const currentYear = now.getFullYear()
-    const nextMonth = months[(now.getMonth() + 1) % 12]
-    const nextMonthYear = now.getMonth() === 11 ? currentYear + 1 : currentYear
+    const currentMonth = months[currentDate.getMonth()]
+    const currentYear = currentDate.getFullYear()
+    const nextMonth = months[(currentDate.getMonth() + 1) % 12]
+    const nextMonthYear = currentDate.getMonth() === 11 ? currentYear + 1 : currentYear
 
     // Dynamic game pages - /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards, etc.
     const gamePages = gameSlugs.flatMap(({ slug, lastUpdated }) => [
@@ -74,20 +75,20 @@ export async function GET(): Promise<Response> {
       // Daily codes page
       {
         url: `/gaming/${slug}/codes-today`,
-        lastmod: now.toISOString(),
+        lastmod: lastModified,
         priority: "0.8",
         changefreq: "hourly",
       },
       // Monthly codes pages
       {
         url: `/gaming/${slug}/codes-${currentMonth}-${currentYear}`,
-        lastmod: now.toISOString(),
+        lastmod: lastModified,
         priority: "0.7",
         changefreq: "daily",
       },
       {
         url: `/gaming/${slug}/codes-${nextMonth}-${nextMonthYear}`,
-        lastmod: now.toISOString(),
+        lastmod: lastModified,
         priority: "0.6",
         changefreq: "weekly",
       },
@@ -99,7 +100,7 @@ ${staticPages
   .map(
     (page) => `  <url>
     <loc>${BASE_URL}${page.url}</loc>
-    <lastmod>${now}</lastmod>
+    <lastmod>${lastModified}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>`
