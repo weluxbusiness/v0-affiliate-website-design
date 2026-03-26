@@ -83,9 +83,70 @@ export default async function GameCodesPage({ params }: PageProps) {
   const bestCode = getBestPromoCode(game.promoCodes)
   const relatedGames = getRelatedGames(game, 4)
   
+  // FAQPage schema for codes
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `How do I redeem ${game.name} promo codes?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `To redeem ${game.name} promo codes, open the game and look for the settings or promo code section. Enter the code exactly as shown and click redeem to receive your rewards.`
+        }
+      },
+      {
+        "@type": "Question",
+        name: `Are ${game.name} promo codes free?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes, all ${game.name} promo codes listed on SaveSmart are completely free to use. Simply copy the code and redeem it in-game for free rewards.`
+        }
+      },
+      {
+        "@type": "Question",
+        name: `How often are new ${game.name} codes released?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `New ${game.name} promo codes are typically released during special events, updates, and celebrations. We update our list daily to ensure all codes are current.`
+        }
+      }
+    ]
+  }
+  
+  // ItemList schema for codes
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${game.name} Promo Codes`,
+    description: `Complete list of all working ${game.name} promo codes`,
+    numberOfItems: activeCodes.length,
+    itemListElement: activeCodes.slice(0, 20).map((code, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Offer",
+        name: code.code,
+        description: code.reward,
+        url: `https://savesmart.bio/gaming/${game.slug}/codes`
+      }
+    }))
+  }
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
       
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-12 md:py-16 overflow-hidden">

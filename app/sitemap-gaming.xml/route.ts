@@ -28,18 +28,31 @@ export async function GET(): Promise<Response> {
       gameSlugs = getGameSlugsForSitemap()
     }
     
-    const now = new Date().toISOString()
+    // Timestamp for sitemap
+    const currentDate = new Date()
+    const lastModified = currentDate.toISOString()
 
-    // Static gaming pages
+    // Static gaming pages - SEO priority pages
     const staticPages = [
       { url: "/gaming", priority: "0.9", changefreq: "daily" },
       { url: "/gaming/promo-codes", priority: "0.8", changefreq: "daily" },
       { url: "/gaming/free-rewards", priority: "0.8", changefreq: "daily" },
       { url: "/gaming/new-player-deals", priority: "0.8", changefreq: "daily" },
       { url: "/gaming/today", priority: "0.9", changefreq: "hourly" },
+      // New SEO entry pages
+      { url: "/gaming/best-codes", priority: "0.8", changefreq: "daily" },
+      { url: "/gaming/all-codes", priority: "0.8", changefreq: "daily" },
+      { url: "/gaming/top-games", priority: "0.8", changefreq: "daily" },
     ]
 
-    // Dynamic game pages - /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards
+    // Get current month info for monthly code pages
+    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+    const currentMonth = months[currentDate.getMonth()]
+    const currentYear = currentDate.getFullYear()
+    const nextMonth = months[(currentDate.getMonth() + 1) % 12]
+    const nextMonthYear = currentDate.getMonth() === 11 ? currentYear + 1 : currentYear
+
+    // Dynamic game pages - /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards, etc.
     const gamePages = gameSlugs.flatMap(({ slug, lastUpdated }) => [
       {
         url: `/gaming/${slug}`,
@@ -59,6 +72,26 @@ export async function GET(): Promise<Response> {
         priority: "0.6",
         changefreq: "weekly",
       },
+      // Daily codes page
+      {
+        url: `/gaming/${slug}/codes-today`,
+        lastmod: lastModified,
+        priority: "0.8",
+        changefreq: "hourly",
+      },
+      // Monthly codes pages
+      {
+        url: `/gaming/${slug}/codes-${currentMonth}-${currentYear}`,
+        lastmod: lastModified,
+        priority: "0.7",
+        changefreq: "daily",
+      },
+      {
+        url: `/gaming/${slug}/codes-${nextMonth}-${nextMonthYear}`,
+        lastmod: lastModified,
+        priority: "0.6",
+        changefreq: "weekly",
+      },
     ])
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -67,7 +100,7 @@ ${staticPages
   .map(
     (page) => `  <url>
     <loc>${BASE_URL}${page.url}</loc>
-    <lastmod>${now}</lastmod>
+    <lastmod>${lastModified}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>`

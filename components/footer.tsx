@@ -14,9 +14,17 @@ const footerSections = [
       { name: "Electronics", href: "/deals/electronics" },
       { name: "Fashion", href: "/deals/fashion" },
       { name: "Home & Kitchen", href: "/deals/home" },
-      { name: "Laptops", href: "/deals/laptops" },
-      { name: "Headphones", href: "/deals/headphones" },
-      { name: "Sneakers", href: "/deals/sneakers" },
+      { name: "Trending Deals", href: "/deals/trending" },
+    ],
+  },
+  {
+    title: "Gaming",
+    links: [
+      { name: "All Games", href: "/gaming" },
+      { name: "Promo Codes", href: "/gaming/promo-codes" },
+      { name: "Best Codes", href: "/gaming/best-codes" },
+      { name: "Top Games", href: "/gaming/top-games" },
+      { name: "Free Rewards", href: "/gaming/free-rewards" },
     ],
   },
   {
@@ -27,7 +35,6 @@ const footerSections = [
       { name: "Best Buy Deals", href: "/stores/best-buy" },
       { name: "Target Deals", href: "/stores/target" },
       { name: "Walmart Deals", href: "/stores/walmart" },
-      { name: "Apple Deals", href: "/stores/apple" },
     ],
   },
   {
@@ -37,15 +44,8 @@ const footerSections = [
       { name: "Blog", href: "/blog" },
       { name: "How It Works", href: "/how-it-works" },
       { name: "Help Center", href: "/help-center" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
       { name: "Privacy Policy", href: "/privacy-policy" },
       { name: "Terms of Service", href: "/terms-of-service" },
-      { name: "Cookie Policy", href: "/cookie-policy" },
-      { name: "Affiliate Disclosure", href: "/affiliate-disclosure" },
     ],
   },
 ] as const

@@ -29,6 +29,10 @@ export const metadata: Metadata = {
     title: "Home & Kitchen Deals & Discounts | SaveSmart",
     description: "Find amazing home and kitchen deals on appliances, furniture, decor and more. Updated hourly.",
     type: "website",
+    url: "https://savesmart.bio/deals/home-kitchen",
+  },
+  alternates: {
+    canonical: "/deals/home-kitchen",
   },
 }
 
