@@ -1,7 +1,4 @@
 {
-  "env": {
-    "NEXT_DISABLE_TURBOPACK": "1"
-  },
   "crons": [
     {
       "path": "/api/cron/discover-deals",
