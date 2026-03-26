@@ -166,9 +166,50 @@ export default async function GameRewardsPage({ params }: PageProps) {
     referral: game.rewards.filter(r => r.type === 'Referral'),
   }
   
+  // ItemList schema for rewards
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${game.name} Free Rewards`,
+    description: `All free rewards and bonuses available in ${game.name}`,
+    numberOfItems: game.rewards.length,
+    itemListElement: game.rewards.map((reward, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Thing",
+        name: reward.title,
+        description: reward.description,
+        url: `https://savesmart.bio/gaming/${game.slug}/rewards`
+      }
+    }))
+  }
+  
+  // Breadcrumb schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://savesmart.bio" },
+      { "@type": "ListItem", position: 2, name: "Gaming", item: "https://savesmart.bio/gaming" },
+      { "@type": "ListItem", position: 3, name: game.name, item: `https://savesmart.bio/gaming/${game.slug}` },
+      { "@type": "ListItem", position: 4, name: "Rewards", item: `https://savesmart.bio/gaming/${game.slug}/rewards` }
+    ]
+  }
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-secondary/90 to-secondary text-white py-12 md:py-16 overflow-hidden">

@@ -94,6 +94,22 @@ export async function GET() {
     // 15. Auto-generated blog posts: /blog/deals/[slug]
     // SEO blog posts for brands, categories, price ranges, and trending roundups
     `${baseUrl}/sitemap-blog-deals.xml`,
+    
+    // 16. Gaming section: /gaming, /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards
+    // Gaming promo codes and free rewards for mobile and PC games
+    `${baseUrl}/sitemap-gaming.xml`,
+    
+    // 17. Core sitemap index for high-priority pages
+    `${baseUrl}/sitemap-core.xml`,
+    
+    // 18. Store pagination pages
+    `${baseUrl}/sitemap-store-pages.xml`,
+    
+    // 19. Category pagination pages
+    `${baseUrl}/sitemap-category-pages.xml`,
+    
+    // 20. Brand pagination pages
+    `${baseUrl}/sitemap-brand-pages.xml`,
   ]
   
   // Only include pagination sitemap if it has URLs (lowest priority)

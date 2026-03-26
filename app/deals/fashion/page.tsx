@@ -29,6 +29,10 @@ export const metadata: Metadata = {
     title: "Fashion Deals & Discounts | SaveSmart",
     description: "Find amazing fashion deals on clothing, shoes, and accessories from top brands. Updated hourly.",
     type: "website",
+    url: "https://savesmart.bio/deals/fashion",
+  },
+  alternates: {
+    canonical: "/deals/fashion",
   },
 }
 

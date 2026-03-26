@@ -29,6 +29,10 @@ export const metadata: Metadata = {
     title: "Electronics Deals & Discounts | SaveSmart",
     description: "Find the best electronics deals on laptops, TVs, headphones, smartphones and more. Updated hourly.",
     type: "website",
+    url: "https://savesmart.bio/deals/electronics",
+  },
+  alternates: {
+    canonical: "/deals/electronics",
   },
 }
 
