@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { HowItWorks } from "@/components/how-it-works"
 import { BenefitsSection } from "@/components/benefits-section"
@@ -101,7 +100,6 @@ export default function HomePage() {
       />
       
       <div className="min-h-screen bg-background">
-        <Header />
         <main>
           {/* Above the fold - critical */}
           <HeroSection />

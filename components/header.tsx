@@ -55,7 +55,7 @@ export function Header() {
   }, [isOpen])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="fixed top-0 left-0 right-0 z-[9999] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -157,12 +157,8 @@ export function Header() {
         {/* Mobile hamburger button */}
         <button
           type="button"
-          className="md:hidden relative z-50 p-2 rounded-md hover:bg-muted active:bg-muted/80 touch-manipulation"
-          onClick={() => setIsOpen(!isOpen)}
-          onTouchEnd={(e) => {
-            e.preventDefault()
-            setIsOpen(!isOpen)
-          }}
+          className="md:hidden relative z-[60] p-2 rounded-md hover:bg-muted active:bg-muted/80 touch-manipulation"
+          onClick={() => setIsOpen((prev) => !prev)}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
         >
@@ -177,7 +173,7 @@ export function Header() {
       {/* Mobile menu */}
       {isOpen && (
         <div 
-          className="md:hidden fixed inset-x-0 top-16 bottom-0 bg-background z-50 overflow-y-auto overscroll-contain"
+          className="md:hidden fixed inset-x-0 top-16 bottom-0 bg-background z-[9998] overflow-y-auto overscroll-contain border-t border-border"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <nav className="flex flex-col p-4 pb-safe">
