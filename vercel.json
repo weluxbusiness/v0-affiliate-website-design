@@ -1,4 +1,5 @@
 {
+  "buildCommand": "next build --no-turbo",
   "crons": [
     {
       "path": "/api/cron/discover-deals",
