@@ -22,7 +22,10 @@ import {
   Calendar,
   TrendingUp,
   DollarSign,
-  BookOpen
+  BookOpen,
+  ChevronRight,
+  Flame,
+  Play
 } from "lucide-react"
 import { 
   gamesData, 
