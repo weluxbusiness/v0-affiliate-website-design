@@ -86,7 +86,9 @@ export default function BestCodesPage() {
       bestCode: getBestPromoCode(game.promoCodes),
       allCodes: sortPromoCodesByValue(getActivePromoCodes(game.promoCodes))
     }))
-    .filter(item => item.bestCode !== null)
+    .filter((item): item is typeof item & { bestCode: NonNullable<typeof item.bestCode> } => 
+      item.bestCode !== null
+    )
     .sort((a, b) => {
       // Sort by estimated value (parsing from reward description)
       const getValueScore = (reward: string) => {
@@ -96,7 +98,7 @@ export default function BestCodesPage() {
         }
         return 0
       }
-      return getValueScore(b.bestCode!.reward) - getValueScore(a.bestCode!.reward)
+      return getValueScore(b.bestCode.reward) - getValueScore(a.bestCode.reward)
     })
     .slice(0, 20)
 
