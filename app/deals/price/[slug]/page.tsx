@@ -17,6 +17,9 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
+// Force revalidation every 24 hours for SEO freshness
+export const revalidate = 86400
+
 // Parse slug like "laptops-under-500" or "sneakers-under-100"
 function parsePriceSlug(slug: string): { category: string; price: number } | null {
   const match = slug.match(/^(.+)-under-(\d+)$/)

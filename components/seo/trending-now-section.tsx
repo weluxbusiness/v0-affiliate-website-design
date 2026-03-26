@@ -7,6 +7,7 @@ import { Flame, Gamepad2, Tag, ArrowRight, Clock } from "lucide-react"
  * Links to high-priority pages for Google crawl boost
  */
 
+// Ensure at least 6 internal links for SEO boost
 const trendingGamingPages = [
   { 
     href: '/gaming/genshin-impact/codes', 
@@ -22,6 +23,11 @@ const trendingGamingPages = [
     href: '/gaming/honkai-star-rail/codes', 
     label: 'Honkai Star Rail Codes',
     description: 'Free Stellar Jade',
+  },
+  { 
+    href: '/gaming/blox-fruits/codes', 
+    label: 'Blox Fruits Codes',
+    description: 'Free boosts & items',
   },
 ]
 
@@ -40,6 +46,11 @@ const trendingDealPages = [
     href: '/deals/price/tvs-under-500', 
     label: 'TVs Under $500',
     description: '4K TV deals',
+  },
+  { 
+    href: '/deals/price/sneakers-under-100', 
+    label: 'Sneakers Under $100',
+    description: 'Top shoe deals',
   },
 ]
 

@@ -23,6 +23,7 @@ export { FAQSection } from './faq-section'
 
 // Indexing & Crawl Boost Components
 export { TrendingNowSection } from './trending-now-section'
+export { RecentlyUpdatedSection, RecentlyUpdatedCompact } from './recently-updated-section'
 export { InternalLinksWidget, InternalLinksCompact } from './internal-links-widget'
 export { LastUpdated, LastUpdatedInline, getCurrentDateISO, getCurrentDateFormatted } from './last-updated'
 export { 
