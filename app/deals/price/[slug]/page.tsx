@@ -5,8 +5,10 @@ import { Tag, ArrowRight, Clock, Store, DollarSign } from "lucide-react"
 
 import { getDealsUnderPrice } from "@/lib/deals"
 import { getStoreInfo, getProductImageUrl, formatCategoryName } from "@/lib/deal-types"
+import { getSEOContent } from "@/lib/seo/programmatic-seo-content"
 import { PageContainer } from "@/components/layout/page-container"
 import { DealCard } from "@/components/deal-card"
+import { ProgrammaticSEOBlock } from "@/components/seo/programmatic-seo-block"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -140,6 +142,9 @@ export default async function PriceDealsPage({ params }: PageProps) {
     .filter(c => c !== categorySlug)
     .slice(0, 4)
   
+  // Get custom SEO content if available
+  const seoContent = getSEOContent('price', `${categorySlug}-under-${price}`)
+  
   return (
     <main className="min-h-screen bg-background">
       <script
@@ -261,23 +266,27 @@ export default async function PriceDealsPage({ params }: PageProps) {
         </PageContainer>
       </section>
       
-      {/* SEO Content */}
-      <section className="py-10 md:py-12 bg-muted/30">
-        <PageContainer>
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-foreground mb-4">
-              About {categoryName} Deals Under ${price}
-            </h2>
-            <div className="prose prose-muted max-w-none">
-              <p className="text-muted-foreground leading-relaxed">
-                {categoryName} deals under ${price} are a great option for budget-conscious shoppers looking for quality products without breaking the bank. 
-                SaveSmart scours hundreds of retailers including Amazon, Best Buy, Walmart, and Target to find verified discounts on top-rated {categoryName.toLowerCase()} products. 
-                Our deals typically feature savings of 20-60% off retail prices, with many items including free shipping. 
-                We use AI-powered price tracking to monitor price fluctuations and alert you when items reach their lowest price point. 
-                Whether you&apos;re a student, first-time buyer, or simply looking for great value, our under ${price} {categoryName.toLowerCase()} collection offers 
-                excellent options from trusted brands. All deals are verified and updated hourly to ensure you&apos;re seeing accurate pricing information.
-              </p>
-            </div>
+          {/* SEO Content - Dynamic or Default */}
+          <div className="bg-muted/30 rounded-xl p-6 md:p-8">
+            {seoContent ? (
+              <ProgrammaticSEOBlock content={seoContent} />
+            ) : (
+              <>
+                <h2 className="text-xl font-semibold text-foreground mb-4">
+                  About {categoryName} Deals Under ${price}
+                </h2>
+                <div className="prose prose-muted max-w-none">
+                  <p className="text-muted-foreground leading-relaxed">
+                    {categoryName} deals under ${price} are a great option for budget-conscious shoppers looking for quality products without breaking the bank. 
+                    SaveSmart scours hundreds of retailers including Amazon, Best Buy, Walmart, and Target to find verified discounts on top-rated {categoryName.toLowerCase()} products. 
+                    Our deals typically feature savings of 20-60% off retail prices, with many items including free shipping. 
+                    We use AI-powered price tracking to monitor price fluctuations and alert you when items reach their lowest price point. 
+                    Whether you&apos;re a student, first-time buyer, or simply looking for great value, our under ${price} {categoryName.toLowerCase()} collection offers 
+                    excellent options from trusted brands. All deals are verified and updated hourly to ensure you&apos;re seeing accurate pricing information.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </PageContainer>
       </section>
