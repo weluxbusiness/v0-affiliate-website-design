@@ -24,7 +24,8 @@ import {
   DollarSign,
   BookOpen,
   ChevronRight,
-  Flame
+  Flame,
+  Play
 } from "lucide-react"
 import { 
   gamesData, 
