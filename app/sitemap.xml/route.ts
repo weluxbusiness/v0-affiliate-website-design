@@ -15,74 +15,56 @@ export async function GET() {
     const now = new Date().toISOString().split('T')[0]
   
   // Sitemap priority order (Google crawls in order listed)
-  // Only high-value sitemaps - removed pagination pages for crawl efficiency
+  // Only HIGH and MEDIUM priority sitemaps for maximum crawl efficiency
   const sitemaps = [
-    // === CORE: High-value deal pages ===
+    // === HIGH PRIORITY: Core revenue-driving pages ===
     
-    // 1. Static pages: homepage, about, privacy, terms, blog index
-    `${baseUrl}/sitemap-pages.xml`,
-    
-    // 2. Main deal pages and programmatic content
+    // 1. Main deal pages and programmatic content (highest traffic)
     `${baseUrl}/sitemap-programmatic.xml`,
     
-    // 3. Gaming section: /gaming, /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards
+    // 2. Gaming section: promo codes and free rewards (high engagement)
     `${baseUrl}/sitemap-gaming.xml`,
     
-    // 4. Deal SEO pages: /deals/seo/[slug] (brand × price + category × price)
+    // 3. Deal SEO pages: brand × price + category × price combinations
     `${baseUrl}/sitemap-deal-seo.xml`,
     
-    // === CONTENT: Authority-building pages ===
+    // === MEDIUM PRIORITY: Authority & discovery pages ===
     
-    // 5. Auto-generated blog posts: /blog/deals/[slug]
+    // 4. Auto-generated blog posts (topical authority)
     `${baseUrl}/sitemap-blog-deals.xml`,
     
-    // 6. Buying guides (topical authority content)
+    // 5. Buying guides (topical authority content)
     `${baseUrl}/sitemap-guides.xml`,
     
-    // 7. Comparison pages (high-intent keywords)
+    // 6. Comparison pages (high-intent keywords)
     `${baseUrl}/sitemap-comparisons.xml`,
     
-    // === STRUCTURE: Navigation & discovery ===
-    
-    // 8. Category pages (main navigation, high search volume)
+    // 7. Category pages (main navigation, high search volume)
     `${baseUrl}/sitemap-categories.xml`,
     
-    // 9. Brand pages (product discovery)
+    // 8. Brand pages (product discovery)
     `${baseUrl}/sitemap-brands.xml`,
     
-    // 10. Store pages (conversion pages)
+    // 9. Store pages (conversion pages)
     `${baseUrl}/sitemap-stores.xml`,
-    
-    // === SUPPLEMENTAL: Additional high-value pages ===
-    
-    // 11. Today's deals pages: /deals/today, /deals/today/[entity]
-    `${baseUrl}/sitemap-today.xml`,
-    
-    // 12. Deal comparison pages: /deals/compare/[brandA]-vs-[brandB]
-    `${baseUrl}/sitemap-deal-compare.xml`,
-    
-    // 13. Deal Finder pages (high-intent search terms)
-    `${baseUrl}/sitemap-deal-finder.xml`,
-    
-    // 14. Trending pages (time-sensitive, high-traffic)
-    `${baseUrl}/sitemap-trending.xml`,
-    
-    // 15. Deal variants: cheap, top, price-based pages
-    `${baseUrl}/sitemap-deals-variants.xml`,
-    
-    // 16. City pages (local SEO)
-    `${baseUrl}/sitemap-cities.xml`,
-    
-    // 17. Price range pages
-    `${baseUrl}/sitemap-price.xml`,
   ]
   
   // REMOVED from index (files still exist for direct access):
-  // - sitemap-pagination.xml (low-value pagination pages)
-  // - sitemap-store-pages.xml (store pagination)
-  // - sitemap-category-pages.xml (category pagination)
-  // - sitemap-brand-pages.xml (brand pagination)
-  // - sitemap-core.xml (redundant with other sitemaps)
+  // LOW PRIORITY - moved to secondary:
+  // - sitemap-cities.xml (local SEO, lower priority)
+  // - sitemap-price.xml (price range pages)
+  // - sitemap-deals-variants.xml (cheap/top variants)
+  // - sitemap-pages.xml (static pages - already linked from homepage)
+  // - sitemap-today.xml (time-sensitive, changes daily)
+  // - sitemap-deal-compare.xml (brand vs brand)
+  // - sitemap-deal-finder.xml (AI deal finder)
+  // - sitemap-trending.xml (trending pages)
+  // PAGINATION - excluded for crawl efficiency:
+  // - sitemap-pagination.xml
+  // - sitemap-store-pages.xml
+  // - sitemap-category-pages.xml
+  // - sitemap-brand-pages.xml
+  // - sitemap-core.xml
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
