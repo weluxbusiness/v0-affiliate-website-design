@@ -1,12 +1,21 @@
 // Programmatic sitemap index - large-scale SEO pages
 // Contains sub-sitemaps for: cities, price ranges, brand-categories, deals
 // Architecture supports 500k+ URLs by splitting into multiple child sitemaps
+import { getLatestDealUpdateTime } from '@/lib/deals-cached'
+
 const baseUrl = 'https://savesmart.bio'
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
 export async function GET() {
-  const now = new Date().toISOString().split('T')[0]
+  // Use actual latest deal update for freshness signal
+  let lastMod: string
+  try {
+    const latestUpdate = await getLatestDealUpdateTime()
+    lastMod = latestUpdate.split('T')[0] // YYYY-MM-DD format
+  } catch {
+    lastMod = new Date().toISOString().split('T')[0]
+  }
   
   // Sub-sitemaps for programmatic content (cross-dimensional pages)
   // Each can contain up to 50k URLs
@@ -47,7 +56,7 @@ export async function GET() {
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemaps.map(loc => `  <sitemap>
     <loc>${loc}</loc>
-    <lastmod>${now}</lastmod>
+    <lastmod>${lastMod}</lastmod>
   </sitemap>`).join('\n')}
 </sitemapindex>`
 

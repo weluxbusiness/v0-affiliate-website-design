@@ -28,9 +28,15 @@ export async function GET(): Promise<Response> {
       gameSlugs = getGameSlugsForSitemap()
     }
     
-    // Timestamp for sitemap
+    // Use the most recent game update for freshness signal
     const currentDate = new Date()
-    const lastModified = currentDate.toISOString()
+    const mostRecentGameUpdate = gameSlugs.length > 0 
+      ? gameSlugs.reduce((latest, game) => 
+          new Date(game.lastUpdated) > new Date(latest) ? game.lastUpdated : latest, 
+          gameSlugs[0].lastUpdated
+        )
+      : currentDate.toISOString()
+    const lastModified = mostRecentGameUpdate
 
     // Static gaming pages - SEO priority pages
     const staticPages = [
