@@ -57,17 +57,17 @@ export default function AllCodesPage() {
         code
       }))
     )
-    .sort((a, b) => new Date(b.code.addedDate).getTime() - new Date(a.code.addedDate).getTime())
+    .sort((a, b) => new Date(b.code.addedAt ?? 0).getTime() - new Date(a.code.addedAt ?? 0).getTime())
 
   // Group by date added (recent first)
   const today = new Date()
   const todayStr = today.toDateString()
   const yesterdayStr = new Date(today.setDate(today.getDate() - 1)).toDateString()
   
-  const todaysCodes = allCodes.filter(item => new Date(item.code.addedDate).toDateString() === todayStr)
-  const yesterdaysCodes = allCodes.filter(item => new Date(item.code.addedDate).toDateString() === yesterdayStr)
+  const todaysCodes = allCodes.filter(item => new Date(item.code.addedAt ?? 0).toDateString() === todayStr)
+  const yesterdaysCodes = allCodes.filter(item => new Date(item.code.addedAt ?? 0).toDateString() === yesterdayStr)
   const olderCodes = allCodes.filter(item => {
-    const dateStr = new Date(item.code.addedDate).toDateString()
+    const dateStr = new Date(item.code.addedAt ?? 0).toDateString()
     return dateStr !== todayStr && dateStr !== yesterdayStr
   })
 
