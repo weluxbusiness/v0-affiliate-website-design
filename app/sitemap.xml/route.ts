@@ -18,48 +18,45 @@ export async function GET() {
   // SITEMAP STRATEGY FOR GOOGLE SEARCH CONSOLE
   // ============================================================
   // 
-  // MANUAL SUBMISSION (submit these 4 directly in GSC):
-  //   1. sitemap.xml (this file - the index)
-  //   2. sitemap-programmatic.xml
-  //   3. sitemap-deal-seo.xml  
-  //   4. sitemap-gaming.xml
+  // QUALITY-FIRST APPROACH:
+  // Submit sitemap-quality.xml directly to GSC - contains ONLY pages
+  // with custom SEO content (50-100 high-quality URLs)
   //
-  // Google will auto-discover all other sitemaps from this index.
+  // MANUAL SUBMISSION (submit these to GSC):
+  //   1. sitemap-quality.xml (PRIMARY - only pages with SEO content)
+  //   2. sitemap-gaming.xml (gaming promo codes - fast traffic)
+  //
+  // Secondary sitemaps for broader coverage once quality pages rank.
   // ============================================================
 
-  // All sitemaps included - Google discovers secondary ones automatically
-  // Order: HIGH priority first, then MEDIUM, then LOW
+  // Quality-first sitemap ordering
+  // ONLY include sitemaps with verified high-quality content
   const sitemaps = [
-    // === HIGH PRIORITY: Submit manually to GSC ===
-    `${baseUrl}/sitemap-programmatic.xml`,  // Main deal pages (highest traffic)
-    `${baseUrl}/sitemap-deal-seo.xml`,      // Brand × price combinations
+    // === PRIMARY: Quality pages with custom SEO content ===
+    `${baseUrl}/sitemap-quality.xml`,       // SUBMIT FIRST - only pages with SEO content
     `${baseUrl}/sitemap-gaming.xml`,        // Gaming promo codes (high engagement)
     
-    // === MEDIUM PRIORITY: Auto-discovered by Google ===
-    `${baseUrl}/sitemap-blog-deals.xml`,    // Auto-generated blog posts
-    `${baseUrl}/sitemap-guides.xml`,        // Buying guides
-    `${baseUrl}/sitemap-comparisons.xml`,   // Comparison pages
-    `${baseUrl}/sitemap-categories.xml`,    // Category pages
+    // === SECONDARY: Auto-discovered after quality pages indexed ===
+    `${baseUrl}/sitemap-guides.xml`,        // Buying guides (authority content)
+    `${baseUrl}/sitemap-comparisons.xml`,   // Comparison pages (high intent)
     `${baseUrl}/sitemap-brands.xml`,        // Brand pages
+    `${baseUrl}/sitemap-categories.xml`,    // Category pages
     `${baseUrl}/sitemap-stores.xml`,        // Store pages
-    
-    // === LOW PRIORITY: Auto-discovered, lower crawl priority ===
-    `${baseUrl}/sitemap-pages.xml`,         // Static pages
-    `${baseUrl}/sitemap-today.xml`,         // Today's deals
-    `${baseUrl}/sitemap-trending.xml`,      // Trending pages
-    `${baseUrl}/sitemap-deal-finder.xml`,   // AI deal finder
-    `${baseUrl}/sitemap-deal-compare.xml`,  // Brand vs brand
   ]
   
-  // NOT included in index (files exist for direct access if needed):
-  // - sitemap-cities.xml (local SEO, very low priority)
+  // EXCLUDED from index for quality-first strategy:
+  // - sitemap-programmatic.xml (too many pages without unique content)
+  // - sitemap-deal-seo.xml (programmatic, lower quality)
+  // - sitemap-blog-deals.xml (auto-generated)
+  // - sitemap-pages.xml (static pages)
+  // - sitemap-today.xml (time-sensitive)
+  // - sitemap-trending.xml (trending pages)
+  // - sitemap-deal-finder.xml (AI deal finder)
+  // - sitemap-deal-compare.xml (comparisons)
+  // - sitemap-cities.xml (local SEO)
   // - sitemap-price.xml (price range pages)
   // - sitemap-deals-variants.xml (cheap/top variants)
-  // - sitemap-pagination.xml (pagination pages)
-  // - sitemap-store-pages.xml (store pagination)
-  // - sitemap-category-pages.xml (category pagination)
-  // - sitemap-brand-pages.xml (brand pagination)
-  // - sitemap-core.xml (redundant)
+  // - All pagination sitemaps
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

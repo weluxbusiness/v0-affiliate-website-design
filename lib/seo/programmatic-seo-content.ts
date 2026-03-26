@@ -567,3 +567,72 @@ export function getSEOContentByType(pageType: string): SEOContentBlock[] {
 export function hasCustomSEOContent(pageType: string, slug: string): boolean {
   return getSEOContent(pageType, slug) !== undefined
 }
+
+/**
+ * Get all URLs with custom SEO content for sitemap
+ * Returns only high-quality pages with unique content
+ */
+export function getAllSEOContentUrls(): { url: string; priority: string; changefreq: string }[] {
+  const baseUrl = 'https://savesmart.bio'
+  const urls: { url: string; priority: string; changefreq: string }[] = []
+  
+  // Gaming pages (highest priority - fast traffic)
+  gamingPageContent.forEach(content => {
+    urls.push({ 
+      url: `${baseUrl}/gaming/${content.slug}`, 
+      priority: '0.9', 
+      changefreq: 'daily' 
+    })
+    urls.push({ 
+      url: `${baseUrl}/gaming/${content.slug}/codes`, 
+      priority: '0.9', 
+      changefreq: 'daily' 
+    })
+    urls.push({ 
+      url: `${baseUrl}/gaming/${content.slug}/codes-today`, 
+      priority: '0.9', 
+      changefreq: 'hourly' 
+    })
+  })
+  
+  // Deal price pages (high priority - buyer intent)
+  dealPageContent
+    .filter(c => c.pageType === 'price')
+    .forEach(content => {
+      urls.push({ 
+        url: `${baseUrl}/deals/price/${content.slug}`, 
+        priority: '0.8', 
+        changefreq: 'daily' 
+      })
+    })
+  
+  // Cheap/top category pages
+  dealPageContent
+    .filter(c => c.pageType === 'cheap' || c.pageType === 'top')
+    .forEach(content => {
+      const prefix = content.pageType === 'cheap' ? 'cheap' : 'top'
+      urls.push({ 
+        url: `${baseUrl}/deals/${prefix}/${content.slug}`, 
+        priority: '0.8', 
+        changefreq: 'daily' 
+      })
+    })
+  
+  // Brand pages (medium priority)
+  brandPageContent.forEach(content => {
+    urls.push({ 
+      url: `${baseUrl}/brands/${content.slug}`, 
+      priority: '0.7', 
+      changefreq: 'daily' 
+    })
+  })
+  
+  return urls
+}
+
+/**
+ * Get count of pages with SEO content
+ */
+export function getSEOContentCount(): number {
+  return dealPageContent.length + gamingPageContent.length + brandPageContent.length
+}
