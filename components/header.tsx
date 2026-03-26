@@ -156,8 +156,13 @@ export function Header() {
 
         {/* Mobile hamburger button */}
         <button
-          className="md:hidden p-2 rounded-md hover:bg-muted"
+          type="button"
+          className="md:hidden relative z-50 p-2 rounded-md hover:bg-muted active:bg-muted/80 touch-manipulation"
           onClick={() => setIsOpen(!isOpen)}
+          onTouchEnd={(e) => {
+            e.preventDefault()
+            setIsOpen(!isOpen)
+          }}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
         >
@@ -171,13 +176,17 @@ export function Header() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden fixed inset-x-0 top-16 bottom-0 bg-background z-50 overflow-y-auto">
-          <nav className="flex flex-col p-4">
+        <div 
+          className="md:hidden fixed inset-x-0 top-16 bottom-0 bg-background z-50 overflow-y-auto overscroll-contain"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          <nav className="flex flex-col p-4 pb-safe">
             {/* Deals - collapsible (First - Primary) */}
             <div>
               <button
+                type="button"
                 onClick={() => setMobileDealsOpen(!mobileDealsOpen)}
-                className="w-full px-4 py-3 text-base font-semibold text-foreground hover:bg-muted rounded-lg transition-colors flex items-center justify-between"
+                className="w-full px-4 py-3 text-base font-semibold text-foreground hover:bg-muted active:bg-muted/80 rounded-lg transition-colors flex items-center justify-between touch-manipulation"
               >
                 Deals
                 <ChevronRight className={`h-4 w-4 transition-transform ${mobileDealsOpen ? 'rotate-90' : ''}`} />
@@ -187,7 +196,7 @@ export function Header() {
                 <div className="ml-4 space-y-1">
                   <Link
                     href="/deals"
-                    className="block px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+                    className="block px-4 py-3 text-sm font-medium text-foreground hover:bg-muted active:bg-muted/80 rounded-lg transition-colors touch-manipulation"
                     onClick={() => setIsOpen(false)}
                   >
                     All Deals
@@ -196,7 +205,7 @@ export function Header() {
                     <Link
                       key={category.href}
                       href={category.href}
-                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                      className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted active:bg-muted/80 rounded-lg transition-colors touch-manipulation"
                       onClick={() => setIsOpen(false)}
                     >
                       {category.label}
@@ -209,8 +218,9 @@ export function Header() {
             {/* Gaming - collapsible (Second - Primary) */}
             <div>
               <button
+                type="button"
                 onClick={() => setMobileGamingOpen(!mobileGamingOpen)}
-                className="w-full px-4 py-3 text-base font-semibold text-foreground hover:bg-muted rounded-lg transition-colors flex items-center justify-between"
+                className="w-full px-4 py-3 text-base font-semibold text-foreground hover:bg-muted active:bg-muted/80 rounded-lg transition-colors flex items-center justify-between touch-manipulation"
               >
                 Gaming
                 <ChevronRight className={`h-4 w-4 transition-transform ${mobileGamingOpen ? 'rotate-90' : ''}`} />
@@ -222,7 +232,7 @@ export function Header() {
                     <Link
                       key={gameLink.href}
                       href={gameLink.href}
-                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                      className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted active:bg-muted/80 rounded-lg transition-colors touch-manipulation"
                       onClick={() => setIsOpen(false)}
                     >
                       {gameLink.label}
@@ -235,7 +245,7 @@ export function Header() {
             {/* AI Deal Finder - Primary */}
             <Link
               href="/deal-finder"
-              className="px-4 py-3 text-base font-semibold text-foreground hover:bg-muted rounded-lg transition-colors"
+              className="px-4 py-3 text-base font-semibold text-foreground hover:bg-muted active:bg-muted/80 rounded-lg transition-colors touch-manipulation"
               onClick={() => setIsOpen(false)}
             >
               AI Deal Finder
@@ -244,7 +254,7 @@ export function Header() {
             {/* Blog - Secondary */}
             <Link
               href="/blog"
-              className="px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+              className="px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted active:bg-muted/80 rounded-lg transition-colors touch-manipulation"
               onClick={() => setIsOpen(false)}
             >
               Blog
@@ -252,7 +262,7 @@ export function Header() {
             
             {/* CTA Button */}
             <div className="pt-4 mt-4 border-t border-border">
-              <Button asChild size="lg" className="w-full rounded-full">
+              <Button asChild size="lg" className="w-full rounded-full touch-manipulation active:scale-[0.98]">
                 <Link href="/deals" onClick={() => setIsOpen(false)}>
                   <Zap className="h-4 w-4 mr-1.5" />
                   Start Saving
