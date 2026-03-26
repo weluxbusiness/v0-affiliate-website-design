@@ -1,7 +1,14 @@
 import { withSentryConfig } from "@sentry/nextjs"
 
+// Force disable Turbopack at runtime level
+process.env.NEXT_DISABLE_TURBOPACK = "1"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Explicitly disable Turbopack to use Webpack (required for Sentry webpack options)
+  experimental: {
+    turbo: false,
+  },
   images: {
     // Enable modern image formats for better compression
     formats: ['image/avif', 'image/webp'],
