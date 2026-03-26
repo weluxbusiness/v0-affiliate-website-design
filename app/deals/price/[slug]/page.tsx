@@ -286,6 +286,9 @@ export default async function PriceDealsPage({ params }: PageProps) {
         </PageContainer>
       </section>
       
+      {/* SEO Content Section */}
+      <section className="py-10 md:py-12 bg-muted/20">
+        <PageContainer>
           {/* SEO Content - Dynamic or Default */}
           <div className="bg-muted/30 rounded-xl p-6 md:p-8">
             {seoContent ? (
