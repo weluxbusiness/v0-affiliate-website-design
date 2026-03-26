@@ -15,7 +15,8 @@ import {
   generateStoreSeoContent, 
   getStoreRelatedLinks 
 } from "@/components/seo-content-block"
-import { FAQSection, storeFAQs } from "@/components/seo"
+import { FAQSection } from "@/components/seo"
+import { storeFAQs } from "@/lib/seo/faq-data"
 import { CrossLinkSection } from "@/components/internal-links"
 import { getStoreBySlug, getStoreSlugs, getCategoriesForStore, getBrandSlugs } from "@/lib/seo-data"
 import { Store, Tag, ChevronRight, Clock } from "lucide-react"

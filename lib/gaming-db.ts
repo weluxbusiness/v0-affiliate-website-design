@@ -230,6 +230,12 @@ export async function bulkUpsertPromoCodes(codes: (Partial<DbPromoCode> & { game
 }
 
 export async function expireOldCodes(gameId: string, keepCodes: string[]) {
+  // Guard against null/undefined gameId
+  if (!gameId || gameId === "null" || gameId === "undefined") {
+    console.warn("expireOldCodes called with invalid gameId:", gameId)
+    return
+  }
+  
   const supabase = await createClient()
   const { error } = await supabase
     .from('promo_codes')
@@ -366,6 +372,12 @@ export async function trackEvent(event: {
 }
 
 export async function incrementCodeUses(codeId: string) {
+  // Guard against null/undefined codeId
+  if (!codeId || codeId === "null" || codeId === "undefined") {
+    console.warn("incrementCodeUses called with invalid codeId:", codeId)
+    return
+  }
+  
   const supabase = await createClient()
   const { error } = await supabase.rpc('increment_code_uses', { code_id: codeId })
   

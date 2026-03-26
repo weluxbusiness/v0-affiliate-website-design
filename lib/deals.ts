@@ -77,6 +77,12 @@ export async function getAllCategories(): Promise<string[]> {
 }
 
 export async function getDealById(id: string): Promise<Deal | null> {
+  // Guard against null/undefined/invalid IDs
+  if (!id || id === "null" || id === "undefined") {
+    console.warn("getDealById called with invalid id:", id)
+    return null
+  }
+  
   const supabase = await createClient()
   const { data, error } = await supabase
     .from("deals")

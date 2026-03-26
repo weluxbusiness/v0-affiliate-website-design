@@ -18,9 +18,5 @@ export {
   generateBlogBreadcrumbs,
   generateGamingBreadcrumbs,
 } from './breadcrumb-nav'
-export {
-  FAQSection,
-  homepageFAQs,
-  dealsCategoryFAQs,
-  storeFAQs,
-} from './faq-section'
+export { FAQSection } from './faq-section'
+// FAQ data is exported from @/lib/seo/faq-data for server component compatibility

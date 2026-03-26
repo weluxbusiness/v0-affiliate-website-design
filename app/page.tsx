@@ -11,7 +11,8 @@ import { FinalCTA } from "@/components/final-cta"
 import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
 import { HomeGamingDeals } from "@/components/home-gaming-deals"
-import { FAQSection, homepageFAQs } from "@/components/seo"
+import { FAQSection } from "@/components/seo"
+import { homepageFAQs } from "@/lib/seo/faq-data"
 import { getTrendingDeals } from "@/lib/deals"
 
 // Enhanced metadata for better CTR in search results
