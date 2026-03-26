@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
 import { PopularCategories } from "@/components/popular-categories"
 import { PageContainer, DealGrid, SectionHeading } from "@/components/layout/page-container"
+import { FAQSection } from "@/components/seo"
 import { getAllDeals } from "@/lib/deals"
 import { getStoreInfo } from "@/lib/deal-types"
 import { 
@@ -56,12 +57,21 @@ const productCategories: Record<string, { name: string; icon: typeof Headphones 
 }
 
 export const metadata: Metadata = {
-  title: 'All Deals & Coupons - Up to 70% Off | SaveSmart',
-  description: 'Browse all the best deals, discounts, and coupon codes. Save money on your favorite products with verified offers updated daily.',
+  title: 'Today\'s Best Deals & Coupons 2026 - Up to 70% Off | SaveSmart',
+  description: 'Browse 1000+ verified deals from Amazon, Best Buy, Target, Walmart & more. Save up to 70% on electronics, fashion, home goods. Updated every hour. Free!',
+  keywords: [
+    'deals today', 'best deals 2026', 'coupon codes', 'online deals',
+    'Amazon deals', 'Best Buy deals', 'Target deals', 'Walmart deals',
+    'electronics deals', 'fashion deals', 'home deals', 'discount codes'
+  ],
   openGraph: {
-    title: 'All Deals & Coupons | SaveSmart',
-    description: 'Discover exclusive deals and save up to 70%. Verified coupons and discounts updated hourly.',
+    title: 'Today\'s Best Deals - Save Up to 70% | SaveSmart',
+    description: 'Discover 1000+ verified deals updated hourly. Shop smart and save big on electronics, fashion, and more.',
     type: 'website',
+    url: 'https://savesmart.bio/deals',
+  },
+  alternates: {
+    canonical: '/deals',
   },
 }
 
@@ -245,6 +255,35 @@ export default async function AllDealsPage() {
         </section>
 
         <PopularCategories />
+
+        {/* FAQ Section for SEO */}
+        <FAQSection
+          title="Deals FAQ"
+          subtitle="Common questions about finding and using deals on SaveSmart"
+          faqs={[
+            {
+              question: "How do I find the best deals on SaveSmart?",
+              answer: "Browse our deals page sorted by discount percentage to see the biggest savings first. Use filters to narrow by category or store. Our AI Deal Finder can also help you search for specific products across all retailers to find the lowest price.",
+            },
+            {
+              question: "Are all deals verified?",
+              answer: "Yes, every deal on SaveSmart is verified against the retailer's website before being listed. We display the original price, sale price, and discount percentage so you can confirm the savings. Deals are updated multiple times per hour to ensure accuracy.",
+            },
+            {
+              question: "How often do new deals get added?",
+              answer: "New deals are added throughout the day as we discover them. During major sales events like Black Friday or Prime Day, we add hundreds of new deals per hour. Sign up for deal alerts to get notified when deals matching your interests go live.",
+            },
+            {
+              question: "Can I stack coupons with these deals?",
+              answer: "Many deals can be combined with store coupons for additional savings. Check the deal details page for available coupon codes. Some stores also offer cashback through credit cards or shopping portals that can stack with our deals.",
+            },
+            {
+              question: "What if a deal expires or sells out?",
+              answer: "Deals can expire or sell out quickly, especially during sales events. We mark expired deals and remove them from our listings. If you see a deal you like, we recommend acting fast. Bookmark this page and check back often for fresh deals.",
+            },
+          ]}
+          className="border-t border-border"
+        />
 
         {/* CTA */}
         <section className="py-10 md:py-12 text-center border-t border-border">

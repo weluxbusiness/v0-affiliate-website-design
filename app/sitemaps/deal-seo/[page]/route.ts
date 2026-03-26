@@ -3,7 +3,7 @@
  * Each sub-sitemap contains up to 5000 URLs
  * Called from sitemap-deal-seo.xml index
  */
-import { getDealSeoUrlsSlice, getDealSeoSitemapStats } from '@/app/sitemap-deal-seo.xml/route'
+import { getDealSeoUrlsSlice, getDealSeoSitemapStats } from '@/lib/sitemaps/dealSeo'
 
 export const revalidate = 3600 // ISR: revalidate every hour
 

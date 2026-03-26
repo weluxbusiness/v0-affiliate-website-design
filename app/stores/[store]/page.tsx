@@ -15,6 +15,8 @@ import {
   generateStoreSeoContent, 
   getStoreRelatedLinks 
 } from "@/components/seo-content-block"
+import { FAQSection } from "@/components/seo"
+import { storeFAQs } from "@/lib/seo/faq-data"
 import { CrossLinkSection } from "@/components/internal-links"
 import { getStoreBySlug, getStoreSlugs, getCategoriesForStore, getBrandSlugs } from "@/lib/seo-data"
 import { Store, Tag, ChevronRight, Clock } from "lucide-react"
@@ -40,15 +42,27 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { store } = await params
   const storeName = formatStoreName(store)
+  const month = new Date().toLocaleString('default', { month: 'long' })
+  const year = new Date().getFullYear()
   
   return {
-    title: `${storeName} Deals & Coupons | SaveSmart`,
-    description: `Find the latest deals and discounts from ${storeName}. Save money with verified coupons and exclusive offers.`,
+    title: `${storeName} Deals & Coupon Codes ${month} ${year} - Up to 70% Off`,
+    description: `${storeName} deals, promo codes & coupons for ${month} ${year}. Save up to 70% with verified discounts. Updated hourly. Free shipping codes available!`,
+    keywords: [
+      `${storeName} deals`, `${storeName} coupons`, `${storeName} promo codes`,
+      `${storeName} discount codes`, `${storeName} sale ${year}`,
+      `${storeName} coupon codes ${month} ${year}`,
+    ],
     openGraph: {
-      title: `${storeName} Deals & Coupons | SaveSmart`,
-      description: `Find the latest deals and discounts from ${storeName}. Save money with verified coupons and exclusive offers.`,
+      title: `${storeName} Deals & Coupons - Save Up to 70%`,
+      description: `Latest ${storeName} deals and verified coupon codes. Updated every hour.`,
       type: 'website',
       url: `https://savesmart.bio/stores/${store}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${storeName} Deals ${month} ${year}`,
+      description: `Best ${storeName} deals, coupons & promo codes. Save up to 70%!`,
     },
     alternates: {
       canonical: `/stores/${store}`,
@@ -339,6 +353,14 @@ export default async function StorePage({ params }: PageProps) {
             </PageContainer>
           </section>
         )}
+
+        {/* FAQ Section for SEO */}
+        <FAQSection
+          title={`${storeName} FAQs`}
+          subtitle={`Common questions about shopping and saving at ${storeName}`}
+          faqs={storeFAQs(storeName)}
+          className="border-t border-border"
+        />
 
         {/* SEO Content Block */}
         <SeoContentBlock

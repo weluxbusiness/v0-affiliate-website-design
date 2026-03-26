@@ -37,16 +37,30 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     }
   }
 
+  const category = categories.find((c) => c.slug === article.category)
+
   return {
     title: article.metaTitle,
     description: article.metaDescription,
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
     openGraph: {
       title: article.metaTitle,
       description: article.metaDescription,
       type: "article",
       publishedTime: article.publishedAt,
+      modifiedTime: article.publishedAt,
       authors: [article.author.name],
+      section: category?.name,
+      url: `https://savesmart.bio/blog/${slug}`,
     },
+    twitter: {
+      card: "summary_large_image",
+      title: article.metaTitle,
+      description: article.metaDescription,
+    },
+    keywords: [category?.name || '', 'deals', 'savings', 'coupons', article.title].filter(Boolean),
   }
 }
 
@@ -147,8 +161,79 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
   const articleUrl = `https://savesmart.bio/blog/${article.slug}`
 
+  // BlogPosting structured data for SEO
+  const blogPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: article.excerpt,
+    url: articleUrl,
+    datePublished: article.publishedAt,
+    dateModified: article.publishedAt,
+    author: {
+      "@type": "Person",
+      name: article.author.name,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "SaveSmart",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://savesmart.bio/logo.png",
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": articleUrl,
+    },
+    articleSection: category?.name,
+    wordCount: article.content.split(/\s+/).length,
+  }
+
+  // Breadcrumb structured data
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://savesmart.bio/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: "https://savesmart.bio/blog",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: category?.name || "Article",
+        item: `https://savesmart.bio/blog/category/${article.category}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: article.title,
+        item: articleUrl,
+      },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <Header />
 
       <main>

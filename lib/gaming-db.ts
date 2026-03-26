@@ -79,39 +79,55 @@ export async function getGames(options?: {
   limit?: number 
   orderBy?: 'popularity_score' | 'name' | 'created_at'
 }) {
-  const supabase = await createClient()
-  let query = supabase.from('games').select('*')
-  
-  if (options?.activeOnly !== false) {
-    query = query.eq('is_active', true)
+  try {
+    const supabase = await createClient()
+    let query = supabase.from('games').select('*')
+    
+    if (options?.activeOnly !== false) {
+      query = query.eq('is_active', true)
+    }
+    
+    if (options?.orderBy) {
+      query = query.order(options.orderBy, { ascending: options.orderBy === 'name' })
+    } else {
+      query = query.order('popularity_score', { ascending: false })
+    }
+    
+    if (options?.limit) {
+      query = query.limit(options.limit)
+    }
+    
+    const { data, error } = await query
+    if (error) throw error
+    return data as DbGame[]
+  } catch (error) {
+    console.error("Error in getGames:", error)
+    return []
   }
-  
-  if (options?.orderBy) {
-    query = query.order(options.orderBy, { ascending: options.orderBy === 'name' })
-  } else {
-    query = query.order('popularity_score', { ascending: false })
-  }
-  
-  if (options?.limit) {
-    query = query.limit(options.limit)
-  }
-  
-  const { data, error } = await query
-  if (error) throw error
-  return data as DbGame[]
 }
 
 export async function getGameBySlug(slug: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('games')
-    .select('*')
-    .eq('slug', slug)
-    .eq('is_active', true)
-    .single()
+  // Guard against null/undefined slug
+  if (!slug || slug === "null" || slug === "undefined") {
+    console.warn("getGameBySlug called with invalid slug:", slug)
+    return null
+  }
   
-  if (error && error.code !== 'PGRST116') throw error
-  return data as DbGame | null
+  try {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from('games')
+      .select('*')
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single()
+    
+    if (error && error.code !== 'PGRST116') throw error
+    return data as DbGame | null
+  } catch (error) {
+    console.error("Error in getGameBySlug:", error)
+    return null
+  }
 }
 
 export async function upsertGame(game: Partial<DbGame> & { slug: string; name: string }) {
@@ -138,66 +154,88 @@ export async function getPromoCodes(options?: {
   limit?: number
   rewardType?: string
 }) {
-  const supabase = await createClient()
-  
-  let query = supabase
-    .from('promo_codes')
-    .select(`
-      *,
-      games!inner(slug, name, icon_url)
-    `)
-  
-  if (options?.gameId) {
-    query = query.eq('game_id', options.gameId)
+  try {
+    // Guard against null/undefined gameId
+    if (options?.gameId && (options.gameId === 'null' || options.gameId === 'undefined')) {
+      console.warn("getPromoCodes called with invalid gameId:", options.gameId)
+      return []
+    }
+    
+    const supabase = await createClient()
+    
+    let query = supabase
+      .from('promo_codes')
+      .select(`
+        *,
+        games!inner(slug, name, icon_url)
+      `)
+    
+    if (options?.gameId) {
+      query = query.eq('game_id', options.gameId)
+    }
+    
+    if (options?.gameSlug) {
+      query = query.eq('games.slug', options.gameSlug)
+    }
+    
+    if (options?.activeOnly !== false) {
+      query = query.eq('is_active', true)
+    }
+    
+    if (options?.verifiedOnly) {
+      query = query.eq('is_verified', true)
+    }
+    
+    if (options?.rewardType) {
+      query = query.eq('reward_type', options.rewardType)
+    }
+    
+    // Filter expired codes
+    query = query.or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    
+    query = query.order('created_at', { ascending: false })
+    
+    if (options?.limit) {
+      query = query.limit(options.limit)
+    }
+    
+    const { data, error } = await query
+    if (error) throw error
+    return data as (DbPromoCode & { games: { slug: string; name: string; icon_url: string | null } })[]
+  } catch (error) {
+    console.error("Error in getPromoCodes:", error)
+    return []
   }
-  
-  if (options?.gameSlug) {
-    query = query.eq('games.slug', options.gameSlug)
-  }
-  
-  if (options?.activeOnly !== false) {
-    query = query.eq('is_active', true)
-  }
-  
-  if (options?.verifiedOnly) {
-    query = query.eq('is_verified', true)
-  }
-  
-  if (options?.rewardType) {
-    query = query.eq('reward_type', options.rewardType)
-  }
-  
-  // Filter expired codes
-  query = query.or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
-  
-  query = query.order('created_at', { ascending: false })
-  
-  if (options?.limit) {
-    query = query.limit(options.limit)
-  }
-  
-  const { data, error } = await query
-  if (error) throw error
-  return data as (DbPromoCode & { games: { slug: string; name: string; icon_url: string | null } })[]
 }
 
 export async function getPromoCodesForGame(gameSlug: string) {
-  const supabase = await createClient()
+  // Guard against null/undefined gameSlug
+  if (!gameSlug || gameSlug === "null" || gameSlug === "undefined") {
+    console.warn("getPromoCodesForGame called with invalid gameSlug:", gameSlug)
+    return []
+  }
   
-  const { data, error } = await supabase
-    .from('promo_codes')
-    .select(`
-      *,
-      games!inner(id, slug, name, icon_url)
-    `)
-    .eq('games.slug', gameSlug)
-    .eq('is_active', true)
-    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
-    .order('is_verified', { ascending: false })
-    .order('created_at', { ascending: false })
-  
-  if (error) throw error
-  return data as (DbPromoCode & { games: { id: string; slug: string; name: string; icon_url: string | null } })[]
+  try {
+    const supabase = await createClient()
+    
+    const { data, error } = await supabase
+      .from('promo_codes')
+      .select(`
+        *,
+        games!inner(id, slug, name, icon_url)
+      `)
+      .eq('games.slug', gameSlug)
+      .eq('is_active', true)
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+      .order('is_verified', { ascending: false })
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    return data as (DbPromoCode & { games: { id: string; slug: string; name: string; icon_url: string | null } })[]
+  } catch (error) {
+    console.error("Error in getPromoCodesForGame:", error)
+    return []
+  }
 }
 
 export async function upsertPromoCode(code: Partial<DbPromoCode> & { game_id: string; code: string; reward: string }) {
@@ -230,6 +268,12 @@ export async function bulkUpsertPromoCodes(codes: (Partial<DbPromoCode> & { game
 }
 
 export async function expireOldCodes(gameId: string, keepCodes: string[]) {
+  // Guard against null/undefined gameId
+  if (!gameId || gameId === "null" || gameId === "undefined") {
+    console.warn("expireOldCodes called with invalid gameId:", gameId)
+    return
+  }
+  
   const supabase = await createClient()
   const { error } = await supabase
     .from('promo_codes')
@@ -249,43 +293,54 @@ export async function getGameRewards(options?: {
   rewardType?: string
   limit?: number
 }) {
-  const supabase = await createClient()
-  
-  let query = supabase
-    .from('game_rewards')
-    .select(`
-      *,
-      games!inner(slug, name, icon_url)
-    `)
-  
-  if (options?.gameId) {
-    query = query.eq('game_id', options.gameId)
+  try {
+    // Guard against null/undefined gameId
+    if (options?.gameId && (options.gameId === 'null' || options.gameId === 'undefined')) {
+      console.warn("getGameRewards called with invalid gameId:", options.gameId)
+      return []
+    }
+    
+    const supabase = await createClient()
+    
+    let query = supabase
+      .from('game_rewards')
+      .select(`
+        *,
+        games!inner(slug, name, icon_url)
+      `)
+    
+    if (options?.gameId) {
+      query = query.eq('game_id', options.gameId)
+    }
+    
+    if (options?.gameSlug) {
+      query = query.eq('games.slug', options.gameSlug)
+    }
+    
+    if (options?.activeOnly !== false) {
+      query = query.eq('is_active', true)
+    }
+    
+    if (options?.rewardType) {
+      query = query.eq('reward_type', options.rewardType)
+    }
+    
+    // Filter expired rewards
+    query = query.or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    
+    query = query.order('created_at', { ascending: false })
+    
+    if (options?.limit) {
+      query = query.limit(options.limit)
+    }
+    
+    const { data, error } = await query
+    if (error) throw error
+    return data as (DbGameReward & { games: { slug: string; name: string; icon_url: string | null } })[]
+  } catch (error) {
+    console.error("Error in getGameRewards:", error)
+    return []
   }
-  
-  if (options?.gameSlug) {
-    query = query.eq('games.slug', options.gameSlug)
-  }
-  
-  if (options?.activeOnly !== false) {
-    query = query.eq('is_active', true)
-  }
-  
-  if (options?.rewardType) {
-    query = query.eq('reward_type', options.rewardType)
-  }
-  
-  // Filter expired rewards
-  query = query.or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
-  
-  query = query.order('created_at', { ascending: false })
-  
-  if (options?.limit) {
-    query = query.limit(options.limit)
-  }
-  
-  const { data, error } = await query
-  if (error) throw error
-  return data as (DbGameReward & { games: { slug: string; name: string; icon_url: string | null } })[]
 }
 
 export async function upsertGameReward(reward: Partial<DbGameReward> & { game_id: string; title: string }) {
@@ -366,6 +421,12 @@ export async function trackEvent(event: {
 }
 
 export async function incrementCodeUses(codeId: string) {
+  // Guard against null/undefined codeId
+  if (!codeId || codeId === "null" || codeId === "undefined") {
+    console.warn("incrementCodeUses called with invalid codeId:", codeId)
+    return
+  }
+  
   const supabase = await createClient()
   const { error } = await supabase.rpc('increment_code_uses', { code_id: codeId })
   
@@ -406,48 +467,69 @@ export async function logScrape(log: {
   error_message?: string
   duration_ms?: number
 }) {
-  const supabase = await createClient()
-  const { error } = await supabase
-    .from('scrape_logs')
-    .insert(log)
-  
-  if (error) throw error
+  try {
+    const supabase = await createClient()
+    const { error } = await supabase
+      .from('scrape_logs')
+      .insert(log)
+    
+    if (error) {
+      console.error("Error in logScrape:", error)
+    }
+  } catch (error) {
+    console.error("Error in logScrape:", error)
+    // Non-critical - don't throw
+  }
 }
 
 // Stats helpers
 export async function getGamingStats() {
-  const supabase = await createClient()
-  
-  const [gamesResult, codesResult, rewardsResult] = await Promise.all([
-    supabase.from('games').select('id', { count: 'exact' }).eq('is_active', true),
-    supabase.from('promo_codes').select('id', { count: 'exact' }).eq('is_active', true),
-    supabase.from('game_rewards').select('id', { count: 'exact' }).eq('is_active', true),
-  ])
-  
-  return {
-    totalGames: gamesResult.count || 0,
-    totalCodes: codesResult.count || 0,
-    totalRewards: rewardsResult.count || 0,
+  try {
+    const supabase = await createClient()
+    
+    const [gamesResult, codesResult, rewardsResult] = await Promise.all([
+      supabase.from('games').select('id', { count: 'exact' }).eq('is_active', true),
+      supabase.from('promo_codes').select('id', { count: 'exact' }).eq('is_active', true),
+      supabase.from('game_rewards').select('id', { count: 'exact' }).eq('is_active', true),
+    ])
+    
+    return {
+      totalGames: gamesResult.count || 0,
+      totalCodes: codesResult.count || 0,
+      totalRewards: rewardsResult.count || 0,
+    }
+  } catch (error) {
+    console.error("Error in getGamingStats:", error)
+    return {
+      totalGames: 0,
+      totalCodes: 0,
+      totalRewards: 0,
+    }
   }
 }
 
 export async function getTodaysCodes(limit = 20) {
-  const supabase = await createClient()
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  
-  const { data, error } = await supabase
-    .from('promo_codes')
-    .select(`
-      *,
-      games!inner(slug, name, icon_url)
-    `)
-    .eq('is_active', true)
-    .gte('created_at', today.toISOString())
-    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
-    .order('created_at', { ascending: false })
-    .limit(limit)
-  
-  if (error) throw error
-  return data as (DbPromoCode & { games: { slug: string; name: string; icon_url: string | null } })[]
+  try {
+    const supabase = await createClient()
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    const { data, error } = await supabase
+      .from('promo_codes')
+      .select(`
+        *,
+        games!inner(slug, name, icon_url)
+      `)
+      .eq('is_active', true)
+      .gte('created_at', today.toISOString())
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+      .order('created_at', { ascending: false })
+      .limit(limit)
+    
+    if (error) throw error
+    return data as (DbPromoCode & { games: { slug: string; name: string; icon_url: string | null } })[]
+  } catch (error) {
+    console.error("Error in getTodaysCodes:", error)
+    return []
+  }
 }

@@ -7,6 +7,8 @@ import {
   generateSeoPages 
 } from '@/lib/data/seed-data'
 
+export const dynamic = 'force-dynamic'
+
 // Batch size for database inserts (to avoid timeouts)
 const BATCH_SIZE = 100
 

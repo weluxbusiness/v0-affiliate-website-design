@@ -13,6 +13,8 @@
 
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 const BASE_URL = 'https://savesmart.bio'
 const SITEMAP_URL = `${BASE_URL}/sitemap.xml`
 

@@ -77,6 +77,12 @@ export async function getAllCategories(): Promise<string[]> {
 }
 
 export async function getDealById(id: string): Promise<Deal | null> {
+  // Guard against null/undefined/invalid IDs
+  if (!id || id === "null" || id === "undefined") {
+    console.warn("getDealById called with invalid id:", id)
+    return null
+  }
+  
   const supabase = await createClient()
   const { data, error } = await supabase
     .from("deals")
@@ -987,15 +993,21 @@ export async function getTodaysDeals(limit: number = 36): Promise<Deal[]> {
   }
   
   // Otherwise, supplement with the most recent deals
-  const existingIds = recentDeals?.map(d => d.id) || []
+  const existingIds = recentDeals?.map(d => d.id).filter(Boolean) || []
   
-  const { data: supplementalDeals, error: suppError } = await supabase
+  let supplementQuery = supabase
     .from("deals")
     .select("*")
     .eq("is_active", true)
-    .not("id", "in", `(${existingIds.length > 0 ? existingIds.join(',') : 'null'})`)
     .order("created_at", { ascending: false })
     .limit(limit - (recentDeals?.length || 0))
+  
+  // Only add the NOT IN filter if we have valid IDs to exclude
+  if (existingIds.length > 0) {
+    supplementQuery = supplementQuery.not("id", "in", `(${existingIds.join(',')})`)
+  }
+  
+  const { data: supplementalDeals, error: suppError } = await supplementQuery
   
   if (suppError) {
     console.error("Error fetching supplemental deals:", suppError)

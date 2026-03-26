@@ -5,7 +5,7 @@
  */
 
 import { NextResponse } from 'next/server'
-import { getDealSeoSitemapStats, generateAllDealSeoUrls } from '@/app/sitemap-deal-seo.xml/route'
+import { getDealSeoSitemapStats, generateAllDealSeoUrls } from '@/lib/sitemaps/dealSeo'
 
 const BASE_URL = 'https://savesmart.bio'
 

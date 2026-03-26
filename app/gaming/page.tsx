@@ -35,6 +35,8 @@ import {
 } from "@/lib/gaming-data"
 import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
 
+// Force dynamic rendering to avoid static generation issues with cookies/headers
+export const dynamic = "force-dynamic"
 export const revalidate = 300 // Revalidate every 5 minutes
 
 export const metadata: Metadata = {

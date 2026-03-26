@@ -4,23 +4,21 @@
  * Automatically splits into multiple sitemaps when exceeding 5000 URLs
  */
 import { 
-  brands, 
-  categories, 
-  priceRanges,
-  getTotalPageCount,
-} from '@/data/deal-pages'
+  generateAllDealSeoUrls, 
+  getDealSeoSitemapStats,
+  MAX_URLS_PER_SITEMAP,
+} from '@/lib/sitemaps/dealSeo'
 
 const baseUrl = 'https://savesmart.bio'
-const MAX_URLS_PER_SITEMAP = 5000
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
 export async function GET() {
   const now = new Date().toISOString().split('T')[0]
-  const { total } = getTotalPageCount()
+  const stats = getDealSeoSitemapStats()
   
   // Calculate number of sub-sitemaps needed
-  const sitemapCount = Math.ceil(total / MAX_URLS_PER_SITEMAP)
+  const sitemapCount = Math.ceil(stats.total / MAX_URLS_PER_SITEMAP)
   
   // If total URLs fit in one sitemap, return a single sitemap instead of index
   if (sitemapCount === 1) {
@@ -70,56 +68,4 @@ ${urls.map(url => `  <url>
       'Cache-Control': 'public, max-age=3600, s-maxage=3600',
     },
   })
-}
-
-/**
- * Generate all /deals/seo/* URLs from the dataset
- */
-export function generateAllDealSeoUrls(): string[] {
-  const urls: string[] = []
-  
-  // Brand × Price combinations
-  for (const brand of brands) {
-    for (const price of priceRanges) {
-      urls.push(`${baseUrl}/deals/seo/${brand}-under-${price}`)
-    }
-  }
-  
-  // Category × Price combinations
-  for (const category of categories) {
-    for (const price of priceRanges) {
-      urls.push(`${baseUrl}/deals/seo/${category}-under-${price}`)
-    }
-  }
-  
-  return urls
-}
-
-/**
- * Get a paginated slice of URLs for sub-sitemaps
- */
-export function getDealSeoUrlsSlice(page: number): string[] {
-  const allUrls = generateAllDealSeoUrls()
-  const start = (page - 1) * MAX_URLS_PER_SITEMAP
-  const end = start + MAX_URLS_PER_SITEMAP
-  return allUrls.slice(start, end)
-}
-
-/**
- * Get statistics about the sitemap
- */
-export function getDealSeoSitemapStats() {
-  const { brandPages, categoryPages, total } = getTotalPageCount()
-  const sitemapCount = Math.ceil(total / MAX_URLS_PER_SITEMAP)
-  
-  return {
-    brandPages,
-    categoryPages,
-    total,
-    sitemapCount,
-    maxPerSitemap: MAX_URLS_PER_SITEMAP,
-    brands: brands.length,
-    categories: categories.length,
-    priceRanges: priceRanges.length,
-  }
 }

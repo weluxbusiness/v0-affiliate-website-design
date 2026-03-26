@@ -3,6 +3,8 @@ import { generateText, Output } from 'ai'
 import { z } from 'zod'
 import { getGameBySlug, getPromoCodesForGame, upsertGeneratedContent } from '@/lib/gaming-db'
 
+export const dynamic = 'force-dynamic'
+
 // Schema for generated SEO content
 const seoContentSchema = z.object({
   seo_title: z.string().describe('SEO-optimized page title (50-60 chars)'),

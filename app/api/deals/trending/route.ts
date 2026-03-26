@@ -52,6 +52,7 @@ function calculateTrendingScore(deal: Deal): number {
 }
 
 export const revalidate = 300 // 5 minutes
+export const dynamic = "force-dynamic"
 
 export async function GET(request: NextRequest) {
   try {

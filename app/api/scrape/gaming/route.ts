@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { logScrape, upsertGame, bulkUpsertPromoCodes, getGameBySlug } from '@/lib/gaming-db'
 
+export const dynamic = 'force-dynamic'
+
 // Scraper configuration for different games
 const SCRAPE_SOURCES: Record<string, {
   name: string
