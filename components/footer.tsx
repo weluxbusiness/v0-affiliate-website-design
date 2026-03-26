@@ -22,8 +22,9 @@ const footerSections = [
     links: [
       { name: "All Games", href: "/gaming" },
       { name: "Promo Codes", href: "/gaming/promo-codes" },
+      { name: "Best Codes", href: "/gaming/best-codes" },
+      { name: "Top Games", href: "/gaming/top-games" },
       { name: "Free Rewards", href: "/gaming/free-rewards" },
-      { name: "New Player Deals", href: "/gaming/new-player-deals" },
     ],
   },
   {

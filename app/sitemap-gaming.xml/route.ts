@@ -30,13 +30,17 @@ export async function GET(): Promise<Response> {
     
     const now = new Date().toISOString()
 
-    // Static gaming pages
+    // Static gaming pages - SEO priority pages
     const staticPages = [
       { url: "/gaming", priority: "0.9", changefreq: "daily" },
       { url: "/gaming/promo-codes", priority: "0.8", changefreq: "daily" },
       { url: "/gaming/free-rewards", priority: "0.8", changefreq: "daily" },
       { url: "/gaming/new-player-deals", priority: "0.8", changefreq: "daily" },
       { url: "/gaming/today", priority: "0.9", changefreq: "hourly" },
+      // New SEO entry pages
+      { url: "/gaming/best-codes", priority: "0.8", changefreq: "daily" },
+      { url: "/gaming/all-codes", priority: "0.8", changefreq: "daily" },
+      { url: "/gaming/top-games", priority: "0.8", changefreq: "daily" },
     ]
 
     // Dynamic game pages - /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards

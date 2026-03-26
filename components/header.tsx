@@ -15,6 +15,8 @@ const dealsCategories = [
 const gamingLinks = [
   { href: "/gaming", label: "All Games" },
   { href: "/gaming/promo-codes", label: "Promo Codes" },
+  { href: "/gaming/best-codes", label: "Best Codes" },
+  { href: "/gaming/top-games", label: "Top Games" },
   { href: "/gaming/free-rewards", label: "Free Rewards" },
   { href: "/gaming/new-player-deals", label: "New Player Deals" },
 ]

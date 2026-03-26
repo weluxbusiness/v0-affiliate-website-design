@@ -392,6 +392,33 @@ export default async function GamingPage() {
               </div>
             </Link>
           </div>
+
+          {/* Additional SEO Links */}
+          <div className="mt-6 pt-6 border-t border-border">
+            <h4 className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wide">
+              More Resources
+            </h4>
+            <div className="flex flex-wrap gap-3">
+              <Link 
+                href="/gaming/best-codes"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 text-sm font-medium transition-colors"
+              >
+                Best Codes
+              </Link>
+              <Link 
+                href="/gaming/all-codes"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 text-sm font-medium transition-colors"
+              >
+                All Codes Database
+              </Link>
+              <Link 
+                href="/gaming/top-games"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 text-sm font-medium transition-colors"
+              >
+                Top Games
+              </Link>
+            </div>
+          </div>
         </PageContainer>
       </section>
 
