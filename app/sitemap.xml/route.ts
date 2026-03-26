@@ -14,75 +14,52 @@ export async function GET() {
   try {
     const now = new Date().toISOString().split('T')[0]
   
-  // Sitemap priority order (Google crawls in order listed)
-  // Only high-value sitemaps - removed pagination pages for crawl efficiency
+  // ============================================================
+  // SITEMAP STRATEGY FOR GOOGLE SEARCH CONSOLE
+  // ============================================================
+  // 
+  // MANUAL SUBMISSION (submit these 4 directly in GSC):
+  //   1. sitemap.xml (this file - the index)
+  //   2. sitemap-programmatic.xml
+  //   3. sitemap-deal-seo.xml  
+  //   4. sitemap-gaming.xml
+  //
+  // Google will auto-discover all other sitemaps from this index.
+  // ============================================================
+
+  // All sitemaps included - Google discovers secondary ones automatically
+  // Order: HIGH priority first, then MEDIUM, then LOW
   const sitemaps = [
-    // === CORE: High-value deal pages ===
+    // === HIGH PRIORITY: Submit manually to GSC ===
+    `${baseUrl}/sitemap-programmatic.xml`,  // Main deal pages (highest traffic)
+    `${baseUrl}/sitemap-deal-seo.xml`,      // Brand × price combinations
+    `${baseUrl}/sitemap-gaming.xml`,        // Gaming promo codes (high engagement)
     
-    // 1. Static pages: homepage, about, privacy, terms, blog index
-    `${baseUrl}/sitemap-pages.xml`,
+    // === MEDIUM PRIORITY: Auto-discovered by Google ===
+    `${baseUrl}/sitemap-blog-deals.xml`,    // Auto-generated blog posts
+    `${baseUrl}/sitemap-guides.xml`,        // Buying guides
+    `${baseUrl}/sitemap-comparisons.xml`,   // Comparison pages
+    `${baseUrl}/sitemap-categories.xml`,    // Category pages
+    `${baseUrl}/sitemap-brands.xml`,        // Brand pages
+    `${baseUrl}/sitemap-stores.xml`,        // Store pages
     
-    // 2. Main deal pages and programmatic content
-    `${baseUrl}/sitemap-programmatic.xml`,
-    
-    // 3. Gaming section: /gaming, /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards
-    `${baseUrl}/sitemap-gaming.xml`,
-    
-    // 4. Deal SEO pages: /deals/seo/[slug] (brand × price + category × price)
-    `${baseUrl}/sitemap-deal-seo.xml`,
-    
-    // === CONTENT: Authority-building pages ===
-    
-    // 5. Auto-generated blog posts: /blog/deals/[slug]
-    `${baseUrl}/sitemap-blog-deals.xml`,
-    
-    // 6. Buying guides (topical authority content)
-    `${baseUrl}/sitemap-guides.xml`,
-    
-    // 7. Comparison pages (high-intent keywords)
-    `${baseUrl}/sitemap-comparisons.xml`,
-    
-    // === STRUCTURE: Navigation & discovery ===
-    
-    // 8. Category pages (main navigation, high search volume)
-    `${baseUrl}/sitemap-categories.xml`,
-    
-    // 9. Brand pages (product discovery)
-    `${baseUrl}/sitemap-brands.xml`,
-    
-    // 10. Store pages (conversion pages)
-    `${baseUrl}/sitemap-stores.xml`,
-    
-    // === SUPPLEMENTAL: Additional high-value pages ===
-    
-    // 11. Today's deals pages: /deals/today, /deals/today/[entity]
-    `${baseUrl}/sitemap-today.xml`,
-    
-    // 12. Deal comparison pages: /deals/compare/[brandA]-vs-[brandB]
-    `${baseUrl}/sitemap-deal-compare.xml`,
-    
-    // 13. Deal Finder pages (high-intent search terms)
-    `${baseUrl}/sitemap-deal-finder.xml`,
-    
-    // 14. Trending pages (time-sensitive, high-traffic)
-    `${baseUrl}/sitemap-trending.xml`,
-    
-    // 15. Deal variants: cheap, top, price-based pages
-    `${baseUrl}/sitemap-deals-variants.xml`,
-    
-    // 16. City pages (local SEO)
-    `${baseUrl}/sitemap-cities.xml`,
-    
-    // 17. Price range pages
-    `${baseUrl}/sitemap-price.xml`,
+    // === LOW PRIORITY: Auto-discovered, lower crawl priority ===
+    `${baseUrl}/sitemap-pages.xml`,         // Static pages
+    `${baseUrl}/sitemap-today.xml`,         // Today's deals
+    `${baseUrl}/sitemap-trending.xml`,      // Trending pages
+    `${baseUrl}/sitemap-deal-finder.xml`,   // AI deal finder
+    `${baseUrl}/sitemap-deal-compare.xml`,  // Brand vs brand
   ]
   
-  // REMOVED from index (files still exist for direct access):
-  // - sitemap-pagination.xml (low-value pagination pages)
+  // NOT included in index (files exist for direct access if needed):
+  // - sitemap-cities.xml (local SEO, very low priority)
+  // - sitemap-price.xml (price range pages)
+  // - sitemap-deals-variants.xml (cheap/top variants)
+  // - sitemap-pagination.xml (pagination pages)
   // - sitemap-store-pages.xml (store pagination)
   // - sitemap-category-pages.xml (category pagination)
   // - sitemap-brand-pages.xml (brand pagination)
-  // - sitemap-core.xml (redundant with other sitemaps)
+  // - sitemap-core.xml (redundant)
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
