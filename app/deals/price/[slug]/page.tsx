@@ -9,6 +9,10 @@ import { getSEOContent } from "@/lib/seo/programmatic-seo-content"
 import { PageContainer } from "@/components/layout/page-container"
 import { DealCard } from "@/components/deal-card"
 import { ProgrammaticSEOBlock } from "@/components/seo/programmatic-seo-block"
+import { BreadcrumbNav, generateDealsBreadcrumbs } from "@/components/seo/breadcrumb-nav"
+import { LastUpdated } from "@/components/seo/last-updated"
+import { InternalLinksWidget } from "@/components/seo/internal-links-widget"
+import { ContextualLinksList, dealContextualLinks } from "@/components/seo/contextual-links"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -184,14 +188,27 @@ export default async function PriceDealsPage({ params }: PageProps) {
             </span>
           </nav>
           
-          {/* Badge */}
-          <div className="flex items-center gap-2 mb-4">
+          {/* Breadcrumb with JSON-LD Schema */}
+          <div className="mb-4">
+            <BreadcrumbNav 
+              items={[
+                { name: 'Deals', url: '/deals' },
+                { name: categoryName, url: `/deals/${categorySlug}` },
+                { name: `Under $${price}`, url: `/deals/price/${categorySlug}-under-${price}` },
+              ]} 
+              className="text-white/70 [&_a]:text-white/70 [&_a:hover]:text-white [&_span]:text-white"
+            />
+          </div>
+          
+          {/* Badge + Last Updated */}
+          <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
               <DollarSign className="h-5 w-5 text-emerald-300" />
               <span className="text-sm font-semibold text-white uppercase tracking-wide">
                 Budget Deals
               </span>
             </div>
+            <LastUpdated className="text-white/70 [&_time]:text-white/90" />
           </div>
           
           {/* Title */}
@@ -288,6 +305,23 @@ export default async function PriceDealsPage({ params }: PageProps) {
               </>
             )}
           </div>
+          
+          {/* Contextual Internal Links */}
+          <ContextualLinksList 
+            links={dealContextualLinks.filter(l => !l.href.includes(categorySlug))} 
+            className="mt-8"
+          />
+        </PageContainer>
+      </section>
+      
+      {/* Internal Links Widget */}
+      <section className="py-8 border-t border-border">
+        <PageContainer>
+          <InternalLinksWidget 
+            pageType="deals" 
+            currentSlug={`${categorySlug}-under-${price}`}
+            category={categorySlug}
+          />
         </PageContainer>
       </section>
       

@@ -12,6 +12,7 @@ import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
 import { HomeGamingDeals } from "@/components/home-gaming-deals"
 import { FAQSection } from "@/components/seo"
+import { TrendingNowSection } from "@/components/seo/trending-now-section"
 import { homepageFAQs } from "@/lib/seo/faq-data"
 import { getTrendingDeals } from "@/lib/deals"
 
@@ -125,6 +126,9 @@ export default function HomePage() {
         <main>
           {/* Above the fold - critical */}
           <HeroSection />
+          
+          {/* SEO Boost: Trending Now - Internal links for crawl priority */}
+          <TrendingNowSection />
           
           {/* Primary content - deals */}
           <Suspense fallback={<DealsLoading />}>
