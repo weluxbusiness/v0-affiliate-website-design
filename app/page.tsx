@@ -12,6 +12,7 @@ import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
 import { HomeGamingDeals } from "@/components/home-gaming-deals"
 import { FAQSection } from "@/components/seo"
+import { SEOHeroBlock } from "@/components/seo/seo-hero-block"
 import { TrendingNowSection } from "@/components/seo/trending-now-section"
 import { RecentlyUpdatedSection } from "@/components/seo/recently-updated-section"
 import { homepageFAQs } from "@/lib/seo/faq-data"
@@ -127,6 +128,9 @@ export default function HomePage() {
         <main>
           {/* Above the fold - critical */}
           <HeroSection />
+          
+          {/* SEO Hero Block - H1, intro, quick links for keyword relevance */}
+          <SEOHeroBlock />
           
           {/* SEO Boost: Trending Now - Internal links for crawl priority */}
           <TrendingNowSection />
