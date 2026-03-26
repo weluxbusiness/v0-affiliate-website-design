@@ -18,3 +18,9 @@ export {
   generateBlogBreadcrumbs,
   generateGamingBreadcrumbs,
 } from './breadcrumb-nav'
+export {
+  FAQSection,
+  homepageFAQs,
+  dealsCategoryFAQs,
+  storeFAQs,
+} from './faq-section'

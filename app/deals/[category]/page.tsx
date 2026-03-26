@@ -81,14 +81,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const categorySlug = category.toLowerCase()
   const categoryInfo = productCategories[categorySlug]
   const categoryName = categoryInfo?.name || categorySlug.replace(/-/g, ' ')
+  const year = new Date().getFullYear()
   
   return {
-    title: `Best ${categoryName} Deals - Compare Prices & Save | SaveSmart`,
-    description: `Compare ${categoryName.toLowerCase()} deals from top retailers. Find the lowest prices, coupon codes, and exclusive discounts.`,
+    title: `${categoryName} Deals ${year} - Up to 70% Off | Compare & Save`,
+    description: `Best ${categoryName.toLowerCase()} deals from Amazon, Best Buy, Target & Walmart. Compare prices, find coupon codes & save up to 70%. Updated hourly. Free!`,
+    keywords: [
+      `${categoryName.toLowerCase()} deals`, `best ${categoryName.toLowerCase()} deals ${year}`,
+      `${categoryName.toLowerCase()} sale`, `${categoryName.toLowerCase()} discount`,
+      `cheap ${categoryName.toLowerCase()}`, `${categoryName.toLowerCase()} coupon codes`,
+    ],
     openGraph: {
-      title: `Best ${categoryName} Deals | SaveSmart`,
-      description: `Find the best deals on ${categoryName.toLowerCase()} from Amazon, Best Buy, and more. Prices updated hourly.`,
+      title: `${categoryName} Deals - Save Up to 70% | SaveSmart`,
+      description: `Compare ${categoryName.toLowerCase()} prices from top retailers. Best deals updated every hour.`,
       type: 'website',
+      url: `https://savesmart.bio/deals/${categorySlug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${categoryName} Deals - Up to 70% Off`,
+      description: `Best ${categoryName.toLowerCase()} deals from Amazon, Best Buy & more.`,
     },
     alternates: {
       canonical: `/deals/${categorySlug}`,

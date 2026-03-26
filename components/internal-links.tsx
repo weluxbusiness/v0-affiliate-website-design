@@ -269,3 +269,136 @@ export function CategoryCrossLinks({
     </div>
   )
 }
+
+// Popular destinations for site-wide SEO footer link hub
+const popularStores = [
+  { slug: 'amazon', name: 'Amazon' },
+  { slug: 'best-buy', name: 'Best Buy' },
+  { slug: 'target', name: 'Target' },
+  { slug: 'walmart', name: 'Walmart' },
+  { slug: 'nike', name: 'Nike' },
+  { slug: 'apple', name: 'Apple' },
+  { slug: 'costco', name: 'Costco' },
+  { slug: 'home-depot', name: 'Home Depot' },
+]
+
+const popularCategories = [
+  { slug: 'electronics', name: 'Electronics' },
+  { slug: 'fashion', name: 'Fashion' },
+  { slug: 'home-kitchen', name: 'Home & Kitchen' },
+  { slug: 'laptops', name: 'Laptops' },
+  { slug: 'headphones', name: 'Headphones' },
+  { slug: 'tvs', name: 'TVs' },
+  { slug: 'sneakers', name: 'Sneakers' },
+  { slug: 'vacuums', name: 'Vacuums' },
+]
+
+const trendingPages = [
+  { href: '/deals', label: 'All Deals' },
+  { href: '/trending-deals', label: 'Trending Deals' },
+  { href: '/latest-deals', label: 'Latest Deals' },
+  { href: '/deal-finder', label: 'AI Deal Finder' },
+  { href: '/gaming', label: 'Gaming Deals' },
+  { href: '/blog', label: 'Savings Tips' },
+]
+
+interface SitewideLinkHubProps {
+  excludeStore?: string
+  excludeCategory?: string
+}
+
+export function SitewideLinkHub({ excludeStore, excludeCategory }: SitewideLinkHubProps) {
+  const filteredStores = popularStores.filter(s => s.slug !== excludeStore)
+  const filteredCategories = popularCategories.filter(c => c.slug !== excludeCategory)
+
+  return (
+    <section className="py-12 md:py-16 border-t border-border bg-muted/20">
+      <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+        <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
+          Explore More Deals
+        </h2>
+        
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Popular Stores */}
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Store className="h-5 w-5 text-primary" />
+              Popular Stores
+            </h3>
+            <ul className="space-y-2">
+              {filteredStores.map((store) => (
+                <li key={store.slug}>
+                  <Link
+                    href={`/stores/${store.slug}`}
+                    className="text-muted-foreground hover:text-foreground hover:underline text-sm transition-colors"
+                  >
+                    {store.name} Deals
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Popular Categories */}
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Folder className="h-5 w-5 text-primary" />
+              Popular Categories
+            </h3>
+            <ul className="space-y-2">
+              {filteredCategories.map((category) => (
+                <li key={category.slug}>
+                  <Link
+                    href={`/deals/${category.slug}`}
+                    className="text-muted-foreground hover:text-foreground hover:underline text-sm transition-colors"
+                  >
+                    {category.name} Deals
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <ArrowRight className="h-5 w-5 text-primary" />
+              Quick Links
+            </h3>
+            <ul className="space-y-2">
+              {trendingPages.map((page) => (
+                <li key={page.href}>
+                  <Link
+                    href={page.href}
+                    className="text-muted-foreground hover:text-foreground hover:underline text-sm transition-colors"
+                  >
+                    {page.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Coupon Links Row */}
+        <div className="mt-10 pt-8 border-t border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <Tag className="h-5 w-5 text-primary" />
+            Store Coupon Codes
+          </h3>
+          <div className="flex flex-wrap gap-3">
+            {filteredStores.map((store) => (
+              <Link
+                key={store.slug}
+                href={`/coupons/${store.slug}`}
+                className="inline-flex items-center px-3 py-1.5 rounded-full text-sm bg-background border border-border hover:border-primary/50 transition-colors"
+              >
+                {store.name} Coupons
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

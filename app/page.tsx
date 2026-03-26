@@ -1,4 +1,5 @@
 import { Suspense } from "react"
+import type { Metadata } from "next"
 import { HeroSection } from "@/components/hero-section"
 import { HowItWorks } from "@/components/how-it-works"
 import { BenefitsSection } from "@/components/benefits-section"
@@ -10,7 +11,27 @@ import { FinalCTA } from "@/components/final-cta"
 import { Footer } from "@/components/footer"
 import { HomePopularCategories } from "@/components/home-popular-categories"
 import { HomeGamingDeals } from "@/components/home-gaming-deals"
+import { FAQSection, homepageFAQs } from "@/components/seo"
 import { getTrendingDeals } from "@/lib/deals"
+
+// Enhanced metadata for better CTR in search results
+export const metadata: Metadata = {
+  title: "SaveSmart - Best Deals, Coupons & Discounts 2026 | Save Up to 70%",
+  description: "Find the best online deals, coupon codes & discounts from 30,000+ stores. Save up to 70% on electronics, fashion, home goods & more. Updated hourly. Free to use!",
+  keywords: [
+    "deals", "coupons", "discounts", "promo codes", "online shopping",
+    "best deals 2026", "coupon codes", "savings", "Amazon deals", 
+    "Best Buy deals", "Target deals", "Walmart deals", "shopping deals"
+  ],
+  openGraph: {
+    title: "SaveSmart - Find the Best Deals & Save Up to 70%",
+    description: "Discover verified deals from Amazon, Best Buy, Target & 30,000+ stores. Updated every hour.",
+    type: "website",
+  },
+  alternates: {
+    canonical: "/",
+  },
+}
 
 // Organization schema for rich search results
 const organizationSchema = {
@@ -127,6 +148,14 @@ export default function HomePage() {
           
           {/* Competitive positioning */}
           <ComparisonTable />
+          
+          {/* FAQ Section for SEO */}
+          <FAQSection 
+            faqs={homepageFAQs}
+            title="Frequently Asked Questions"
+            subtitle="Everything you need to know about finding the best deals with SaveSmart"
+            className="border-t border-border"
+          />
           
           {/* Final conversion */}
           <FinalCTA />
