@@ -47,21 +47,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   const today = new Date()
   const dateStr = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  const monthYear = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  const codeCount = getActivePromoCodes(game.promoCodes).length
   
   return {
-    title: `${game.name} Codes Today (${dateStr}) - New & Working | SaveSmart`,
-    description: `All ${game.name} promo codes for today, ${dateStr}. ${getActivePromoCodes(game.promoCodes).length} working codes verified and updated hourly. Redeem for free rewards now!`,
+    title: `${game.name} Codes Today (${monthYear}) - ${codeCount}+ FREE Rewards Working Now`,
+    description: `All ${codeCount}+ working ${game.name} promo codes for ${dateStr}. Get FREE gems, skins & rewards. Verified hourly - redeem before they expire!`,
     keywords: [
       `${game.name} codes today`,
       `${game.name} new codes`,
       `${game.name} codes ${dateStr}`,
       `${game.name} daily codes`,
       `today's ${game.name} codes`,
+      `${game.name} working codes`,
+      `${game.name} free rewards today`,
     ],
     openGraph: {
-      title: `${game.name} Codes Today - ${dateStr}`,
-      description: `All working ${game.name} promo codes for today.`,
+      title: `${game.name} Codes Today - ${codeCount}+ FREE Rewards | ${monthYear}`,
+      description: `${codeCount}+ working codes. Free gems, skins & rewards. Updated hourly!`,
       url: `https://savesmart.bio/gaming/${game.slug}/codes-today`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${game.name} Codes Today - FREE Rewards`,
+      description: `${codeCount}+ working codes verified today. Redeem now!`,
     },
     alternates: {
       canonical: `/gaming/${game.slug}/codes-today`,

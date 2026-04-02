@@ -79,6 +79,13 @@ export async function GET(): Promise<Response> {
         priority: "0.75",
         changefreq: "weekly",
       },
+      // Redeem codes guide - targets "how to redeem [game] codes" searches
+      {
+        url: `/gaming/${slug}/redeem-codes`,
+        lastmod: lastUpdated,
+        priority: "0.8",
+        changefreq: "weekly",
+      },
       // Daily codes page - high priority for "today" searches
       {
         url: `/gaming/${slug}/codes-today`,

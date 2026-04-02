@@ -359,6 +359,57 @@ export function GamePageTemplate({
         </section>
       )}
 
+      {/* Latest Working Codes Today - New Section for SEO */}
+      {(() => {
+        const today = new Date()
+        const recentCodes = activeCodes.filter(code => {
+          const addedDate = new Date(code.addedAt)
+          const daysDiff = (today.getTime() - addedDate.getTime()) / (1000 * 60 * 60 * 24)
+          return daysDiff <= 7
+        }).slice(0, 3)
+        
+        if (recentCodes.length === 0) return null
+        
+        return (
+          <section className="py-10 md:py-12 bg-gradient-to-b from-emerald-500/5 to-transparent border-b border-border">
+            <PageContainer>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10">
+                  <Flame className="h-5 w-5 text-emerald-600" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Latest {game.name} Codes Added This Week
+                  </h2>
+                  <Badge variant="outline" className="mt-1 bg-emerald-500/10 text-emerald-600 border-emerald-500/30">
+                    New Codes - Working Now
+                  </Badge>
+                </div>
+              </div>
+              <p className="text-muted-foreground mb-6 ml-13">
+                These codes were added in the last 7 days. Redeem them before they expire!
+              </p>
+              
+              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {recentCodes.map((code) => (
+                  <PromoCodeCard key={code.id} code={code} />
+                ))}
+              </div>
+              
+              <div className="mt-6 text-center">
+                <Link 
+                  href={`/gaming/${game.slug}/codes-today`}
+                  className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                >
+                  View All Today&apos;s Codes
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </PageContainer>
+          </section>
+        )
+      })()}
+
       {/* Promo Codes Section */}
       <section className="py-10 md:py-12">
         <PageContainer>
@@ -481,6 +532,57 @@ export function GamePageTemplate({
           </div>
         </PageContainer>
       </section>
+
+      {/* Best Rewards You Can Get - Scannable List for SEO */}
+      {activeCodes.length > 0 && (
+        <section className="py-10 md:py-12 bg-gradient-to-b from-amber-500/5 to-transparent">
+          <PageContainer>
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
+                  <Trophy className="h-5 w-5 text-amber-600" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Best {game.name} Rewards You Can Get Right Now
+                  </h2>
+                  <p className="text-sm text-muted-foreground">From current working codes</p>
+                </div>
+              </div>
+              
+              <div className="bg-card border border-border rounded-lg p-6">
+                <ul className="space-y-3">
+                  {sortPromoCodesByValue(activeCodes).slice(0, 8).map((code) => (
+                    <li key={code.id} className="flex items-start gap-3">
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/10 mt-0.5">
+                        <Gift className="h-3.5 w-3.5 text-amber-600" />
+                      </div>
+                      <div className="flex-1">
+                        <span className="font-medium text-foreground">{code.reward}</span>
+                        <span className="text-muted-foreground"> - Use code </span>
+                        <code className="px-1.5 py-0.5 rounded bg-muted text-sm font-mono text-primary">{code.code}</code>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                
+                <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    {activeCodes.length} total codes available
+                  </p>
+                  <Link 
+                    href={`/gaming/${game.slug}/rewards`}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                  >
+                    View All Free Rewards
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </PageContainer>
+        </section>
+      )}
 
       {/* Rewards Section */}
       {game.rewards.length > 0 && (
