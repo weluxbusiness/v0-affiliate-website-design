@@ -9,11 +9,15 @@ import { SectionHeading } from "@/components/layout/page-container"
 import { GUIDE_TOPICS } from "@/lib/seo/guide-generator"
 
 export const metadata: Metadata = {
-  title: "Buying Guides | Expert Shopping Advice | SaveSmart",
-  description: "Expert buying guides for laptops, TVs, smartphones, headphones and more. Get unbiased recommendations and find the best deals.",
+  title: "Buying Guides 2026 - Expert Reviews & Best Deals | SaveSmart",
+  description: "100+ expert buying guides for laptops, TVs, phones & more. Compare features, read reviews, and find the best deals. Updated for 2026 - make smarter purchases!",
+  keywords: [
+    "buying guides", "product reviews", "best laptops 2026",
+    "tv buying guide", "smartphone comparison", "shopping guides"
+  ],
   openGraph: {
-    title: "Buying Guides | Expert Shopping Advice | SaveSmart",
-    description: "Expert buying guides for laptops, TVs, smartphones, headphones and more.",
+    title: "Expert Buying Guides 2026 - Compare & Save | SaveSmart",
+    description: "100+ expert buying guides with reviews and best deals. Make smarter purchases!",
     type: "website",
   },
   alternates: {

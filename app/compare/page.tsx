@@ -6,13 +6,18 @@ import { Footer } from "@/components/footer"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { PageContainer, SectionHeading } from "@/components/layout/page-container"
+import { RelatedDealsSection } from "@/components/seo"
 
 export const metadata: Metadata = {
-  title: "Product Comparisons | Compare Prices & Features | SaveSmart",
-  description: "Compare products side by side. Find the best deals on laptops, phones, headphones, TVs and more with our detailed comparison guides.",
+  title: "Product Comparisons 2026 - Compare Prices & Find Best Deals",
+  description: "Side-by-side comparisons of laptops, phones, headphones, TVs & more. Real-time prices from Amazon, Best Buy & Target. Find the best deal in seconds!",
+  keywords: [
+    "product comparison", "compare prices", "macbook vs dell",
+    "iphone vs samsung", "best deals comparison", "price comparison"
+  ],
   openGraph: {
-    title: "Product Comparisons | SaveSmart",
-    description: "Compare products side by side and find the best deals.",
+    title: "Product Comparisons 2026 - Find the Best Deals | SaveSmart",
+    description: "Compare products side by side with real-time pricing. Find the best deals!",
     type: "website",
   },
   alternates: {
@@ -204,6 +209,13 @@ export default function ComparePage() {
             </div>
           </section>
         </PageContainer>
+
+        {/* Related Deals - Internal Linking */}
+        <RelatedDealsSection
+          title="Explore More Savings"
+          excludeLinks={["/compare"]}
+          variant="default"
+        />
       </main>
 
       <Footer />

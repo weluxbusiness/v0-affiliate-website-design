@@ -9,8 +9,20 @@ import { articles, categories, getFeaturedArticles, getRecentArticles } from "@/
 import { NewsletterForm } from "@/components/newsletter-form"
 
 export const metadata: Metadata = {
-  title: "Shopping Tips & Savings Blog | SaveSmart",
-  description: "Expert guides on saving money online, finding coupons, shopping strategies, and browser extension reviews. Learn how to shop smarter and save more.",
+  title: "Shopping Tips & Savings Blog 2026 - Expert Money-Saving Guides",
+  description: "Learn proven strategies to save 50%+ on every purchase. Expert guides on coupons, cashback, price tracking & more. 50,000+ readers trust our tips!",
+  keywords: [
+    "shopping tips", "savings blog", "coupon strategies",
+    "money saving tips", "deal hunting guide", "how to save money shopping"
+  ],
+  openGraph: {
+    title: "Shopping Tips & Savings Blog 2026 | SaveSmart",
+    description: "Expert money-saving guides trusted by 50,000+ readers. Start saving more today!",
+    type: "website",
+  },
+  alternates: {
+    canonical: "/blog",
+  },
 }
 
 export default function BlogPage() {

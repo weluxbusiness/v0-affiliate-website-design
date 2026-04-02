@@ -34,3 +34,8 @@ export {
   brandContextualLinks,
   getContextualLinks,
 } from './contextual-links'
+export {
+  RelatedDealsSection,
+  StoreRelatedDeals,
+  CategoryRelatedDeals,
+} from './related-deals-section'

@@ -24,11 +24,15 @@ import {
 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Deal Categories | Browse Deals by Category | SaveSmart",
-  description: "Explore deals organized by category. Find electronics, fashion, home & kitchen, gaming, and more deals from top retailers.",
+  title: "Deal Categories April 2026 - Save Up to 70% by Category Today",
+  description: "Browse 15,000+ deals by category. Electronics, fashion, home & kitchen, gaming deals from Amazon, Target & more. Up to 70% off - shop by category now!",
+  keywords: [
+    "deal categories", "shopping categories", "electronics deals",
+    "fashion deals", "home deals", "gaming deals", "category discounts"
+  ],
   openGraph: {
-    title: "Browse Deals by Category | SaveSmart",
-    description: "Explore deals organized by category. Find electronics, fashion, home & kitchen, gaming, and more.",
+    title: "Browse Deals by Category - Up to 70% Off | SaveSmart",
+    description: "15,000+ deals organized by category. Find exactly what you need from top retailers. Shop now!",
     type: "website",
   },
   alternates: {

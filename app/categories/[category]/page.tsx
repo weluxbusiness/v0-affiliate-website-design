@@ -276,14 +276,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
   }
   
+  const month = new Date().toLocaleString('default', { month: 'long' })
   const currentYear = new Date().getFullYear()
   
   return {
-    title: `${hub.displayName} Deals & Discounts ${currentYear} | SaveSmart`,
-    description: hub.metaDescription,
+    title: `${hub.displayName} Deals ${month} ${currentYear} - Save Up to 70% Today`,
+    description: `${hub.metaDescription} Updated hourly with limited-time offers. Shop now before deals expire!`,
+    keywords: [
+      `${hub.displayName.toLowerCase()} deals`, `${hub.displayName.toLowerCase()} discounts`,
+      `best ${hub.displayName.toLowerCase()} deals ${currentYear}`, `${hub.displayName.toLowerCase()} sale`,
+      `${hub.displayName.toLowerCase()} deals ${month} ${currentYear}`,
+    ],
     openGraph: {
-      title: `Best ${hub.displayName} Deals ${currentYear}`,
-      description: hub.metaDescription,
+      title: `Best ${hub.displayName} Deals ${month} ${currentYear} - Up to 70% Off`,
+      description: `${hub.metaDescription} Limited-time offers updated hourly!`,
       type: 'website',
     },
     alternates: {

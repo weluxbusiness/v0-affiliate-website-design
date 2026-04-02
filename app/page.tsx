@@ -20,16 +20,17 @@ import { getTrendingDeals } from "@/lib/deals"
 
 // Enhanced metadata for better CTR in search results
 export const metadata: Metadata = {
-  title: "SaveSmart - Best Deals, Coupons & Discounts 2026 | Save Up to 70%",
-  description: "Find the best online deals, coupon codes & discounts from 30,000+ stores. Save up to 70% on electronics, fashion, home goods & more. Updated hourly. Free to use!",
+  title: "Best Deals & Coupons April 2026 - Save Up to 70% Today | SaveSmart",
+  description: "Find 15,000+ verified deals & coupon codes from Amazon, Target, Walmart & 30,000+ stores. Save up to 70% on electronics, fashion & home today. Updated hourly - act fast!",
   keywords: [
     "deals", "coupons", "discounts", "promo codes", "online shopping",
     "best deals 2026", "coupon codes", "savings", "Amazon deals", 
-    "Best Buy deals", "Target deals", "Walmart deals", "shopping deals"
+    "Best Buy deals", "Target deals", "Walmart deals", "shopping deals",
+    "deals today", "April 2026 deals", "free coupons"
   ],
   openGraph: {
-    title: "SaveSmart - Find the Best Deals & Save Up to 70%",
-    description: "Discover verified deals from Amazon, Best Buy, Target & 30,000+ stores. Updated every hour.",
+    title: "Best Deals April 2026 - Save Up to 70% Today | SaveSmart",
+    description: "15,000+ verified deals from Amazon, Best Buy, Target & more. Limited-time savings updated hourly. Start saving now!",
     type: "website",
   },
   alternates: {

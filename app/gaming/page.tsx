@@ -4,6 +4,8 @@ import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
+import { FAQSection } from "@/components/seo"
+import { gamingDealsFAQs } from "@/lib/seo/faq-data"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
 import { GameCardCompact, GamingCategoryFilter } from "@/components/gaming/gaming-internal-links"
 import { Badge } from "@/components/ui/badge"
@@ -45,8 +47,8 @@ export const dynamic = "force-dynamic"
 export const revalidate = 300 // Revalidate every 5 minutes
 
 export const metadata: Metadata = {
-  title: "Gaming Promo Codes & Free Rewards | SaveSmart",
-  description: "Find working promo codes, free rewards, and new player deals for popular games like Genshin Impact, Fortnite, RAID, Roblox, and more. Updated daily.",
+  title: "Gaming Promo Codes April 2026 - Free Rewards & Bonuses Today",
+  description: "Get 500+ working promo codes for Genshin Impact, Fortnite, RAID, Roblox & more. Free in-game rewards, gems & bonuses. Verified daily - redeem now before codes expire!",
   keywords: [
     "gaming promo codes",
     "free game rewards",
@@ -55,11 +57,13 @@ export const metadata: Metadata = {
     "fortnite codes",
     "roblox codes",
     "mobile game codes",
-    "new player deals"
+    "new player deals",
+    "game codes april 2026",
+    "free gaming rewards today"
   ],
   openGraph: {
-    title: "Gaming Promo Codes & Free Rewards | SaveSmart",
-    description: "Find working promo codes and free rewards for popular games. Updated daily.",
+    title: "Gaming Promo Codes April 2026 - Free Rewards Today | SaveSmart",
+    description: "500+ working promo codes for popular games. Free rewards, gems & bonuses. Redeem now!",
     url: "https://savesmart.bio/gaming",
     type: "website",
   },
@@ -463,6 +467,14 @@ export default async function GamingPage() {
           </div>
         </PageContainer>
       </section>
+
+      {/* FAQ Section */}
+      <FAQSection
+        title="Gaming Promo Codes FAQ"
+        subtitle="Common questions about gaming codes and rewards"
+        faqs={gamingDealsFAQs}
+        className="border-t border-border"
+      />
 
       <Footer />
     </div>

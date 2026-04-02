@@ -81,26 +81,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const categorySlug = category.toLowerCase()
   const categoryInfo = productCategories[categorySlug]
   const categoryName = categoryInfo?.name || categorySlug.replace(/-/g, ' ')
+  const month = new Date().toLocaleString('default', { month: 'long' })
   const year = new Date().getFullYear()
   
   return {
-    title: `${categoryName} Deals ${year} - Up to 70% Off | Compare & Save`,
-    description: `Best ${categoryName.toLowerCase()} deals from Amazon, Best Buy, Target & Walmart. Compare prices, find coupon codes & save up to 70%. Updated hourly. Free!`,
+    title: `${categoryName} Deals ${month} ${year} - Save 50-70% Today | Limited Time`,
+    description: `Best ${categoryName.toLowerCase()} deals ending soon! Compare prices from Amazon, Best Buy, Target & Walmart. Save 50-70% with verified coupons. Updated hourly - shop now!`,
     keywords: [
       `${categoryName.toLowerCase()} deals`, `best ${categoryName.toLowerCase()} deals ${year}`,
       `${categoryName.toLowerCase()} sale`, `${categoryName.toLowerCase()} discount`,
       `cheap ${categoryName.toLowerCase()}`, `${categoryName.toLowerCase()} coupon codes`,
+      `${categoryName.toLowerCase()} deals ${month} ${year}`, `${categoryName.toLowerCase()} deals today`,
     ],
     openGraph: {
-      title: `${categoryName} Deals - Save Up to 70% | SaveSmart`,
-      description: `Compare ${categoryName.toLowerCase()} prices from top retailers. Best deals updated every hour.`,
+      title: `${categoryName} Deals ${month} ${year} - Up to 70% Off Today | SaveSmart`,
+      description: `Compare ${categoryName.toLowerCase()} prices from top retailers. Limited-time deals updated hourly. Shop now!`,
       type: 'website',
       url: `https://savesmart.bio/deals/${categorySlug}`,
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${categoryName} Deals - Up to 70% Off`,
-      description: `Best ${categoryName.toLowerCase()} deals from Amazon, Best Buy & more.`,
+      title: `${categoryName} Deals ${month} ${year} - Up to 70% Off`,
+      description: `Best ${categoryName.toLowerCase()} deals from Amazon, Best Buy & more. Limited time!`,
     },
     alternates: {
       canonical: `/deals/${categorySlug}`,

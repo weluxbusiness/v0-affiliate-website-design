@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
 import { PopularCategories } from "@/components/popular-categories"
 import { PageContainer, DealGrid, SectionHeading } from "@/components/layout/page-container"
-import { FAQSection } from "@/components/seo"
+import { FAQSection, RelatedDealsSection } from "@/components/seo"
 import { getAllDeals } from "@/lib/deals"
 import { getStoreInfo } from "@/lib/deal-types"
 import { 
@@ -57,16 +57,17 @@ const productCategories: Record<string, { name: string; icon: typeof Headphones 
 }
 
 export const metadata: Metadata = {
-  title: 'Today\'s Best Deals & Coupons 2026 - Up to 70% Off | SaveSmart',
-  description: 'Browse 1000+ verified deals from Amazon, Best Buy, Target, Walmart & more. Save up to 70% on electronics, fashion, home goods. Updated every hour. Free!',
+  title: 'Best Deals April 2026 - Up to 70% Off Today | Limited Time Offers',
+  description: 'Browse 1,000+ verified deals ending soon from Amazon, Best Buy, Target & Walmart. Save up to 70% on electronics, fashion & home. Updated hourly - shop now before they expire!',
   keywords: [
     'deals today', 'best deals 2026', 'coupon codes', 'online deals',
     'Amazon deals', 'Best Buy deals', 'Target deals', 'Walmart deals',
-    'electronics deals', 'fashion deals', 'home deals', 'discount codes'
+    'electronics deals', 'fashion deals', 'home deals', 'discount codes',
+    'April 2026 deals', 'limited time offers', 'deals ending soon'
   ],
   openGraph: {
-    title: 'Today\'s Best Deals - Save Up to 70% | SaveSmart',
-    description: 'Discover 1000+ verified deals updated hourly. Shop smart and save big on electronics, fashion, and more.',
+    title: 'Best Deals April 2026 - Up to 70% Off Today | SaveSmart',
+    description: '1,000+ verified deals updated hourly. Limited-time savings on electronics, fashion & more. Shop now!',
     type: 'website',
     url: 'https://savesmart.bio/deals',
   },
@@ -285,10 +286,18 @@ export default async function AllDealsPage() {
           className="border-t border-border"
         />
 
+        {/* Related Deals - Internal Linking */}
+        <RelatedDealsSection
+          title="Explore More Deals"
+          excludeLinks={["/deals"]}
+          variant="grid"
+          className="bg-muted/30"
+        />
+
         {/* CTA */}
         <section className="py-10 md:py-12 text-center border-t border-border">
           <PageContainer>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Can't find what you're looking for?</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Can&apos;t find what you&apos;re looking for?</h2>
             <p className="text-muted-foreground mb-6">Our AI can help you find exactly what you need at the best price.</p>
             <Button size="lg" className="gap-2" asChild>
               <Link href="/deal-finder">

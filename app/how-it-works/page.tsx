@@ -19,11 +19,18 @@ import {
 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "How It Works | SaveSmart - Automatic Coupons & Price Comparison",
-  description: "Learn how SaveSmart helps you save money automatically. Install our free browser extension and start saving on every online purchase in just 3 simple steps.",
+  title: "How SaveSmart Works - Save $126/Month Automatically | Free",
+  description: "Install our free browser extension and save $126/month on average. Automatic coupons, price comparison & deal alerts. 2M+ users trust SaveSmart - start saving today!",
+  keywords: [
+    "how savesmart works", "automatic coupons", "price comparison",
+    "browser extension", "save money shopping", "free coupon finder"
+  ],
   openGraph: {
-    title: "How It Works | SaveSmart",
-    description: "Learn how SaveSmart helps you save money automatically with our free browser extension.",
+    title: "How SaveSmart Works - Save $126/Month Automatically",
+    description: "Free browser extension that saves you $126/month on average. Join 2M+ users!",
+  },
+  alternates: {
+    canonical: "/how-it-works",
   },
 }
 

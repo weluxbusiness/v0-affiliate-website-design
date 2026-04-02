@@ -8,18 +8,27 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/layout/page-container"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
-import { TrendingUp, Tag, ArrowRight, Flame } from "lucide-react"
+import { TrendingUp, Tag, ArrowRight, Flame, Sparkles } from "lucide-react"
 import { getTrendingDeals } from "@/lib/deals"
 import { getProductImageUrl, storeToSlug } from "@/lib/deal-types"
+import { FAQSection } from "@/components/seo"
+import { trendingDealsFAQs } from "@/lib/seo/faq-data"
 
 export const metadata: Metadata = {
-  title: "Trending Deals - Top Discounts & Savings | SaveSmart",
-  description: "Discover the hottest trending deals with the biggest discounts. Shop laptops, sneakers, headphones and more at unbeatable prices.",
+  title: "Trending Deals April 2026 - Save 50-70% on Hot Items Today",
+  description: "Shop the hottest trending deals before they sell out! Save 50-70% on laptops, sneakers, headphones & more. 500+ deals updated hourly - grab them now!",
+  keywords: [
+    "trending deals", "hot deals 2026", "best discounts today",
+    "popular deals", "viral deals", "selling fast", "limited stock"
+  ],
   openGraph: {
-    title: "Trending Deals - Top Discounts & Savings | SaveSmart",
-    description: "Discover the hottest trending deals with the biggest discounts. Shop laptops, sneakers, headphones and more at unbeatable prices.",
+    title: "Trending Deals April 2026 - Save 50-70% Today | SaveSmart",
+    description: "Hottest deals selling fast! Save 50-70% on laptops, sneakers, headphones & more. Shop now before they're gone!",
     type: "website",
     url: "https://savesmart.bio/trending-deals",
+  },
+  alternates: {
+    canonical: "/trending-deals",
   },
 }
 
@@ -232,12 +241,71 @@ export default async function TrendingDealsPage() {
           </PageContainer>
         </section>
 
+        {/* Related Deals Section */}
+        <section className="py-10 md:py-12 border-t border-border bg-muted/30">
+          <PageContainer>
+            <h2 className="text-xl font-bold mb-6">Explore More Deals</h2>
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+              <Link
+                href="/latest-deals"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-primary" />
+                <span className="text-sm font-medium text-foreground text-center">Latest Deals</span>
+              </Link>
+              <Link
+                href="/deals"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-blue-500" />
+                <span className="text-sm font-medium text-foreground text-center">All Deals</span>
+              </Link>
+              <Link
+                href="/deals/today"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Flame className="h-5 w-5 text-orange-500" />
+                <span className="text-sm font-medium text-foreground text-center">Today&apos;s Deals</span>
+              </Link>
+              <Link
+                href="/deal-finder"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Sparkles className="h-5 w-5 text-purple-500" />
+                <span className="text-sm font-medium text-foreground text-center">AI Deal Finder</span>
+              </Link>
+              <Link
+                href="/gaming"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-green-500" />
+                <span className="text-sm font-medium text-foreground text-center">Gaming Codes</span>
+              </Link>
+              <Link
+                href="/blog"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-pink-500" />
+                <span className="text-sm font-medium text-foreground text-center">Savings Tips</span>
+              </Link>
+            </div>
+          </PageContainer>
+        </section>
+
+        {/* FAQ Section */}
+        <FAQSection
+          title="Trending Deals FAQ"
+          subtitle="Common questions about trending deals on SaveSmart"
+          faqs={trendingDealsFAQs}
+          className="border-t border-border"
+        />
+
         {/* CTA */}
         <section className="py-10 md:py-12 text-center border-t border-border">
           <PageContainer>
             <h2 className="text-2xl font-bold mb-4">Want Personalized Deal Alerts?</h2>
             <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-              Tell us what you're looking for and we'll notify you when matching deals go live.
+              Tell us what you&apos;re looking for and we&apos;ll notify you when matching deals go live.
             </p>
             <Button size="lg" asChild>
               <Link href="/deal-finder">
