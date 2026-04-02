@@ -337,3 +337,82 @@ export function CategoryRelatedDeals({
     </section>
   )
 }
+
+// Popular game links for internal linking
+const popularGameLinks: RelatedLink[] = [
+  { href: "/gaming/genshin-impact", label: "Genshin Impact Codes", icon: Gamepad2 },
+  { href: "/gaming/raid-shadow-legends", label: "RAID Codes", icon: Gamepad2 },
+  { href: "/gaming/fortnite", label: "Fortnite Codes", icon: Gamepad2 },
+  { href: "/gaming/roblox", label: "Roblox Codes", icon: Gamepad2 },
+  { href: "/gaming/call-of-duty-mobile", label: "COD Mobile Codes", icon: Gamepad2 },
+  { href: "/gaming/honkai-star-rail", label: "Star Rail Codes", icon: Gamepad2 },
+]
+
+// Gaming-specific internal links for cross-linking
+export function GamingRelatedLinks({ 
+  currentGameSlug,
+  className = "" 
+}: { 
+  currentGameSlug?: string
+  className?: string 
+}) {
+  // Filter out current game if provided
+  const gameLinks = currentGameSlug 
+    ? popularGameLinks.filter(link => !link.href.includes(currentGameSlug))
+    : popularGameLinks
+
+  const hubLinks: RelatedLink[] = [
+    { href: "/gaming", label: "All Gaming Codes", icon: Gamepad2 },
+    { href: "/gaming/promo-codes", label: "Promo Codes", icon: Tag },
+    { href: "/gaming/today", label: "Today's Codes", icon: Clock },
+    { href: "/gaming/free-rewards", label: "Free Rewards", icon: Gift },
+  ]
+
+  return (
+    <section className={`py-10 md:py-12 border-t border-border ${className}`}>
+      <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+        {/* Popular Games */}
+        <h2 className="text-xl font-bold text-foreground mb-4">
+          Popular Game Codes
+        </h2>
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-8">
+          {gameLinks.slice(0, 6).map((link) => {
+            const Icon = link.icon || Gamepad2
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-emerald-500 hover:bg-emerald-500/5 transition-colors"
+              >
+                <Icon className="h-5 w-5 text-emerald-500" />
+                <span className="text-sm font-medium text-foreground text-center">
+                  {link.label}
+                </span>
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* Hub Links */}
+        <h3 className="text-lg font-semibold text-foreground mb-3">
+          Explore Gaming Deals
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {hubLinks.map((link) => {
+            const Icon = link.icon || Tag
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border hover:border-emerald-500/50 hover:bg-emerald-500/5 text-sm font-medium text-foreground transition-colors"
+              >
+                <Icon className="h-3.5 w-3.5 text-emerald-500" />
+                {link.label}
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}

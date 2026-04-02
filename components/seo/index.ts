@@ -38,4 +38,5 @@ export {
   RelatedDealsSection,
   StoreRelatedDeals,
   CategoryRelatedDeals,
+  GamingRelatedLinks,
 } from './related-deals-section'
