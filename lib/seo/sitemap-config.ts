@@ -80,7 +80,28 @@ export const SITEMAP_CONFIG = {
     'privacy-policy',
     'terms-of-service',
     'cookie-policy',
-    'affiliate-disclosure'
+    'affiliate-disclosure',
+    // Gaming section
+    'gaming',
+    'gaming/promo-codes',
+    'gaming/today',
+    'gaming/best-codes',
+    'gaming/top-games',
+    'gaming/free-rewards',
+    'gaming/new-player-deals',
+    'gaming/all-codes',
+  ],
+  
+  // Gaming pages for sitemap
+  gamingPages: [
+    'gaming',
+    'gaming/promo-codes',
+    'gaming/today',
+    'gaming/best-codes',
+    'gaming/top-games',
+    'gaming/free-rewards',
+    'gaming/new-player-deals',
+    'gaming/all-codes',
   ],
   
   // Today's deals entities (categories and brands)
