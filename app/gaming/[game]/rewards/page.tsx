@@ -49,10 +49,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   
   const year = new Date().getFullYear()
+  const month = new Date().toLocaleString('default', { month: 'long' })
+  const rewardCount = game.rewards.length
   
   return {
-    title: `${game.name} Free Rewards & Bonuses ${year} | SaveSmart`,
-    description: `Get free ${game.name} rewards including daily bonuses, new player perks, event rewards, and more. ${game.rewards.length} ways to earn free in-game items.`,
+    title: `${game.name} FREE Rewards (${month} ${year}) - ${rewardCount}+ Bonuses & Gifts`,
+    description: `Claim ${rewardCount}+ FREE ${game.name} rewards today! Daily bonuses, free gems, skins & new player perks. No purchase needed - start collecting now!`,
     keywords: [
       `${game.name} free rewards`,
       `${game.name} daily rewards`,
@@ -60,11 +62,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `${game.name} free items`,
       `${game.name} daily login`,
       `free ${game.name} currency`,
+      `${game.name} free gems`,
+      `${game.name} free skins`,
     ],
     openGraph: {
-      title: `${game.name} Free Rewards ${year}`,
-      description: `Get free ${game.name} rewards and bonuses.`,
+      title: `${game.name} FREE Rewards ${month} ${year} - ${rewardCount}+ Bonuses`,
+      description: `${rewardCount}+ free rewards available now. Daily bonuses, gems & skins!`,
       url: `https://savesmart.bio/gaming/${game.slug}/rewards`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${game.name} FREE Rewards - ${rewardCount}+ Bonuses`,
+      description: `Claim free daily bonuses, gems & skins today!`,
     },
     alternates: {
       canonical: `/gaming/${game.slug}/rewards`,

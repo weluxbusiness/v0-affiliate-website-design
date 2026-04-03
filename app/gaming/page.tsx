@@ -4,6 +4,8 @@ import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
+import { FAQSection } from "@/components/seo"
+import { gamingDealsFAQs } from "@/lib/seo/faq-data"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
 import { GameCardCompact, GamingCategoryFilter } from "@/components/gaming/gaming-internal-links"
 import { Badge } from "@/components/ui/badge"
@@ -40,32 +42,128 @@ import {
 } from "@/lib/gaming-data"
 import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
 
-// Force dynamic rendering to avoid static generation issues with cookies/headers
-export const dynamic = "force-dynamic"
+// Use ISR for better SEO - static generation with revalidation
+// This ensures Googlebot sees fully rendered content
 export const revalidate = 300 // Revalidate every 5 minutes
 
 export const metadata: Metadata = {
-  title: "Gaming Promo Codes & Free Rewards | SaveSmart",
-  description: "Find working promo codes, free rewards, and new player deals for popular games like Genshin Impact, Fortnite, RAID, Roblox, and more. Updated daily.",
+  title: "Gaming Promo Codes April 2026 - Free Rewards & Bonuses Today",
+  description: "Get 500+ working promo codes for Genshin Impact, Fortnite, RAID Shadow Legends, Roblox & more. Free in-game rewards, gems & bonuses. Verified daily - redeem now before codes expire!",
   keywords: [
+    // Primary high-intent keywords
     "gaming promo codes",
-    "free game rewards",
-    "game codes",
+    "game promo codes",
+    "free game codes",
+    "game codes 2026",
+    // Game-specific keywords (high search volume)
     "genshin impact codes",
+    "genshin impact promo codes",
     "fortnite codes",
-    "roblox codes",
+    "roblox promo codes",
+    "raid shadow legends promo codes",
+    "raid promo codes",
+    "call of duty codes",
+    // Intent keywords
+    "free game rewards",
+    "free in-game rewards",
     "mobile game codes",
-    "new player deals"
+    "new player deals",
+    "game codes april 2026",
+    "working game codes",
+    "redeem codes"
   ],
   openGraph: {
-    title: "Gaming Promo Codes & Free Rewards | SaveSmart",
-    description: "Find working promo codes and free rewards for popular games. Updated daily.",
+    title: "Gaming Promo Codes April 2026 - Free Rewards Today | SaveSmart",
+    description: "500+ working promo codes for Genshin Impact, Fortnite, RAID & more. Free gems, rewards & bonuses. Redeem now!",
     url: "https://savesmart.bio/gaming",
     type: "website",
+    images: [
+      {
+        url: "https://savesmart.bio/og/gaming-promo-codes.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Gaming Promo Codes - Free Rewards for Popular Games",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gaming Promo Codes April 2026 - Free Rewards",
+    description: "500+ working promo codes for popular games. Free gems, rewards & bonuses.",
   },
   alternates: {
     canonical: "/gaming",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+}
+
+// Gaming hub page structured data for rich results
+function generateGamingHubSchema(totalCodes: number, gameCount: number) {
+  const baseUrl = "https://savesmart.bio"
+  
+  // CollectionPage schema
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Gaming Promo Codes & Free Rewards",
+    description: "Discover working promo codes, in-game rewards, and exclusive bonuses for your favorite games.",
+    url: `${baseUrl}/gaming`,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: totalCodes,
+      itemListOrder: "ItemListOrderDescending",
+    },
+  }
+
+  // BreadcrumbList schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Gaming",
+        item: `${baseUrl}/gaming`,
+      },
+    ],
+  }
+
+  // WebPage schema with speakable for voice search
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Gaming Promo Codes & Free Rewards",
+    description: `Find ${totalCodes}+ working promo codes for ${gameCount}+ popular games. Free gems, rewards & bonuses verified daily.`,
+    url: `${baseUrl}/gaming`,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "SaveSmart",
+      url: baseUrl,
+    },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", ".hero-description"],
+    },
+  }
+
+  return { collectionSchema, breadcrumbSchema, webPageSchema }
 }
 
 export default async function GamingPage() {
@@ -86,8 +184,25 @@ export default async function GamingPage() {
   // Get featured games (top 4 by popularity)
   const featuredGames = dbFeaturedGames.length > 0 ? dbFeaturedGames : popularGames.slice(0, 4)
 
+  // Generate structured data for SEO
+  const schemas = generateGamingHubSchema(totalCodes, popularGames.length)
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Structured Data for Rich Results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.collectionSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.webPageSchema) }}
+      />
+      
       <Header />
 
       {/* Hero Section */}
@@ -463,6 +578,14 @@ export default async function GamingPage() {
           </div>
         </PageContainer>
       </section>
+
+      {/* FAQ Section */}
+      <FAQSection
+        title="Gaming Promo Codes FAQ"
+        subtitle="Common questions about gaming codes and rewards"
+        faqs={gamingDealsFAQs}
+        className="border-t border-border"
+      />
 
       <Footer />
     </div>

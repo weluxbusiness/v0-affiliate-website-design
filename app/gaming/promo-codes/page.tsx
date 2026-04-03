@@ -33,19 +33,21 @@ import {
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: "All Gaming Promo Codes - Working Codes for 100+ Games | SaveSmart",
-  description: "Browse all working promo codes for popular games including Genshin Impact, Fortnite, RAID Shadow Legends, Roblox, and more. Verified and updated daily.",
+  title: "All Gaming Promo Codes April 2026 - 500+ Working Codes",
+  description: "Browse 500+ verified promo codes for Genshin Impact, Fortnite, RAID, Roblox & 100+ games. Free gems, rewards & bonuses. Updated daily - redeem before codes expire!",
   keywords: [
     "gaming promo codes",
-    "game codes 2024",
+    "game codes 2026",
     "working game codes",
     "free game codes",
     "mobile game codes",
-    "pc game codes"
+    "pc game codes",
+    "all game codes",
+    "verified promo codes"
   ],
   openGraph: {
-    title: "All Gaming Promo Codes | SaveSmart",
-    description: "Browse all working promo codes for popular games. Verified and updated daily.",
+    title: "All Gaming Promo Codes April 2026 - 500+ Working Codes | SaveSmart",
+    description: "500+ verified gaming promo codes. Free gems, rewards & bonuses. Redeem now!",
     url: "https://savesmart.bio/gaming/promo-codes",
   },
   alternates: {

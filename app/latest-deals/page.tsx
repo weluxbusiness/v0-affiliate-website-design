@@ -8,18 +8,27 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/layout/page-container"
 import { CapitalOnePromo } from "@/components/capital-one-promo"
-import { Clock, Tag, ArrowRight } from "lucide-react"
+import { Clock, Tag, ArrowRight, Flame, Sparkles, TrendingUp } from "lucide-react"
 import { getLatestDeals } from "@/lib/deals"
 import { getProductImageUrl } from "@/lib/deal-types"
+import { FAQSection } from "@/components/seo"
+import { latestDealsFAQs } from "@/lib/seo/faq-data"
 
 export const metadata: Metadata = {
-  title: "Latest Deals & Discounts | SaveSmart",
-  description: "Browse the newest deals and discounts discovered by SaveSmart. Fresh savings added daily from top retailers.",
+  title: "Latest Deals April 2026 - New Discounts Added Every Hour",
+  description: "Be first to shop 100+ new deals added today! Fresh discounts from Amazon, Target, Best Buy & more. Updated hourly - grab new savings before anyone else!",
+  keywords: [
+    "latest deals", "new deals today", "fresh discounts",
+    "newest deals 2026", "just added deals", "new arrivals"
+  ],
   openGraph: {
-    title: "Latest Deals & Discounts | SaveSmart",
-    description: "Browse the newest deals and discounts discovered by SaveSmart. Fresh savings added daily from top retailers.",
+    title: "Latest Deals April 2026 - New Discounts Added Hourly | SaveSmart",
+    description: "100+ new deals added today from top retailers. Be first to grab fresh savings updated every hour!",
     type: "website",
     url: "https://savesmart.bio/latest-deals",
+  },
+  alternates: {
+    canonical: "/latest-deals",
   },
 }
 
@@ -165,6 +174,65 @@ export default async function LatestDealsPage() {
             )}
           </PageContainer>
         </section>
+
+        {/* Related Deals Section */}
+        <section className="py-10 md:py-12 border-t border-border bg-muted/30">
+          <PageContainer>
+            <h2 className="text-xl font-bold mb-6">Explore More Deals</h2>
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+              <Link
+                href="/trending-deals"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <TrendingUp className="h-5 w-5 text-orange-500" />
+                <span className="text-sm font-medium text-foreground text-center">Trending Deals</span>
+              </Link>
+              <Link
+                href="/deals"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-blue-500" />
+                <span className="text-sm font-medium text-foreground text-center">All Deals</span>
+              </Link>
+              <Link
+                href="/deals/today"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Flame className="h-5 w-5 text-red-500" />
+                <span className="text-sm font-medium text-foreground text-center">Today&apos;s Deals</span>
+              </Link>
+              <Link
+                href="/deal-finder"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Sparkles className="h-5 w-5 text-purple-500" />
+                <span className="text-sm font-medium text-foreground text-center">AI Deal Finder</span>
+              </Link>
+              <Link
+                href="/gaming"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-green-500" />
+                <span className="text-sm font-medium text-foreground text-center">Gaming Codes</span>
+              </Link>
+              <Link
+                href="/categories"
+                className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <Tag className="h-5 w-5 text-pink-500" />
+                <span className="text-sm font-medium text-foreground text-center">Categories</span>
+              </Link>
+            </div>
+          </PageContainer>
+        </section>
+
+        {/* FAQ Section */}
+        <FAQSection
+          title="Latest Deals FAQ"
+          subtitle="Common questions about our newest deals"
+          faqs={latestDealsFAQs}
+          className="border-t border-border"
+        />
 
         {/* CTA */}
         <section className="py-10 md:py-12 text-center border-t border-border">

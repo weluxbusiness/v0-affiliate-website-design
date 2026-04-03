@@ -34,3 +34,9 @@ export {
   brandContextualLinks,
   getContextualLinks,
 } from './contextual-links'
+export {
+  RelatedDealsSection,
+  StoreRelatedDeals,
+  CategoryRelatedDeals,
+  GamingRelatedLinks,
+} from './related-deals-section'

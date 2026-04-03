@@ -7,27 +7,27 @@ import { Flame, Gamepad2, Tag, ArrowRight, Clock } from "lucide-react"
  * Links to high-priority pages for Google crawl boost
  */
 
-// Ensure at least 6 internal links for SEO boost
+// High-volume gaming searches - links to main game pages for better SEO
 const trendingGamingPages = [
   { 
-    href: '/gaming/genshin-impact/codes', 
+    href: '/gaming/genshin-impact', 
     label: 'Genshin Impact Codes',
     description: 'Free Primogems & rewards',
   },
   { 
-    href: '/gaming/roblox/codes', 
+    href: '/gaming/raid-shadow-legends', 
+    label: 'RAID Shadow Legends Codes',
+    description: 'Free shards & energy',
+  },
+  { 
+    href: '/gaming/roblox', 
     label: 'Roblox Promo Codes',
     description: 'Free items & accessories',
   },
   { 
-    href: '/gaming/honkai-star-rail/codes', 
-    label: 'Honkai Star Rail Codes',
-    description: 'Free Stellar Jade',
-  },
-  { 
-    href: '/gaming/blox-fruits/codes', 
-    label: 'Blox Fruits Codes',
-    description: 'Free boosts & items',
+    href: '/gaming/fortnite', 
+    label: 'Fortnite Codes',
+    description: 'Free V-Bucks & skins',
   },
 ]
 
@@ -130,22 +130,30 @@ export function TrendingNowSection() {
           </div>
         </div>
 
-        {/* Quick Links Footer */}
+        {/* Quick Links Footer - More gaming links for SEO */}
         <div className="mt-6 pt-4 border-t border-border flex flex-wrap gap-3 text-sm">
-          <Link href="/gaming" className="text-muted-foreground hover:text-primary transition-colors">
+          <Link href="/gaming" className="text-muted-foreground hover:text-primary transition-colors font-medium">
             All Gaming Codes
+          </Link>
+          <span className="text-border">|</span>
+          <Link href="/gaming/promo-codes" className="text-muted-foreground hover:text-primary transition-colors">
+            Promo Codes
+          </Link>
+          <span className="text-border">|</span>
+          <Link href="/gaming/today" className="text-muted-foreground hover:text-primary transition-colors">
+            Today&apos;s Codes
+          </Link>
+          <span className="text-border">|</span>
+          <Link href="/gaming/free-rewards" className="text-muted-foreground hover:text-primary transition-colors">
+            Free Rewards
           </Link>
           <span className="text-border">|</span>
           <Link href="/deals/today" className="text-muted-foreground hover:text-primary transition-colors">
             Today&apos;s Deals
           </Link>
           <span className="text-border">|</span>
-          <Link href="/deals/trending" className="text-muted-foreground hover:text-primary transition-colors">
+          <Link href="/trending-deals" className="text-muted-foreground hover:text-primary transition-colors">
             Trending Deals
-          </Link>
-          <span className="text-border">|</span>
-          <Link href="/guides" className="text-muted-foreground hover:text-primary transition-colors">
-            Buying Guides
           </Link>
         </div>
       </div>

@@ -38,17 +38,17 @@ export async function GET(): Promise<Response> {
       : currentDate.toISOString()
     const lastModified = mostRecentGameUpdate
 
-    // Static gaming pages - SEO priority pages
+    // Static gaming pages - SEO priority pages (boosted for better indexing)
     const staticPages = [
-      { url: "/gaming", priority: "0.9", changefreq: "daily" },
-      { url: "/gaming/promo-codes", priority: "0.8", changefreq: "daily" },
-      { url: "/gaming/free-rewards", priority: "0.8", changefreq: "daily" },
-      { url: "/gaming/new-player-deals", priority: "0.8", changefreq: "daily" },
-      { url: "/gaming/today", priority: "0.9", changefreq: "hourly" },
-      // New SEO entry pages
-      { url: "/gaming/best-codes", priority: "0.8", changefreq: "daily" },
-      { url: "/gaming/all-codes", priority: "0.8", changefreq: "daily" },
-      { url: "/gaming/top-games", priority: "0.8", changefreq: "daily" },
+      { url: "/gaming", priority: "0.95", changefreq: "daily" },
+      { url: "/gaming/promo-codes", priority: "0.9", changefreq: "daily" },
+      { url: "/gaming/free-rewards", priority: "0.9", changefreq: "daily" },
+      { url: "/gaming/new-player-deals", priority: "0.9", changefreq: "daily" },
+      { url: "/gaming/today", priority: "0.95", changefreq: "hourly" },
+      // SEO entry pages for high-intent keywords
+      { url: "/gaming/best-codes", priority: "0.9", changefreq: "daily" },
+      { url: "/gaming/all-codes", priority: "0.85", changefreq: "daily" },
+      { url: "/gaming/top-games", priority: "0.85", changefreq: "daily" },
     ]
 
     // Get current month info for monthly code pages
@@ -58,44 +58,52 @@ export async function GET(): Promise<Response> {
     const nextMonth = months[(currentDate.getMonth() + 1) % 12]
     const nextMonthYear = currentDate.getMonth() === 11 ? currentYear + 1 : currentYear
 
-    // Dynamic game pages - /gaming/[game], /gaming/[game]/codes, /gaming/[game]/rewards, etc.
+    // Dynamic game pages - boosted priorities for better indexing
+    // Individual game pages are key landing pages for "[game] promo codes" searches
     const gamePages = gameSlugs.flatMap(({ slug, lastUpdated }) => [
       {
         url: `/gaming/${slug}`,
         lastmod: lastUpdated,
-        priority: "0.7",
+        priority: "0.85", // High priority - main landing page for game codes
         changefreq: "daily",
       },
       {
         url: `/gaming/${slug}/codes`,
         lastmod: lastUpdated,
-        priority: "0.7",
+        priority: "0.8",
         changefreq: "daily",
       },
       {
         url: `/gaming/${slug}/rewards`,
         lastmod: lastUpdated,
-        priority: "0.6",
+        priority: "0.75",
         changefreq: "weekly",
       },
-      // Daily codes page
+      // Redeem codes guide - targets "how to redeem [game] codes" searches
+      {
+        url: `/gaming/${slug}/redeem-codes`,
+        lastmod: lastUpdated,
+        priority: "0.8",
+        changefreq: "weekly",
+      },
+      // Daily codes page - high priority for "today" searches
       {
         url: `/gaming/${slug}/codes-today`,
         lastmod: lastModified,
-        priority: "0.8",
+        priority: "0.85",
         changefreq: "hourly",
       },
-      // Monthly codes pages
+      // Monthly codes pages - target "[game] codes [month] [year]" searches
       {
         url: `/gaming/${slug}/codes-${currentMonth}-${currentYear}`,
         lastmod: lastModified,
-        priority: "0.7",
+        priority: "0.8",
         changefreq: "daily",
       },
       {
         url: `/gaming/${slug}/codes-${nextMonth}-${nextMonthYear}`,
         lastmod: lastModified,
-        priority: "0.6",
+        priority: "0.7",
         changefreq: "weekly",
       },
     ])

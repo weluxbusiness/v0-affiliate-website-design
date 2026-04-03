@@ -70,6 +70,8 @@ export async function GET() {
       { url: `${baseUrl}/brands`, priority: '0.7', changefreq: 'weekly' },
       { url: `${baseUrl}/stores`, priority: '0.7', changefreq: 'weekly' },
       { url: `${baseUrl}/guides`, priority: '0.7', changefreq: 'weekly' },
+      // High-quality dedicated landing pages
+      { url: `${baseUrl}/raid-shadow-legends-promo-codes`, priority: '0.95', changefreq: 'daily' },
     ]
     
     // Combine all URLs, prioritizing SEO content pages

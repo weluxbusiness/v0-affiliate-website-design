@@ -40,19 +40,21 @@ import {
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: "Today's Gaming Promo Codes - Latest Updates | SaveSmart",
-  description: "Today's trending gaming promo codes and recently updated games. Fresh codes verified and added daily for Genshin Impact, Fortnite, RAID, and more.",
+  title: "Today's Gaming Codes April 2026 - New Codes Added Hourly",
+  description: "Get today's freshest gaming promo codes! New codes for Genshin Impact, Fortnite, RAID & more added hourly. 100+ codes verified today - redeem free rewards now!",
   keywords: [
     "today game codes",
     "latest promo codes",
     "new game codes",
     "trending game codes",
     "daily updated codes",
-    "fresh game codes"
+    "fresh game codes",
+    "april 2026 game codes",
+    "new codes today"
   ],
   openGraph: {
-    title: "Today's Gaming Promo Codes | SaveSmart",
-    description: "Today's trending gaming promo codes and recently updated games.",
+    title: "Today's Gaming Codes April 2026 - New Codes Added Hourly | SaveSmart",
+    description: "100+ fresh gaming codes verified today. New codes added hourly - redeem free rewards now!",
     url: "https://savesmart.bio/gaming/today",
   },
   alternates: {
