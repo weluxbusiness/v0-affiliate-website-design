@@ -18,8 +18,7 @@ import {
   getPopularGames, 
   getActivePromoCodes,
   getGameLogoUrl,
-  getGameAffiliateUrl,
-  hasExternalAffiliateLink
+  getPlayAffiliateUrl
 } from "@/lib/gaming-data"
 
 interface HomeGamingDealsProps {
@@ -63,8 +62,7 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
             const codeCount = getActivePromoCodes(game.promoCodes).length
             const logoUrl = getGameLogoUrl(game)
             const hasLogo = game.logoUrl
-            const affiliateUrl = getGameAffiliateUrl(game)
-            const isExternal = hasExternalAffiliateLink(game)
+            const affiliateUrl = getPlayAffiliateUrl(game)
             
             // Determine reward highlight text
             const rewardHighlight = game.rewards.length > 0 
@@ -142,12 +140,12 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                     >
                       <a 
                         href={affiliateUrl} 
-                        target={isExternal ? "_blank" : undefined}
-                        rel={isExternal ? "noopener noreferrer" : undefined}
+                        target="_blank"
+                        rel="nofollow sponsored noopener"
                       >
                         <Play className="h-4 w-4 mr-2 fill-current" />
                         Play Now
-                        {isExternal && <ExternalLink className="h-3 w-3 ml-1" />}
+                        <ExternalLink className="h-3 w-3 ml-1" />
                       </a>
                     </Button>
                     <Button 

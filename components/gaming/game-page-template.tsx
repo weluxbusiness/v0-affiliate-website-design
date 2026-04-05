@@ -21,7 +21,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
-import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getGameAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
+import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getPlayAffiliateUrl, getRewardAffiliateUrl } from "@/lib/gaming-data"
+import { getSeoUrl } from "@/lib/seo-routes"
 import { Clock, AlertCircle, BookOpen, CheckCircle2 } from "lucide-react"
 
 // ============================================
@@ -137,7 +138,7 @@ export function generateGameSchemaMarkup(game: Game, codes: PromoCode[]) {
 // SUB-COMPONENTS
 // ============================================
 
-function RewardCard({ reward, affiliateUrl, isExternal }: { reward: GameReward; affiliateUrl: string; isExternal: boolean }) {
+function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; rewardAffiliateUrl: string }) {
   const typeColors: Record<GameReward['type'], string> = {
     'Free': 'bg-green-500/10 text-green-600',
     'New Player': 'bg-primary/10 text-primary',
@@ -173,20 +174,20 @@ function RewardCard({ reward, affiliateUrl, isExternal }: { reward: GameReward; 
             )}
           </div>
         </div>
-        {/* Get Reward CTA */}
+        {/* Get Reward CTA - Uses Ultra affiliate network */}
         <Button 
           asChild 
           size="sm"
           className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
         >
           <a 
-            href={reward.link || affiliateUrl} 
-            target={isExternal ? "_blank" : undefined}
-            rel={isExternal ? "noopener noreferrer" : undefined}
+            href={reward.link || rewardAffiliateUrl} 
+            target="_blank"
+            rel="nofollow sponsored noopener"
           >
             <Gift className="h-4 w-4 mr-2" />
             Get Reward
-            {isExternal && <ExternalLink className="h-3 w-3 ml-2" />}
+            <ExternalLink className="h-3 w-3 ml-2" />
           </a>
         </Button>
       </CardContent>
@@ -325,7 +326,7 @@ export function GamePageTemplate({
               </div>
             </div>
 
-            {/* Primary CTA - Play Now (Affiliate) */}
+            {/* Primary CTA - Play Now (Falconix affiliate network) */}
             <div className="shrink-0 flex flex-col gap-2">
               <Button 
                 size="lg" 
@@ -333,13 +334,13 @@ export function GamePageTemplate({
                 className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
               >
                 <a 
-                  href={getGameAffiliateUrl(game)} 
-                  target={hasExternalAffiliateLink(game) ? "_blank" : undefined}
-                  rel={hasExternalAffiliateLink(game) ? "noopener noreferrer" : undefined}
+                  href={getPlayAffiliateUrl(game)} 
+                  target="_blank"
+                  rel="nofollow sponsored noopener"
                 >
                   <Play className="h-6 w-6 fill-current" />
                   Play {game.shortName || game.name}
-                  {hasExternalAffiliateLink(game) && <ExternalLink className="h-4 w-4" />}
+                  <ExternalLink className="h-4 w-4" />
                 </a>
               </Button>
               <p className="text-xs text-white/60 text-center">Free to play</p>
@@ -398,7 +399,7 @@ export function GamePageTemplate({
               
               <div className="mt-6 text-center">
                 <Link 
-                  href={`/gaming/${game.slug}/codes-today`}
+                  href={getSeoUrl(game.slug, 'codes-today')}
                   className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                 >
                   View All Today&apos;s Codes
@@ -605,8 +606,7 @@ export function GamePageTemplate({
                 <RewardCard 
                   key={reward.id} 
                   reward={reward} 
-                  affiliateUrl={getGameAffiliateUrl(game)}
-                  isExternal={hasExternalAffiliateLink(game)}
+                  rewardAffiliateUrl={getRewardAffiliateUrl(game)}
                 />
               ))}
             </div>
@@ -755,8 +755,7 @@ export function GamePageTemplate({
                 const relatedLogoUrl = getGameLogoUrl(relatedGame)
                 const hasRelatedLogo = relatedGame.logoUrl
                 const relatedCodeCount = getActivePromoCodes(relatedGame.promoCodes).length
-                const relatedAffiliateUrl = getGameAffiliateUrl(relatedGame)
-                const relatedIsExternal = hasExternalAffiliateLink(relatedGame)
+                const relatedAffiliateUrl = getPlayAffiliateUrl(relatedGame)
                 
                 return (
                   <div
@@ -799,8 +798,8 @@ export function GamePageTemplate({
                     >
                       <a 
                         href={relatedAffiliateUrl} 
-                        target={relatedIsExternal ? "_blank" : undefined}
-                        rel={relatedIsExternal ? "noopener noreferrer" : undefined}
+                        target="_blank"
+                        rel="nofollow sponsored noopener"
                       >
                         <Play className="h-4 w-4 mr-1 fill-current" />
                         Play

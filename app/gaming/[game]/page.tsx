@@ -35,11 +35,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().toLocaleString('default', { month: 'long' })
+  const shortMonth = new Date().toLocaleString('default', { month: 'short' })
   const codeCount = game.promoCodes.length
   
-  // SEO-optimized title targeting "[game] promo codes" and "[game] codes" searches
+  // Get primary reward type for game-specific benefits
+  const primaryReward = game.promoCodes[0]?.rewardType || 'Rewards'
+  const rewardBenefits: Record<string, string> = {
+    'Primogems': 'Free Primogems',
+    'Gems': 'Free Gems',
+    'V-Bucks': 'Free V-Bucks',
+    'Robux': 'Free Robux',
+    'Coins': 'Free Coins',
+    'Skins': 'Free Skins',
+    'Currency': 'Free Currency',
+    'CP': 'Free CP',
+    'Items': 'Free Items',
+    'Other': 'Free Rewards',
+    'Rewards': 'Free Rewards',
+  }
+  const benefit = rewardBenefits[primaryReward] || 'Free Rewards'
+  
+  // SEO-optimized title: keyword-first, count, benefit, urgency - under 60 chars
   const title = game.metaTitle || 
-    `${game.name} Promo Codes ${currentMonth} ${currentYear} - ${codeCount}+ Working Codes`
+    `${game.shortName || game.name} Codes (${shortMonth} ${currentYear}) – ${codeCount}+ ${benefit}`
   
   // Description targeting featured snippets with specific value propositions
   const description = game.metaDescription || 

@@ -67,14 +67,45 @@ export function getGameLogoUrl(game: Game): string {
   return game.logoUrl || DEFAULT_GAME_LOGO
 }
 
-// Helper to get affiliate link or fallback to internal page
-export function getGameAffiliateUrl(game: Game): string {
-  return game.affiliateLink || `/gaming/${game.slug}`
+// ============================================
+// AFFILIATE LINK HELPERS
+// ============================================
+
+// Base affiliate URL
+const AFFILIATE_BASE_URL = 'https://go.savesmart.bio'
+
+/**
+ * Get the "Play [Game]" affiliate link (primary CTA - top section)
+ * Uses Falconix network for play/download intent
+ */
+export function getPlayAffiliateUrl(game: Game): string {
+  return `${AFFILIATE_BASE_URL}/falconix-${game.slug}`
 }
 
-// Check if game has external affiliate link
+/**
+ * Get the "Get Reward" affiliate link (reward sections)
+ * Uses Ultra network for reward redemption intent
+ */
+export function getRewardAffiliateUrl(game: Game): string {
+  return `${AFFILIATE_BASE_URL}/ultra-${game.slug}`
+}
+
+/**
+ * Get deals/savings affiliate link
+ * Used for all deals and coupon-related CTAs
+ */
+export function getDealsAffiliateUrl(): string {
+  return `${AFFILIATE_BASE_URL}/save`
+}
+
+// Legacy helper - now uses getPlayAffiliateUrl for backwards compatibility
+export function getGameAffiliateUrl(game: Game): string {
+  return getPlayAffiliateUrl(game)
+}
+
+// Check if game has external affiliate link (always true for new system)
 export function hasExternalAffiliateLink(game: Game): boolean {
-  return !!game.affiliateLink && game.affiliateLink.startsWith('http')
+  return true // All affiliate links are external now
 }
 
 // ============================================
@@ -132,6 +163,18 @@ export function formatGameName(slug: string): string {
     'blue-archive': 'Blue Archive',
     'zenless-zone-zero': 'Zenless Zone Zero',
     'wuthering-waves': 'Wuthering Waves',
+    'monopoly-go': 'Monopoly GO',
+    'marvel-snap': 'Marvel Snap',
+    'star-wars-galaxy-of-heroes': 'Star Wars: Galaxy of Heroes',
+    'fifa-mobile': 'EA Sports FC Mobile',
+    'candy-crush-saga': 'Candy Crush Saga',
+    'mobile-legends-adventure': 'Mobile Legends Adventure',
+    'stumble-guys': 'Stumble Guys',
+    'summoners-war-chronicles': 'Summoners War Chronicles',
+    'nikke': 'Nikke: Goddess of Victory',
+    'reverse-1999': 'Reverse: 1999',
+    'path-to-nowhere': 'Path to Nowhere',
+    'aether-gazer': 'Aether Gazer',
   }
   return gameMap[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 }
@@ -1203,268 +1246,6 @@ export const gamesData: Game[] = [
   },
 
   // ============================================
-  // Valorant
-  // ============================================
-  {
-    id: 'valorant',
-    name: 'VALORANT',
-    slug: 'valorant',
-    description: 'VALORANT is a free-to-play tactical shooter from Riot Games combining precise gunplay with unique agent abilities. Master your aim and abilities to outplay opponents in 5v5 competitive matches.',
-    categories: ['FPS', 'PC'],
-    platforms: ['PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/valorant.webp',
-    developer: 'Riot Games',
-    publisher: 'Riot Games',
-    promoCodes: [
-      {
-        id: 'val-1',
-        code: 'VALORANT2024',
-        reward: '500 VP + Player Card',
-        rewardValue: 500,
-        rewardType: 'Currency',
-        expiresAt: oneMonthFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 75,
-      },
-      {
-        id: 'val-2',
-        code: 'RIOTGAMES',
-        reward: 'Exclusive Gun Buddy',
-        rewardValue: 100,
-        rewardType: 'Items',
-        isVerified: true,
-        addedAt: now,
-        successRate: 80,
-      },
-    ],
-    rewards: [
-      {
-        id: 'val-r1',
-        title: 'Free Agent Unlocks',
-        description: 'Unlock new agents through contracts as you play',
-        type: 'Free',
-        value: 'Free agents',
-      },
-      {
-        id: 'val-r2',
-        title: 'Prime Gaming Rewards',
-        description: 'Link Amazon Prime for exclusive in-game drops',
-        type: 'Event',
-        value: 'Exclusive skins',
-      },
-    ],
-    affiliateLink: 'https://playvalorant.com',
-    websiteUrl: 'https://playvalorant.com',
-    popularityScore: 94,
-    playerCount: '35M+ monthly players',
-    lastUpdated: now,
-    faqs: [
-      {
-        question: 'How do I redeem VALORANT codes?',
-        answer: 'Log into your Riot Games account at valorant.riotgames.com, go to your account settings, and enter the code in the "Redeem Code" section.',
-      },
-      {
-        question: 'Can I get free VP in VALORANT?',
-        answer: 'VALORANT occasionally offers free VP through special events and Prime Gaming drops. Follow official channels for announcements.',
-      },
-    ],
-  },
-
-  // ============================================
-  // League of Legends
-  // ============================================
-  {
-    id: 'league-of-legends',
-    name: 'League of Legends',
-    slug: 'league-of-legends',
-    shortName: 'LoL',
-    description: 'League of Legends is a team-based strategy game where two teams of five powerful champions face off to destroy the other team\'s base. Choose from over 160 champions to make epic plays.',
-    categories: ['MMORPG', 'PC'],
-    platforms: ['PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/league-of-legends.webp',
-    developer: 'Riot Games',
-    publisher: 'Riot Games',
-    promoCodes: [
-      {
-        id: 'lol-1',
-        code: 'LEAGUEREWARDS',
-        reward: '1000 Blue Essence + Chest',
-        rewardValue: 500,
-        rewardType: 'Currency',
-        isVerified: true,
-        addedAt: now,
-        successRate: 70,
-      },
-      {
-        id: 'lol-2',
-        code: 'RIOTGIFTS2024',
-        reward: 'Mystery Champion Shard',
-        rewardValue: 300,
-        rewardType: 'Items',
-        expiresAt: twoWeeksFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 65,
-      },
-    ],
-    rewards: [
-      {
-        id: 'lol-r1',
-        title: 'First Win of the Day',
-        description: 'Earn bonus XP and Blue Essence with daily first win',
-        type: 'Daily',
-        value: '400 XP + 50 BE',
-      },
-      {
-        id: 'lol-r2',
-        title: 'Prime Gaming Capsules',
-        description: 'Get free skins and content with Prime Gaming',
-        type: 'Event',
-        value: 'Monthly drops',
-      },
-    ],
-    affiliateLink: 'https://www.leagueoflegends.com',
-    websiteUrl: 'https://www.leagueoflegends.com',
-    popularityScore: 96,
-    playerCount: '180M+ monthly players',
-    lastUpdated: now,
-    faqs: [
-      {
-        question: 'How do I redeem League of Legends codes?',
-        answer: 'Open the League client, click on the Store, then click "Account" in the top right, and select "Redeem Code" to enter your code.',
-      },
-    ],
-  },
-
-  // ============================================
-  // Minecraft
-  // ============================================
-  {
-    id: 'minecraft',
-    name: 'Minecraft',
-    slug: 'minecraft',
-    description: 'Minecraft is a sandbox game where players explore, build, and survive in a blocky 3D world. Create anything you can imagine or survive against creatures in this beloved creative platform.',
-    categories: ['Simulation', 'PC', 'Console', 'Mobile'],
-    platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1587573088697-b4fa06e8c67e?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/minecraft.webp',
-    developer: 'Mojang Studios',
-    publisher: 'Microsoft',
-    promoCodes: [
-      {
-        id: 'mc-1',
-        code: 'MINECRAFT2024',
-        reward: 'Free Skin Pack',
-        rewardValue: 200,
-        rewardType: 'Skins',
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-      {
-        id: 'mc-2',
-        code: 'BEDROCK2024',
-        reward: 'Exclusive Character Creator Item',
-        rewardValue: 100,
-        rewardType: 'Items',
-        isVerified: true,
-        addedAt: now,
-        successRate: 80,
-      },
-    ],
-    rewards: [
-      {
-        id: 'mc-r1',
-        title: 'Xbox Game Pass Perks',
-        description: 'Get free content with Xbox Game Pass subscription',
-        type: 'Event',
-        value: 'Monthly perks',
-      },
-      {
-        id: 'mc-r2',
-        title: 'Marketplace Free Items',
-        description: 'Download free maps, skins, and textures',
-        type: 'Free',
-        value: 'Free content',
-      },
-    ],
-    affiliateLink: 'https://www.minecraft.net',
-    websiteUrl: 'https://www.minecraft.net',
-    popularityScore: 97,
-    playerCount: '141M+ monthly players',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Apex Legends
-  // ============================================
-  {
-    id: 'apex-legends',
-    name: 'Apex Legends',
-    slug: 'apex-legends',
-    description: 'Apex Legends is a free-to-play battle royale game featuring legendary characters with powerful abilities. Team up with friends and compete to be the last squad standing.',
-    categories: ['Battle Royale', 'FPS', 'PC', 'Console'],
-    platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch'],
-    imageUrl: 'https://images.unsplash.com/photo-1542549237432-a176cb9d5e6e?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/apex-legends.webp',
-    developer: 'Respawn Entertainment',
-    publisher: 'Electronic Arts',
-    promoCodes: [
-      {
-        id: 'apex-1',
-        code: 'APEXLEGENDS2024',
-        reward: '1000 Apex Coins + Legend Skin',
-        rewardValue: 1000,
-        rewardType: 'Currency',
-        expiresAt: oneMonthFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 70,
-      },
-      {
-        id: 'apex-2',
-        code: 'RESPAWN',
-        reward: 'Exclusive Weapon Charm',
-        rewardValue: 150,
-        rewardType: 'Items',
-        isVerified: true,
-        addedAt: now,
-        successRate: 75,
-      },
-    ],
-    rewards: [
-      {
-        id: 'apex-r1',
-        title: 'Free Battle Pass Tiers',
-        description: 'Progress through free tiers for rewards',
-        type: 'Free',
-        value: 'Free skins and packs',
-      },
-      {
-        id: 'apex-r2',
-        title: 'EA Play Rewards',
-        description: 'Get exclusive content with EA Play subscription',
-        type: 'Event',
-        value: 'Monthly rewards',
-      },
-    ],
-    affiliateLink: 'https://www.ea.com/games/apex-legends',
-    websiteUrl: 'https://www.ea.com/games/apex-legends',
-    popularityScore: 91,
-    playerCount: '100M+ players',
-    lastUpdated: now,
-    faqs: [
-      {
-        question: 'How do I redeem Apex Legends codes?',
-        answer: 'Log into your EA account, go to ea.com/redeem, and enter your code. The rewards will appear in your game the next time you log in.',
-      },
-    ],
-  },
-
-  // ============================================
   // Mobile Legends: Bang Bang
   // ============================================
   {
@@ -1532,63 +1313,63 @@ export const gamesData: Game[] = [
   },
 
   // ============================================
-  // Clash of Clans
+  // Brawl Stars
   // ============================================
   {
-    id: 'clash-of-clans',
-    name: 'Clash of Clans',
-    slug: 'clash-of-clans',
-    shortName: 'CoC',
-    description: 'Clash of Clans is a strategy game where you build your village, train troops, and battle millions of players online. Join a clan, participate in Clan Wars, and become a legend.',
-    categories: ['Simulation', 'Mobile'],
+    id: 'brawl-stars',
+    name: 'Brawl Stars',
+    slug: 'brawl-stars',
+    shortName: 'Brawl Stars',
+    description: 'Brawl Stars is a fast-paced 3v3 multiplayer and battle royale game from Supercell. Unlock and upgrade dozens of Brawlers, each with unique abilities and super attacks.',
+    categories: ['Mobile', 'Battle Royale'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1493711662062-fa541f7f3d24?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/clash-of-clans.webp',
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/brawl-stars.webp',
     developer: 'Supercell',
     publisher: 'Supercell',
     promoCodes: [
       {
-        id: 'coc-1',
-        code: 'CLASHGIFT2024',
-        reward: '500 Gems + Magic Item',
-        rewardValue: 500,
+        id: 'brawl-1',
+        code: 'BRAWL2026',
+        reward: '200 Coins + 50 Gems',
+        rewardValue: 250,
         rewardType: 'Gems',
         isVerified: true,
         addedAt: now,
-        successRate: 70,
+        successRate: 85,
       },
       {
-        id: 'coc-2',
-        code: 'SUPERCELL',
-        reward: 'Book of Heroes',
-        rewardValue: 300,
-        rewardType: 'Items',
+        id: 'brawl-2',
+        code: 'FREEBRAWLER',
+        reward: 'Free Brawler (Shelly Skin)',
+        rewardValue: 500,
+        rewardType: 'Skins',
         expiresAt: oneMonthFromNow,
         isVerified: true,
         addedAt: now,
-        successRate: 65,
+        successRate: 80,
       },
     ],
     rewards: [
       {
-        id: 'coc-r1',
-        title: 'Clan Games Rewards',
-        description: 'Participate in monthly Clan Games for magic items',
-        type: 'Event',
-        value: 'Magic items',
+        id: 'brawl-r1',
+        title: 'Free Brawl Pass Track',
+        description: 'Earn rewards from the free track each season',
+        type: 'Free',
+        value: 'Boxes and coins',
       },
       {
-        id: 'coc-r2',
-        title: 'Season Challenges',
-        description: 'Complete challenges for Gold Pass rewards',
-        type: 'Daily',
-        value: 'Free tier rewards',
+        id: 'brawl-r2',
+        title: 'Trophy Road',
+        description: 'Unlock Brawlers and rewards as you gain trophies',
+        type: 'Achievement',
+        value: 'Free Brawlers',
       },
     ],
-    affiliateLink: 'https://clashofclans.com',
-    websiteUrl: 'https://clashofclans.com',
+    affiliateLink: 'https://supercell.com/en/games/brawlstars/',
+    websiteUrl: 'https://supercell.com/en/games/brawlstars/',
     popularityScore: 88,
-    playerCount: '500M+ downloads',
+    playerCount: '300M+ downloads',
     lastUpdated: now,
   },
 
@@ -1648,133 +1429,6 @@ export const gamesData: Game[] = [
     websiteUrl: 'https://clashroyale.com',
     popularityScore: 85,
     playerCount: '500M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Pokemon GO
-  // ============================================
-  {
-    id: 'pokemon-go',
-    name: 'Pokemon GO',
-    slug: 'pokemon-go',
-    description: 'Pokemon GO is an augmented reality mobile game where you catch Pokemon in the real world. Explore your neighborhood, battle in gyms, and participate in global events.',
-    categories: ['Mobile', 'Simulation'],
-    platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/pokemon-go.webp',
-    developer: 'Niantic',
-    publisher: 'Niantic',
-    promoCodes: [
-      {
-        id: 'pogo-1',
-        code: 'POKEMON2024',
-        reward: '20 Poke Balls + 5 Razz Berries',
-        rewardValue: 100,
-        rewardType: 'Items',
-        isVerified: true,
-        addedAt: now,
-        successRate: 90,
-      },
-      {
-        id: 'pogo-2',
-        code: 'COMMUNITYDAY',
-        reward: 'Incense + Lucky Egg',
-        rewardValue: 150,
-        rewardType: 'Items',
-        expiresAt: twoWeeksFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-    ],
-    rewards: [
-      {
-        id: 'pogo-r1',
-        title: 'Daily Spin',
-        description: 'Spin PokeStops daily for items and streak bonuses',
-        type: 'Daily',
-        value: 'Items and XP',
-      },
-      {
-        id: 'pogo-r2',
-        title: 'Community Day Events',
-        description: 'Catch featured Pokemon with exclusive moves',
-        type: 'Event',
-        value: 'Special Pokemon',
-      },
-    ],
-    affiliateLink: 'https://pokemongolive.com',
-    websiteUrl: 'https://pokemongolive.com',
-    popularityScore: 86,
-    playerCount: '150M+ active players',
-    lastUpdated: now,
-    faqs: [
-      {
-        question: 'How do I redeem Pokemon GO codes?',
-        answer: 'Open the app, tap the Poke Ball menu, go to Shop, scroll down and tap "Promos" to enter your code. iOS users must redeem at rewards.nianticlabs.com.',
-      },
-    ],
-  },
-
-  // ============================================
-  // Brawl Stars
-  // ============================================
-  {
-    id: 'brawl-stars',
-    name: 'Brawl Stars',
-    slug: 'brawl-stars',
-    shortName: 'Brawl Stars',
-    description: 'Brawl Stars is a fast-paced 3v3 multiplayer and battle royale game from Supercell. Unlock and upgrade dozens of Brawlers, each with unique abilities and super attacks.',
-    categories: ['Mobile', 'Battle Royale'],
-    platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/brawl-stars.webp',
-    developer: 'Supercell',
-    publisher: 'Supercell',
-    promoCodes: [
-      {
-        id: 'brawl-1',
-        code: 'BRAWL2026',
-        reward: '200 Coins + 50 Gems',
-        rewardValue: 250,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-      {
-        id: 'brawl-2',
-        code: 'FREEBRAWLER',
-        reward: 'Free Brawler (Shelly Skin)',
-        rewardValue: 500,
-        rewardType: 'Skins',
-        expiresAt: oneMonthFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 80,
-      },
-    ],
-    rewards: [
-      {
-        id: 'brawl-r1',
-        title: 'Free Brawl Pass Track',
-        description: 'Earn rewards from the free track each season',
-        type: 'Free',
-        value: 'Boxes and coins',
-      },
-      {
-        id: 'brawl-r2',
-        title: 'Trophy Road',
-        description: 'Unlock Brawlers and rewards as you gain trophies',
-        type: 'Achievement',
-        value: 'Free Brawlers',
-      },
-    ],
-    affiliateLink: 'https://supercell.com/en/games/brawlstars/',
-    websiteUrl: 'https://supercell.com/en/games/brawlstars/',
-    popularityScore: 88,
-    playerCount: '300M+ downloads',
     lastUpdated: now,
   },
 
@@ -2931,6 +2585,913 @@ export const gamesData: Game[] = [
     websiteUrl: 'https://wutheringwaves.kurogames.com',
     popularityScore: 85,
     playerCount: '20M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Monopoly GO
+  // ============================================
+  {
+    id: 'monopoly-go',
+    name: 'Monopoly GO',
+    slug: 'monopoly-go',
+    shortName: 'Monopoly GO',
+    description: 'Monopoly GO is a mobile board game that brings the classic Monopoly experience to your phone. Roll dice, collect properties, and compete in tournaments with players worldwide.',
+    categories: ['Mobile', 'Simulation'],
+    platforms: ['Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/monopoly-go.webp',
+    developer: 'Scopely',
+    publisher: 'Scopely',
+    promoCodes: [
+      {
+        id: 'mgo-1',
+        code: 'FREEDICE2026',
+        reward: '50 Free Dice Rolls',
+        rewardValue: 500,
+        rewardType: 'Items',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 92,
+      },
+      {
+        id: 'mgo-2',
+        code: 'MONOPOLYWIN',
+        reward: '25 Free Dice + Cash',
+        rewardValue: 250,
+        rewardType: 'Items',
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'mgo-3',
+        code: 'DAILYROLL',
+        reward: '15 Free Dice Rolls',
+        rewardValue: 150,
+        rewardType: 'Items',
+        expiresAt: twoWeeksFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 95,
+      },
+      {
+        id: 'mgo-4',
+        code: 'BOARDWALK',
+        reward: '100 Free Dice + Stickers',
+        rewardValue: 1000,
+        rewardType: 'Items',
+        isVerified: true,
+        isExclusive: true,
+        addedAt: now,
+        successRate: 85,
+      },
+      {
+        id: 'mgo-5',
+        code: 'RICHUNCLE',
+        reward: '35 Free Dice Rolls',
+        rewardValue: 350,
+        rewardType: 'Items',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 90,
+      },
+    ],
+    rewards: [
+      {
+        id: 'mgo-r1',
+        title: 'Daily Free Dice',
+        description: 'Claim free dice rolls every day by logging in',
+        type: 'Daily',
+        value: '5-25 Dice',
+      },
+      {
+        id: 'mgo-r2',
+        title: 'Tournament Rewards',
+        description: 'Compete in tournaments for massive dice bonuses',
+        type: 'Event',
+        value: 'Up to 500 Dice',
+      },
+      {
+        id: 'mgo-r3',
+        title: 'Friend Invites',
+        description: 'Invite friends to earn bonus dice rolls',
+        type: 'Referral',
+        value: '30 Dice per friend',
+      },
+      {
+        id: 'mgo-r4',
+        title: 'New Player Bonus',
+        description: 'Special dice bonus for new players',
+        type: 'New Player',
+        value: '100 Free Dice',
+      },
+    ],
+    affiliateLink: 'https://www.monopolygo.com',
+    websiteUrl: 'https://www.monopolygo.com',
+    popularityScore: 95,
+    playerCount: '100M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Marvel Snap
+  // ============================================
+  {
+    id: 'marvel-snap',
+    name: 'Marvel Snap',
+    slug: 'marvel-snap',
+    shortName: 'Marvel Snap',
+    description: 'Marvel Snap is a fast-paced card battler featuring Marvel heroes and villains. Build decks, collect cards, and battle in quick 3-minute matches.',
+    categories: ['Mobile', 'PC'],
+    platforms: ['PC', 'Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/marvel-snap.webp',
+    developer: 'Second Dinner',
+    publisher: 'Nuverse',
+    promoCodes: [
+      {
+        id: 'ms-1',
+        code: 'SNAPBACK',
+        reward: '500 Credits + Boosters',
+        rewardValue: 500,
+        rewardType: 'Currency',
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'ms-2',
+        code: 'HULKSMASH',
+        reward: 'Hulk Variant + 200 Credits',
+        rewardValue: 700,
+        rewardType: 'Items',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 85,
+      },
+      {
+        id: 'ms-3',
+        code: 'NEWSNAPPER',
+        reward: '1000 Credits + Gold',
+        rewardValue: 1000,
+        rewardType: 'Currency',
+        isVerified: true,
+        isExclusive: true,
+        addedAt: now,
+        successRate: 90,
+      },
+    ],
+    rewards: [
+      {
+        id: 'ms-r1',
+        title: 'Daily Missions',
+        description: 'Complete missions for credits and boosters',
+        type: 'Daily',
+        value: 'Credits + Boosters',
+      },
+      {
+        id: 'ms-r2',
+        title: 'Season Pass Rewards',
+        description: 'Progress through the season for exclusive cards',
+        type: 'Event',
+        value: 'Season Cards + Variants',
+      },
+      {
+        id: 'ms-r3',
+        title: 'Collection Level Rewards',
+        description: 'Increase collection level for new cards',
+        type: 'Achievement',
+        value: 'New Cards',
+      },
+    ],
+    affiliateLink: 'https://www.marvelsnap.com',
+    websiteUrl: 'https://www.marvelsnap.com',
+    popularityScore: 88,
+    playerCount: '30M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Star Wars Galaxy of Heroes
+  // ============================================
+  {
+    id: 'swgoh',
+    name: 'Star Wars: Galaxy of Heroes',
+    slug: 'star-wars-galaxy-of-heroes',
+    shortName: 'SWGOH',
+    description: 'Star Wars: Galaxy of Heroes is a turn-based RPG featuring characters from across the Star Wars universe. Collect heroes, build squads, and battle in PvP and PvE.',
+    categories: ['RPG', 'Mobile'],
+    platforms: ['Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/swgoh.webp',
+    developer: 'Capital Games',
+    publisher: 'Electronic Arts',
+    promoCodes: [
+      {
+        id: 'swgoh-1',
+        code: 'MAYTHE4TH',
+        reward: '1000 Crystals + Shards',
+        rewardValue: 1000,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 90,
+      },
+      {
+        id: 'swgoh-2',
+        code: 'FORCEFRIDAY',
+        reward: '500 Crystals + Gear',
+        rewardValue: 500,
+        rewardType: 'Gems',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'swgoh-3',
+        code: 'JEDIMASTER',
+        reward: '200 Crystals + Character Shards',
+        rewardValue: 200,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 85,
+      },
+    ],
+    rewards: [
+      {
+        id: 'swgoh-r1',
+        title: 'Daily Activities',
+        description: 'Complete daily activities for crystals and gear',
+        type: 'Daily',
+        value: 'Crystals + Gear',
+      },
+      {
+        id: 'swgoh-r2',
+        title: 'Guild Raids',
+        description: 'Participate in guild raids for rewards',
+        type: 'Event',
+        value: 'Raid Gear + Currency',
+      },
+      {
+        id: 'swgoh-r3',
+        title: 'Galactic Challenges',
+        description: 'Weekly challenges with bonus rewards',
+        type: 'Event',
+        value: 'Crystals + Materials',
+      },
+    ],
+    affiliateLink: 'https://www.ea.com/games/starwars/galaxy-of-heroes',
+    websiteUrl: 'https://www.ea.com/games/starwars/galaxy-of-heroes',
+    popularityScore: 82,
+    playerCount: '50M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // FIFA Mobile
+  // ============================================
+  {
+    id: 'fifa-mobile',
+    name: 'EA Sports FC Mobile',
+    slug: 'fifa-mobile',
+    shortName: 'FC Mobile',
+    description: 'EA Sports FC Mobile is the premier mobile football game. Build your ultimate team, compete in seasons, and play against others worldwide.',
+    categories: ['Sports', 'Mobile'],
+    platforms: ['Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/fc-mobile.webp',
+    developer: 'EA Sports',
+    publisher: 'Electronic Arts',
+    promoCodes: [
+      {
+        id: 'fifa-1',
+        code: 'FCGOAL2026',
+        reward: '500 FC Points + Players',
+        rewardValue: 500,
+        rewardType: 'Currency',
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'fifa-2',
+        code: 'CHAMPIONSLEAGUE',
+        reward: '1000 FC Points + Pack',
+        rewardValue: 1000,
+        rewardType: 'Currency',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        isExclusive: true,
+        addedAt: now,
+        successRate: 85,
+      },
+      {
+        id: 'fifa-3',
+        code: 'FUTCHAMP',
+        reward: '250 FC Points + Coins',
+        rewardValue: 250,
+        rewardType: 'Currency',
+        isVerified: true,
+        addedAt: now,
+        successRate: 90,
+      },
+    ],
+    rewards: [
+      {
+        id: 'fifa-r1',
+        title: 'Daily Objectives',
+        description: 'Complete objectives for coins and packs',
+        type: 'Daily',
+        value: 'Coins + Packs',
+      },
+      {
+        id: 'fifa-r2',
+        title: 'Season Rewards',
+        description: 'Progress through seasons for players',
+        type: 'Event',
+        value: 'Players + Packs',
+      },
+      {
+        id: 'fifa-r3',
+        title: 'League Rewards',
+        description: 'Complete league matches for bonuses',
+        type: 'Achievement',
+        value: 'Coins + XP',
+      },
+    ],
+    affiliateLink: 'https://www.ea.com/games/ea-sports-fc/fc-mobile',
+    websiteUrl: 'https://www.ea.com/games/ea-sports-fc/fc-mobile',
+    popularityScore: 90,
+    playerCount: '100M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Candy Crush Saga
+  // ============================================
+  {
+    id: 'candy-crush',
+    name: 'Candy Crush Saga',
+    slug: 'candy-crush-saga',
+    shortName: 'Candy Crush',
+    description: 'Candy Crush Saga is the iconic match-3 puzzle game. Match candies, beat challenging levels, and progress through hundreds of sweet adventures.',
+    categories: ['Mobile', 'Simulation'],
+    platforms: ['Mobile', 'iOS', 'Android', 'PC'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/candy-crush.webp',
+    developer: 'King',
+    publisher: 'King',
+    promoCodes: [
+      {
+        id: 'cc-1',
+        code: 'SWEETBONUS',
+        reward: '30 Free Lives + Boosters',
+        rewardValue: 300,
+        rewardType: 'Items',
+        isVerified: true,
+        addedAt: now,
+        successRate: 92,
+      },
+      {
+        id: 'cc-2',
+        code: 'CRUSHIT2026',
+        reward: '50 Gold Bars + Lives',
+        rewardValue: 500,
+        rewardType: 'Currency',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'cc-3',
+        code: 'CANDYFREE',
+        reward: '20 Free Lives',
+        rewardValue: 200,
+        rewardType: 'Items',
+        isVerified: true,
+        addedAt: now,
+        successRate: 95,
+      },
+    ],
+    rewards: [
+      {
+        id: 'cc-r1',
+        title: 'Daily Spin',
+        description: 'Spin the wheel daily for free boosters',
+        type: 'Daily',
+        value: 'Boosters + Lives',
+      },
+      {
+        id: 'cc-r2',
+        title: 'Team Events',
+        description: 'Join teams for bonus rewards',
+        type: 'Event',
+        value: 'Gold Bars + Boosters',
+      },
+      {
+        id: 'cc-r3',
+        title: 'Friend Rewards',
+        description: 'Connect with friends for free lives',
+        type: 'Referral',
+        value: 'Free Lives',
+      },
+    ],
+    affiliateLink: 'https://www.king.com/game/candycrush',
+    websiteUrl: 'https://www.king.com/game/candycrush',
+    popularityScore: 92,
+    playerCount: '500M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Mobile Legends Adventure
+  // ============================================
+  {
+    id: 'mla',
+    name: 'Mobile Legends Adventure',
+    slug: 'mobile-legends-adventure',
+    shortName: 'MLA',
+    description: 'Mobile Legends Adventure is an idle RPG based on the popular MOBA. Collect heroes, build teams, and progress through an epic campaign.',
+    categories: ['RPG', 'Mobile', 'Gacha'],
+    platforms: ['Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/mla.webp',
+    developer: 'Moonton',
+    publisher: 'Moonton',
+    promoCodes: [
+      {
+        id: 'mla-1',
+        code: 'MLAHEROES',
+        reward: '1000 Diamonds + Hero Shards',
+        rewardValue: 1000,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'mla-2',
+        code: 'ADVENTURE2026',
+        reward: '500 Diamonds + Tickets',
+        rewardValue: 500,
+        rewardType: 'Gems',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 85,
+      },
+      {
+        id: 'mla-3',
+        code: 'IDLEBONUS',
+        reward: '2 Hour Idle Reward + Diamonds',
+        rewardValue: 300,
+        rewardType: 'Items',
+        isVerified: true,
+        addedAt: now,
+        successRate: 90,
+      },
+    ],
+    rewards: [
+      {
+        id: 'mla-r1',
+        title: 'Idle Rewards',
+        description: 'Collect rewards while offline',
+        type: 'Free',
+        value: 'Resources + XP',
+      },
+      {
+        id: 'mla-r2',
+        title: 'Daily Quests',
+        description: 'Complete quests for diamonds',
+        type: 'Daily',
+        value: 'Diamonds + Materials',
+      },
+      {
+        id: 'mla-r3',
+        title: 'New Player Journey',
+        description: '7-day login bonus for new players',
+        type: 'New Player',
+        value: '5-Star Hero + Resources',
+      },
+    ],
+    affiliateLink: 'https://www.mobilelegends.com/en/mlbb/adventure',
+    websiteUrl: 'https://www.mobilelegends.com/en/mlbb/adventure',
+    popularityScore: 80,
+    playerCount: '30M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Stumble Guys
+  // ============================================
+  {
+    id: 'stumble-guys',
+    name: 'Stumble Guys',
+    slug: 'stumble-guys',
+    shortName: 'Stumble Guys',
+    description: 'Stumble Guys is a multiplayer party knockout game. Race through obstacle courses, avoid eliminations, and be the last one standing.',
+    categories: ['Mobile', 'Battle Royale'],
+    platforms: ['Mobile', 'iOS', 'Android', 'PC'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/stumble-guys.webp',
+    developer: 'Kitka Games',
+    publisher: 'Scopely',
+    promoCodes: [
+      {
+        id: 'sg-1',
+        code: 'STUMBLEFREE',
+        reward: '1000 Gems + Skin',
+        rewardValue: 1000,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'sg-2',
+        code: 'KNOCKOUT2026',
+        reward: '500 Gems + Emote',
+        rewardValue: 500,
+        rewardType: 'Gems',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 90,
+      },
+      {
+        id: 'sg-3',
+        code: 'PARTYTIME',
+        reward: '750 Gems + Footsteps',
+        rewardValue: 750,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 85,
+      },
+    ],
+    rewards: [
+      {
+        id: 'sg-r1',
+        title: 'Daily Spin',
+        description: 'Spin for free gems and items daily',
+        type: 'Daily',
+        value: 'Gems + Items',
+      },
+      {
+        id: 'sg-r2',
+        title: 'Season Pass Rewards',
+        description: 'Progress for exclusive skins',
+        type: 'Event',
+        value: 'Skins + Emotes',
+      },
+      {
+        id: 'sg-r3',
+        title: 'Tournament Rewards',
+        description: 'Compete in tournaments for prizes',
+        type: 'Event',
+        value: 'Gems + Exclusive Items',
+      },
+    ],
+    affiliateLink: 'https://www.stumbleguys.com',
+    websiteUrl: 'https://www.stumbleguys.com',
+    popularityScore: 86,
+    playerCount: '300M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Summoners War Chronicles
+  // ============================================
+  {
+    id: 'swc',
+    name: 'Summoners War Chronicles',
+    slug: 'summoners-war-chronicles',
+    shortName: 'SW Chronicles',
+    description: 'Summoners War Chronicles is an action MMORPG set in the Summoners War universe. Explore, battle, and collect monsters in real-time.',
+    categories: ['RPG', 'MMORPG', 'Mobile', 'PC'],
+    platforms: ['PC', 'Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/swc.webp',
+    developer: 'Com2uS',
+    publisher: 'Com2uS',
+    promoCodes: [
+      {
+        id: 'swc-1',
+        code: 'CHRONICLES2026',
+        reward: '500 Crystals + Summoning Scrolls',
+        rewardValue: 500,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'swc-2',
+        code: 'SUMMONFREE',
+        reward: '300 Crystals + Monster Pieces',
+        rewardValue: 300,
+        rewardType: 'Gems',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 85,
+      },
+    ],
+    rewards: [
+      {
+        id: 'swc-r1',
+        title: 'Daily Quests',
+        description: 'Complete quests for crystals',
+        type: 'Daily',
+        value: 'Crystals + Materials',
+      },
+      {
+        id: 'swc-r2',
+        title: 'New Player Rewards',
+        description: 'Special bonuses for new summoners',
+        type: 'New Player',
+        value: 'Monsters + Resources',
+      },
+    ],
+    affiliateLink: 'https://summonerswar.com/en/chronicles',
+    websiteUrl: 'https://summonerswar.com/en/chronicles',
+    popularityScore: 78,
+    playerCount: '10M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Nikke: Goddess of Victory
+  // ============================================
+  {
+    id: 'nikke',
+    name: 'Nikke: Goddess of Victory',
+    slug: 'nikke',
+    shortName: 'Nikke',
+    description: 'Nikke: Goddess of Victory is a third-person shooter RPG featuring stylized characters. Build squads, engage in cover-based combat, and collect Nikkes.',
+    categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
+    platforms: ['PC', 'Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/nikke.webp',
+    developer: 'Shift Up',
+    publisher: 'Level Infinite',
+    promoCodes: [
+      {
+        id: 'nikke-1',
+        code: 'NIKKEFREE',
+        reward: '1000 Gems + Recruitment Tickets',
+        rewardValue: 1000,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 90,
+      },
+      {
+        id: 'nikke-2',
+        code: 'GODDESS2026',
+        reward: '500 Gems + Materials',
+        rewardValue: 500,
+        rewardType: 'Gems',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'nikke-3',
+        code: 'VICTORYBONUS',
+        reward: '300 Gems + Core Dust',
+        rewardValue: 300,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 85,
+      },
+    ],
+    rewards: [
+      {
+        id: 'nikke-r1',
+        title: 'Daily Missions',
+        description: 'Complete missions for gems and materials',
+        type: 'Daily',
+        value: 'Gems + Materials',
+      },
+      {
+        id: 'nikke-r2',
+        title: 'Outpost Defense',
+        description: 'Defend outpost for idle rewards',
+        type: 'Free',
+        value: 'Credits + Parts',
+      },
+      {
+        id: 'nikke-r3',
+        title: 'New Commander Rewards',
+        description: '30-day login bonus for new players',
+        type: 'New Player',
+        value: 'SSR Nikke + Resources',
+      },
+    ],
+    affiliateLink: 'https://nikke-en.com',
+    websiteUrl: 'https://nikke-en.com',
+    popularityScore: 84,
+    playerCount: '25M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Reverse 1999
+  // ============================================
+  {
+    id: 'reverse-1999',
+    name: 'Reverse: 1999',
+    slug: 'reverse-1999',
+    shortName: 'Reverse 1999',
+    description: 'Reverse: 1999 is a story-driven turn-based RPG set across different time periods. Collect characters, master card-based combat, and unravel mysteries.',
+    categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
+    platforms: ['PC', 'Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/reverse-1999.webp',
+    developer: 'Bluepoch',
+    publisher: 'Bluepoch',
+    promoCodes: [
+      {
+        id: 'r99-1',
+        code: 'REVERSE2026',
+        reward: '200 Clear Drops + Dust',
+        rewardValue: 200,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 90,
+      },
+      {
+        id: 'r99-2',
+        code: 'TIMETRAVEL',
+        reward: '100 Clear Drops + Materials',
+        rewardValue: 100,
+        rewardType: 'Gems',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+    ],
+    rewards: [
+      {
+        id: 'r99-r1',
+        title: 'Daily Tasks',
+        description: 'Complete tasks for Clear Drops',
+        type: 'Daily',
+        value: 'Clear Drops + XP',
+      },
+      {
+        id: 'r99-r2',
+        title: 'Wilderness Activities',
+        description: 'Explore wilderness for resources',
+        type: 'Free',
+        value: 'Materials + Currency',
+      },
+      {
+        id: 'r99-r3',
+        title: 'New Player Guide',
+        description: 'Follow the guide for bonus rewards',
+        type: 'New Player',
+        value: '6-Star Character + Resources',
+      },
+    ],
+    affiliateLink: 'https://re1999.bluepoch.com',
+    websiteUrl: 'https://re1999.bluepoch.com',
+    popularityScore: 82,
+    playerCount: '15M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Path to Nowhere
+  // ============================================
+  {
+    id: 'path-to-nowhere',
+    name: 'Path to Nowhere',
+    slug: 'path-to-nowhere',
+    shortName: 'PTN',
+    description: 'Path to Nowhere is a tower defense RPG with a dark, immersive story. Command Sinners in strategic real-time battles.',
+    categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
+    platforms: ['PC', 'Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/ptn.webp',
+    developer: 'AISNO Games',
+    publisher: 'AISNO Games',
+    promoCodes: [
+      {
+        id: 'ptn-1',
+        code: 'SINNERFREE',
+        reward: '500 Hypercubes + Stamina',
+        rewardValue: 500,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'ptn-2',
+        code: 'PATHFINDER',
+        reward: '300 Hypercubes + Materials',
+        rewardValue: 300,
+        rewardType: 'Gems',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 85,
+      },
+    ],
+    rewards: [
+      {
+        id: 'ptn-r1',
+        title: 'Daily Missions',
+        description: 'Complete missions for Hypercubes',
+        type: 'Daily',
+        value: 'Hypercubes + Resources',
+      },
+      {
+        id: 'ptn-r2',
+        title: 'New Chief Bonus',
+        description: 'Special rewards for new players',
+        type: 'New Player',
+        value: 'S-Rank Sinner + Materials',
+      },
+    ],
+    affiliateLink: 'https://www.pathtonowhere.com',
+    websiteUrl: 'https://www.pathtonowhere.com',
+    popularityScore: 76,
+    playerCount: '10M+ downloads',
+    lastUpdated: now,
+  },
+
+  // ============================================
+  // Aether Gazer
+  // ============================================
+  {
+    id: 'aether-gazer',
+    name: 'Aether Gazer',
+    slug: 'aether-gazer',
+    shortName: 'Aether Gazer',
+    description: 'Aether Gazer is a fast-paced action RPG featuring stylish combat and mythological characters. Master combos and build powerful teams.',
+    categories: ['RPG', 'Gacha', 'Mobile'],
+    platforms: ['Mobile', 'iOS', 'Android'],
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    logoUrl: '/images/games/aether-gazer.webp',
+    developer: 'Yostar',
+    publisher: 'Yostar',
+    promoCodes: [
+      {
+        id: 'ag-1',
+        code: 'AETHERFREE',
+        reward: '500 Shifted Star Crystals',
+        rewardValue: 500,
+        rewardType: 'Gems',
+        isVerified: true,
+        addedAt: now,
+        successRate: 88,
+      },
+      {
+        id: 'ag-2',
+        code: 'GAZER2026',
+        reward: '300 Crystals + Tickets',
+        rewardValue: 300,
+        rewardType: 'Gems',
+        expiresAt: oneMonthFromNow,
+        isVerified: true,
+        addedAt: now,
+        successRate: 85,
+      },
+    ],
+    rewards: [
+      {
+        id: 'ag-r1',
+        title: 'Daily Dispatch',
+        description: 'Send teams on dispatch for rewards',
+        type: 'Daily',
+        value: 'Crystals + Materials',
+      },
+      {
+        id: 'ag-r2',
+        title: 'New Admin Bonus',
+        description: 'Special bonuses for new players',
+        type: 'New Player',
+        value: 'S-Rank Modifier + Resources',
+      },
+    ],
+    affiliateLink: 'https://aethergazer.com',
+    websiteUrl: 'https://aethergazer.com',
+    popularityScore: 74,
+    playerCount: '8M+ downloads',
     lastUpdated: now,
   },
 ]

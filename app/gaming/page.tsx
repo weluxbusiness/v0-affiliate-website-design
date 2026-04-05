@@ -37,8 +37,7 @@ import {
   getAllCategories,
   getTotalActiveCodesCount,
   getGameLogoUrl,
-  getGameAffiliateUrl,
-  hasExternalAffiliateLink
+  getPlayAffiliateUrl
 } from "@/lib/gaming-data"
 import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
 
@@ -46,8 +45,13 @@ import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/g
 // This ensures Googlebot sees fully rendered content
 export const revalidate = 300 // Revalidate every 5 minutes
 
+// Dynamic metadata with current month/year
+const currentDate = new Date()
+const currentMonth = currentDate.toLocaleString('default', { month: 'long' })
+const currentYear = currentDate.getFullYear()
+
 export const metadata: Metadata = {
-  title: "Gaming Promo Codes April 2026 - Free Rewards & Bonuses Today",
+  title: `Gaming Codes (${currentMonth} ${currentYear}) – 500+ Free Rewards Today`,
   description: "Get 500+ working promo codes for Genshin Impact, Fortnite, RAID Shadow Legends, Roblox & more. Free in-game rewards, gems & bonuses. Verified daily - redeem now before codes expire!",
   keywords: [
     // Primary high-intent keywords
@@ -329,8 +333,7 @@ export default async function GamingPage() {
               const codeCount = getActivePromoCodes(game.promoCodes).length
               const logoUrl = getGameLogoUrl(game)
               const hasLogo = game.logoUrl
-              const affiliateUrl = getGameAffiliateUrl(game)
-              const isExternal = hasExternalAffiliateLink(game)
+              const affiliateUrl = getPlayAffiliateUrl(game)
               
               return (
                 <Card key={game.id} className="overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-200 group">
@@ -381,19 +384,19 @@ export default async function GamingPage() {
                       </Badge>
                     </div>
 
-                    {/* Primary CTA - Play Now (Affiliate) */}
+                    {/* Primary CTA - Play Now (Falconix affiliate network) */}
                     <Button 
                       asChild 
                       className="w-full h-11 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
                     >
                       <a 
                         href={affiliateUrl} 
-                        target={isExternal ? "_blank" : undefined}
-                        rel={isExternal ? "noopener noreferrer" : undefined}
+                        target="_blank"
+                        rel="nofollow sponsored noopener"
                       >
                         <Play className="h-5 w-5 mr-2 fill-current" />
                         Play Now
-                        {isExternal && <ExternalLink className="h-4 w-4 ml-2" />}
+                        <ExternalLink className="h-4 w-4 ml-2" />
                       </a>
                     </Button>
 
