@@ -45,6 +45,7 @@ import {
   getSeoUrl,
   type SeoPageType 
 } from "@/lib/seo-routes"
+import { PageTypeLinks, RelatedGamesLinks, PopularGamesLinks } from "@/components/gaming/cross-links"
 
 export const revalidate = 600 // 10 minutes
 
@@ -923,68 +924,14 @@ export default async function SeoPage({ params }: PageProps) {
         </PageContainer>
       </section>
       
-      {/* Internal Links */}
-      <section className="py-10 md:py-12">
-        <PageContainer>
-          <h3 className="text-xl font-bold text-foreground mb-6">More {game.name} Resources</h3>
-          <div className="grid gap-4 grid-cols-2 md:grid-cols-5">
-            <Link
-              href={`/gaming/${game.slug}`}
-              className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center"
-            >
-              <Gamepad2 className="h-8 w-8 text-primary" />
-              <span className="text-sm font-medium text-foreground">Game Overview</span>
-            </Link>
-            <Link
-              href={getSeoUrl(game.slug, 'codes-today')}
-              className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center"
-            >
-              <Clock className="h-8 w-8 text-blue-500" />
-              <span className="text-sm font-medium text-foreground">Codes Today</span>
-            </Link>
-            <Link
-              href={getSeoUrl(game.slug, 'working-codes')}
-              className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center"
-            >
-              <CheckCircle2 className="h-8 w-8 text-green-500" />
-              <span className="text-sm font-medium text-foreground">Working Codes</span>
-            </Link>
-            <Link
-              href={getSeoUrl(game.slug, 'free-rewards')}
-              className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center"
-            >
-              <Gift className="h-8 w-8 text-secondary" />
-              <span className="text-sm font-medium text-foreground">Free Rewards</span>
-            </Link>
-            <Link
-              href={getSeoUrl(game.slug, 'redeem-codes')}
-              className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-center"
-            >
-              <BookOpen className="h-8 w-8 text-emerald-500" />
-              <span className="text-sm font-medium text-foreground">Redeem Guide</span>
-            </Link>
-          </div>
-          
-          {/* Related Games */}
-          {relatedGames.length > 0 && (
-            <div className="mt-8">
-              <h4 className="text-lg font-semibold text-foreground mb-4">More Games with {config.headingPrefix}</h4>
-              <div className="flex flex-wrap gap-3">
-                {relatedGames.map((relatedGame) => (
-                  <Link
-                    key={relatedGame.id}
-                    href={getSeoUrl(relatedGame.slug, pageType)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
-                  >
-                    {relatedGame.shortName || relatedGame.name} {config.headingPrefix}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-        </PageContainer>
-      </section>
+      {/* Cross-links to other page types for same game */}
+      <PageTypeLinks game={game} currentPageType={pageType} />
+      
+      {/* Related games with same page type */}
+      <RelatedGamesLinks currentGame={game} pageType={pageType} limit={8} />
+      
+      {/* Popular games section */}
+      <PopularGamesLinks currentGame={game} limit={12} />
       
       <Footer />
     </div>
