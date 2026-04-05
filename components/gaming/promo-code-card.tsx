@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils"
 import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
 import { GameLogo } from "@/components/gaming/game-logo"
 import type { PromoCode, Game } from "@/lib/gaming-data"
-import { getGameAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
+import { getPlayAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
 
 // Extended type to support both static data and database records
 export type PromoCodeWithId = PromoCode & {
@@ -118,7 +118,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   if (variant === "featured") {
-    const affiliateUrl = game ? getGameAffiliateUrl(game) : null
+    const affiliateUrl = game ? getPlayAffiliateUrl(game) : null
     const isExternal = game ? hasExternalAffiliateLink(game) : false
 
     return (
@@ -183,7 +183,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
             <p className="font-semibold text-foreground text-lg">{code.reward}</p>
           </div>
 
-          {/* Primary CTA - Play Now */}
+          {/* Primary CTA - Play Now (Falconix affiliate network) */}
           {showGame && game && affiliateUrl && (
             <Button 
               asChild 
@@ -191,12 +191,12 @@ export const PromoCodeCard = memo(function PromoCodeCard({
             >
               <a 
                 href={affiliateUrl} 
-                target={isExternal ? "_blank" : undefined}
-                rel={isExternal ? "noopener noreferrer" : undefined}
+                target="_blank"
+                rel="nofollow sponsored noopener"
               >
                 <Play className="h-5 w-5 mr-2 fill-current" />
                 Play {game.shortName || game.name}
-                {isExternal && <ExternalLink className="h-4 w-4 ml-2" />}
+                <ExternalLink className="h-4 w-4 ml-2" />
               </a>
             </Button>
           )}
@@ -225,7 +225,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   // Default variant - with game logo for visual hierarchy
-  const affiliateUrl = game ? getGameAffiliateUrl(game) : null
+  const affiliateUrl = game ? getPlayAffiliateUrl(game) : null
   const isExternal = game ? hasExternalAffiliateLink(game) : false
 
   const cardContent = (
@@ -333,7 +333,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </Button>
         </div>
 
-        {/* Primary CTA - Play Now (Affiliate) */}
+        {/* Primary CTA - Play Now (Falconix affiliate network) */}
         {showGame && game && affiliateUrl && (
           <Button 
             asChild 
@@ -342,13 +342,13 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           >
             <a 
               href={affiliateUrl} 
-              target={isExternal ? "_blank" : undefined}
-              rel={isExternal ? "noopener noreferrer" : undefined}
+              target="_blank"
+              rel="nofollow sponsored noopener"
               onClick={(e) => e.stopPropagation()}
             >
               <Play className="h-4 w-4 mr-2 fill-current" />
               Play Now
-              {isExternal && <ExternalLink className="h-3 w-3 ml-2" />}
+              <ExternalLink className="h-3 w-3 ml-2" />
             </a>
           </Button>
         )}

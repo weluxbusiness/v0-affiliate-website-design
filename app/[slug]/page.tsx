@@ -36,7 +36,8 @@ import {
   getActivePromoCodes,
   sortPromoCodesByValue,
   getRelatedGames,
-  getBestPromoCode
+  getBestPromoCode,
+  getPlayAffiliateUrl
 } from "@/lib/gaming-data"
 import type { GameReward } from "@/lib/gaming-data"
 import { 
@@ -646,7 +647,7 @@ export default async function SeoPage({ params }: PageProps) {
           </div>
           
           <Button size="lg" variant="secondary" asChild className="gap-2">
-            <a href={game.affiliateLink} target="_blank" rel="noopener noreferrer">
+            <a href={getPlayAffiliateUrl(game)} target="_blank" rel="nofollow sponsored noopener">
               <Gamepad2 className="h-5 w-5" />
               Play {game.shortName || game.name}
               <ExternalLink className="h-4 w-4" />

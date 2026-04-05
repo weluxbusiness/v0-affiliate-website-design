@@ -12,7 +12,7 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import type { Game, GameCategory } from "@/lib/gaming-data"
-import { getGameLogoUrl, getGameAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
+import { getGameLogoUrl, getPlayAffiliateUrl } from "@/lib/gaming-data"
 import { Button } from "@/components/ui/button"
 import { ExternalLink, Play } from "lucide-react"
 
@@ -263,8 +263,7 @@ interface GameCardCompactProps {
 export function GameCardCompact({ game, codeCount, showBadge = false }: GameCardCompactProps) {
   const logoUrl = getGameLogoUrl(game)
   const hasLogo = game.logoUrl
-  const affiliateUrl = getGameAffiliateUrl(game)
-  const isExternal = hasExternalAffiliateLink(game)
+  const affiliateUrl = getPlayAffiliateUrl(game)
 
   return (
     <div className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-md transition-all duration-200 group">
@@ -309,7 +308,7 @@ export function GameCardCompact({ game, codeCount, showBadge = false }: GameCard
         </div>
       </Link>
 
-      {/* Play Now CTA - Affiliate Link */}
+      {/* Play Now CTA - Falconix affiliate network */}
       <Button 
         asChild 
         size="sm"
@@ -317,12 +316,12 @@ export function GameCardCompact({ game, codeCount, showBadge = false }: GameCard
       >
         <a 
           href={affiliateUrl} 
-          target={isExternal ? "_blank" : undefined}
-          rel={isExternal ? "noopener noreferrer" : undefined}
+          target="_blank"
+          rel="nofollow sponsored noopener"
         >
           <Play className="h-4 w-4 mr-1 fill-current" />
           Play
-          {isExternal && <ExternalLink className="h-3 w-3 ml-1" />}
+          <ExternalLink className="h-3 w-3 ml-1" />
         </a>
       </Button>
     </div>
@@ -343,8 +342,7 @@ interface TrendingCodeItemProps {
 export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCodeItemProps) {
   const logoUrl = getGameLogoUrl(game)
   const hasLogo = game.logoUrl
-  const affiliateUrl = getGameAffiliateUrl(game)
-  const isExternal = hasExternalAffiliateLink(game)
+  const affiliateUrl = getPlayAffiliateUrl(game)
 
   return (
     <div className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:border-green-500/30 hover:shadow-md transition-all duration-200 group">
@@ -383,7 +381,7 @@ export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCod
         <p className="text-xs text-muted-foreground mt-1">{game.shortName || game.name}</p>
       </Link>
 
-      {/* Play Now CTA */}
+      {/* Play Now CTA - Falconix affiliate network */}
       <Button 
         asChild 
         size="sm"
@@ -391,8 +389,8 @@ export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCod
       >
         <a 
           href={affiliateUrl} 
-          target={isExternal ? "_blank" : undefined}
-          rel={isExternal ? "noopener noreferrer" : undefined}
+          target="_blank"
+          rel="nofollow sponsored noopener"
         >
           <Play className="h-4 w-4 mr-1 fill-current" />
           Play

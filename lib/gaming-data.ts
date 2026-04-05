@@ -67,14 +67,45 @@ export function getGameLogoUrl(game: Game): string {
   return game.logoUrl || DEFAULT_GAME_LOGO
 }
 
-// Helper to get affiliate link or fallback to internal page
-export function getGameAffiliateUrl(game: Game): string {
-  return game.affiliateLink || `/gaming/${game.slug}`
+// ============================================
+// AFFILIATE LINK HELPERS
+// ============================================
+
+// Base affiliate URL
+const AFFILIATE_BASE_URL = 'https://go.savesmart.bio'
+
+/**
+ * Get the "Play [Game]" affiliate link (primary CTA - top section)
+ * Uses Falconix network for play/download intent
+ */
+export function getPlayAffiliateUrl(game: Game): string {
+  return `${AFFILIATE_BASE_URL}/falconix-${game.slug}`
 }
 
-// Check if game has external affiliate link
+/**
+ * Get the "Get Reward" affiliate link (reward sections)
+ * Uses Ultra network for reward redemption intent
+ */
+export function getRewardAffiliateUrl(game: Game): string {
+  return `${AFFILIATE_BASE_URL}/ultra-${game.slug}`
+}
+
+/**
+ * Get deals/savings affiliate link
+ * Used for all deals and coupon-related CTAs
+ */
+export function getDealsAffiliateUrl(): string {
+  return `${AFFILIATE_BASE_URL}/save`
+}
+
+// Legacy helper - now uses getPlayAffiliateUrl for backwards compatibility
+export function getGameAffiliateUrl(game: Game): string {
+  return getPlayAffiliateUrl(game)
+}
+
+// Check if game has external affiliate link (always true for new system)
 export function hasExternalAffiliateLink(game: Game): boolean {
-  return !!game.affiliateLink && game.affiliateLink.startsWith('http')
+  return true // All affiliate links are external now
 }
 
 // ============================================

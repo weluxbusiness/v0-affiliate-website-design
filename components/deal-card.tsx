@@ -14,6 +14,7 @@ import {
   Check
 } from "lucide-react"
 import { Deal, getStoreInfo, formatRating, formatReviewCount, getProductImageUrl } from "@/lib/deal-types"
+import { getDealsAffiliateUrl } from "@/lib/gaming-data"
 import { CountdownTimer } from "@/components/countdown-timer"
 
 interface DealCardProps {
@@ -162,7 +163,7 @@ export const DealCard = memo(function DealCard({ deal, variant = "default" }: De
           )}
 
           <Button className="w-full gap-2" asChild>
-            <a href={deal.affiliate_link} target="_blank" rel="noopener noreferrer">
+            <a href={deal.affiliate_link || getDealsAffiliateUrl()} target="_blank" rel="nofollow sponsored noopener">
               <ShoppingBag className="h-4 w-4" />
               Get This Deal
               <ExternalLink className="h-3 w-3" />
@@ -222,7 +223,7 @@ export const DealCard = memo(function DealCard({ deal, variant = "default" }: De
           </div>
         )}
         <Button className="w-full gap-2" size="sm" asChild>
-          <a href={deal.affiliate_link} target="_blank" rel="noopener noreferrer">
+          <a href={deal.affiliate_link || getDealsAffiliateUrl()} target="_blank" rel="nofollow sponsored noopener">
             <ShoppingBag className="h-4 w-4" />
             Get Deal
           </a>
