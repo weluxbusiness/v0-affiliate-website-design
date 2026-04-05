@@ -12,9 +12,12 @@ import {
   BookOpen,
   ChevronRight,
   Gamepad2,
-  Tag
+  Tag,
+  Lightbulb,
+  Trophy,
+  TrendingUp
 } from "lucide-react"
-import { getSeoUrl } from "@/lib/seo-routes"
+import { getSeoUrl, getBlogUrl, type BlogPageType } from "@/lib/seo-routes"
 import type { Game } from "@/lib/gaming-data"
 import { getActivePromoCodes, getRelatedGames } from "@/lib/gaming-data"
 
@@ -260,6 +263,145 @@ export function PopularGamesLinks({ currentGame, limit = 12 }: PopularGamesLinks
         </div>
       </div>
     </section>
+  )
+}
+
+interface BlogLinksProps {
+  game: Game
+  currentBlogType?: BlogPageType
+}
+
+// Cross-links to blog/guide pages for a game
+export function BlogLinksSection({ game, currentBlogType }: BlogLinksProps) {
+  const blogTypes = [
+    {
+      type: 'how-to-get-free-rewards' as BlogPageType,
+      label: 'Free Rewards Guide',
+      shortLabel: 'Free Rewards',
+      icon: Gift,
+      description: 'How to get free gems & items',
+      bgColor: 'bg-emerald-500/10',
+      textColor: 'text-emerald-600',
+    },
+    {
+      type: 'tips-and-tricks' as BlogPageType,
+      label: 'Tips & Tricks',
+      shortLabel: 'Pro Tips',
+      icon: Lightbulb,
+      description: 'Pro secrets & hidden features',
+      bgColor: 'bg-yellow-500/10',
+      textColor: 'text-yellow-600',
+    },
+    {
+      type: 'beginner-guide' as BlogPageType,
+      label: 'Beginner Guide',
+      shortLabel: 'Getting Started',
+      icon: BookOpen,
+      description: 'Everything new players need',
+      bgColor: 'bg-blue-500/10',
+      textColor: 'text-blue-600',
+    },
+    {
+      type: 'how-to-level-up-fast' as BlogPageType,
+      label: 'Level Up Fast',
+      shortLabel: 'Fast XP',
+      icon: TrendingUp,
+      description: 'Quick progression methods',
+      bgColor: 'bg-purple-500/10',
+      textColor: 'text-purple-600',
+    },
+    {
+      type: 'best-strategies' as BlogPageType,
+      label: 'Best Strategies',
+      shortLabel: 'Strategies',
+      icon: Trophy,
+      description: 'Meta builds & tactics',
+      bgColor: 'bg-amber-500/10',
+      textColor: 'text-amber-600',
+    },
+  ]
+
+  const otherBlogs = blogTypes.filter(b => b.type !== currentBlogType)
+
+  return (
+    <section className="py-10 md:py-12 bg-muted/30">
+      <div className="container max-w-6xl mx-auto px-4">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <BookOpen className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">{game.shortName || game.name} Guides</h2>
+            <p className="text-sm text-muted-foreground">Master the game with our expert guides</p>
+          </div>
+        </div>
+        
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {otherBlogs.map((blog) => {
+            const Icon = blog.icon
+            return (
+              <Link 
+                key={blog.type}
+                href={getBlogUrl(game.slug, blog.type)}
+                className="group"
+              >
+                <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/30 group-hover:-translate-y-0.5">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${blog.bgColor}`}>
+                        <Icon className={`h-5 w-5 ${blog.textColor}`} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm">
+                          {blog.label}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {blog.description}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// Compact blog links for embedding in code pages
+export function BlogQuickLinks({ game }: { game: Game }) {
+  const blogTypes = [
+    { type: 'how-to-get-free-rewards' as BlogPageType, label: 'Free Rewards', icon: Gift },
+    { type: 'tips-and-tricks' as BlogPageType, label: 'Tips', icon: Lightbulb },
+    { type: 'beginner-guide' as BlogPageType, label: 'Beginner', icon: BookOpen },
+    { type: 'how-to-level-up-fast' as BlogPageType, label: 'Level Up', icon: TrendingUp },
+    { type: 'best-strategies' as BlogPageType, label: 'Strategies', icon: Trophy },
+  ]
+
+  return (
+    <div className="flex flex-wrap gap-2 py-4">
+      <span className="text-sm text-muted-foreground mr-1 self-center">Guides:</span>
+      {blogTypes.map((blog) => {
+        const Icon = blog.icon
+        return (
+          <Link 
+            key={blog.type}
+            href={getBlogUrl(game.slug, blog.type)}
+          >
+            <Badge 
+              variant="outline"
+              className="px-3 py-1.5 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors cursor-pointer"
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {blog.label}
+            </Badge>
+          </Link>
+        )
+      })}
+    </div>
   )
 }
 

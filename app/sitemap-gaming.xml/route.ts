@@ -132,6 +132,37 @@ export async function GET(): Promise<Response> {
         priority: "0.7",
         changefreq: "weekly",
       },
+      // Blog/Guide pages - target "[game] tips/beginner guide/strategies" searches
+      {
+        url: `/gaming-guides/${slug}-how-to-get-free-rewards`,
+        lastmod: lastUpdated,
+        priority: "0.85",
+        changefreq: "weekly",
+      },
+      {
+        url: `/gaming-guides/${slug}-tips-and-tricks`,
+        lastmod: lastUpdated,
+        priority: "0.85",
+        changefreq: "weekly",
+      },
+      {
+        url: `/gaming-guides/${slug}-beginner-guide`,
+        lastmod: lastUpdated,
+        priority: "0.85",
+        changefreq: "weekly",
+      },
+      {
+        url: `/gaming-guides/${slug}-how-to-level-up-fast`,
+        lastmod: lastUpdated,
+        priority: "0.85",
+        changefreq: "weekly",
+      },
+      {
+        url: `/gaming-guides/${slug}-best-strategies`,
+        lastmod: lastUpdated,
+        priority: "0.85",
+        changefreq: "weekly",
+      },
     ])
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
