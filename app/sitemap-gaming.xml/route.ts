@@ -61,10 +61,11 @@ export async function GET(): Promise<Response> {
     // Dynamic game pages - boosted priorities for better indexing
     // Individual game pages are key landing pages for "[game] promo codes" searches
     const gamePages = gameSlugs.flatMap(({ slug, lastUpdated }) => [
+      // Main game overview page (nested URL - stays nested)
       {
         url: `/gaming/${slug}`,
         lastmod: lastUpdated,
-        priority: "0.85", // High priority - main landing page for game codes
+        priority: "0.85",
         changefreq: "daily",
       },
       {
@@ -79,40 +80,44 @@ export async function GET(): Promise<Response> {
         priority: "0.75",
         changefreq: "weekly",
       },
+      // === FLAT SEO URLs (primary, canonical) ===
+      // These are the canonical URLs that match search intent
+      // Example: /raid-shadow-legends-working-codes
+      
+      // Codes today - targets "[game] codes today" searches
+      {
+        url: `/${slug}-codes-today`,
+        lastmod: lastModified,
+        priority: "0.95", // Highest priority - matches exact search queries
+        changefreq: "hourly",
+      },
+      // Working codes - targets "[game] working codes" searches
+      {
+        url: `/${slug}-working-codes`,
+        lastmod: lastModified,
+        priority: "0.95",
+        changefreq: "hourly",
+      },
+      // New codes - targets "[game] new codes" searches
+      {
+        url: `/${slug}-new-codes`,
+        lastmod: lastModified,
+        priority: "0.95",
+        changefreq: "hourly",
+      },
+      // Free rewards - targets "[game] free rewards" searches
+      {
+        url: `/${slug}-free-rewards`,
+        lastmod: lastModified,
+        priority: "0.9",
+        changefreq: "daily",
+      },
       // Redeem codes guide - targets "how to redeem [game] codes" searches
       {
-        url: `/gaming/${slug}/redeem-codes`,
+        url: `/${slug}-redeem-codes`,
         lastmod: lastUpdated,
-        priority: "0.8",
+        priority: "0.9",
         changefreq: "weekly",
-      },
-      // Daily codes page - high priority for "today" searches
-      {
-        url: `/gaming/${slug}/codes-today`,
-        lastmod: lastModified,
-        priority: "0.85",
-        changefreq: "hourly",
-      },
-      // Working codes page - targets "[game] working codes" searches
-      {
-        url: `/gaming/${slug}/working-codes`,
-        lastmod: lastModified,
-        priority: "0.85",
-        changefreq: "hourly",
-      },
-      // New codes page - targets "[game] new codes" searches
-      {
-        url: `/gaming/${slug}/new-codes`,
-        lastmod: lastModified,
-        priority: "0.85",
-        changefreq: "hourly",
-      },
-      // Free rewards page - targets "[game] free rewards" searches
-      {
-        url: `/gaming/${slug}/free-rewards`,
-        lastmod: lastModified,
-        priority: "0.8",
-        changefreq: "daily",
       },
       // Monthly codes pages - target "[game] codes [month] [year]" searches
       {

@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
 import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getGameAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
+import { getSeoUrl } from "@/lib/seo-routes"
 import { Clock, AlertCircle, BookOpen, CheckCircle2 } from "lucide-react"
 
 // ============================================
@@ -398,7 +399,7 @@ export function GamePageTemplate({
               
               <div className="mt-6 text-center">
                 <Link 
-                  href={`/gaming/${game.slug}/codes-today`}
+                  href={getSeoUrl(game.slug, 'codes-today')}
                   className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                 >
                   View All Today&apos;s Codes
