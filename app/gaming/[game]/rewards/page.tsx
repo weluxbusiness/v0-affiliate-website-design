@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `${game.name} free skins`,
     ],
     openGraph: {
-      title: `${game.name} FREE Rewards ${month} ${year} - ${rewardCount}+ Bonuses`,
+      title: `${game.name} FREE Rewards ${shortMonth} ${year} - ${rewardCount}+ Bonuses`,
       description: `${rewardCount}+ free rewards available now. Daily bonuses, gems & skins!`,
       url: `https://savesmart.bio/gaming/${game.slug}/rewards`,
     },
