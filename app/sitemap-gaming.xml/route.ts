@@ -93,6 +93,27 @@ export async function GET(): Promise<Response> {
         priority: "0.85",
         changefreq: "hourly",
       },
+      // Working codes page - targets "[game] working codes" searches
+      {
+        url: `/gaming/${slug}/working-codes`,
+        lastmod: lastModified,
+        priority: "0.85",
+        changefreq: "hourly",
+      },
+      // New codes page - targets "[game] new codes" searches
+      {
+        url: `/gaming/${slug}/new-codes`,
+        lastmod: lastModified,
+        priority: "0.85",
+        changefreq: "hourly",
+      },
+      // Free rewards page - targets "[game] free rewards" searches
+      {
+        url: `/gaming/${slug}/free-rewards`,
+        lastmod: lastModified,
+        priority: "0.8",
+        changefreq: "daily",
+      },
       // Monthly codes pages - target "[game] codes [month] [year]" searches
       {
         url: `/gaming/${slug}/codes-${currentMonth}-${currentYear}`,

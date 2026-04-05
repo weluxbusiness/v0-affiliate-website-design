@@ -167,7 +167,7 @@ export function generateBlogBreadcrumbs(
 export function generateGamingBreadcrumbs(
   game?: string,
   gameName?: string,
-  page?: 'codes' | 'rewards'
+  page?: 'codes' | 'rewards' | 'codes-today' | 'working-codes' | 'new-codes' | 'free-rewards' | 'redeem-codes'
 ): BreadcrumbItem[] {
   const items: BreadcrumbItem[] = [
     { name: 'Gaming', url: '/gaming' },
@@ -178,7 +178,16 @@ export function generateGamingBreadcrumbs(
   }
 
   if (page) {
-    const pageName = page === 'codes' ? 'Promo Codes' : 'Free Rewards'
+    const pageNames: Record<string, string> = {
+      'codes': 'Promo Codes',
+      'rewards': 'Rewards',
+      'codes-today': 'Codes Today',
+      'working-codes': 'Working Codes',
+      'new-codes': 'New Codes',
+      'free-rewards': 'Free Rewards',
+      'redeem-codes': 'Redeem Guide',
+    }
+    const pageName = pageNames[page] || page
     items.push({ name: pageName, url: `/gaming/${game}/${page}` })
   }
 
