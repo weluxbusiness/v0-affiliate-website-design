@@ -32,6 +32,32 @@ const nextConfig = {
         destination: '/:game-redeem-codes',
         permanent: true,
       },
+      // Redirect gaming-guides to flat blog URLs
+      {
+        source: '/gaming-guides/:game-how-to-get-free-rewards',
+        destination: '/:game-how-to-get-free-rewards',
+        permanent: true,
+      },
+      {
+        source: '/gaming-guides/:game-tips-and-tricks',
+        destination: '/:game-tips-and-tricks',
+        permanent: true,
+      },
+      {
+        source: '/gaming-guides/:game-beginner-guide',
+        destination: '/:game-beginner-guide',
+        permanent: true,
+      },
+      {
+        source: '/gaming-guides/:game-how-to-level-up-fast',
+        destination: '/:game-how-to-level-up-fast',
+        permanent: true,
+      },
+      {
+        source: '/gaming-guides/:game-best-strategies',
+        destination: '/:game-best-strategies',
+        permanent: true,
+      },
     ]
   },
   images: {

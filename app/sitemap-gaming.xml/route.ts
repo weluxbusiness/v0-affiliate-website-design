@@ -132,35 +132,35 @@ export async function GET(): Promise<Response> {
         priority: "0.7",
         changefreq: "weekly",
       },
-      // Blog/Guide pages - target "[game] tips/beginner guide/strategies" searches
+      // Blog/Guide pages - flat URLs for SEO (target "[game] tips/beginner guide/strategies" searches)
       {
-        url: `/gaming-guides/${slug}-how-to-get-free-rewards`,
+        url: `/${slug}-how-to-get-free-rewards`,
         lastmod: lastUpdated,
-        priority: "0.85",
+        priority: "0.9",
         changefreq: "weekly",
       },
       {
-        url: `/gaming-guides/${slug}-tips-and-tricks`,
+        url: `/${slug}-tips-and-tricks`,
         lastmod: lastUpdated,
-        priority: "0.85",
+        priority: "0.9",
         changefreq: "weekly",
       },
       {
-        url: `/gaming-guides/${slug}-beginner-guide`,
+        url: `/${slug}-beginner-guide`,
         lastmod: lastUpdated,
-        priority: "0.85",
+        priority: "0.9",
         changefreq: "weekly",
       },
       {
-        url: `/gaming-guides/${slug}-how-to-level-up-fast`,
+        url: `/${slug}-how-to-level-up-fast`,
         lastmod: lastUpdated,
-        priority: "0.85",
+        priority: "0.9",
         changefreq: "weekly",
       },
       {
-        url: `/gaming-guides/${slug}-best-strategies`,
+        url: `/${slug}-best-strategies`,
         lastmod: lastUpdated,
-        priority: "0.85",
+        priority: "0.9",
         changefreq: "weekly",
       },
     ])

@@ -41,34 +41,137 @@ import {
 import type { GameReward } from "@/lib/gaming-data"
 import { 
   parseSeoSlug, 
+  parseBlogSlug,
   generateAllSeoSlugs, 
+  generateAllBlogSlugs,
   getSeoUrl,
-  type SeoPageType 
+  getBlogUrl,
+  type SeoPageType,
+  type BlogPageType,
+  BLOG_PAGE_TYPES
 } from "@/lib/seo-routes"
 import { PageTypeLinks, RelatedGamesLinks, PopularGamesLinks } from "@/components/gaming/cross-links"
+import { BlogPageContent } from "@/components/gaming/blog-page-content"
 
 export const revalidate = 600 // 10 minutes
 
 export async function generateStaticParams() {
-  return generateAllSeoSlugs()
+  // Generate both SEO (promo code) and blog page slugs
+  return [...generateAllSeoSlugs(), ...generateAllBlogSlugs()]
 }
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
+// Blog page configuration
+interface BlogPageConfig {
+  title: string
+  headingPrefix: string
+  color: string
+  keywords: string[]
+}
+
+const BLOG_CONFIG: Record<BlogPageType, BlogPageConfig> = {
+  'how-to-get-free-rewards': {
+    title: 'How to Get Free Rewards',
+    headingPrefix: 'Free Rewards Guide',
+    color: 'text-emerald-500',
+    keywords: ['free rewards', 'free gems', 'free items', 'no cost'],
+  },
+  'tips-and-tricks': {
+    title: 'Tips and Tricks',
+    headingPrefix: 'Pro Tips',
+    color: 'text-yellow-500',
+    keywords: ['tips', 'tricks', 'secrets', 'hacks'],
+  },
+  'beginner-guide': {
+    title: 'Beginner Guide',
+    headingPrefix: 'Getting Started',
+    color: 'text-blue-500',
+    keywords: ['beginner', 'starter', 'new player', 'guide'],
+  },
+  'how-to-level-up-fast': {
+    title: 'How to Level Up Fast',
+    headingPrefix: 'Fast Leveling',
+    color: 'text-purple-500',
+    keywords: ['level up', 'fast', 'quick', 'XP'],
+  },
+  'best-strategies': {
+    title: 'Best Strategies',
+    headingPrefix: 'Top Strategies',
+    color: 'text-amber-500',
+    keywords: ['strategy', 'meta', 'best', 'optimal'],
+  },
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const parsed = parseSeoSlug(slug)
   
-  if (!parsed) {
+  // Try parsing as SEO page first, then blog page
+  const seoParsed = parseSeoSlug(slug)
+  const blogParsed = parseBlogSlug(slug)
+  
+  if (!seoParsed && !blogParsed) {
     return { title: "Page Not Found | SaveSmart" }
   }
   
-  const game = getGameBySlug(parsed.gameSlug)
+  const gameSlug = seoParsed?.gameSlug || blogParsed?.gameSlug
+  const game = getGameBySlug(gameSlug!)
   if (!game) {
     return { title: "Game Not Found | SaveSmart Gaming" }
   }
+  
+  const today = new Date()
+  const monthYear = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  const shortMonth = today.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  
+  // Handle blog pages
+  if (blogParsed) {
+    const config = BLOG_CONFIG[blogParsed.pageType]
+    
+    const titleByType: Record<BlogPageType, string> = {
+      'how-to-get-free-rewards': `${game.shortName || game.name} Free Rewards Guide (${shortMonth}) – Pro Guide`,
+      'tips-and-tricks': `${game.shortName || game.name} Tips & Tricks (${shortMonth}) – Pro Guide`,
+      'beginner-guide': `${game.shortName || game.name} Beginner Guide (${shortMonth}) – Start Strong`,
+      'how-to-level-up-fast': `${game.shortName || game.name} Level Up Fast (${shortMonth}) – XP Guide`,
+      'best-strategies': `${game.shortName || game.name} Best Strategies (${shortMonth}) – Win More`,
+    }
+    
+    const descriptionByType: Record<BlogPageType, string> = {
+      'how-to-get-free-rewards': `Complete guide to get free rewards in ${game.name}. Learn how to earn free gems, items, and bonuses without spending money. Updated ${monthYear}.`,
+      'tips-and-tricks': `Master ${game.name} with our expert tips and tricks. Pro secrets, hidden features, and advanced techniques. Updated ${monthYear}.`,
+      'beginner-guide': `New to ${game.name}? Our beginner guide covers everything you need to know to start strong. Tips, strategies, and mistakes to avoid. Updated ${monthYear}.`,
+      'how-to-level-up-fast': `Level up quickly in ${game.name} with our fast XP guide. Best methods, shortcuts, and pro strategies for rapid progression. Updated ${monthYear}.`,
+      'best-strategies': `Dominate ${game.name} with the best strategies and meta builds. Win more matches with proven tactics. Updated ${monthYear}.`,
+    }
+    
+    return {
+      title: titleByType[blogParsed.pageType],
+      description: descriptionByType[blogParsed.pageType],
+      keywords: [
+        `${game.name} ${config.title.toLowerCase()}`,
+        ...config.keywords.map(k => `${game.name} ${k}`),
+        `${game.name} guide`,
+        `${game.name} ${monthYear}`,
+      ],
+      openGraph: {
+        title: titleByType[blogParsed.pageType],
+        description: descriptionByType[blogParsed.pageType],
+        type: 'article',
+        publishedTime: game.lastUpdated,
+        modifiedTime: new Date().toISOString(),
+      },
+      alternates: {
+        canonical: `https://savesmart.bio/${slug}`,
+      },
+    }
+  }
+  
+  // Handle SEO (promo code) pages
+  const { pageType } = seoParsed!
+  const codeCount = getActivePromoCodes(game.promoCodes).length
+  const rewardCount = game.rewards.length
   
   const today = new Date()
   const monthYear = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
@@ -154,7 +257,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
   }
   
-  const meta = metaByType[parsed.pageType]
+  const meta = metaByType[seoParsed!.pageType]
   
   return {
     title: meta.title,
@@ -244,18 +347,27 @@ function RewardCard({ reward }: { reward: GameReward }) {
 
 export default async function SeoPage({ params }: PageProps) {
   const { slug } = await params
-  const parsed = parseSeoSlug(slug)
   
-  if (!parsed) {
+  // Try parsing as SEO page first, then blog page
+  const seoParsed = parseSeoSlug(slug)
+  const blogParsed = parseBlogSlug(slug)
+  
+  if (!seoParsed && !blogParsed) {
     notFound()
   }
   
-  const game = getGameBySlug(parsed.gameSlug)
+  const gameSlug = seoParsed?.gameSlug || blogParsed?.gameSlug
+  const game = getGameBySlug(gameSlug!)
   if (!game) {
     notFound()
   }
   
-  const { pageType } = parsed
+  // Handle blog pages
+  if (blogParsed) {
+    return <BlogPageContent game={game} pageType={blogParsed.pageType} slug={slug} />
+  }
+  
+  const { pageType } = seoParsed!
   
   const today = new Date()
   const dateStr = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
