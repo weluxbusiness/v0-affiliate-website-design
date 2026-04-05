@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   return {
     title: `${game.shortName || game.name} Free Rewards – ${codeCount}+ Codes & Bonuses (${shortMonth})`,
-    description: `Get all free ${game.name} rewards for ${monthYear}! ${codeCount}+ promo codes plus ${rewardCount}+ daily bonuses, login rewards & free items. No purchase needed - claim now!`,
+    description: `Get all free ${game.name} rewards for ${shortMonth}! ${codeCount}+ promo codes plus ${rewardCount}+ daily bonuses, login rewards & free items. No purchase needed - claim now!`,
     keywords: [
       `${game.name} free rewards`,
       `${game.name} free stuff`,
@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `free ${game.name} currency`,
     ],
     openGraph: {
-      title: `${game.name} Free Rewards - ${codeCount}+ Codes & Bonuses | ${monthYear}`,
+      title: `${game.name} Free Rewards - ${codeCount}+ Codes & Bonuses | ${shortMonth}`,
       description: `${codeCount}+ free codes plus daily bonuses. No purchase needed!`,
       url: `https://savesmart.bio/gaming/${game.slug}/free-rewards`,
     },
