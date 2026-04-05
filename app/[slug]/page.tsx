@@ -74,9 +74,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const codeCount = getActivePromoCodes(game.promoCodes).length
   const rewardCount = game.rewards.length
   
+  // Get primary reward type for game-specific benefits
+  const primaryReward = game.promoCodes[0]?.rewardType || 'Rewards'
+  const rewardBenefits: Record<string, string> = {
+    'Primogems': 'Free Primogems',
+    'Gems': 'Free Gems',
+    'V-Bucks': 'Free V-Bucks',
+    'Robux': 'Free Robux',
+    'Coins': 'Free Coins',
+    'Skins': 'Free Skins',
+    'Currency': 'Free Currency',
+    'CP': 'Free CP',
+    'Items': 'Free Items',
+    'Packs': 'Free Packs',
+    'Characters': 'Free Characters',
+    'XP': 'Free XP',
+    'Other': 'Free Rewards',
+    'Rewards': 'Free Rewards',
+  }
+  const benefit = rewardBenefits[primaryReward] || 'Free Rewards'
+  const shortMonth = today.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  
   const metaByType: Record<SeoPageType, { title: string; description: string; keywords: string[] }> = {
     'codes-today': {
-      title: `${game.name} Codes Today (${monthYear}) - ${codeCount}+ FREE Rewards Working Now`,
+      // Target: "[game] codes today" - under 60 chars, urgency + benefit
+      title: `${game.shortName || game.name} Codes Today – ${codeCount}+ ${benefit} (${shortMonth})`,
       description: `All ${codeCount}+ working ${game.name} promo codes for today. Get FREE gems, skins & rewards. Verified hourly - redeem before they expire!`,
       keywords: [
         `${game.name} codes today`,
@@ -86,7 +108,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
     },
     'working-codes': {
-      title: `${game.name} Working Codes (${monthYear}) - ${codeCount}+ Verified & Tested`,
+      // Target: "[game] working codes" - verified + count + urgency
+      title: `${game.shortName || game.name} Working Codes – ${codeCount}+ Verified (${shortMonth})`,
       description: `All ${codeCount}+ working ${game.name} promo codes for ${monthYear}. Every code verified and tested. Get free gems, skins & rewards - redeem before they expire!`,
       keywords: [
         `${game.name} working codes`,
@@ -96,7 +119,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
     },
     'new-codes': {
-      title: `${game.name} New Codes (${monthYear}) - Latest ${codeCount}+ Free Rewards`,
+      // Target: "[game] new codes" - freshness + benefit
+      title: `${game.shortName || game.name} New Codes – ${codeCount}+ ${benefit} (${shortMonth})`,
       description: `Discover the newest ${game.name} promo codes for ${monthYear}. ${codeCount}+ fresh codes just released. Get free gems, skins & exclusive rewards!`,
       keywords: [
         `${game.name} new codes`,
@@ -106,7 +130,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
     },
     'free-rewards': {
-      title: `${game.name} Free Rewards (${monthYear}) - ${codeCount}+ Codes & ${rewardCount}+ Bonuses`,
+      // Target: "[game] free rewards" - comprehensive free value
+      title: `${game.shortName || game.name} Free Rewards – ${codeCount}+ Codes & Bonuses (${shortMonth})`,
       description: `Get all free ${game.name} rewards for ${monthYear}! ${codeCount}+ promo codes plus ${rewardCount}+ daily bonuses, login rewards & free items.`,
       keywords: [
         `${game.name} free rewards`,
@@ -116,7 +141,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
     },
     'redeem-codes': {
-      title: `How to Redeem ${game.name} Codes (${monthYear}) - Step-by-Step Guide`,
+      // Target: "how to redeem [game] codes" - guide + working codes
+      title: `How to Redeem ${game.shortName || game.name} Codes – ${codeCount}+ Working (${shortMonth})`,
       description: `Complete guide to redeem ${game.name} promo codes. Step-by-step instructions for all platforms. ${codeCount}+ working codes inside!`,
       keywords: [
         `how to redeem ${game.name} codes`,

@@ -47,11 +47,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   const today = new Date()
   const dateStr = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-  const monthYear = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  const shortMonth = today.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
   const codeCount = getActivePromoCodes(game.promoCodes).length
+  const primaryReward = game.promoCodes[0]?.rewardType || 'Rewards'
+  const benefit = primaryReward === 'Primogems' ? 'Primogems' : primaryReward === 'V-Bucks' ? 'V-Bucks' : primaryReward === 'Gems' ? 'Gems' : 'Rewards'
   
   return {
-    title: `${game.name} Codes Today (${monthYear}) - ${codeCount}+ FREE Rewards Working Now`,
+    title: `${game.shortName || game.name} Codes Today – ${codeCount}+ Free ${benefit} (${shortMonth})`,
     description: `All ${codeCount}+ working ${game.name} promo codes for ${dateStr}. Get FREE gems, skins & rewards. Verified hourly - redeem before they expire!`,
     keywords: [
       `${game.name} codes today`,

@@ -52,11 +52,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   
   const currentYear = new Date().getFullYear()
-  const currentMonth = new Date().toLocaleString('default', { month: 'long' })
+  const shortMonth = new Date().toLocaleString('default', { month: 'short' })
   const codeCount = getActivePromoCodes(game.promoCodes).length
   
   return {
-    title: `How to Redeem ${game.name} Codes (${currentMonth} ${currentYear}) - Step-by-Step Guide`,
+    title: `How to Redeem ${game.shortName || game.name} Codes – ${codeCount}+ Working (${shortMonth} ${currentYear})`,
     description: `Complete guide to redeem ${game.name} promo codes. Step-by-step instructions for ${game.platforms.join(', ')}. ${codeCount}+ working codes inside. Redeem free rewards today!`,
     keywords: [
       `how to redeem ${game.name} codes`,

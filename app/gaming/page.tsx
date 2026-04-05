@@ -46,8 +46,13 @@ import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/g
 // This ensures Googlebot sees fully rendered content
 export const revalidate = 300 // Revalidate every 5 minutes
 
+// Dynamic metadata with current month/year
+const currentDate = new Date()
+const currentMonth = currentDate.toLocaleString('default', { month: 'long' })
+const currentYear = currentDate.getFullYear()
+
 export const metadata: Metadata = {
-  title: "Gaming Promo Codes April 2026 - Free Rewards & Bonuses Today",
+  title: `Gaming Codes (${currentMonth} ${currentYear}) – 500+ Free Rewards Today`,
   description: "Get 500+ working promo codes for Genshin Impact, Fortnite, RAID Shadow Legends, Roblox & more. Free in-game rewards, gems & bonuses. Verified daily - redeem now before codes expire!",
   keywords: [
     // Primary high-intent keywords

@@ -54,12 +54,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   
   const today = new Date()
-  const monthYear = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  const shortMonth = today.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
   const codeCount = getActivePromoCodes(game.promoCodes).length
   const rewardCount = game.rewards.length
   
   return {
-    title: `${game.name} Free Rewards (${monthYear}) - ${codeCount}+ Codes & ${rewardCount}+ Bonuses`,
+    title: `${game.shortName || game.name} Free Rewards – ${codeCount}+ Codes & Bonuses (${shortMonth})`,
     description: `Get all free ${game.name} rewards for ${monthYear}! ${codeCount}+ promo codes plus ${rewardCount}+ daily bonuses, login rewards & free items. No purchase needed - claim now!`,
     keywords: [
       `${game.name} free rewards`,

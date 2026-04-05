@@ -85,10 +85,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   
   const monthName = formatMonth(parsed.month)
+  const codeCount = getActivePromoCodes(game.promoCodes).length
+  const primaryReward = game.promoCodes[0]?.rewardType || 'Rewards'
+  const benefit = primaryReward === 'Primogems' ? 'Primogems' : primaryReward === 'V-Bucks' ? 'V-Bucks' : primaryReward === 'Gems' ? 'Gems' : 'Rewards'
   
   return {
-    title: `${game.name} Codes ${monthName} ${parsed.year} - All Working Codes | SaveSmart`,
-    description: `Complete list of all ${game.name} promo codes for ${monthName} ${parsed.year}. ${getActivePromoCodes(game.promoCodes).length} verified working codes. Redeem for free rewards and in-game items.`,
+    title: `${game.shortName || game.name} Codes (${monthName} ${parsed.year}) – ${codeCount}+ Free ${benefit}`,
+    description: `Complete list of all ${game.name} promo codes for ${monthName} ${parsed.year}. ${codeCount} verified working codes. Redeem for free rewards and in-game items.`,
     keywords: [
       `${game.name} codes ${monthName} ${parsed.year}`,
       `${game.name} promo codes ${parsed.year}`,
