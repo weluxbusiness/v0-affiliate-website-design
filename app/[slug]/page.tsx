@@ -174,11 +174,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const codeCount = getActivePromoCodes(game.promoCodes).length
   const rewardCount = game.rewards.length
   
-  const today = new Date()
-  const monthYear = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-  const codeCount = getActivePromoCodes(game.promoCodes).length
-  const rewardCount = game.rewards.length
-  
   // Get primary reward type for game-specific benefits
   const primaryReward = game.promoCodes[0]?.rewardType || 'Rewards'
   const rewardBenefits: Record<string, string> = {
@@ -198,7 +193,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     'Rewards': 'Free Rewards',
   }
   const benefit = rewardBenefits[primaryReward] || 'Free Rewards'
-  const shortMonth = today.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
   
   const metaByType: Record<SeoPageType, { title: string; description: string; keywords: string[] }> = {
     'codes-today': {
