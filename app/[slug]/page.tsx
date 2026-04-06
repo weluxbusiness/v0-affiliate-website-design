@@ -414,54 +414,9 @@ export default async function SeoPage({ params }: PageProps) {
   const config = pageConfig[pageType]
   const HeroIcon = config.icon
   
-  // FAQs by page type
+  // FAQs by page type (only SeoPageType: 'codes' | 'redeem-codes')
   const getFaqs = () => {
     switch (pageType) {
-      case 'working-codes':
-        return [
-          {
-            question: `How do you verify ${game.name} codes are working?`,
-            answer: `Our team tests every ${game.name} code directly in the game before adding it to our list. We check codes multiple times daily and immediately remove any that stop working.`,
-          },
-          {
-            question: `Why might a code show as working but not work for me?`,
-            answer: `You may have already redeemed the code, the code may be region-restricted, some codes are only for new players, or the code may have just expired.`,
-          },
-          {
-            question: `How often do you update the ${game.name} working codes list?`,
-            answer: `We update our ${game.name} codes list multiple times per day. Our automated system checks code validity every 10 minutes.`,
-          },
-        ]
-      case 'new-codes':
-        return [
-          {
-            question: `When does ${game.name} release new codes?`,
-            answer: `${game.name} typically releases new promo codes during game updates, special events, holidays, livestreams, and milestone celebrations.`,
-          },
-          {
-            question: `How can I be first to know about new ${game.name} codes?`,
-            answer: `Bookmark this page and check back regularly! We update our ${game.name} codes list within minutes of new codes being released.`,
-          },
-          {
-            question: `Do new ${game.name} codes expire quickly?`,
-            answer: `Some new ${game.name} codes have short expiration windows, especially event codes. We recommend redeeming new codes as soon as you see them.`,
-          },
-        ]
-      case 'free-rewards':
-        return [
-          {
-            question: `How do I get free rewards in ${game.name}?`,
-            answer: `Redeem promo codes, log in daily for login rewards, complete achievements, participate in events, and refer friends.`,
-          },
-          {
-            question: `Are ${game.name} promo codes really free?`,
-            answer: `Yes! All ${game.name} promo codes listed on SaveSmart are 100% free to use. Simply copy the code and redeem it in-game.`,
-          },
-          {
-            question: `Do I need to spend money to get ${game.name} rewards?`,
-            answer: `No! You can earn substantial rewards completely free through promo codes, daily logins, achievements, and events.`,
-          },
-        ]
       case 'redeem-codes':
         return [
           {
@@ -477,6 +432,7 @@ export default async function SeoPage({ params }: PageProps) {
             answer: `Most codes can only be redeemed once per account. However, you can use the same code on different accounts.`,
           },
         ]
+      case 'codes':
       default:
         return [
           {
@@ -486,6 +442,10 @@ export default async function SeoPage({ params }: PageProps) {
           {
             question: `Are all ${game.name} codes free?`,
             answer: `Yes! All promo codes listed on SaveSmart are 100% free to use. Simply copy and redeem in-game.`,
+          },
+          {
+            question: `How do you verify ${game.name} codes are working?`,
+            answer: `Our team tests every ${game.name} code directly in the game before adding it to our list. We check codes multiple times daily and immediately remove any that stop working.`,
           },
         ]
     }
