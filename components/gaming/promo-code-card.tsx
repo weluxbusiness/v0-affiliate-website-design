@@ -35,6 +35,9 @@ interface PromoCodeCardProps {
   game?: Game & { id?: string }
   variant?: "default" | "compact" | "featured"
   showGame?: boolean
+  showAffiliateCTA?: boolean // Show affiliate CTA even when showGame is false
+  affiliateUrl?: string // Direct affiliate URL override
+  affiliateLabel?: string // Custom CTA label like "Play RAID"
   onCopy?: (code: string) => void
   pageSlug?: string
 }
@@ -70,13 +73,21 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   game,
   variant = "default",
   showGame = false,
+  showAffiliateCTA = false,
+  affiliateUrl: affiliateUrlProp,
+  affiliateLabel,
   onCopy,
   pageSlug
 }: PromoCodeCardProps) {
   const [copied, setCopied] = useState(false)
   const { trackCodeCopy } = useGamingAnalytics()
 
+  // Compute affiliate URL
+  const computedAffiliateUrl = affiliateUrlProp || (game ? getPlayAffiliateUrl(game) : null)
+
   const handleCopy = useCallback(() => {
+    if (copied) return
+    
     navigator.clipboard.writeText(code.code)
     setCopied(true)
     onCopy?.(code.code)
@@ -89,8 +100,8 @@ export const PromoCodeCard = memo(function PromoCodeCard({
       page_slug: pageSlug,
     })
     
-    setTimeout(() => setCopied(false), 2000)
-  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy])
+    setTimeout(() => setCopied(false), 5000)
+  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy, copied])
 
   const expiringSoon = isExpiringSoon(code.expiresAt)
 
@@ -225,8 +236,8 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   // Default variant - with game logo for visual hierarchy
-  const affiliateUrl = game ? getPlayAffiliateUrl(game) : null
-  const isExternal = game ? hasExternalAffiliateLink(game) : false
+  const affiliateUrl = affiliateUrlProp || (game ? getPlayAffiliateUrl(game) : null)
+  const shouldShowCTA = showAffiliateCTA || (showGame && game && affiliateUrl)
 
   const cardContent = (
     <Card className={cn(
@@ -260,25 +271,25 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </div>
         )}
 
-        {/* Header Badges (when not showing game) */}
+        {/* Header Badges (when not showing game) - Trust + Urgency Signals */}
         {!showGame && (
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex flex-wrap items-center gap-2 mb-3">
             {code.isVerified && (
-              <Badge variant="outline" className="text-secondary border-secondary/50 text-xs">
+              <Badge variant="outline" className="text-green-600 border-green-500/50 bg-green-500/10 text-xs">
                 <ShieldCheck className="h-3 w-3 mr-1" />
-                Verified
+                Verified Working
               </Badge>
             )}
             {code.isExclusive && (
-              <Badge className="bg-secondary/20 text-secondary border-0 text-xs">
+              <Badge className="bg-purple-500/20 text-purple-600 border-0 text-xs">
                 <Sparkles className="h-3 w-3 mr-1" />
                 Exclusive
               </Badge>
             )}
             {expiringSoon && (
-              <Badge variant="destructive" className="text-xs">
+              <Badge variant="outline" className="text-xs text-amber-600 border-amber-500/50 bg-amber-500/10">
                 <Clock className="h-3 w-3 mr-1" />
-                Expiring Soon
+                Limited-time
               </Badge>
             )}
           </div>
@@ -294,9 +305,9 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               </Badge>
             )}
             {expiringSoon && (
-              <Badge variant="destructive" className="text-xs">
-                <Flame className="h-3 w-3 mr-1" />
-                Expiring Soon
+              <Badge variant="outline" className="text-xs text-amber-600 border-amber-500/50 bg-amber-500/10">
+                <Clock className="h-3 w-3 mr-1" />
+                Limited-time
               </Badge>
             )}
           </div>
@@ -317,27 +328,57 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </div>
           <Button 
             size="sm" 
-            variant="outline"
+            variant={copied ? "default" : "outline"}
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
               handleCopy()
             }}
-            className="shrink-0"
+            className={cn("shrink-0 transition-all", copied && "bg-green-600 hover:bg-green-600 text-white")}
           >
             {copied ? (
-              <Check className="h-4 w-4" />
+              <><Check className="h-4 w-4 mr-1" /> Copied</>
             ) : (
               <Copy className="h-4 w-4" />
             )}
           </Button>
         </div>
 
-        {/* Primary CTA - Play Now (Falconix affiliate network) */}
-        {showGame && game && affiliateUrl && (
+        {/* Copy Confirmation + Open Game CTA */}
+        {copied && shouldShowCTA && affiliateUrl ? (
+          <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg animate-in fade-in">
+            <p className="text-sm text-green-700 font-medium mb-2 flex items-center gap-1.5">
+              <Check className="h-4 w-4" />
+              Code copied — open the game to redeem
+            </p>
+            <Button 
+              asChild 
+              className="w-full h-10 font-bold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
+              size="sm"
+            >
+              <a 
+                href={affiliateUrl} 
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Play className="h-4 w-4 mr-2 fill-current" />
+                {affiliateLabel?.replace('& Redeem', '').trim() || "Open Game"}
+                <ExternalLink className="h-3 w-3 ml-2" />
+              </a>
+            </Button>
+          </div>
+        ) : copied ? (
+          <p className="text-xs text-green-600 font-medium mb-2 animate-in fade-in">
+            Code copied — open the game to redeem it
+          </p>
+        ) : null}
+
+        {/* Primary CTA - Play & Redeem (affiliate) - Only show when not copied */}
+        {!copied && shouldShowCTA && affiliateUrl && (
           <Button 
             asChild 
-            className="w-full h-10 font-semibold bg-green-600 hover:bg-green-700 text-white mb-3 shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
+            className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
             size="sm"
           >
             <a 
@@ -347,30 +388,39 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               onClick={(e) => e.stopPropagation()}
             >
               <Play className="h-4 w-4 mr-2 fill-current" />
-              Play Now
+              {affiliateLabel || "Play & Redeem Code"}
               <ExternalLink className="h-3 w-3 ml-2" />
             </a>
           </Button>
         )}
 
-        {/* Footer Info */}
-        <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border">
-          {code.expiresAt ? (
-            <span className={cn(
-              "flex items-center gap-1",
-              expiringSoon && "text-destructive"
-            )}>
-              <Clock className="h-3 w-3" />
-              {formatTimeRemaining(code.expiresAt)}
-            </span>
-          ) : (
-            <span className="flex items-center gap-1 text-secondary">
-              <ShieldCheck className="h-3 w-3" />
-              No expiration
-            </span>
-          )}
+        {/* Footer Info - Trust Signals (Compliance-Safe) */}
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground pt-2 border-t border-border">
+          <div className="flex items-center gap-3">
+            {code.expiresAt ? (
+              <span className={cn(
+                "flex items-center gap-1",
+                expiringSoon && "text-amber-600 font-medium"
+              )}>
+                <Clock className="h-3 w-3" />
+                {formatTimeRemaining(code.expiresAt)}
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-green-600">
+                <ShieldCheck className="h-3 w-3" />
+                No expiration
+              </span>
+            )}
+            {/* Compliant social proof - no fake numbers */}
+            {code.isVerified && (
+              <span className="flex items-center gap-1 text-blue-600">
+                <Flame className="h-3 w-3" />
+                Popular code
+              </span>
+            )}
+          </div>
           {code.successRate && (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1 text-green-600 font-medium">
               <Star className="h-3 w-3 text-amber-500" />
               {code.successRate}% success
             </span>

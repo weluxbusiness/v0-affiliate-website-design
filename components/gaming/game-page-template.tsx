@@ -13,15 +13,20 @@ import {
   Trophy,
   Star,
   Flame,
-  Play
+  Play,
+  ShieldCheck,
+  Sparkles
 } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
+import { StickyGameCTA } from "@/components/gaming/sticky-game-cta"
+import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
 import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getPlayAffiliateUrl, getRewardAffiliateUrl, hasAffiliateLinks } from "@/lib/gaming-data"
+import { cn } from "@/lib/utils"
 import { getSeoUrl } from "@/lib/seo-routes"
 import { Clock, AlertCircle, BookOpen, CheckCircle2, ArrowRight } from "lucide-react"
 
@@ -88,6 +93,7 @@ export function generateGameSchemaMarkup(game: Game, codes: PromoCode[]) {
     name: `${game.name} Promo Codes & Rewards`,
     description: game.description,
     url: pageUrl,
+    dateModified: game.lastUpdated || new Date().toISOString(),
     mainEntity: {
       "@type": "VideoGame",
       name: game.name,
@@ -236,6 +242,38 @@ export function GamePageTemplate({
         />
       )}
 
+      {/* Intent Match Block - Above Hero for Search Intent */}
+      <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4">
+        <PageContainer>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-green-200" />
+                <span className="font-bold text-lg">
+                  Working {game.shortName || game.name} Codes ({currentMonth} {currentYear})
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              <span className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1">
+                <Tag className="h-3.5 w-3.5" />
+                {activeCodes.length} active codes
+              </span>
+              {bestCode && (
+                <span className="flex items-center gap-1.5 bg-amber-400/20 rounded-full px-3 py-1">
+                  <Star className="h-3.5 w-3.5 text-amber-300" />
+                  Best: {bestCode.code}
+                </span>
+              )}
+              <span className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1">
+                <Clock className="h-3.5 w-3.5" />
+                Updated daily
+              </span>
+            </div>
+          </div>
+        </PageContainer>
+      </section>
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-12 md:py-16 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
@@ -312,8 +350,8 @@ export function GamePageTemplate({
                 Get all active {game.name} promo codes and redeem free in-game rewards. All codes verified and updated daily.
               </p>
 
-              {/* Stats */}
-              <div className="flex flex-wrap items-center gap-4 text-sm">
+              {/* Stats + Freshness Signals */}
+              <div className="flex flex-wrap items-center gap-3 text-sm">
                 <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
                   <Tag className="h-4 w-4" />
                   <span>{activeCodes.length} Active Codes</span>
@@ -322,9 +360,13 @@ export function GamePageTemplate({
                   <Trophy className="h-4 w-4" />
                   <span>{game.rewards.length} Rewards</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
+                <div className="flex items-center gap-2 bg-green-500/20 text-green-100 rounded-full px-4 py-2 border border-green-400/30">
                   <Calendar className="h-4 w-4" />
-                  <span>Updated {new Date(game.lastUpdated).toLocaleDateString()}</span>
+                  <span>Last updated: {currentMonth} {currentYear}</span>
+                </div>
+                <div className="flex items-center gap-2 bg-blue-500/20 text-blue-100 rounded-full px-4 py-2 border border-blue-400/30">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span>Codes tested hourly</span>
                 </div>
               </div>
             </div>
@@ -342,22 +384,161 @@ export function GamePageTemplate({
                   rel="nofollow sponsored noopener"
                 >
                   <Play className="h-6 w-6 fill-current" />
-                  Play {game.shortName || game.name}
+                  Play {game.shortName || game.name} & Redeem
                   <ExternalLink className="h-4 w-4" />
                 </a>
               </Button>
-              <p className="text-xs text-white/60 text-center">Free to play</p>
+              <p className="text-xs text-white/70 text-center font-medium">No signup required • Takes 30 seconds</p>
             </div>
           </div>
         </PageContainer>
       </section>
 
-      {/* Best Code Highlight */}
-      {bestCode && (
-        <section className="py-8 border-b border-border bg-muted/30">
+      {/* Best Codes Section - Above the Fold for Maximum Conversions */}
+      {activeCodes.length > 0 && (
+        <section className="py-10 border-b border-border bg-gradient-to-b from-primary/5 to-muted/30">
           <PageContainer>
-            <div className="max-w-2xl mx-auto">
-              <PromoCodeCard code={bestCode} game={game} variant="featured" />
+            {/* Visual Hook */}
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+                Claim Your Free Rewards in {game.shortName || game.name}
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Copy a code below and redeem it in-game
+              </p>
+            </div>
+
+            <div className="text-center mb-6">
+              <Badge className="bg-primary text-primary-foreground mb-3">
+                <Flame className="h-3 w-3 mr-1" />
+                Top Codes - Use These First
+              </Badge>
+              <h3 className="text-xl font-bold text-foreground">
+                Best {game.shortName || game.name} Codes ({currentMonth} {currentYear})
+              </h3>
+              <p className="text-muted-foreground mt-2">
+                Highest value codes verified and working right now
+              </p>
+              <p className="text-xs text-amber-600 mt-1 flex items-center justify-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                Codes expire without notice — redeem while they work
+              </p>
+            </div>
+            
+            {/* Top 3 Best Codes */}
+            <div className="grid gap-4 md:grid-cols-3 max-w-4xl mx-auto">
+              {sortPromoCodesByValue(activeCodes).slice(0, 3).map((code, index) => (
+                <Card key={code.id} className={cn(
+                  "relative overflow-hidden border-2 transition-all hover:shadow-xl",
+                  index === 0 && "border-primary/50 bg-gradient-to-br from-primary/10 to-secondary/5",
+                  index === 1 && "border-secondary/50 bg-secondary/5",
+                  index === 2 && "border-amber-500/50 bg-amber-500/5"
+                )}>
+                  <CardContent className="p-5">
+                    {/* Rank Badge */}
+                    <div className="absolute top-3 right-3">
+                      <Badge className={cn(
+                        "text-xs",
+                        index === 0 && "bg-green-600 text-white",
+                        index === 1 && "bg-secondary text-secondary-foreground",
+                        index === 2 && "bg-amber-500 text-white"
+                      )}>
+                        {index === 0 ? (
+                          <><Trophy className="h-3 w-3 mr-1" />#1 Recommended</>
+                        ) : (
+                          `#${index + 1} Best`
+                        )}
+                      </Badge>
+                    </div>
+                    
+                    {/* Verification + Urgency */}
+                    <div className="flex items-center gap-2 mb-3">
+                      {code.isVerified && (
+                        <Badge variant="outline" className="text-green-600 border-green-500/50 bg-green-500/10 text-xs">
+                          <ShieldCheck className="h-3 w-3 mr-1" />
+                          Verified Working
+                        </Badge>
+                      )}
+                      {code.isExclusive && (
+                        <Badge className="bg-purple-500/20 text-purple-600 border-0 text-xs">
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          New Players
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    {/* Reward */}
+                    <p className="font-bold text-foreground text-lg mb-3">
+                      {code.reward}
+                    </p>
+                    
+                    {/* Code Box */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex-1 flex items-center gap-2 border-2 border-dashed border-primary/40 rounded-lg px-3 py-2.5 bg-background">
+                        <Gift className="h-4 w-4 text-primary" />
+                        <code className="font-mono font-bold text-primary text-lg">
+                          {code.code}
+                        </code>
+                      </div>
+                    </div>
+                    
+                    {/* CTA */}
+                    <Button 
+                      asChild 
+                      className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                    >
+                      <a 
+                        href={getPlayAffiliateUrl(game)} 
+                        target="_blank"
+                        rel="nofollow sponsored noopener"
+                      >
+                        <Play className="h-4 w-4 mr-2 fill-current" />
+                        Play {game.shortName || game.name} & Redeem
+                      </a>
+                    </Button>
+                    
+                    {/* Compliant Social Proof */}
+                    <p className="text-center text-xs text-muted-foreground mt-3">
+                      <Flame className="h-3 w-3 inline mr-1 text-amber-500" />
+                      Popular code among players
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Value Block - What You Get */}
+            <div className="mt-8 max-w-2xl mx-auto">
+              <Card className="border-green-500/20 bg-gradient-to-br from-green-500/5 to-emerald-500/5">
+                <CardContent className="p-5">
+                  <h3 className="font-bold text-foreground text-center mb-4">
+                    What you get with these codes:
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Gift className="h-5 w-5 text-primary" />
+                      </div>
+                      <p className="text-sm font-medium text-foreground">Free Champions</p>
+                      <p className="text-xs text-muted-foreground">Worth $20+ value</p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
+                        <Star className="h-5 w-5 text-amber-500" />
+                      </div>
+                      <p className="text-sm font-medium text-foreground">Silver Rewards</p>
+                      <p className="text-xs text-muted-foreground">In-game currency</p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+                        <Zap className="h-5 w-5 text-blue-500" />
+                      </div>
+                      <p className="text-sm font-medium text-foreground">Energy Boosts</p>
+                      <p className="text-xs text-muted-foreground">Play more, progress faster</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </PageContainer>
         </section>
@@ -396,7 +577,13 @@ export function GamePageTemplate({
               
               <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {recentCodes.map((code) => (
-                  <PromoCodeCard key={code.id} code={code} />
+                  <PromoCodeCard 
+                    key={code.id} 
+                    code={code}
+                    showAffiliateCTA={true}
+                    affiliateUrl={getPlayAffiliateUrl(game)}
+                    affiliateLabel={`Play ${game.shortName || game.name} & Redeem`}
+                  />
                 ))}
               </div>
               
@@ -429,25 +616,136 @@ export function GamePageTemplate({
             All {activeCodes.length} working codes verified and tested. Copy any code below and redeem it in-game for free rewards.
           </p>
 
-          {activeCodes.length > 0 ? (
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {activeCodes.map((code) => (
-                <PromoCodeCard key={code.id} code={code} />
-              ))}
-            </div>
-          ) : (
-            <Card className="border-dashed">
-              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                <Tag className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  No active codes right now
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Check back soon - we update codes daily!
-                </p>
-              </CardContent>
-            </Card>
-          )}
+          {/* Regular Codes (non-exclusive) */}
+          {(() => {
+            const regularCodes = activeCodes.filter(code => !code.isExclusive)
+            const exclusiveCodes = activeCodes.filter(code => code.isExclusive)
+            
+            return (
+              <>
+                {regularCodes.length > 0 ? (
+                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-10">
+                    {regularCodes.map((code) => (
+                      <PromoCodeCard 
+                        key={code.id} 
+                        code={code}
+                        showAffiliateCTA={true}
+                        affiliateUrl={getPlayAffiliateUrl(game)}
+                        affiliateLabel={`Play ${game.shortName || game.name} & Redeem`}
+                      />
+                    ))}
+                  </div>
+                ) : activeCodes.length === 0 ? (
+                  <Card className="border-dashed mb-10">
+                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                      <Tag className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
+                        No active codes right now
+                      </h3>
+                      <p className="text-muted-foreground mb-4">
+                        Check back soon - we update codes daily!
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : null}
+
+                {/* New Player / Exclusive Codes Section */}
+                {exclusiveCodes.length > 0 && (
+                  <div className="mt-8 pt-8 border-t border-border">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10">
+                        <Zap className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-foreground">
+                          New Player Codes
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          For accounts under 7 days old - Choose your best code!
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Warning Banner */}
+                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-6">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-amber-700 mb-1">Important: You Can Only Use ONE New Player Code</h4>
+                          <p className="text-sm text-amber-700/80">
+                            New player codes are exclusive - once you redeem one, you cannot use another. 
+                            Choose wisely! We recommend codes that give Legendary champions.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Best New Player Code Highlight */}
+                    {(() => {
+                      const bestNewPlayerCode = sortPromoCodesByValue(exclusiveCodes)[0]
+                      if (!bestNewPlayerCode) return null
+                      
+                      return (
+                        <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-2 border-purple-500/30 rounded-xl p-5 mb-6">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Badge className="bg-purple-600 text-white">
+                              <Star className="h-3 w-3 mr-1" />
+                              Best New Player Code
+                            </Badge>
+                            <Badge variant="outline" className="text-green-600 border-green-500/50">
+                              <ShieldCheck className="h-3 w-3 mr-1" />
+                              Verified
+                            </Badge>
+                          </div>
+                          <div className="flex flex-col md:flex-row md:items-center gap-4">
+                            <div className="flex-1">
+                              <p className="font-bold text-xl text-foreground mb-2">
+                                {bestNewPlayerCode.reward}
+                              </p>
+                              <div className="flex items-center gap-2 border-2 border-dashed border-purple-500/40 rounded-lg px-4 py-2.5 bg-background w-fit">
+                                <Gift className="h-5 w-5 text-purple-600" />
+                                <code className="font-mono font-bold text-purple-600 text-xl">
+                                  {bestNewPlayerCode.code}
+                                </code>
+                              </div>
+                            </div>
+                            <Button 
+                              asChild 
+                              size="lg"
+                              className="h-12 font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                            >
+                              <a 
+                                href={getPlayAffiliateUrl(game)} 
+                                target="_blank"
+                                rel="nofollow sponsored noopener"
+                              >
+                                <Play className="h-5 w-5 mr-2 fill-current" />
+                                Play & Get Legendary Champion
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                      )
+                    })()}
+                    
+                    {/* Other New Player Codes */}
+                    <p className="text-sm font-medium text-muted-foreground mb-4">Other new player codes:</p>
+                    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                      {exclusiveCodes.slice(1).map((code) => (
+                        <PromoCodeCard 
+                          key={code.id} 
+                          code={code}
+                          showAffiliateCTA={true}
+                          affiliateUrl={getPlayAffiliateUrl(game)}
+                          affiliateLabel={`Play ${game.shortName || game.name} & Redeem`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )
+          })()}
         </PageContainer>
       </section>
 
@@ -836,6 +1134,81 @@ export function GamePageTemplate({
         </section>
       )}
 
+      {/* Game Guides - Internal Linking for SEO */}
+      <section className="py-10 md:py-12 border-b border-border">
+        <PageContainer>
+          <h3 className="text-xl font-bold text-foreground mb-2">
+            More {game.shortName || game.name} Guides
+          </h3>
+          <p className="text-muted-foreground text-sm mb-6">
+            Learn more about {game.shortName || game.name} with our helpful guides
+          </p>
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <Link
+              href={getSeoUrl(game.slug, 'redeem-codes')}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <BookOpen className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">How to Redeem Codes</p>
+                <p className="text-xs text-muted-foreground">Step-by-step guide</p>
+              </div>
+            </Link>
+            <Link
+              href={`/gaming/${game.slug}`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <div className="h-10 w-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                <Gift className="h-5 w-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">{game.shortName || game.name} Rewards</p>
+                <p className="text-xs text-muted-foreground">All free rewards</p>
+              </div>
+            </Link>
+            <Link
+              href={`/gaming/${game.slug}`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                <Zap className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">Beginner Guide</p>
+                <p className="text-xs text-muted-foreground">Tips for new players</p>
+              </div>
+            </Link>
+            <Link
+              href={`/gaming/${game.slug}`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+                <Trophy className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">Leveling Tips</p>
+                <p className="text-xs text-muted-foreground">Progress faster</p>
+              </div>
+            </Link>
+          </div>
+
+          {/* Monetization Link - Looking to save more? */}
+          <div className="mt-8 text-center">
+            <p className="text-muted-foreground mb-3">Looking to save more?</p>
+            <Link
+              href="/deals"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary font-medium transition-colors"
+            >
+              <Gift className="h-5 w-5" />
+              Browse All Deals & Savings
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </PageContainer>
+      </section>
+
       {/* Category Links & Popular Games - Internal Linking for SEO */}
       <section className="py-10 md:py-12 bg-muted/30">
         <PageContainer>
@@ -915,6 +1288,23 @@ export function GamePageTemplate({
           </div>
         </PageContainer>
       </section>
+
+      {/* Sticky CTA - Mobile & Desktop */}
+      <StickyGameCTA
+        gameName={game.shortName || game.name}
+        affiliateUrl={getPlayAffiliateUrl(game)}
+      />
+
+      {/* Exit Intent Popup */}
+      {bestCode && (
+        <ExitIntentPopup
+          gameName={game.name}
+          gameShortName={game.shortName}
+          affiliateUrl={getPlayAffiliateUrl(game)}
+          bestCode={bestCode.code}
+          bestCodeReward={bestCode.reward}
+        />
+      )}
     </main>
   )
 }
