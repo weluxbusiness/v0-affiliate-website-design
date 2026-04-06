@@ -1212,26 +1212,19 @@ export function GamePageTemplate({
       {/* Category Links & Popular Games - Internal Linking for SEO */}
       <section className="py-10 md:py-12 bg-muted/30">
         <PageContainer>
-          {/* Popular Games Internal Links */}
+          {/* Popular Games Internal Links - Dynamic from Data */}
           <h3 className="text-xl font-bold text-foreground mb-4">
             More Popular Game Codes
           </h3>
           <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-8">
-            {[
-              { href: '/gaming/genshin-impact', label: 'Genshin Impact' },
-              { href: '/gaming/raid-shadow-legends', label: 'RAID Shadow Legends' },
-              { href: '/gaming/fortnite', label: 'Fortnite' },
-              { href: '/gaming/roblox', label: 'Roblox' },
-              { href: '/gaming/call-of-duty-mobile', label: 'COD Mobile' },
-              { href: '/gaming/honkai-star-rail', label: 'Honkai Star Rail' },
-            ].filter(link => !link.href.includes(game.slug)).slice(0, 6).map((gameLink) => (
+            {relatedGames.slice(0, 6).map((relatedGame) => (
               <Link
-                key={gameLink.href}
-                href={gameLink.href}
+                key={relatedGame.slug}
+                href={`/gaming/${relatedGame.slug}`}
                 className="flex items-center gap-2 p-3 rounded-lg border border-border bg-background hover:border-green-500/50 hover:bg-green-500/5 text-sm font-medium text-foreground transition-colors"
               >
                 <Gamepad2 className="h-4 w-4 text-green-600 shrink-0" />
-                <span className="truncate">{gameLink.label} Codes</span>
+                <span className="truncate">{relatedGame.shortName || relatedGame.name} Codes</span>
               </Link>
             ))}
           </div>
