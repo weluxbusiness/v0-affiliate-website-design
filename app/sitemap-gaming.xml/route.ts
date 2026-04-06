@@ -1,8 +1,10 @@
-import { gamesData, getGameSlugsForSitemap } from "@/lib/gaming-data"
+import { getGameSlugsForSitemap } from "@/lib/gaming-data"
 import { getAllGames } from "@/lib/gaming-server"
 
 const BASE_URL = "https://savesmart.bio"
 
+// REDUCED SITEMAP - Only high-value pages for better indexing
+// Max ~30 URLs to avoid index bloat and soft 404 issues
 export const dynamic = "force-dynamic"
 export const revalidate = 3600 // 1 hour
 
@@ -28,139 +30,37 @@ export async function GET(): Promise<Response> {
       gameSlugs = getGameSlugsForSitemap()
     }
     
-    // Use the most recent game update for freshness signal
+    // LIMIT to top 10 games by most recent update to keep sitemap lean
+    const topGames = gameSlugs
+      .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime())
+      .slice(0, 10)
+    
     const currentDate = new Date()
-    const mostRecentGameUpdate = gameSlugs.length > 0 
-      ? gameSlugs.reduce((latest, game) => 
-          new Date(game.lastUpdated) > new Date(latest) ? game.lastUpdated : latest, 
-          gameSlugs[0].lastUpdated
-        )
-      : currentDate.toISOString()
-    const lastModified = mostRecentGameUpdate
+    const lastModified = currentDate.toISOString()
 
-    // Static gaming pages - SEO priority pages (boosted for better indexing)
+    // MINIMAL static pages - only essential entry points
     const staticPages = [
-      { url: "/gaming", priority: "0.95", changefreq: "daily" },
-      { url: "/gaming/promo-codes", priority: "0.9", changefreq: "daily" },
-      { url: "/gaming/free-rewards", priority: "0.9", changefreq: "daily" },
-      { url: "/gaming/new-player-deals", priority: "0.9", changefreq: "daily" },
-      { url: "/gaming/today", priority: "0.95", changefreq: "hourly" },
-      // SEO entry pages for high-intent keywords
-      { url: "/gaming/best-codes", priority: "0.9", changefreq: "daily" },
-      { url: "/gaming/all-codes", priority: "0.85", changefreq: "daily" },
-      { url: "/gaming/top-games", priority: "0.85", changefreq: "daily" },
+      { url: "/gaming", priority: "0.9", changefreq: "daily" },
     ]
 
-    // Get current month info for monthly code pages
-    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
-    const currentMonth = months[currentDate.getMonth()]
-    const currentYear = currentDate.getFullYear()
-    const nextMonth = months[(currentDate.getMonth() + 1) % 12]
-    const nextMonthYear = currentDate.getMonth() === 11 ? currentYear + 1 : currentYear
-
-    // Dynamic game pages - boosted priorities for better indexing
-    // Individual game pages are key landing pages for "[game] promo codes" searches
-    const gamePages = gameSlugs.flatMap(({ slug, lastUpdated }) => [
-      // Main game overview page (nested URL - stays nested)
+    // HIGH-VALUE game pages ONLY
+    // Only 2 page types per game: codes + redeem-codes
+    // Total: 10 games x 2 pages = 20 game pages + 1 static = 21 URLs max
+    const gamePages = topGames.flatMap(({ slug, lastUpdated }) => [
+      // Main codes page - targets "[game] codes" searches
+      // This is the PRIMARY landing page for each game
       {
-        url: `/gaming/${slug}`,
-        lastmod: lastUpdated,
-        priority: "0.85",
-        changefreq: "daily",
-      },
-      {
-        url: `/gaming/${slug}/codes`,
-        lastmod: lastUpdated,
-        priority: "0.8",
-        changefreq: "daily",
-      },
-      {
-        url: `/gaming/${slug}/rewards`,
-        lastmod: lastUpdated,
-        priority: "0.75",
-        changefreq: "weekly",
-      },
-      // === FLAT SEO URLs (primary, canonical) ===
-      // These are the canonical URLs that match search intent
-      // Example: /raid-shadow-legends-working-codes
-      
-      // Codes today - targets "[game] codes today" searches
-      {
-        url: `/${slug}-codes-today`,
-        lastmod: lastModified,
-        priority: "0.95", // Highest priority - matches exact search queries
-        changefreq: "hourly",
-      },
-      // Working codes - targets "[game] working codes" searches
-      {
-        url: `/${slug}-working-codes`,
+        url: `/${slug}-codes`,
         lastmod: lastModified,
         priority: "0.95",
-        changefreq: "hourly",
-      },
-      // New codes - targets "[game] new codes" searches
-      {
-        url: `/${slug}-new-codes`,
-        lastmod: lastModified,
-        priority: "0.95",
-        changefreq: "hourly",
-      },
-      // Free rewards - targets "[game] free rewards" searches
-      {
-        url: `/${slug}-free-rewards`,
-        lastmod: lastModified,
-        priority: "0.9",
         changefreq: "daily",
       },
       // Redeem codes guide - targets "how to redeem [game] codes" searches
+      // Informational content with high search intent
       {
         url: `/${slug}-redeem-codes`,
         lastmod: lastUpdated,
-        priority: "0.9",
-        changefreq: "weekly",
-      },
-      // Monthly codes pages - target "[game] codes [month] [year]" searches
-      {
-        url: `/gaming/${slug}/codes-${currentMonth}-${currentYear}`,
-        lastmod: lastModified,
-        priority: "0.8",
-        changefreq: "daily",
-      },
-      {
-        url: `/gaming/${slug}/codes-${nextMonth}-${nextMonthYear}`,
-        lastmod: lastModified,
-        priority: "0.7",
-        changefreq: "weekly",
-      },
-      // Blog/Guide pages - flat URLs for SEO (target "[game] tips/beginner guide/strategies" searches)
-      {
-        url: `/${slug}-how-to-get-free-rewards`,
-        lastmod: lastUpdated,
-        priority: "0.9",
-        changefreq: "weekly",
-      },
-      {
-        url: `/${slug}-tips-and-tricks`,
-        lastmod: lastUpdated,
-        priority: "0.9",
-        changefreq: "weekly",
-      },
-      {
-        url: `/${slug}-beginner-guide`,
-        lastmod: lastUpdated,
-        priority: "0.9",
-        changefreq: "weekly",
-      },
-      {
-        url: `/${slug}-how-to-level-up-fast`,
-        lastmod: lastUpdated,
-        priority: "0.9",
-        changefreq: "weekly",
-      },
-      {
-        url: `/${slug}-best-strategies`,
-        lastmod: lastUpdated,
-        priority: "0.9",
+        priority: "0.85",
         changefreq: "weekly",
       },
     ])

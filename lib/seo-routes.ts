@@ -6,18 +6,28 @@
 
 import { getAllGameSlugs } from "@/lib/gaming-data"
 
-// All SEO page variations (promo code focused)
-export type SeoPageType = 'codes-today' | 'working-codes' | 'new-codes' | 'free-rewards' | 'redeem-codes'
+// HIGH-VALUE SEO page types only (reduced from 5 to 2 for better indexing)
+// These are the only pages that should be indexed by Google
+export type SeoPageType = 'codes' | 'redeem-codes'
 
 export const SEO_PAGE_TYPES: SeoPageType[] = [
-  'codes-today',
-  'working-codes', 
-  'new-codes',
-  'free-rewards',
-  'redeem-codes',
+  'codes',        // Main codes page - targets "[game] codes" searches
+  'redeem-codes', // Redeem guide - targets "how to redeem [game] codes" searches
 ]
 
-// Blog/Guide page types (informational content for topical authority)
+// Low-value page types that should be noindexed or removed
+// These create index bloat and thin content issues
+export type LowValuePageType = 'codes-today' | 'working-codes' | 'new-codes' | 'free-rewards'
+
+export const LOW_VALUE_PAGE_TYPES: LowValuePageType[] = [
+  'codes-today',
+  'working-codes',
+  'new-codes',
+  'free-rewards',
+]
+
+// Blog/Guide page types - NOINDEXED (thin content, duplicate)
+// Keeping for backward compatibility but not indexing
 export type BlogPageType = 'how-to-get-free-rewards' | 'tips-and-tricks' | 'beginner-guide' | 'how-to-level-up-fast' | 'best-strategies'
 
 export const BLOG_PAGE_TYPES: BlogPageType[] = [
@@ -28,17 +38,19 @@ export const BLOG_PAGE_TYPES: BlogPageType[] = [
   'best-strategies',
 ]
 
-// Combined type for all flat SEO pages
-export type AllSeoPageType = SeoPageType | BlogPageType
+// Combined type for all flat SEO pages (for routing purposes)
+export type AllSeoPageType = SeoPageType | LowValuePageType | BlogPageType
 
 export const ALL_SEO_PAGE_TYPES: AllSeoPageType[] = [
   ...SEO_PAGE_TYPES,
+  ...LOW_VALUE_PAGE_TYPES,
   ...BLOG_PAGE_TYPES,
 ]
 
 /**
- * Parse a flat SEO slug like "raid-shadow-legends-working-codes"
+ * Parse a flat SEO slug like "raid-shadow-legends-codes"
  * Returns the game slug and page type
+ * Only matches HIGH-VALUE page types (codes, redeem-codes)
  */
 export function parseSeoSlug(slug: string): { gameSlug: string; pageType: SeoPageType } | null {
   const gameSlugs = getAllGameSlugs()
@@ -57,6 +69,36 @@ export function parseSeoSlug(slug: string): { gameSlug: string; pageType: SeoPag
   }
   
   return null
+}
+
+/**
+ * Parse a low-value SEO slug (for redirect handling)
+ * Returns the game slug and page type for low-value pages
+ */
+export function parseLowValueSlug(slug: string): { gameSlug: string; pageType: LowValuePageType } | null {
+  const gameSlugs = getAllGameSlugs()
+  const sortedSlugs = [...gameSlugs].sort((a, b) => b.length - a.length)
+  
+  for (const gameSlug of sortedSlugs) {
+    for (const pageType of LOW_VALUE_PAGE_TYPES) {
+      const expectedSlug = `${gameSlug}-${pageType}`
+      if (slug === expectedSlug) {
+        return { gameSlug, pageType }
+      }
+    }
+  }
+  
+  return null
+}
+
+/**
+ * Check if a slug should be noindexed
+ * Returns true for low-value and blog pages
+ */
+export function shouldNoindex(slug: string): boolean {
+  const lowValueParsed = parseLowValueSlug(slug)
+  const blogParsed = parseBlogSlug(slug)
+  return !!(lowValueParsed || blogParsed)
 }
 
 /**

@@ -43,13 +43,17 @@ import type { GameReward } from "@/lib/gaming-data"
 import { 
   parseSeoSlug, 
   parseBlogSlug,
+  parseLowValueSlug,
   generateAllSeoSlugs, 
   generateAllBlogSlugs,
   getSeoUrl,
   getBlogUrl,
+  shouldNoindex,
   type SeoPageType,
   type BlogPageType,
-  BLOG_PAGE_TYPES
+  type LowValuePageType,
+  BLOG_PAGE_TYPES,
+  LOW_VALUE_PAGE_TYPES
 } from "@/lib/seo-routes"
 import { PageTypeLinks, RelatedGamesLinks, PopularGamesLinks } from "@/components/gaming/cross-links"
 import { BlogPageContent } from "@/components/gaming/blog-page-content"
@@ -166,6 +170,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       alternates: {
         canonical: `https://savesmart.bio/${slug}`,
       },
+      // NOINDEX blog pages - thin content / index bloat
+      robots: {
+        index: false,
+        follow: true,
+        googleBot: {
+          index: false,
+          follow: true,
+        },
+      },
     }
   }
   
@@ -195,48 +208,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const benefit = rewardBenefits[primaryReward] || 'Free Rewards'
   
   const metaByType: Record<SeoPageType, { title: string; description: string; keywords: string[] }> = {
-    'codes-today': {
-      // Target: "[game] codes today" - under 60 chars, urgency + benefit
-      title: `${game.shortName || game.name} Codes Today – ${codeCount}+ ${benefit} (${shortMonth})`,
-      description: `All ${codeCount}+ working ${game.name} promo codes for today. Get FREE gems, skins & rewards. Verified hourly - redeem before they expire!`,
+    // PRIMARY page type - targets "[game] codes" searches (highest volume)
+    'codes': {
+      title: `${game.shortName || game.name} Codes (${shortMonth}) – ${codeCount}+ FREE ${benefit}`,
+      description: `All ${codeCount}+ working ${game.name} promo codes for ${monthYear}. Get FREE gems, skins, items & exclusive rewards. Verified and updated daily!`,
       keywords: [
-        `${game.name} codes today`,
-        `${game.name} new codes`,
-        `today's ${game.name} codes`,
-        `${game.name} working codes`,
-      ],
-    },
-    'working-codes': {
-      // Target: "[game] working codes" - verified + count + urgency
-      title: `${game.shortName || game.name} Working Codes – ${codeCount}+ Verified (${shortMonth})`,
-      description: `All ${codeCount}+ working ${game.name} promo codes for ${monthYear}. Every code verified and tested. Get free gems, skins & rewards - redeem before they expire!`,
-      keywords: [
-        `${game.name} working codes`,
-        `${game.name} codes that work`,
-        `${game.name} verified codes`,
-        `working ${game.name} promo codes`,
-      ],
-    },
-    'new-codes': {
-      // Target: "[game] new codes" - freshness + benefit
-      title: `${game.shortName || game.name} New Codes – ${codeCount}+ ${benefit} (${shortMonth})`,
-      description: `Discover the newest ${game.name} promo codes for ${monthYear}. ${codeCount}+ fresh codes just released. Get free gems, skins & exclusive rewards!`,
-      keywords: [
-        `${game.name} new codes`,
-        `${game.name} latest codes`,
-        `new ${game.name} promo codes`,
-        `${game.name} fresh codes`,
-      ],
-    },
-    'free-rewards': {
-      // Target: "[game] free rewards" - comprehensive free value
-      title: `${game.shortName || game.name} Free Rewards – ${codeCount}+ Codes & Bonuses (${shortMonth})`,
-      description: `Get all free ${game.name} rewards for ${monthYear}! ${codeCount}+ promo codes plus ${rewardCount}+ daily bonuses, login rewards & free items.`,
-      keywords: [
-        `${game.name} free rewards`,
-        `${game.name} free stuff`,
-        `${game.name} free codes`,
-        `${game.name} daily rewards`,
+        `${game.name} codes`,
+        `${game.name} promo codes`,
+        `${game.name} codes ${monthYear.toLowerCase()}`,
+        `${game.name} redeem codes`,
+        `free ${game.name} codes`,
       ],
     },
     'redeem-codes': {
@@ -343,21 +324,29 @@ function RewardCard({ reward }: { reward: GameReward }) {
 export default async function SeoPage({ params }: PageProps) {
   const { slug } = await params
   
-  // Try parsing as SEO page first, then blog page
+  // Try parsing as SEO page first, then low-value page, then blog page
   const seoParsed = parseSeoSlug(slug)
+  const lowValueParsed = parseLowValueSlug(slug)
   const blogParsed = parseBlogSlug(slug)
   
-  if (!seoParsed && !blogParsed) {
+  if (!seoParsed && !lowValueParsed && !blogParsed) {
     notFound()
   }
   
-  const gameSlug = seoParsed?.gameSlug || blogParsed?.gameSlug
+  const gameSlug = seoParsed?.gameSlug || lowValueParsed?.gameSlug || blogParsed?.gameSlug
   const game = getGameBySlug(gameSlug!)
   if (!game) {
     notFound()
   }
   
-  // Handle blog pages
+  // Handle low-value pages - redirect to main codes page via 301
+  // These pages cause index bloat and thin content issues
+  if (lowValueParsed) {
+    const { redirect } = await import('next/navigation')
+    redirect(`/${game.slug}-codes`)
+  }
+  
+  // Handle blog pages (noindexed but still accessible)
   if (blogParsed) {
     return <BlogPageContent game={game} pageType={blogParsed.pageType} slug={slug} />
   }
@@ -401,36 +390,18 @@ export default async function SeoPage({ params }: PageProps) {
   const hasPC = game.platforms.some(p => ['PC', 'Windows', 'Mac'].includes(p))
   const hasConsole = game.platforms.some(p => ['PlayStation', 'Xbox', 'Nintendo Switch', 'Console'].includes(p))
   
-  // Page configuration by type
+  // Page configuration by type (only high-value pages)
   const pageConfig: Record<SeoPageType, {
     heroGradient: string
     icon: typeof Tag
     badge: string
     headingPrefix: string
   }> = {
-    'codes-today': {
-      heroGradient: 'from-blue-600 to-indigo-700',
-      icon: Calendar,
-      badge: 'Codes Today',
-      headingPrefix: 'Codes Today',
-    },
-    'working-codes': {
+    'codes': {
       heroGradient: 'from-green-600 to-emerald-700',
-      icon: CheckCircle2,
-      badge: 'All Verified',
-      headingPrefix: 'Working Codes',
-    },
-    'new-codes': {
-      heroGradient: 'from-amber-500 to-orange-600',
-      icon: Sparkles,
-      badge: 'Fresh Codes',
-      headingPrefix: 'New Codes',
-    },
-    'free-rewards': {
-      heroGradient: 'from-pink-500 to-rose-600',
-      icon: Gift,
-      badge: '100% Free',
-      headingPrefix: 'Free Rewards',
+      icon: Tag,
+      badge: 'All Codes',
+      headingPrefix: 'Promo Codes',
     },
     'redeem-codes': {
       heroGradient: 'from-emerald-600 to-teal-700',
@@ -443,54 +414,9 @@ export default async function SeoPage({ params }: PageProps) {
   const config = pageConfig[pageType]
   const HeroIcon = config.icon
   
-  // FAQs by page type
+  // FAQs by page type (only SeoPageType: 'codes' | 'redeem-codes')
   const getFaqs = () => {
     switch (pageType) {
-      case 'working-codes':
-        return [
-          {
-            question: `How do you verify ${game.name} codes are working?`,
-            answer: `Our team tests every ${game.name} code directly in the game before adding it to our list. We check codes multiple times daily and immediately remove any that stop working.`,
-          },
-          {
-            question: `Why might a code show as working but not work for me?`,
-            answer: `You may have already redeemed the code, the code may be region-restricted, some codes are only for new players, or the code may have just expired.`,
-          },
-          {
-            question: `How often do you update the ${game.name} working codes list?`,
-            answer: `We update our ${game.name} codes list multiple times per day. Our automated system checks code validity every 10 minutes.`,
-          },
-        ]
-      case 'new-codes':
-        return [
-          {
-            question: `When does ${game.name} release new codes?`,
-            answer: `${game.name} typically releases new promo codes during game updates, special events, holidays, livestreams, and milestone celebrations.`,
-          },
-          {
-            question: `How can I be first to know about new ${game.name} codes?`,
-            answer: `Bookmark this page and check back regularly! We update our ${game.name} codes list within minutes of new codes being released.`,
-          },
-          {
-            question: `Do new ${game.name} codes expire quickly?`,
-            answer: `Some new ${game.name} codes have short expiration windows, especially event codes. We recommend redeeming new codes as soon as you see them.`,
-          },
-        ]
-      case 'free-rewards':
-        return [
-          {
-            question: `How do I get free rewards in ${game.name}?`,
-            answer: `Redeem promo codes, log in daily for login rewards, complete achievements, participate in events, and refer friends.`,
-          },
-          {
-            question: `Are ${game.name} promo codes really free?`,
-            answer: `Yes! All ${game.name} promo codes listed on SaveSmart are 100% free to use. Simply copy the code and redeem it in-game.`,
-          },
-          {
-            question: `Do I need to spend money to get ${game.name} rewards?`,
-            answer: `No! You can earn substantial rewards completely free through promo codes, daily logins, achievements, and events.`,
-          },
-        ]
       case 'redeem-codes':
         return [
           {
@@ -506,6 +432,7 @@ export default async function SeoPage({ params }: PageProps) {
             answer: `Most codes can only be redeemed once per account. However, you can use the same code on different accounts.`,
           },
         ]
+      case 'codes':
       default:
         return [
           {
@@ -515,6 +442,10 @@ export default async function SeoPage({ params }: PageProps) {
           {
             question: `Are all ${game.name} codes free?`,
             answer: `Yes! All promo codes listed on SaveSmart are 100% free to use. Simply copy and redeem in-game.`,
+          },
+          {
+            question: `How do you verify ${game.name} codes are working?`,
+            answer: `Our team tests every ${game.name} code directly in the game before adding it to our list. We check codes multiple times daily and immediately remove any that stop working.`,
           },
         ]
     }
@@ -567,22 +498,10 @@ export default async function SeoPage({ params }: PageProps) {
               <HeroIcon className="h-3 w-3 mr-1" />
               {config.badge}
             </Badge>
-            {pageType === 'working-codes' && (
+            {pageType === 'codes' && (
               <Badge className="bg-emerald-400/20 text-emerald-100 border-0">
                 <CheckCircle2 className="h-3 w-3 mr-1" />
-                {verifiedCodes.length} Tested Today
-              </Badge>
-            )}
-            {pageType === 'new-codes' && (
-              <Badge className="bg-amber-300/20 text-amber-100 border-0">
-                <Zap className="h-3 w-3 mr-1" />
-                {newThisWeek.length} Added This Week
-              </Badge>
-            )}
-            {pageType === 'free-rewards' && (
-              <Badge className="bg-pink-300/20 text-pink-100 border-0">
-                <Sparkles className="h-3 w-3 mr-1" />
-                {activeCodes.length + game.rewards.length}+ Rewards
+                {verifiedCodes.length} Verified
               </Badge>
             )}
             <span className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium">
@@ -596,10 +515,7 @@ export default async function SeoPage({ params }: PageProps) {
           </h1>
           
           <p className="text-lg text-white/80 max-w-2xl mb-6">
-            {pageType === 'codes-today' && `All working ${game.name} promo codes for ${dateStr}. We check and verify codes every hour.`}
-            {pageType === 'working-codes' && `Every code on this page has been verified and tested by our team. We check ${game.name} codes multiple times daily.`}
-            {pageType === 'new-codes' && `The latest ${game.name} promo codes released this month. We update this list daily so you never miss a new code.`}
-            {pageType === 'free-rewards' && `Every way to get free rewards in ${game.name}! All working promo codes, daily bonuses, and free items.`}
+            {pageType === 'codes' && `All working ${game.name} promo codes for ${monthYear}. We check and verify codes multiple times daily.`}
             {pageType === 'redeem-codes' && `Complete guide to redeeming ${game.name} promo codes on ${game.platforms.join(', ')}.`}
           </p>
           
@@ -611,7 +527,7 @@ export default async function SeoPage({ params }: PageProps) {
                 <p className="text-lg font-bold">{activeCodes.length}</p>
               </div>
             </div>
-            {pageType === 'working-codes' && (
+            {pageType === 'codes' && (
               <>
                 <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10">
                   <CheckCircle2 className="h-5 w-5" />
@@ -628,15 +544,6 @@ export default async function SeoPage({ params }: PageProps) {
                   </div>
                 </div>
               </>
-            )}
-            {pageType === 'free-rewards' && (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10">
-                <Gift className="h-5 w-5" />
-                <div>
-                  <p className="text-xs text-white/70">Bonus Rewards</p>
-                  <p className="text-lg font-bold">{game.rewards.length}</p>
-                </div>
-              </div>
             )}
           </div>
           
@@ -665,152 +572,64 @@ export default async function SeoPage({ params }: PageProps) {
         </section>
       )}
       
-      {/* Codes Section - varies by page type */}
-      {pageType === 'new-codes' ? (
-        <>
-          {/* New This Week */}
-          {newThisWeek.length > 0 && (
-            <section className="py-10 md:py-12">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
-                    <Zap className="h-5 w-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">New This Week ({newThisWeek.length})</h2>
-                    <p className="text-sm text-muted-foreground">Fresh codes added in the last 7 days</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {newThisWeek.map((code) => (
-                    <PromoCodeCard key={code.id} code={code} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
+      {/* Codes Section - for 'codes' and 'redeem-codes' page types */}
+      <section className="py-10 md:py-12">
+        <PageContainer>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <Tag className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">All Working Codes ({activeCodes.length})</h2>
+              <p className="text-sm text-muted-foreground">
+                {pageType === 'redeem-codes' 
+                  ? 'Copy any code and follow the redemption guide below' 
+                  : 'Verified and tested - redeem these codes for free rewards'}
+              </p>
+            </div>
+          </div>
+          {activeCodes.length > 0 ? (
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {activeCodes.map((code) => (
+                <PromoCodeCard key={code.id} code={code} />
+              ))}
+            </div>
+          ) : (
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+                <Tag className="h-10 w-10 text-muted-foreground/50 mb-3" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">No promo codes available</h3>
+                <p className="text-sm text-muted-foreground">Check back soon for new codes!</p>
+              </CardContent>
+            </Card>
           )}
-          
-          {/* Earlier This Month */}
-          {newThisMonth.length > 0 && (
-            <section className="py-10 md:py-12 bg-muted/30">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                    <Calendar className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">Earlier This Month ({newThisMonth.length})</h2>
-                    <p className="text-sm text-muted-foreground">Codes added 1-4 weeks ago - still working!</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {newThisMonth.map((code) => (
-                    <PromoCodeCard key={code.id} code={code} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
-          )}
-          
-          {/* Older Active Codes */}
-          {olderCodes.length > 0 && (
-            <section className="py-10 md:py-12">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-500/10">
-                    <CheckCircle2 className="h-5 w-5 text-gray-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">Still Working ({olderCodes.length})</h2>
-                    <p className="text-sm text-muted-foreground">Older codes that are still active</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {olderCodes.map((code) => (
-                    <PromoCodeCard key={code.id} code={code} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
-          )}
-        </>
-      ) : pageType === 'free-rewards' ? (
-        <>
-          {/* Free Promo Codes */}
-          <section className="py-10 md:py-12">
-            <PageContainer>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Tag className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-foreground">Free Promo Codes ({activeCodes.length})</h2>
-                  <p className="text-sm text-muted-foreground">Redeem these codes for instant free rewards</p>
-                </div>
+        </PageContainer>
+      </section>
+
+      {/* Rewards Section - show for 'codes' page type */}
+      {pageType === 'codes' && game.rewards.length > 0 && rewardsByType.daily.length > 0 && (
+        <section className="py-10 md:py-12 bg-muted/30">
+          <PageContainer>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
+                <Calendar className="h-5 w-5 text-blue-600" />
               </div>
-              {activeCodes.length > 0 ? (
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {activeCodes.map((code) => (
-                    <PromoCodeCard key={code.id} code={code} />
-                  ))}
-                </div>
-              ) : (
-                <Card className="border-dashed">
-                  <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-                    <Tag className="h-10 w-10 text-muted-foreground/50 mb-3" />
-                    <h3 className="text-lg font-semibold text-foreground mb-2">No promo codes available</h3>
-                    <p className="text-sm text-muted-foreground">Check back soon for new codes!</p>
-                  </CardContent>
-                </Card>
-              )}
-            </PageContainer>
-          </section>
-          
-          {/* Daily Rewards */}
-          {rewardsByType.daily.length > 0 && (
-            <section className="py-10 md:py-12 bg-muted/30">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                    <Calendar className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">Daily Login Rewards</h2>
-                    <p className="text-sm text-muted-foreground">Log in every day to claim these bonuses</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                  {rewardsByType.daily.map((reward) => (
-                    <RewardCard key={reward.id} reward={reward} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
-          )}
-          
-          {/* New Player Rewards */}
-          {rewardsByType.newPlayer.length > 0 && (
-            <section className="py-10 md:py-12">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
-                    <Zap className="h-5 w-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">New Player Rewards</h2>
-                    <p className="text-sm text-muted-foreground">One-time bonuses for starting players</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                  {rewardsByType.newPlayer.map((reward) => (
-                    <RewardCard key={reward.id} reward={reward} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
-          )}
-        </>
-      ) : pageType === 'redeem-codes' ? (
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Daily Login Rewards</h2>
+                <p className="text-sm text-muted-foreground">Log in every day to claim these bonuses</p>
+              </div>
+            </div>
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+              {rewardsByType.daily.map((reward) => (
+                <RewardCard key={reward.id} reward={reward} />
+              ))}
+            </div>
+          </PageContainer>
+        </section>
+      )}
+
+      {/* Redeem Guide - show for 'redeem-codes' page type */}
+      {pageType === 'redeem-codes' && (
         /* Redeem Guide Step-by-Step */
         <section className="py-10 md:py-12">
           <PageContainer>
@@ -959,42 +778,6 @@ export default async function SeoPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
-          </PageContainer>
-        </section>
-      ) : (
-        /* Default codes list for codes-today and working-codes */
-        <section className="py-10 md:py-12">
-          <PageContainer>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">
-                  {pageType === 'codes-today' ? `All Codes for Today (${activeCodes.length})` : `All Working Codes (${activeCodes.length})`}
-                </h2>
-                <p className="text-sm text-muted-foreground">Verified and tested as of {dateStr}</p>
-              </div>
-            </div>
-            
-            {activeCodes.length > 0 ? (
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {activeCodes.map((code) => (
-                  <PromoCodeCard key={code.id} code={code} />
-                ))}
-              </div>
-            ) : (
-              <Card className="border-dashed">
-                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                  <Tag className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">No working codes available right now</h3>
-                  <p className="text-muted-foreground mb-4">Check back soon - we update codes every 10 minutes!</p>
-                  <Button asChild>
-                    <Link href={`/gaming/${game.slug}`}>View All {game.name} Content</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
           </PageContainer>
         </section>
       )}

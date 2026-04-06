@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge"
 import { PageContainer } from "@/components/layout/page-container"
 import { X, CreditCard, DollarSign, Bell, ShoppingCart, ExternalLink, Sparkles } from "lucide-react"
 
+// Centralized Capital One / SaveSmart affiliate link
+const SAVESMART_AFFILIATE_LINK = "https://go.savesmart.bio/save"
+
 interface CapitalOnePromoProps {
   variant?: "banner" | "sidebar" | "inline"
   dismissible?: boolean
@@ -15,8 +18,7 @@ interface CapitalOnePromoProps {
 export function CapitalOnePromo({ variant = "banner", dismissible = true }: CapitalOnePromoProps) {
   const [isDismissed, setIsDismissed] = useState(false)
 
-  // Capital One Shopping affiliate link - replace with your actual affiliate link
-  const affiliateLink = "https://capital.one/shopping?ref=savesmart"
+  const affiliateLink = SAVESMART_AFFILIATE_LINK
 
   if (isDismissed) return null
 
@@ -46,8 +48,8 @@ export function CapitalOnePromo({ variant = "banner", dismissible = true }: Capi
             Automatically find and apply coupon codes at checkout. Works on 30,000+ sites.
           </p>
           <Button size="sm" className="w-full gap-2 bg-blue-600 hover:bg-blue-700" asChild>
-            <a href={affiliateLink} target="_blank" rel="noopener sponsored">
-              Add to Browser
+            <a href={affiliateLink} target="_blank" rel="nofollow sponsored noopener">
+              Start Saving Now
               <ExternalLink className="h-3 w-3" />
             </a>
           </Button>
@@ -83,7 +85,7 @@ export function CapitalOnePromo({ variant = "banner", dismissible = true }: Capi
           </p>
         </div>
         <Button className="shrink-0 gap-2 bg-blue-600 hover:bg-blue-700" asChild>
-          <a href={affiliateLink} target="_blank" rel="noopener sponsored">
+          <a href={affiliateLink} target="_blank" rel="nofollow sponsored noopener">
             Get It Free
             <ExternalLink className="h-4 w-4" />
           </a>
@@ -137,9 +139,9 @@ export function CapitalOnePromo({ variant = "banner", dismissible = true }: Capi
               </div>
             </div>
             <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-50 gap-2 shrink-0" asChild>
-              <a href={affiliateLink} target="_blank" rel="noopener sponsored">
+              <a href={affiliateLink} target="_blank" rel="nofollow sponsored noopener">
                 <Sparkles className="h-5 w-5" />
-                Add to Browser - It's Free
+                Start Saving Now
               </a>
             </Button>
           </div>
@@ -167,7 +169,7 @@ export function FloatingCapitalOnePromo() {
 
   if (!isVisible || isDismissed) return null
 
-  const affiliateLink = "https://capital.one/shopping?ref=savesmart"
+  const affiliateLink = SAVESMART_AFFILIATE_LINK
 
   return (
     <div className="fixed bottom-4 right-4 z-50 max-w-sm animate-in slide-in-from-bottom-4 fade-in">
@@ -192,8 +194,8 @@ export function FloatingCapitalOnePromo() {
                 Capital One Shopping finds coupons automatically.
               </p>
               <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700" asChild>
-                <a href={affiliateLink} target="_blank" rel="noopener sponsored">
-                  Get It Free
+                <a href={affiliateLink} target="_blank" rel="nofollow sponsored noopener">
+                  Start Saving
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </Button>

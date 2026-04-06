@@ -121,7 +121,7 @@ export function Footer() {
               © {currentYear} SaveSmart. All rights reserved.
             </p>
             <p className="text-xs text-muted-foreground">
-              Affiliate Disclosure: We may earn a commission when you use our links to shop.
+              Affiliate Disclosure: This site may earn commissions from affiliate links. We only recommend products we believe in.
             </p>
           </div>
         </div>

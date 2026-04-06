@@ -21,9 +21,9 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
-import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getPlayAffiliateUrl, getRewardAffiliateUrl } from "@/lib/gaming-data"
+import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getPlayAffiliateUrl, getRewardAffiliateUrl, hasAffiliateLinks } from "@/lib/gaming-data"
 import { getSeoUrl } from "@/lib/seo-routes"
-import { Clock, AlertCircle, BookOpen, CheckCircle2 } from "lucide-react"
+import { Clock, AlertCircle, BookOpen, CheckCircle2, ArrowRight } from "lucide-react"
 
 // ============================================
 // TYPES
@@ -148,6 +148,9 @@ function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; reward
     'Achievement': 'bg-purple-500/10 text-purple-600',
   }
 
+  // Use reward-specific link if available, otherwise use affiliate fallback
+  const ctaLink = reward.link || rewardAffiliateUrl
+
   return (
     <Card className="border-border/50 hover:border-green-500/30 hover:shadow-md transition-all">
       <CardContent className="p-4">
@@ -174,19 +177,19 @@ function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; reward
             )}
           </div>
         </div>
-        {/* Get Reward CTA - Uses Ultra affiliate network */}
+        {/* CTA - always shows with fallback monetization */}
         <Button 
           asChild 
           size="sm"
           className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
         >
           <a 
-            href={reward.link || rewardAffiliateUrl} 
+            href={ctaLink} 
             target="_blank"
             rel="nofollow sponsored noopener"
           >
             <Gift className="h-4 w-4 mr-2" />
-            Get Reward
+            View Rewards
             <ExternalLink className="h-3 w-3 ml-2" />
           </a>
         </Button>
@@ -326,7 +329,7 @@ export function GamePageTemplate({
               </div>
             </div>
 
-            {/* Primary CTA - Play Now (Falconix affiliate network) */}
+            {/* Primary CTA - Always shows with fallback monetization */}
             <div className="shrink-0 flex flex-col gap-2">
               <Button 
                 size="lg" 
@@ -399,10 +402,10 @@ export function GamePageTemplate({
               
               <div className="mt-6 text-center">
                 <Link 
-                  href={getSeoUrl(game.slug, 'codes-today')}
+                  href={getSeoUrl(game.slug, 'codes')}
                   className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                 >
-                  View All Today&apos;s Codes
+                  View All Codes
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -730,6 +733,26 @@ export function GamePageTemplate({
                 <div className="text-sm text-muted-foreground">Expired Codes</div>
               </div>
             </div>
+          </div>
+        </PageContainer>
+      </section>
+
+      {/* Deals Cross-Link Section - Internal Linking for SEO + Monetization */}
+      <section className="py-8 border-t border-border bg-gradient-to-r from-primary/5 to-secondary/5">
+        <PageContainer>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 rounded-xl border border-primary/20 bg-card">
+            <div>
+              <h3 className="text-lg font-bold text-foreground">Looking for real savings?</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Check the latest deals and discounts available now.
+              </p>
+            </div>
+            <Button asChild variant="default" className="shrink-0">
+              <Link href="/deals">
+                See All Deals
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
           </div>
         </PageContainer>
       </section>

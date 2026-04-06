@@ -150,13 +150,13 @@ export default function HowItWorksPage() {
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" className="gap-2" asChild>
-                <a href="https://chrome.google.com/webstore" target="_blank" rel="noopener noreferrer">
+                <a href="https://go.savesmart.bio/save" target="_blank" rel="nofollow sponsored noopener">
                   <Download className="h-5 w-5" />
-                  Add to Browser - It&apos;s Free
+                  Start Saving Now
                 </a>
               </Button>
               <p className="text-sm text-muted-foreground">
-                No account required • Takes 30 seconds
+                No signup required • Works instantly
               </p>
             </div>
           </PageContainer>
@@ -295,8 +295,8 @@ export default function HowItWorksPage() {
             </p>
             <div className="mt-8">
               <Button size="lg" variant="secondary" className="gap-2" asChild>
-                <a href="https://chrome.google.com/webstore" target="_blank" rel="noopener noreferrer">
-                  Add Free Extension
+                <a href="https://go.savesmart.bio/save" target="_blank" rel="nofollow sponsored noopener">
+                  Start Saving Now
                   <ArrowRight className="h-5 w-5" />
                 </a>
               </Button>

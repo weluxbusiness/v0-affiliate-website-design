@@ -132,7 +132,7 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                     {rewardHighlight}
                   </p>
 
-                  {/* CTAs */}
+                  {/* CTAs - Always show both buttons with fallback monetization */}
                   <div className="flex gap-2">
                     <Button 
                       asChild 
