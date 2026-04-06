@@ -1,13 +1,29 @@
 import type { MetadataRoute } from 'next'
-import { gamesData, getGameSlugsForSitemap, getAllGameSlugs } from '@/lib/gaming-data'
+import { gamesData } from '@/lib/gaming-data'
 
 const BASE_URL = 'https://savesmart.bio'
+
+// Top games get priority 1.0 (high revenue/traffic potential)
+const TOP_GAME_SLUGS = [
+  'raid-shadow-legends',
+  'monopoly-go', 
+  'brawl-stars',
+  'afk-arena',
+  'genshin-impact',
+  'honkai-star-rail',
+  'fortnite',
+  'roblox',
+  'clash-of-clans',
+  'call-of-duty-mobile',
+]
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const currentDate = new Date().toISOString()
   
-  // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
+  // ============================================
+  // MAIN PAGES (Priority 1.0)
+  // ============================================
+  const mainPages: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
       lastModified: currentDate,
@@ -18,107 +34,104 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${BASE_URL}/deals`,
       lastModified: currentDate,
       changeFrequency: 'daily',
-      priority: 0.9,
+      priority: 1.0,
     },
-    {
-      url: `${BASE_URL}/blog`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    // Gaming hub pages
     {
       url: `${BASE_URL}/gaming`,
       lastModified: currentDate,
       changeFrequency: 'daily',
-      priority: 0.9,
+      priority: 1.0,
     },
+  ]
+  
+  // ============================================
+  // GAMING HUB PAGES (Priority 0.8)
+  // ============================================
+  const hubPages: MetadataRoute.Sitemap = [
     {
       url: `${BASE_URL}/gaming/promo-codes`,
       lastModified: currentDate,
       changeFrequency: 'daily',
-      priority: 0.85,
-    },
-    {
-      url: `${BASE_URL}/gaming/free-rewards`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.85,
-    },
-    {
-      url: `${BASE_URL}/gaming/new-player-deals`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
       priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/gaming/today`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
     },
     {
       url: `${BASE_URL}/gaming/best-codes`,
       lastModified: currentDate,
       changeFrequency: 'daily',
-      priority: 0.85,
+      priority: 0.8,
     },
     {
       url: `${BASE_URL}/gaming/top-games`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.7,
     },
     {
-      url: `${BASE_URL}/gaming/all-codes`,
+      url: `${BASE_URL}/blog`,
       lastModified: currentDate,
       changeFrequency: 'daily',
-      priority: 0.85,
+      priority: 0.7,
     },
   ]
   
-  // Dynamic game pages - high priority for main game pages
-  const gamePages: MetadataRoute.Sitemap = gamesData.flatMap((game) => {
-    const gameLastModified = game.lastUpdated || currentDate
+  // ============================================
+  // GAME PAGES - ONLY MAIN PAGES (NO VARIANTS)
+  // Top games: priority 1.0, others: priority 0.7
+  // ============================================
+  const gamePages: MetadataRoute.Sitemap = gamesData.map((game) => {
+    const isTopGame = TOP_GAME_SLUGS.includes(game.slug)
     
-    return [
-      // Main game page (highest priority)
-      {
-        url: `${BASE_URL}/gaming/${game.slug}`,
-        lastModified: gameLastModified,
-        changeFrequency: 'daily' as const,
-        priority: 0.9,
-      },
-      // Codes page
-      {
-        url: `${BASE_URL}/gaming/${game.slug}/codes`,
-        lastModified: gameLastModified,
-        changeFrequency: 'daily' as const,
-        priority: 0.85,
-      },
-      // Redeem codes guide
-      {
-        url: `${BASE_URL}/gaming/${game.slug}/redeem-codes`,
-        lastModified: gameLastModified,
-        changeFrequency: 'weekly' as const,
-        priority: 0.7,
-      },
-      // Free rewards
-      {
-        url: `${BASE_URL}/gaming/${game.slug}/free-rewards`,
-        lastModified: gameLastModified,
-        changeFrequency: 'daily' as const,
-        priority: 0.75,
-      },
-      // Rewards page
-      {
-        url: `${BASE_URL}/gaming/${game.slug}/rewards`,
-        lastModified: gameLastModified,
-        changeFrequency: 'daily' as const,
-        priority: 0.75,
-      },
-    ]
+    return {
+      url: `${BASE_URL}/gaming/${game.slug}`,
+      lastModified: game.lastUpdated || currentDate,
+      changeFrequency: 'daily' as const,
+      priority: isTopGame ? 1.0 : 0.7,
+    }
   })
   
-  return [...staticPages, ...gamePages]
+  // ============================================
+  // GUIDE PAGES - TOP 5 GAMES ONLY (SEO Authority)
+  // Priority 0.8 - Supporting content for top games
+  // ============================================
+  const guideGameSlugs = [
+    'raid-shadow-legends',
+    'monopoly-go',
+    'brawl-stars',
+    'afk-arena',
+    'roblox',
+  ]
+  
+  const guidePages: MetadataRoute.Sitemap = guideGameSlugs.flatMap((slug) => [
+    {
+      url: `${BASE_URL}/gaming/${slug}-guide`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/gaming/${slug}-tips`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/gaming/${slug}-leveling`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+  ])
+  
+  // ============================================
+  // MONTHLY CODES PAGES - TOP 5 GAMES (April 2026)
+  // Priority 0.9 - Seasonal SEO pages
+  // ============================================
+  const monthlyCodesPages: MetadataRoute.Sitemap = guideGameSlugs.map((slug) => ({
+    url: `${BASE_URL}/gaming/${slug}-codes-april-2026`,
+    lastModified: currentDate,
+    changeFrequency: 'daily' as const,
+    priority: 0.9,
+  }))
+  
+  return [...mainPages, ...hubPages, ...gamePages, ...guidePages, ...monthlyCodesPages]
 }
