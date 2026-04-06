@@ -402,10 +402,10 @@ export function GamePageTemplate({
               
               <div className="mt-6 text-center">
                 <Link 
-                  href={getSeoUrl(game.slug, 'codes-today')}
+                  href={getSeoUrl(game.slug, 'codes')}
                   className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                 >
-                  View All Today&apos;s Codes
+                  View All Codes
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>

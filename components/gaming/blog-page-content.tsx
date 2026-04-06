@@ -345,7 +345,7 @@ function FreeRewardsContent({ game, activeCodes, monthYear, updateDate }: { game
           The fastest way to get free rewards in {game.name} is through promo codes. These are special codes released by the developers that give you instant rewards when redeemed. Currently, there are <strong className="text-foreground">{activeCodes.length} active promo codes</strong> available.
         </p>
         <p className="text-muted-foreground mb-6">
-          Promo codes typically offer free gems, currency, items, and exclusive cosmetics. They&apos;re usually time-limited, so it&apos;s important to redeem them as soon as possible. Check our <Link href={getSeoUrl(game.slug, 'working-codes')} className="text-primary hover:underline font-medium">working codes page</Link> for the latest verified codes.
+          Promo codes typically offer free gems, currency, items, and exclusive cosmetics. They&apos;re usually time-limited, so it&apos;s important to redeem them as soon as possible. Check our <Link href={getSeoUrl(game.slug, 'codes')} className="text-primary hover:underline font-medium">codes page</Link> for the latest verified codes.
         </p>
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-4">
@@ -355,7 +355,7 @@ function FreeRewardsContent({ game, activeCodes, monthYear, updateDate }: { game
                 <p className="text-sm text-muted-foreground">Verified and working as of {updateDate}</p>
               </div>
               <Button asChild>
-                <Link href={getSeoUrl(game.slug, 'codes-today')}>
+                <Link href={getSeoUrl(game.slug, 'codes')}>
                   View All Codes <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -552,7 +552,7 @@ function TipsAndTricksContent({ game, activeCodes }: { game: Game; activeCodes: 
               <p className="text-sm text-muted-foreground">{activeCodes.length} promo codes currently available</p>
             </div>
             <Button asChild>
-              <Link href={getSeoUrl(game.slug, 'free-rewards')}>
+              <Link href={getSeoUrl(game.slug, 'codes')}>
                 View Free Rewards <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -606,7 +606,7 @@ function BeginnerGuideContent({ game, activeCodes }: { game: Game; activeCodes: 
               <p className="text-sm text-muted-foreground">{activeCodes.length} promo codes available for instant rewards</p>
             </div>
             <Button asChild>
-              <Link href={getSeoUrl(game.slug, 'codes-today')}>
+              <Link href={getSeoUrl(game.slug, 'codes')}>
                 View Codes <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -757,7 +757,7 @@ function LevelUpFastContent({ game, activeCodes }: { game: Game; activeCodes: Re
               <p className="text-sm text-muted-foreground">{activeCodes.length} promo codes with resources available</p>
             </div>
             <Button asChild>
-              <Link href={getSeoUrl(game.slug, 'working-codes')}>
+              <Link href={getSeoUrl(game.slug, 'codes')}>
                 Get Free Resources <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -862,7 +862,7 @@ function BestStrategiesContent({ game, activeCodes, monthYear }: { game: Game; a
               <p className="text-sm text-muted-foreground">{activeCodes.length} promo codes available now</p>
             </div>
             <Button asChild>
-              <Link href={getSeoUrl(game.slug, 'codes-today')}>
+              <Link href={getSeoUrl(game.slug, 'codes')}>
                 View All Codes <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
