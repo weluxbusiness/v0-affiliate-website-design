@@ -2,29 +2,51 @@ import { withSentryConfig } from "@sentry/nextjs"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 301 Redirects: Nested gaming URLs → Flat SEO URLs
+  // 301 Redirects: Consolidate all routes to high-value pages only
+  // Goal: Reduce index bloat by redirecting low-value pages to main codes page
   async redirects() {
     return [
-      // Redirect nested gaming pages to flat SEO URLs
-      // Pattern: /gaming/[game]/[page-type] → /[game]-[page-type]
+      // ==== REDIRECT LOW-VALUE PAGES TO MAIN CODES PAGE ====
+      // These caused "Discovered - not indexed" and "Soft 404" issues
+      {
+        source: '/:game-codes-today',
+        destination: '/:game-codes',
+        permanent: true,
+      },
+      {
+        source: '/:game-working-codes',
+        destination: '/:game-codes',
+        permanent: true,
+      },
+      {
+        source: '/:game-new-codes',
+        destination: '/:game-codes',
+        permanent: true,
+      },
+      {
+        source: '/:game-free-rewards',
+        destination: '/:game-codes',
+        permanent: true,
+      },
+      // ==== REDIRECT NESTED GAMING URLS TO FLAT URLS ====
       {
         source: '/gaming/:game/codes-today',
-        destination: '/:game-codes-today',
+        destination: '/:game-codes',
         permanent: true,
       },
       {
         source: '/gaming/:game/working-codes',
-        destination: '/:game-working-codes',
+        destination: '/:game-codes',
         permanent: true,
       },
       {
         source: '/gaming/:game/new-codes',
-        destination: '/:game-new-codes',
+        destination: '/:game-codes',
         permanent: true,
       },
       {
         source: '/gaming/:game/free-rewards',
-        destination: '/:game-free-rewards',
+        destination: '/:game-codes',
         permanent: true,
       },
       {
@@ -32,30 +54,41 @@ const nextConfig = {
         destination: '/:game-redeem-codes',
         permanent: true,
       },
-      // Redirect gaming-guides to flat blog URLs
       {
-        source: '/gaming-guides/:game-how-to-get-free-rewards',
-        destination: '/:game-how-to-get-free-rewards',
+        source: '/gaming/:game/codes',
+        destination: '/:game-codes',
+        permanent: true,
+      },
+      // ==== REDIRECT BLOG PAGES TO MAIN CODES PAGE ====
+      // Blog pages created thin/duplicate content
+      {
+        source: '/:game-how-to-get-free-rewards',
+        destination: '/:game-codes',
         permanent: true,
       },
       {
-        source: '/gaming-guides/:game-tips-and-tricks',
-        destination: '/:game-tips-and-tricks',
+        source: '/:game-tips-and-tricks',
+        destination: '/:game-codes',
         permanent: true,
       },
       {
-        source: '/gaming-guides/:game-beginner-guide',
-        destination: '/:game-beginner-guide',
+        source: '/:game-beginner-guide',
+        destination: '/:game-codes',
         permanent: true,
       },
       {
-        source: '/gaming-guides/:game-how-to-level-up-fast',
-        destination: '/:game-how-to-level-up-fast',
+        source: '/:game-how-to-level-up-fast',
+        destination: '/:game-codes',
         permanent: true,
       },
       {
-        source: '/gaming-guides/:game-best-strategies',
-        destination: '/:game-best-strategies',
+        source: '/:game-best-strategies',
+        destination: '/:game-codes',
+        permanent: true,
+      },
+      {
+        source: '/gaming-guides/:slug',
+        destination: '/',
         permanent: true,
       },
     ]

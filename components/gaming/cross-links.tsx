@@ -26,50 +26,21 @@ interface PageTypeLinkProps {
   currentPageType: string
 }
 
-// Cross-links between different page types for the same game
+// SIMPLIFIED Cross-links - only high-value pages (codes + redeem-codes)
+// Max 2 internal links to avoid spammy linking patterns
 export function PageTypeLinks({ game, currentPageType }: PageTypeLinkProps) {
   const codeCount = getActivePromoCodes(game.promoCodes).length
   
+  // Only 2 high-value page types to reduce link bloat
   const pageTypes = [
     {
-      type: 'codes-today',
-      label: 'Codes Today',
-      shortLabel: 'Today',
-      icon: Clock,
-      description: `${codeCount}+ codes verified today`,
-      color: 'from-blue-500 to-cyan-500',
-      bgColor: 'bg-blue-500/10',
-      textColor: 'text-blue-600',
-    },
-    {
-      type: 'working-codes',
-      label: 'Working Codes',
-      shortLabel: 'Working',
-      icon: CheckCircle2,
-      description: 'All tested & verified',
-      color: 'from-emerald-500 to-green-500',
+      type: 'codes',
+      label: 'All Codes',
+      shortLabel: 'Codes',
+      icon: Tag,
+      description: `${codeCount}+ verified codes`,
       bgColor: 'bg-emerald-500/10',
       textColor: 'text-emerald-600',
-    },
-    {
-      type: 'new-codes',
-      label: 'New Codes',
-      shortLabel: 'New',
-      icon: Zap,
-      description: 'Latest releases this week',
-      color: 'from-amber-500 to-orange-500',
-      bgColor: 'bg-amber-500/10',
-      textColor: 'text-amber-600',
-    },
-    {
-      type: 'free-rewards',
-      label: 'Free Rewards',
-      shortLabel: 'Rewards',
-      icon: Gift,
-      description: 'Codes + daily bonuses',
-      color: 'from-pink-500 to-rose-500',
-      bgColor: 'bg-pink-500/10',
-      textColor: 'text-pink-600',
     },
     {
       type: 'redeem-codes',
@@ -77,51 +48,47 @@ export function PageTypeLinks({ game, currentPageType }: PageTypeLinkProps) {
       shortLabel: 'Guide',
       icon: BookOpen,
       description: 'Step-by-step guide',
-      color: 'from-violet-500 to-purple-500',
       bgColor: 'bg-violet-500/10',
       textColor: 'text-violet-600',
     },
   ]
 
   const otherPages = pageTypes.filter(p => p.type !== currentPageType)
+  
+  // Don't show if only 1 or 0 other pages
+  if (otherPages.length === 0) return null
 
   return (
-    <section className="py-10 md:py-12 bg-muted/30">
+    <section className="py-8 md:py-10 bg-muted/30">
       <div className="container max-w-6xl mx-auto px-4">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <Sparkles className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">More {game.shortName || game.name} Codes</h2>
-            <p className="text-sm text-muted-foreground">Explore all our {game.name} code pages</p>
-          </div>
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="text-xl font-bold text-foreground">More {game.shortName || game.name} Pages</h2>
         </div>
         
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex gap-4 flex-wrap">
           {otherPages.map((page) => {
             const Icon = page.icon
             return (
               <Link 
                 key={page.type}
-                href={getSeoUrl(game.slug, page.type as 'codes-today' | 'working-codes' | 'new-codes' | 'free-rewards' | 'redeem-codes')}
+                href={getSeoUrl(game.slug, page.type as 'codes' | 'redeem-codes')}
                 className="group"
               >
-                <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/30 group-hover:-translate-y-0.5">
+                <Card className="transition-all duration-200 hover:shadow-md hover:border-primary/30">
                   <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${page.bgColor}`}>
-                        <Icon className={`h-5 w-5 ${page.textColor}`} />
+                    <div className="flex items-center gap-3">
+                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${page.bgColor}`}>
+                        <Icon className={`h-4 w-4 ${page.textColor}`} />
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div>
                         <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                           {page.label}
                         </h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="text-xs text-muted-foreground">
                           {page.description}
                         </p>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>
                   </CardContent>
                 </Card>
@@ -140,76 +107,42 @@ interface RelatedGamesLinksProps {
   limit?: number
 }
 
-// Cross-links to the same page type for related games
-export function RelatedGamesLinks({ currentGame, pageType, limit = 8 }: RelatedGamesLinksProps) {
+// SIMPLIFIED - Max 4 related games to reduce link spam
+// Only links to main codes page for each game
+export function RelatedGamesLinks({ currentGame, pageType, limit = 4 }: RelatedGamesLinksProps) {
   const relatedGames = getRelatedGames(currentGame, limit)
   
   if (relatedGames.length === 0) return null
 
-  const getPageTypeLabel = (type: string) => {
-    const labels: Record<string, string> = {
-      'codes-today': 'Codes Today',
-      'working-codes': 'Working Codes',
-      'new-codes': 'New Codes',
-      'free-rewards': 'Free Rewards',
-      'redeem-codes': 'Redeem Guide',
-    }
-    return labels[type] || 'Codes'
-  }
-
   return (
-    <section className="py-10 md:py-12">
+    <section className="py-8 md:py-10">
       <div className="container max-w-6xl mx-auto px-4">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <Gamepad2 className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">Similar Games</h2>
-            <p className="text-sm text-muted-foreground">{getPageTypeLabel(pageType)} for games like {currentGame.shortName || currentGame.name}</p>
-          </div>
-        </div>
+        <h2 className="text-xl font-bold text-foreground mb-4">Similar Games</h2>
         
-        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+        <div className="flex gap-3 flex-wrap">
           {relatedGames.map((game) => {
             const codeCount = getActivePromoCodes(game.promoCodes).length
             return (
               <Link 
                 key={game.id}
-                href={getSeoUrl(game.slug, pageType as 'codes-today' | 'working-codes' | 'new-codes' | 'free-rewards' | 'redeem-codes')}
+                href={getSeoUrl(game.slug, 'codes')}
                 className="group"
               >
-                <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/30 group-hover:-translate-y-0.5">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col gap-2">
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                <Card className="transition-all duration-200 hover:shadow-md hover:border-primary/30">
+                  <CardContent className="p-3">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                         {game.shortName || game.name}
                       </h3>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          <Tag className="h-3 w-3 mr-1" />
-                          {codeCount} codes
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground line-clamp-2">
-                        {game.categories.slice(0, 2).join(' • ')}
-                      </p>
+                      <Badge variant="secondary" className="text-xs">
+                        {codeCount} codes
+                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
             )
           })}
-        </div>
-        
-        <div className="mt-6 text-center">
-          <Link 
-            href="/gaming"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
-          >
-            View All Games
-            <ChevronRight className="h-4 w-4" />
-          </Link>
         </div>
       </div>
     </section>
@@ -221,8 +154,8 @@ interface PopularGamesLinksProps {
   limit?: number
 }
 
-// Explore popular games section (for footer area)
-export function PopularGamesLinks({ currentGame, limit = 12 }: PopularGamesLinksProps) {
+// SIMPLIFIED - Max 6 popular games to reduce link spam
+export function PopularGamesLinks({ currentGame, limit = 6 }: PopularGamesLinksProps) {
   // Import dynamically to avoid circular dependency
   const { getPopularGames } = require('@/lib/gaming-data')
   const popularGames = getPopularGames(limit + 1).filter((g: Game) => g.id !== currentGame?.id).slice(0, limit)
@@ -230,23 +163,15 @@ export function PopularGamesLinks({ currentGame, limit = 12 }: PopularGamesLinks
   if (popularGames.length === 0) return null
 
   return (
-    <section className="py-10 md:py-12 bg-muted/30">
+    <section className="py-8 md:py-10 bg-muted/30">
       <div className="container max-w-6xl mx-auto px-4">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
-            <Sparkles className="h-5 w-5 text-amber-600" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">Popular Games</h2>
-            <p className="text-sm text-muted-foreground">Get codes for the most popular games</p>
-          </div>
-        </div>
+        <h2 className="text-xl font-bold text-foreground mb-4">Popular Games</h2>
         
         <div className="flex flex-wrap gap-2">
           {popularGames.map((game: Game) => (
             <Link 
               key={game.id}
-              href={`/gaming/${game.slug}`}
+              href={`/${game.slug}-codes`}
               className="group"
             >
               <Badge 
@@ -254,9 +179,6 @@ export function PopularGamesLinks({ currentGame, limit = 12 }: PopularGamesLinks
                 className="px-3 py-1.5 text-sm font-medium hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors cursor-pointer"
               >
                 {game.shortName || game.name}
-                <span className="ml-1.5 text-xs opacity-70">
-                  ({getActivePromoCodes(game.promoCodes).length})
-                </span>
               </Badge>
             </Link>
           ))}
@@ -271,138 +193,15 @@ interface BlogLinksProps {
   currentBlogType?: BlogPageType
 }
 
-// Cross-links to blog/guide pages for a game
+// REMOVED - Blog pages are noindexed, don't link to them
+// Return null to prevent internal linking to low-value pages
 export function BlogLinksSection({ game, currentBlogType }: BlogLinksProps) {
-  const blogTypes = [
-    {
-      type: 'how-to-get-free-rewards' as BlogPageType,
-      label: 'Free Rewards Guide',
-      shortLabel: 'Free Rewards',
-      icon: Gift,
-      description: 'How to get free gems & items',
-      bgColor: 'bg-emerald-500/10',
-      textColor: 'text-emerald-600',
-    },
-    {
-      type: 'tips-and-tricks' as BlogPageType,
-      label: 'Tips & Tricks',
-      shortLabel: 'Pro Tips',
-      icon: Lightbulb,
-      description: 'Pro secrets & hidden features',
-      bgColor: 'bg-yellow-500/10',
-      textColor: 'text-yellow-600',
-    },
-    {
-      type: 'beginner-guide' as BlogPageType,
-      label: 'Beginner Guide',
-      shortLabel: 'Getting Started',
-      icon: BookOpen,
-      description: 'Everything new players need',
-      bgColor: 'bg-blue-500/10',
-      textColor: 'text-blue-600',
-    },
-    {
-      type: 'how-to-level-up-fast' as BlogPageType,
-      label: 'Level Up Fast',
-      shortLabel: 'Fast XP',
-      icon: TrendingUp,
-      description: 'Quick progression methods',
-      bgColor: 'bg-purple-500/10',
-      textColor: 'text-purple-600',
-    },
-    {
-      type: 'best-strategies' as BlogPageType,
-      label: 'Best Strategies',
-      shortLabel: 'Strategies',
-      icon: Trophy,
-      description: 'Meta builds & tactics',
-      bgColor: 'bg-amber-500/10',
-      textColor: 'text-amber-600',
-    },
-  ]
-
-  const otherBlogs = blogTypes.filter(b => b.type !== currentBlogType)
-
-  return (
-    <section className="py-10 md:py-12 bg-muted/30">
-      <div className="container max-w-6xl mx-auto px-4">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <BookOpen className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">{game.shortName || game.name} Guides</h2>
-            <p className="text-sm text-muted-foreground">Master the game with our expert guides</p>
-          </div>
-        </div>
-        
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {otherBlogs.map((blog) => {
-            const Icon = blog.icon
-            return (
-              <Link 
-                key={blog.type}
-                href={getBlogUrl(game.slug, blog.type)}
-                className="group"
-              >
-                <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/30 group-hover:-translate-y-0.5">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${blog.bgColor}`}>
-                        <Icon className={`h-5 w-5 ${blog.textColor}`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm">
-                          {blog.label}
-                        </h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          {blog.description}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            )
-          })}
-        </div>
-      </div>
-    </section>
-  )
+  return null
 }
 
-// Compact blog links for embedding in code pages
+// REMOVED - Don't link to noindexed blog pages
 export function BlogQuickLinks({ game }: { game: Game }) {
-  const blogTypes = [
-    { type: 'how-to-get-free-rewards' as BlogPageType, label: 'Free Rewards', icon: Gift },
-    { type: 'tips-and-tricks' as BlogPageType, label: 'Tips', icon: Lightbulb },
-    { type: 'beginner-guide' as BlogPageType, label: 'Beginner', icon: BookOpen },
-    { type: 'how-to-level-up-fast' as BlogPageType, label: 'Level Up', icon: TrendingUp },
-    { type: 'best-strategies' as BlogPageType, label: 'Strategies', icon: Trophy },
-  ]
-
-  return (
-    <div className="flex flex-wrap gap-2 py-4">
-      <span className="text-sm text-muted-foreground mr-1 self-center">Guides:</span>
-      {blogTypes.map((blog) => {
-        const Icon = blog.icon
-        return (
-          <Link 
-            key={blog.type}
-            href={getBlogUrl(game.slug, blog.type)}
-          >
-            <Badge 
-              variant="outline"
-              className="px-3 py-1.5 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors cursor-pointer"
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {blog.label}
-            </Badge>
-          </Link>
-        )
-      })}
-    </div>
-  )
+  return null
 }
 
 interface QuickLinksGridProps {
@@ -410,29 +209,28 @@ interface QuickLinksGridProps {
   currentPageType: string
 }
 
-// Compact inline cross-links for embedding in content
+// SIMPLIFIED - Only 2 high-value page types
 export function QuickLinksGrid({ currentGame, currentPageType }: QuickLinksGridProps) {
   const pageTypes = [
-    { type: 'codes-today', label: 'Today', icon: Clock },
-    { type: 'working-codes', label: 'Working', icon: CheckCircle2 },
-    { type: 'new-codes', label: 'New', icon: Zap },
-    { type: 'free-rewards', label: 'Rewards', icon: Gift },
-    { type: 'redeem-codes', label: 'Guide', icon: BookOpen },
+    { type: 'codes', label: 'All Codes', icon: Tag },
+    { type: 'redeem-codes', label: 'Redeem Guide', icon: BookOpen },
   ]
+
+  const otherPages = pageTypes.filter(p => p.type !== currentPageType)
+  if (otherPages.length === 0) return null
 
   return (
     <div className="flex flex-wrap gap-2 py-4">
-      {pageTypes.map((page) => {
+      {otherPages.map((page) => {
         const Icon = page.icon
-        const isActive = page.type === currentPageType
         return (
           <Link 
             key={page.type}
-            href={getSeoUrl(currentGame.slug, page.type as 'codes-today' | 'working-codes' | 'new-codes' | 'free-rewards' | 'redeem-codes')}
+            href={getSeoUrl(currentGame.slug, page.type as 'codes' | 'redeem-codes')}
           >
             <Badge 
-              variant={isActive ? "default" : "outline"}
-              className={`px-3 py-1.5 gap-1.5 ${!isActive && 'hover:bg-primary hover:text-primary-foreground hover:border-primary'} transition-colors cursor-pointer`}
+              variant="outline"
+              className="px-3 py-1.5 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors cursor-pointer"
             >
               <Icon className="h-3.5 w-3.5" />
               {page.label}

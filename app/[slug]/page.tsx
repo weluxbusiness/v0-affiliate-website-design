@@ -43,13 +43,17 @@ import type { GameReward } from "@/lib/gaming-data"
 import { 
   parseSeoSlug, 
   parseBlogSlug,
+  parseLowValueSlug,
   generateAllSeoSlugs, 
   generateAllBlogSlugs,
   getSeoUrl,
   getBlogUrl,
+  shouldNoindex,
   type SeoPageType,
   type BlogPageType,
-  BLOG_PAGE_TYPES
+  type LowValuePageType,
+  BLOG_PAGE_TYPES,
+  LOW_VALUE_PAGE_TYPES
 } from "@/lib/seo-routes"
 import { PageTypeLinks, RelatedGamesLinks, PopularGamesLinks } from "@/components/gaming/cross-links"
 import { BlogPageContent } from "@/components/gaming/blog-page-content"
@@ -166,6 +170,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       alternates: {
         canonical: `https://savesmart.bio/${slug}`,
       },
+      // NOINDEX blog pages - thin content / index bloat
+      robots: {
+        index: false,
+        follow: true,
+        googleBot: {
+          index: false,
+          follow: true,
+        },
+      },
     }
   }
   
@@ -195,48 +208,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const benefit = rewardBenefits[primaryReward] || 'Free Rewards'
   
   const metaByType: Record<SeoPageType, { title: string; description: string; keywords: string[] }> = {
-    'codes-today': {
-      // Target: "[game] codes today" - under 60 chars, urgency + benefit
-      title: `${game.shortName || game.name} Codes Today – ${codeCount}+ ${benefit} (${shortMonth})`,
-      description: `All ${codeCount}+ working ${game.name} promo codes for today. Get FREE gems, skins & rewards. Verified hourly - redeem before they expire!`,
+    // PRIMARY page type - targets "[game] codes" searches (highest volume)
+    'codes': {
+      title: `${game.shortName || game.name} Codes (${shortMonth}) – ${codeCount}+ FREE ${benefit}`,
+      description: `All ${codeCount}+ working ${game.name} promo codes for ${monthYear}. Get FREE gems, skins, items & exclusive rewards. Verified and updated daily!`,
       keywords: [
-        `${game.name} codes today`,
-        `${game.name} new codes`,
-        `today's ${game.name} codes`,
-        `${game.name} working codes`,
-      ],
-    },
-    'working-codes': {
-      // Target: "[game] working codes" - verified + count + urgency
-      title: `${game.shortName || game.name} Working Codes – ${codeCount}+ Verified (${shortMonth})`,
-      description: `All ${codeCount}+ working ${game.name} promo codes for ${monthYear}. Every code verified and tested. Get free gems, skins & rewards - redeem before they expire!`,
-      keywords: [
-        `${game.name} working codes`,
-        `${game.name} codes that work`,
-        `${game.name} verified codes`,
-        `working ${game.name} promo codes`,
-      ],
-    },
-    'new-codes': {
-      // Target: "[game] new codes" - freshness + benefit
-      title: `${game.shortName || game.name} New Codes – ${codeCount}+ ${benefit} (${shortMonth})`,
-      description: `Discover the newest ${game.name} promo codes for ${monthYear}. ${codeCount}+ fresh codes just released. Get free gems, skins & exclusive rewards!`,
-      keywords: [
-        `${game.name} new codes`,
-        `${game.name} latest codes`,
-        `new ${game.name} promo codes`,
-        `${game.name} fresh codes`,
-      ],
-    },
-    'free-rewards': {
-      // Target: "[game] free rewards" - comprehensive free value
-      title: `${game.shortName || game.name} Free Rewards – ${codeCount}+ Codes & Bonuses (${shortMonth})`,
-      description: `Get all free ${game.name} rewards for ${monthYear}! ${codeCount}+ promo codes plus ${rewardCount}+ daily bonuses, login rewards & free items.`,
-      keywords: [
-        `${game.name} free rewards`,
-        `${game.name} free stuff`,
-        `${game.name} free codes`,
-        `${game.name} daily rewards`,
+        `${game.name} codes`,
+        `${game.name} promo codes`,
+        `${game.name} codes ${monthYear.toLowerCase()}`,
+        `${game.name} redeem codes`,
+        `free ${game.name} codes`,
       ],
     },
     'redeem-codes': {
@@ -343,21 +324,29 @@ function RewardCard({ reward }: { reward: GameReward }) {
 export default async function SeoPage({ params }: PageProps) {
   const { slug } = await params
   
-  // Try parsing as SEO page first, then blog page
+  // Try parsing as SEO page first, then low-value page, then blog page
   const seoParsed = parseSeoSlug(slug)
+  const lowValueParsed = parseLowValueSlug(slug)
   const blogParsed = parseBlogSlug(slug)
   
-  if (!seoParsed && !blogParsed) {
+  if (!seoParsed && !lowValueParsed && !blogParsed) {
     notFound()
   }
   
-  const gameSlug = seoParsed?.gameSlug || blogParsed?.gameSlug
+  const gameSlug = seoParsed?.gameSlug || lowValueParsed?.gameSlug || blogParsed?.gameSlug
   const game = getGameBySlug(gameSlug!)
   if (!game) {
     notFound()
   }
   
-  // Handle blog pages
+  // Handle low-value pages - redirect to main codes page via 301
+  // These pages cause index bloat and thin content issues
+  if (lowValueParsed) {
+    const { redirect } = await import('next/navigation')
+    redirect(`/${game.slug}-codes`)
+  }
+  
+  // Handle blog pages (noindexed but still accessible)
   if (blogParsed) {
     return <BlogPageContent game={game} pageType={blogParsed.pageType} slug={slug} />
   }
@@ -401,36 +390,18 @@ export default async function SeoPage({ params }: PageProps) {
   const hasPC = game.platforms.some(p => ['PC', 'Windows', 'Mac'].includes(p))
   const hasConsole = game.platforms.some(p => ['PlayStation', 'Xbox', 'Nintendo Switch', 'Console'].includes(p))
   
-  // Page configuration by type
+  // Page configuration by type (only high-value pages)
   const pageConfig: Record<SeoPageType, {
     heroGradient: string
     icon: typeof Tag
     badge: string
     headingPrefix: string
   }> = {
-    'codes-today': {
-      heroGradient: 'from-blue-600 to-indigo-700',
-      icon: Calendar,
-      badge: 'Codes Today',
-      headingPrefix: 'Codes Today',
-    },
-    'working-codes': {
+    'codes': {
       heroGradient: 'from-green-600 to-emerald-700',
-      icon: CheckCircle2,
-      badge: 'All Verified',
-      headingPrefix: 'Working Codes',
-    },
-    'new-codes': {
-      heroGradient: 'from-amber-500 to-orange-600',
-      icon: Sparkles,
-      badge: 'Fresh Codes',
-      headingPrefix: 'New Codes',
-    },
-    'free-rewards': {
-      heroGradient: 'from-pink-500 to-rose-600',
-      icon: Gift,
-      badge: '100% Free',
-      headingPrefix: 'Free Rewards',
+      icon: Tag,
+      badge: 'All Codes',
+      headingPrefix: 'Promo Codes',
     },
     'redeem-codes': {
       heroGradient: 'from-emerald-600 to-teal-700',
