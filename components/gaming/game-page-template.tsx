@@ -93,6 +93,7 @@ export function generateGameSchemaMarkup(game: Game, codes: PromoCode[]) {
     name: `${game.name} Promo Codes & Rewards`,
     description: game.description,
     url: pageUrl,
+    dateModified: game.lastUpdated || new Date().toISOString(),
     mainEntity: {
       "@type": "VideoGame",
       name: game.name,
@@ -241,6 +242,38 @@ export function GamePageTemplate({
         />
       )}
 
+      {/* Intent Match Block - Above Hero for Search Intent */}
+      <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4">
+        <PageContainer>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-green-200" />
+                <span className="font-bold text-lg">
+                  Working {game.shortName || game.name} Codes ({currentMonth} {currentYear})
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              <span className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1">
+                <Tag className="h-3.5 w-3.5" />
+                {activeCodes.length} active codes
+              </span>
+              {bestCode && (
+                <span className="flex items-center gap-1.5 bg-amber-400/20 rounded-full px-3 py-1">
+                  <Star className="h-3.5 w-3.5 text-amber-300" />
+                  Best: {bestCode.code}
+                </span>
+              )}
+              <span className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1">
+                <Clock className="h-3.5 w-3.5" />
+                Updated daily
+              </span>
+            </div>
+          </div>
+        </PageContainer>
+      </section>
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-12 md:py-16 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
@@ -355,7 +388,7 @@ export function GamePageTemplate({
                   <ExternalLink className="h-4 w-4" />
                 </a>
               </Button>
-              <p className="text-xs text-white/70 text-center font-medium">Free to play - Redeem codes instantly</p>
+              <p className="text-xs text-white/70 text-center font-medium">No signup required • Takes 30 seconds</p>
             </div>
           </div>
         </PageContainer>
@@ -376,6 +409,10 @@ export function GamePageTemplate({
               <p className="text-muted-foreground mt-2">
                 Highest value codes verified and working right now
               </p>
+              <p className="text-xs text-amber-600 mt-1 flex items-center justify-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                Codes expire without notice — redeem while they work
+              </p>
             </div>
             
             {/* Top 3 Best Codes */}
@@ -392,11 +429,15 @@ export function GamePageTemplate({
                     <div className="absolute top-3 right-3">
                       <Badge className={cn(
                         "text-xs",
-                        index === 0 && "bg-primary text-primary-foreground",
+                        index === 0 && "bg-green-600 text-white",
                         index === 1 && "bg-secondary text-secondary-foreground",
                         index === 2 && "bg-amber-500 text-white"
                       )}>
-                        #{index + 1} Best
+                        {index === 0 ? (
+                          <><Trophy className="h-3 w-3 mr-1" />#1 Recommended</>
+                        ) : (
+                          `#${index + 1} Best`
+                        )}
                       </Badge>
                     </div>
                     
@@ -1082,6 +1123,68 @@ export function GamePageTemplate({
           </PageContainer>
         </section>
       )}
+
+      {/* Game Guides - Internal Linking for SEO */}
+      <section className="py-10 md:py-12 border-b border-border">
+        <PageContainer>
+          <h3 className="text-xl font-bold text-foreground mb-2">
+            More {game.shortName || game.name} Guides
+          </h3>
+          <p className="text-muted-foreground text-sm mb-6">
+            Learn more about {game.shortName || game.name} with our helpful guides
+          </p>
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <Link
+              href={getSeoUrl(game.slug, 'redeem-codes')}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <BookOpen className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">How to Redeem Codes</p>
+                <p className="text-xs text-muted-foreground">Step-by-step guide</p>
+              </div>
+            </Link>
+            <Link
+              href={`/gaming/${game.slug}`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <div className="h-10 w-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                <Gift className="h-5 w-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">{game.shortName || game.name} Rewards</p>
+                <p className="text-xs text-muted-foreground">All free rewards</p>
+              </div>
+            </Link>
+            <Link
+              href={`/gaming/${game.slug}`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                <Zap className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">Beginner Guide</p>
+                <p className="text-xs text-muted-foreground">Tips for new players</p>
+              </div>
+            </Link>
+            <Link
+              href={`/gaming/${game.slug}`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+                <Trophy className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">Leveling Tips</p>
+                <p className="text-xs text-muted-foreground">Progress faster</p>
+              </div>
+            </Link>
+          </div>
+        </PageContainer>
+      </section>
 
       {/* Category Links & Popular Games - Internal Linking for SEO */}
       <section className="py-10 md:py-12 bg-muted/30">
