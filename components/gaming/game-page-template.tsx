@@ -1193,45 +1193,58 @@ export function GamePageTemplate({
               </div>
             </Link>
           </div>
-
-          {/* Monetization Link - Looking to save more? */}
-          <div className="mt-8 text-center">
-            <p className="text-muted-foreground mb-3">Looking to save more?</p>
-            <Link
-              href="/deals"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary font-medium transition-colors"
-            >
-              <Gift className="h-5 w-5" />
-              Browse All Deals & Savings
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
         </PageContainer>
       </section>
 
-      {/* Category Links & Popular Games - Internal Linking for SEO */}
+      {/* Popular Games - Top Internal Linking for SEO */}
       <section className="py-10 md:py-12 bg-muted/30">
         <PageContainer>
-          {/* Popular Games Internal Links - Dynamic from Data */}
+          {/* Popular Games - Hardcoded top performers */}
           <h3 className="text-xl font-bold text-foreground mb-4">
-            More Popular Game Codes
+            Popular Games
           </h3>
-          <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-8">
-            {relatedGames.slice(0, 6).map((relatedGame) => (
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 mb-8">
+            {[
+              { slug: 'raid-shadow-legends', name: 'RAID Shadow Legends' },
+              { slug: 'monopoly-go', name: 'Monopoly GO' },
+              { slug: 'brawl-stars', name: 'Brawl Stars' },
+              { slug: 'afk-arena', name: 'AFK Arena' },
+            ].filter(g => g.slug !== game.slug).slice(0, 4).map((topGame) => (
               <Link
-                key={relatedGame.slug}
-                href={`/gaming/${relatedGame.slug}`}
-                className="flex items-center gap-2 p-3 rounded-lg border border-border bg-background hover:border-green-500/50 hover:bg-green-500/5 text-sm font-medium text-foreground transition-colors"
+                key={topGame.slug}
+                href={`/gaming/${topGame.slug}`}
+                className="flex items-center gap-3 p-4 rounded-lg border border-border bg-background hover:border-primary/50 hover:shadow-md text-sm font-medium text-foreground transition-all"
               >
-                <Gamepad2 className="h-4 w-4 text-green-600 shrink-0" />
-                <span className="truncate">{relatedGame.shortName || relatedGame.name} Codes</span>
+                <Gamepad2 className="h-5 w-5 text-primary shrink-0" />
+                <span>{topGame.name} Codes</span>
               </Link>
             ))}
           </div>
 
+          {/* Related Games */}
+          {relatedGames.length > 0 && (
+            <>
+              <h4 className="text-lg font-semibold text-foreground mb-3">
+                Similar Games
+              </h4>
+              <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-8">
+                {relatedGames.slice(0, 6).map((relatedGame) => (
+                  <Link
+                    key={relatedGame.slug}
+                    href={`/gaming/${relatedGame.slug}`}
+                    className="flex items-center gap-2 p-3 rounded-lg border border-border bg-background hover:border-green-500/50 hover:bg-green-500/5 text-sm font-medium text-foreground transition-colors"
+                  >
+                    <Gamepad2 className="h-4 w-4 text-green-600 shrink-0" />
+                    <span className="truncate">{relatedGame.shortName || relatedGame.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
+
           {/* Hub Links */}
           <h4 className="text-lg font-semibold text-foreground mb-3">
-            Explore Gaming Deals
+            Explore More
           </h4>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -1249,25 +1262,11 @@ export function GamePageTemplate({
               All Promo Codes
             </Link>
             <Link
-              href="/gaming/free-rewards"
+              href="/gaming/best-codes"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium text-foreground transition-colors"
             >
-              <Gift className="h-4 w-4" />
-              Free Rewards
-            </Link>
-            <Link
-              href="/gaming/new-player-deals"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium text-foreground transition-colors"
-            >
-              <Zap className="h-4 w-4" />
-              New Player Deals
-            </Link>
-            <Link
-              href="/gaming/today"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border hover:border-primary/50 text-sm font-medium text-foreground transition-colors"
-            >
-              <Calendar className="h-4 w-4" />
-              Today&apos;s Codes
+              <Trophy className="h-4 w-4" />
+              Best Codes
             </Link>
             {categoryLinks.map((link) => (
               <Link
@@ -1278,6 +1277,24 @@ export function GamePageTemplate({
                 {link.label}
               </Link>
             ))}
+          </div>
+
+          {/* Global Monetization CTA */}
+          <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-foreground text-lg">Want to save money?</h4>
+                <p className="text-muted-foreground text-sm">Discover deals, discounts & cashback on products you love</p>
+              </div>
+              <Link
+                href="/deals"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-colors shrink-0"
+              >
+                <Gift className="h-5 w-5" />
+                Browse All Deals
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </PageContainer>
       </section>

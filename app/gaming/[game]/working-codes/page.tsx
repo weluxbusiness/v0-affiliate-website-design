@@ -78,15 +78,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: `${codeCount}+ working codes verified today. Redeem now!`,
     },
     alternates: {
-      canonical: `/gaming/${game.slug}/working-codes`,
+      canonical: `/gaming/${game.slug}`,
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
       googleBot: {
-        index: true,
+        index: false,
         follow: true,
-        "max-video-preview": -1,
         "max-image-preview": "large",
         "max-snippet": -1,
       },

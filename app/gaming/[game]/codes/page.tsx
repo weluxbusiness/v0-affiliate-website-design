@@ -73,7 +73,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `https://savesmart.bio/gaming/${game.slug}/codes`,
     },
     alternates: {
-      canonical: `/gaming/${game.slug}/codes`,
+      canonical: `/gaming/${game.slug}`,
+    },
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: {
+        index: false,
+        follow: true,
+      },
     },
   }
 }
