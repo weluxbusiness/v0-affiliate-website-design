@@ -254,7 +254,7 @@ export function RecommendedDeal({
           )}
         </div>
         <Button asChild className="shrink-0 gap-2">
-          <a href={affiliateLink} target="_blank" rel="noopener sponsored">
+          <a href={affiliateLink} target="_blank" rel="nofollow sponsored noopener">
             View Deal
             <ExternalLink className="h-4 w-4" />
           </a>
@@ -264,7 +264,9 @@ export function RecommendedDeal({
   )
 }
 
-// Extension CTA Component
+// Extension CTA Component - uses SaveSmart/Capital One affiliate link
+const SAVESMART_AFFILIATE_LINK = "https://go.savesmart.bio/save"
+
 export function ExtensionCTA() {
   return (
     <div className="my-12 overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-8 text-primary-foreground shadow-lg">
@@ -309,9 +311,16 @@ export function ExtensionCTA() {
           size="lg" 
           variant="secondary" 
           className="shrink-0 gap-2 bg-white text-primary hover:bg-white/90"
+          asChild
         >
-          Add Free Extension
-          <ArrowRight className="h-4 w-4" />
+          <a 
+            href={SAVESMART_AFFILIATE_LINK}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+          >
+            Add Free Extension
+            <ArrowRight className="h-4 w-4" />
+          </a>
         </Button>
       </div>
     </div>

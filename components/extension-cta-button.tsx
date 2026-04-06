@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/dialog"
 import { Chrome, Shield, Star, Loader2, ArrowRight, Check } from "lucide-react"
 
-const CHROME_STORE_URL = "https://chrome.google.com/webstore"
+// SaveSmart/Capital One affiliate link - centralized for all extension CTAs
+const SAVESMART_AFFILIATE_LINK = "https://go.savesmart.bio/save"
 
 interface ExtensionCTAButtonProps {
   variant?: "default" | "outline" | "secondary" | "ghost"
@@ -38,7 +39,7 @@ export function ExtensionCTAButton({
     e.preventDefault()
     if (!email.trim()) {
       // Skip email, go directly to store
-      window.open(CHROME_STORE_URL, "_blank", "noopener,noreferrer")
+      window.open(SAVESMART_AFFILIATE_LINK, "_blank", "noopener,noreferrer")
       setIsOpen(false)
       return
     }
@@ -57,18 +58,18 @@ export function ExtensionCTAButton({
       
       // Redirect after short delay
       setTimeout(() => {
-        window.open(CHROME_STORE_URL, "_blank", "noopener,noreferrer")
+        window.open(SAVESMART_AFFILIATE_LINK, "_blank", "noopener,noreferrer")
       }, 1500)
     } catch {
       // On error, still redirect to store
-      window.open(CHROME_STORE_URL, "_blank", "noopener,noreferrer")
+      window.open(SAVESMART_AFFILIATE_LINK, "_blank", "noopener,noreferrer")
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleSkip = () => {
-    window.open(CHROME_STORE_URL, "_blank", "noopener,noreferrer")
+    window.open(SAVESMART_AFFILIATE_LINK, "_blank", "noopener,noreferrer")
     setIsOpen(false)
   }
 

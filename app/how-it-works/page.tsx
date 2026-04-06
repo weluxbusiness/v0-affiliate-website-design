@@ -150,7 +150,7 @@ export default function HowItWorksPage() {
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" className="gap-2" asChild>
-                <a href="https://chrome.google.com/webstore" target="_blank" rel="noopener noreferrer">
+                <a href="https://go.savesmart.bio/save" target="_blank" rel="nofollow sponsored noopener">
                   <Download className="h-5 w-5" />
                   Add to Browser - It&apos;s Free
                 </a>
@@ -295,7 +295,7 @@ export default function HowItWorksPage() {
             </p>
             <div className="mt-8">
               <Button size="lg" variant="secondary" className="gap-2" asChild>
-                <a href="https://chrome.google.com/webstore" target="_blank" rel="noopener noreferrer">
+                <a href="https://go.savesmart.bio/save" target="_blank" rel="nofollow sponsored noopener">
                   Add Free Extension
                   <ArrowRight className="h-5 w-5" />
                 </a>

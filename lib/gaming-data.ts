@@ -68,44 +68,73 @@ export function getGameLogoUrl(game: Game): string {
 }
 
 // ============================================
-// AFFILIATE LINK HELPERS
+// AFFILIATE LINK SYSTEM (CENTRALIZED CONFIG)
 // ============================================
 
 // Base affiliate URL
 const AFFILIATE_BASE_URL = 'https://go.savesmart.bio'
 
+// GAME-SPECIFIC AFFILIATE CONFIG
+// Only games with explicit configs have affiliate links
+// Other games should NOT use affiliate links
+const gameAffiliateConfig: Record<string, { play?: string; reward?: string }> = {
+  'raid-shadow-legends': {
+    play: `${AFFILIATE_BASE_URL}/play-raid`,
+    reward: `${AFFILIATE_BASE_URL}/reward-raid`,
+  },
+  // Add more games here as affiliate partnerships are established
+  // 'game-slug': { play: 'url', reward: 'url' }
+}
+
+// Global affiliate links (not game-specific)
+export const GLOBAL_AFFILIATE_LINKS = {
+  // Capital One Shopping / SaveSmart extension
+  save: `${AFFILIATE_BASE_URL}/save`,
+  extension: `${AFFILIATE_BASE_URL}/save`,
+  deals: `${AFFILIATE_BASE_URL}/save`,
+}
+
 /**
- * Get the "Play [Game]" affiliate link (primary CTA - top section)
- * Uses Falconix network for play/download intent
+ * Get the "Play [Game]" affiliate link (primary CTA)
+ * Returns null if game has no affiliate partnership
  */
-export function getPlayAffiliateUrl(game: Game): string {
-  return `${AFFILIATE_BASE_URL}/falconix-${game.slug}`
+export function getPlayAffiliateUrl(game: Game): string | null {
+  const config = gameAffiliateConfig[game.slug]
+  return config?.play || null
 }
 
 /**
  * Get the "Get Reward" affiliate link (reward sections)
- * Uses Ultra network for reward redemption intent
+ * Returns null if game has no affiliate partnership
  */
-export function getRewardAffiliateUrl(game: Game): string {
-  return `${AFFILIATE_BASE_URL}/ultra-${game.slug}`
+export function getRewardAffiliateUrl(game: Game): string | null {
+  const config = gameAffiliateConfig[game.slug]
+  return config?.reward || null
 }
 
 /**
- * Get deals/savings affiliate link
- * Used for all deals and coupon-related CTAs
+ * Check if game has any affiliate links configured
  */
-export function getDealsAffiliateUrl(): string {
-  return `${AFFILIATE_BASE_URL}/save`
+export function hasAffiliateLinks(game: Game): boolean {
+  return game.slug in gameAffiliateConfig
 }
 
-// Legacy helper - now uses getPlayAffiliateUrl for backwards compatibility
-export function getGameAffiliateUrl(game: Game): string {
+/**
+ * Get deals/savings affiliate link (Capital One Shopping)
+ * Used for homepage CTAs, blog CTAs, deals pages
+ */
+export function getDealsAffiliateUrl(): string {
+  return GLOBAL_AFFILIATE_LINKS.save
+}
+
+// Legacy helper - returns play URL or null
+export function getGameAffiliateUrl(game: Game): string | null {
   return getPlayAffiliateUrl(game)
 }
 
-// Check if game has external affiliate link (always true for new system)
+// Check if game has external affiliate link
 export function hasExternalAffiliateLink(game: Game): boolean {
-  return true // All affiliate links are external now
+  return hasAffiliateLinks(game)
 }
 
 // ============================================

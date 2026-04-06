@@ -132,26 +132,28 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                     {rewardHighlight}
                   </p>
 
-                  {/* CTAs */}
+                  {/* CTAs - Only show Play button for games with affiliate partnerships */}
                   <div className="flex gap-2">
-                    <Button 
-                      asChild 
-                      className="flex-1 h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
-                    >
-                      <a 
-                        href={affiliateUrl} 
-                        target="_blank"
-                        rel="nofollow sponsored noopener"
+                    {affiliateUrl ? (
+                      <Button 
+                        asChild 
+                        className="flex-1 h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
                       >
-                        <Play className="h-4 w-4 mr-2 fill-current" />
-                        Play Now
-                        <ExternalLink className="h-3 w-3 ml-1" />
-                      </a>
-                    </Button>
+                        <a 
+                          href={affiliateUrl} 
+                          target="_blank"
+                          rel="nofollow sponsored noopener"
+                        >
+                          <Play className="h-4 w-4 mr-2 fill-current" />
+                          Play Now
+                          <ExternalLink className="h-3 w-3 ml-1" />
+                        </a>
+                      </Button>
+                    ) : null}
                     <Button 
                       asChild 
-                      variant="outline"
-                      className="h-10 font-medium"
+                      variant={affiliateUrl ? "outline" : "default"}
+                      className={affiliateUrl ? "h-10 font-medium" : "flex-1 h-10 font-semibold"}
                     >
                       <Link href={`/gaming/${game.slug}`}>
                         View Codes

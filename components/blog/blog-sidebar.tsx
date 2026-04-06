@@ -1,10 +1,13 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Tag, TrendingUp, Newspaper } from "lucide-react"
+import { ArrowRight, Tag, TrendingUp, Newspaper, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { Deal } from "@/lib/deal-types"
 import type { Article } from "@/lib/blog-data"
+
+// SaveSmart/Capital One affiliate link
+const SAVESMART_AFFILIATE_LINK = "https://go.savesmart.bio/save"
 
 interface BlogSidebarProps {
   popularDeals?: Deal[]
@@ -149,9 +152,17 @@ export function BlogSidebar({ popularDeals = [], relatedPosts = [] }: BlogSideba
           <Button 
             size="sm" 
             variant="secondary" 
-            className="mt-4 w-full bg-white text-primary hover:bg-white/90"
+            className="mt-4 w-full bg-white text-primary hover:bg-white/90 gap-2"
+            asChild
           >
-            Add Free Extension
+            <a 
+              href={SAVESMART_AFFILIATE_LINK}
+              target="_blank"
+              rel="nofollow sponsored noopener"
+            >
+              Add Free Extension
+              <ExternalLink className="h-3 w-3" />
+            </a>
           </Button>
         </div>
       </div>
