@@ -89,5 +89,49 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   })
   
-  return [...mainPages, ...hubPages, ...gamePages]
+  // ============================================
+  // GUIDE PAGES - TOP 5 GAMES ONLY (SEO Authority)
+  // Priority 0.8 - Supporting content for top games
+  // ============================================
+  const guideGameSlugs = [
+    'raid-shadow-legends',
+    'monopoly-go',
+    'brawl-stars',
+    'afk-arena',
+    'roblox',
+  ]
+  
+  const guidePages: MetadataRoute.Sitemap = guideGameSlugs.flatMap((slug) => [
+    {
+      url: `${BASE_URL}/gaming/${slug}-guide`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/gaming/${slug}-tips`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/gaming/${slug}-leveling`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+  ])
+  
+  // ============================================
+  // MONTHLY CODES PAGES - TOP 5 GAMES (April 2026)
+  // Priority 0.9 - Seasonal SEO pages
+  // ============================================
+  const monthlyCodesPages: MetadataRoute.Sitemap = guideGameSlugs.map((slug) => ({
+    url: `${BASE_URL}/gaming/${slug}-codes-april-2026`,
+    lastModified: currentDate,
+    changeFrequency: 'daily' as const,
+    priority: 0.9,
+  }))
+  
+  return [...mainPages, ...hubPages, ...gamePages, ...guidePages, ...monthlyCodesPages]
 }

@@ -28,7 +28,7 @@ import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
 import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getPlayAffiliateUrl, getRewardAffiliateUrl, hasAffiliateLinks } from "@/lib/gaming-data"
 import { cn } from "@/lib/utils"
 import { getSeoUrl } from "@/lib/seo-routes"
-import { Clock, AlertCircle, BookOpen, CheckCircle2, ArrowRight } from "lucide-react"
+import { Clock, AlertCircle, BookOpen, CheckCircle2, ArrowRight, TrendingUp } from "lucide-react"
 
 // ============================================
 // TYPES
@@ -1203,13 +1203,14 @@ export function GamePageTemplate({
           <h3 className="text-xl font-bold text-foreground mb-4">
             Popular Games
           </h3>
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 mb-8">
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-5 mb-8">
             {[
-              { slug: 'raid-shadow-legends', name: 'RAID Shadow Legends' },
+              { slug: 'raid-shadow-legends', name: 'RAID' },
               { slug: 'monopoly-go', name: 'Monopoly GO' },
               { slug: 'brawl-stars', name: 'Brawl Stars' },
               { slug: 'afk-arena', name: 'AFK Arena' },
-            ].filter(g => g.slug !== game.slug).slice(0, 4).map((topGame) => (
+              { slug: 'roblox', name: 'Roblox' },
+            ].filter(g => g.slug !== game.slug).map((topGame) => (
               <Link
                 key={topGame.slug}
                 href={`/gaming/${topGame.slug}`}
@@ -1219,6 +1220,43 @@ export function GamePageTemplate({
                 <span>{topGame.name} Codes</span>
               </Link>
             ))}
+          </div>
+
+          {/* Latest Guides */}
+          <h3 className="text-xl font-bold text-foreground mb-4">
+            Latest Guides
+          </h3>
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-3 mb-8">
+            <Link
+              href={`/gaming/${game.slug}-guide`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <BookOpen className="h-5 w-5 text-primary shrink-0" />
+              <div>
+                <p className="font-medium text-foreground text-sm">{game.shortName || game.name} Guide</p>
+                <p className="text-xs text-muted-foreground">Beginner friendly</p>
+              </div>
+            </Link>
+            <Link
+              href={`/gaming/${game.slug}-tips`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <Star className="h-5 w-5 text-amber-500 shrink-0" />
+              <div>
+                <p className="font-medium text-foreground text-sm">{game.shortName || game.name} Tips</p>
+                <p className="text-xs text-muted-foreground">Pro strategies</p>
+              </div>
+            </Link>
+            <Link
+              href={`/gaming/${game.slug}-leveling`}
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+            >
+              <TrendingUp className="h-5 w-5 text-green-600 shrink-0" />
+              <div>
+                <p className="font-medium text-foreground text-sm">{game.shortName || game.name} Leveling</p>
+                <p className="text-xs text-muted-foreground">Progress faster</p>
+              </div>
+            </Link>
           </div>
 
           {/* Related Games */}
