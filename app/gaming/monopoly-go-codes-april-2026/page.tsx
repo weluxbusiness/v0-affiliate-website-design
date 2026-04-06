@@ -1,25 +1,27 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { GamePageTemplate } from "@/components/gaming/game-page-template"
-import { getGameBySlug, getRelatedGames } from "@/lib/gaming-data"
+import { MonthlyCodesPageTemplate } from "@/components/gaming/monthly-codes-page-template"
+import { getGameBySlug, getRelatedGames, getActivePromoCodes } from "@/lib/gaming-data"
 
 const gameSlug = "monopoly-go"
+const month = "April"
+const year = 2026
 
 export async function generateMetadata(): Promise<Metadata> {
   const game = getGameBySlug(gameSlug)
   if (!game) return { title: "Game Not Found" }
 
-  const currentYear = new Date().getFullYear()
-  const currentMonth = "April"
+  const activeCodes = getActivePromoCodes(game.promoCodes)
   
   return {
-    title: `Monopoly GO Codes ${currentMonth} ${currentYear} - Free Dice & Stickers`,
-    description: `All working Monopoly GO codes for ${currentMonth} ${currentYear}. Get free dice rolls, stickers, and cash with the latest promo codes. Updated daily.`,
+    title: `Monopoly GO Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes + Free Dice`,
+    description: `All working Monopoly GO codes for ${month} ${year}. Get free dice rolls, stickers & cash. ${activeCodes.length}+ verified codes. Updated daily.`,
     keywords: [
-      `monopoly go codes ${currentMonth.toLowerCase()} ${currentYear}`,
+      `monopoly go codes ${month.toLowerCase()} ${year}`,
       "monopoly go free dice",
       "monopoly go codes today",
-      "monopoly go promo codes",
+      "monopoly go promo codes working",
+      "working monopoly go codes",
     ],
     alternates: {
       canonical: `/gaming/${gameSlug}`,
@@ -33,8 +35,8 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: `Monopoly GO Codes ${currentMonth} ${currentYear}`,
-      description: `All working Monopoly GO codes for ${currentMonth} ${currentYear}. Free dice & stickers.`,
+      title: `Monopoly GO Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes`,
+      description: `All working Monopoly GO codes for ${month} ${year}. Free dice & stickers. Updated daily.`,
       type: "website",
     },
   }
@@ -50,10 +52,11 @@ export default function MonopolyGOCodesApril2026Page() {
   const relatedGames = getRelatedGames(game, 6)
 
   return (
-    <GamePageTemplate 
+    <MonthlyCodesPageTemplate 
       game={game} 
+      month={month}
+      year={year}
       relatedGames={relatedGames}
-      pageSlug="monopoly-go-codes-april-2026"
     />
   )
 }

@@ -1,25 +1,27 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { GamePageTemplate } from "@/components/gaming/game-page-template"
-import { getGameBySlug, getRelatedGames } from "@/lib/gaming-data"
+import { MonthlyCodesPageTemplate } from "@/components/gaming/monthly-codes-page-template"
+import { getGameBySlug, getRelatedGames, getActivePromoCodes } from "@/lib/gaming-data"
 
 const gameSlug = "afk-arena"
+const month = "April"
+const year = 2026
 
 export async function generateMetadata(): Promise<Metadata> {
   const game = getGameBySlug(gameSlug)
   if (!game) return { title: "Game Not Found" }
 
-  const currentYear = new Date().getFullYear()
-  const currentMonth = "April"
+  const activeCodes = getActivePromoCodes(game.promoCodes)
   
   return {
-    title: `AFK Arena Codes ${currentMonth} ${currentYear} - Free Diamonds & Scrolls`,
-    description: `All working AFK Arena codes for ${currentMonth} ${currentYear}. Get free diamonds, scrolls, and heroes with the latest promo codes. Updated daily.`,
+    title: `AFK Arena Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes + Free Diamonds`,
+    description: `All working AFK Arena codes for ${month} ${year}. Get free diamonds, scrolls & heroes. ${activeCodes.length}+ verified codes. Updated daily.`,
     keywords: [
-      `afk arena codes ${currentMonth.toLowerCase()} ${currentYear}`,
+      `afk arena codes ${month.toLowerCase()} ${year}`,
       "afk arena free diamonds",
       "afk arena codes today",
-      "afk arena redemption codes",
+      "afk arena redemption codes working",
+      "working afk arena codes",
     ],
     alternates: {
       canonical: `/gaming/${gameSlug}`,
@@ -33,8 +35,8 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: `AFK Arena Codes ${currentMonth} ${currentYear}`,
-      description: `All working AFK Arena codes for ${currentMonth} ${currentYear}. Free diamonds & scrolls.`,
+      title: `AFK Arena Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes`,
+      description: `All working AFK Arena codes for ${month} ${year}. Free diamonds & scrolls. Updated daily.`,
       type: "website",
     },
   }
@@ -50,10 +52,11 @@ export default function AFKArenaCodesApril2026Page() {
   const relatedGames = getRelatedGames(game, 6)
 
   return (
-    <GamePageTemplate 
+    <MonthlyCodesPageTemplate 
       game={game} 
+      month={month}
+      year={year}
       relatedGames={relatedGames}
-      pageSlug="afk-arena-codes-april-2026"
     />
   )
 }

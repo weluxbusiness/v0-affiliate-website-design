@@ -1,26 +1,29 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { GamePageTemplate } from "@/components/gaming/game-page-template"
-import { getGameBySlug, getRelatedGames } from "@/lib/gaming-data"
+import { MonthlyCodesPageTemplate } from "@/components/gaming/monthly-codes-page-template"
+import { getGameBySlug, getRelatedGames, getActivePromoCodes } from "@/lib/gaming-data"
 
 const gameSlug = "raid-shadow-legends"
+const month = "April"
+const year = 2026
 
 export async function generateMetadata(): Promise<Metadata> {
   const game = getGameBySlug(gameSlug)
   if (!game) return { title: "Game Not Found" }
 
-  const currentYear = new Date().getFullYear()
-  const currentMonth = "April"
+  const activeCodes = getActivePromoCodes(game.promoCodes)
   
   return {
-    title: `RAID Shadow Legends Codes ${currentMonth} ${currentYear} - All Working Codes`,
-    description: `All working RAID Shadow Legends codes for ${currentMonth} ${currentYear}. Get free champions, silver, and energy with the latest promo codes. Updated daily.`,
+    title: `RAID Shadow Legends Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes + Free Rewards`,
+    description: `All working RAID Shadow Legends codes for ${month} ${year}. Get free champions, silver & energy. ${activeCodes.length}+ verified codes. Updated daily.`,
     keywords: [
-      `raid shadow legends codes ${currentMonth.toLowerCase()} ${currentYear}`,
+      `raid shadow legends codes ${month.toLowerCase()} ${year}`,
       "raid codes today",
-      "raid promo codes",
+      "raid promo codes working",
       "raid shadow legends free rewards",
-      "raid codes working",
+      "raid codes ${year}",
+      "working raid codes",
+      "raid shadow legends redeem codes",
     ],
     alternates: {
       canonical: `/gaming/${gameSlug}`,
@@ -34,8 +37,8 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: `RAID Shadow Legends Codes ${currentMonth} ${currentYear}`,
-      description: `All working RAID codes for ${currentMonth} ${currentYear}. Free champions, silver & energy.`,
+      title: `RAID Shadow Legends Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes`,
+      description: `All working RAID codes for ${month} ${year}. Free champions, silver & energy. Updated daily.`,
       type: "website",
     },
   }
@@ -51,10 +54,11 @@ export default function RAIDCodesApril2026Page() {
   const relatedGames = getRelatedGames(game, 6)
 
   return (
-    <GamePageTemplate 
+    <MonthlyCodesPageTemplate 
       game={game} 
+      month={month}
+      year={year}
       relatedGames={relatedGames}
-      pageSlug="raid-shadow-legends-codes-april-2026"
     />
   )
 }

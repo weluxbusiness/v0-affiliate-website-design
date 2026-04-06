@@ -42,7 +42,8 @@ interface InternalLink {
 interface GamePageTemplateProps {
   game: Game
   relatedGames: Game[]
-  categoryLinks: InternalLink[]
+  categoryLinks?: InternalLink[]
+  pageSlug?: string
 }
 
 // ============================================
@@ -211,7 +212,8 @@ function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; reward
 export function GamePageTemplate({
   game,
   relatedGames,
-  categoryLinks
+  categoryLinks = [],
+  pageSlug
 }: GamePageTemplateProps) {
   const activeCodes = sortPromoCodesByValue(getActivePromoCodes(game.promoCodes))
   const expiredCodes = getExpiredPromoCodes(game.promoCodes)
@@ -539,6 +541,24 @@ export function GamePageTemplate({
                   </div>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* CTA Block - Want More Rewards? */}
+            <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 max-w-2xl mx-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-center sm:text-left">
+                  <h4 className="font-bold text-foreground text-lg">Want more rewards?</h4>
+                  <p className="text-muted-foreground text-sm">Unlock more in-game items with exclusive deals</p>
+                </div>
+                <Link
+                  href="/deals"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold transition-colors shrink-0"
+                >
+                  <Gift className="h-5 w-5" />
+                  Browse All Deals
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </PageContainer>
         </section>
@@ -1133,6 +1153,77 @@ export function GamePageTemplate({
           </PageContainer>
         </section>
       )}
+
+      {/* More Ways to Get Rewards - PRIMARY MONETIZATION SECTION */}
+      <section className="py-10 md:py-12 bg-gradient-to-br from-green-500/5 to-emerald-500/5 border-b border-border">
+        <PageContainer>
+          <div className="text-center mb-8">
+            <Badge className="bg-green-600 text-white mb-3">
+              <Gift className="h-3 w-3 mr-1" />
+              More Free Rewards
+            </Badge>
+            <h3 className="text-2xl font-bold text-foreground mb-2">
+              More Ways to Get {game.shortName || game.name} Rewards
+            </h3>
+            <p className="text-muted-foreground">
+              Don&apos;t stop here — discover more ways to earn free items
+            </p>
+          </div>
+          
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3 max-w-3xl mx-auto">
+            {/* Primary: Deals Page */}
+            <Link
+              href="/deals"
+              className="flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-green-500/30 bg-gradient-to-br from-green-500/10 to-emerald-500/10 hover:border-green-500/50 hover:shadow-lg transition-all text-center"
+            >
+              <div className="h-12 w-12 rounded-full bg-green-600 flex items-center justify-center">
+                <Tag className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <p className="font-bold text-foreground">Best Deals & Bonuses</p>
+                <p className="text-sm text-muted-foreground">Exclusive offers & savings</p>
+              </div>
+              <span className="text-green-600 text-sm font-medium flex items-center gap-1">
+                Browse Deals <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+            
+            {/* Secondary: Free Rewards */}
+            <Link
+              href={`/gaming/${game.slug}/free-rewards`}
+              className="flex flex-col items-center gap-3 p-6 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all text-center"
+            >
+              <div className="h-12 w-12 rounded-full bg-amber-500/10 flex items-center justify-center">
+                <Gift className="h-6 w-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="font-bold text-foreground">Get More Free Rewards</p>
+                <p className="text-sm text-muted-foreground">Additional free items</p>
+              </div>
+              <span className="text-primary text-sm font-medium flex items-center gap-1">
+                View Rewards <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+            
+            {/* Tertiary: Redeem Guide */}
+            <Link
+              href={`/gaming/${game.slug}/redeem-codes`}
+              className="flex flex-col items-center gap-3 p-6 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all text-center"
+            >
+              <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <BookOpen className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-bold text-foreground">How to Redeem Codes</p>
+                <p className="text-sm text-muted-foreground">Step-by-step guide</p>
+              </div>
+              <span className="text-primary text-sm font-medium flex items-center gap-1">
+                Read Guide <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+          </div>
+        </PageContainer>
+      </section>
 
       {/* Game Guides - Internal Linking for SEO */}
       <section className="py-10 md:py-12 border-b border-border">

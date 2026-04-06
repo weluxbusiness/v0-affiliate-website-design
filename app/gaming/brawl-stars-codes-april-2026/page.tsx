@@ -1,25 +1,27 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { GamePageTemplate } from "@/components/gaming/game-page-template"
-import { getGameBySlug, getRelatedGames } from "@/lib/gaming-data"
+import { MonthlyCodesPageTemplate } from "@/components/gaming/monthly-codes-page-template"
+import { getGameBySlug, getRelatedGames, getActivePromoCodes } from "@/lib/gaming-data"
 
 const gameSlug = "brawl-stars"
+const month = "April"
+const year = 2026
 
 export async function generateMetadata(): Promise<Metadata> {
   const game = getGameBySlug(gameSlug)
   if (!game) return { title: "Game Not Found" }
 
-  const currentYear = new Date().getFullYear()
-  const currentMonth = "April"
+  const activeCodes = getActivePromoCodes(game.promoCodes)
   
   return {
-    title: `Brawl Stars Codes ${currentMonth} ${currentYear} - Free Gems & Coins`,
-    description: `All working Brawl Stars codes for ${currentMonth} ${currentYear}. Get free gems, coins, and brawler skins with the latest promo codes. Updated daily.`,
+    title: `Brawl Stars Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes + Free Gems`,
+    description: `All working Brawl Stars codes for ${month} ${year}. Get free gems, coins & brawler skins. ${activeCodes.length}+ verified codes. Updated daily.`,
     keywords: [
-      `brawl stars codes ${currentMonth.toLowerCase()} ${currentYear}`,
+      `brawl stars codes ${month.toLowerCase()} ${year}`,
       "brawl stars free gems",
       "brawl stars codes today",
-      "brawl stars promo codes",
+      "brawl stars promo codes working",
+      "working brawl stars codes",
     ],
     alternates: {
       canonical: `/gaming/${gameSlug}`,
@@ -33,8 +35,8 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: `Brawl Stars Codes ${currentMonth} ${currentYear}`,
-      description: `All working Brawl Stars codes for ${currentMonth} ${currentYear}. Free gems & coins.`,
+      title: `Brawl Stars Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes`,
+      description: `All working Brawl Stars codes for ${month} ${year}. Free gems & coins. Updated daily.`,
       type: "website",
     },
   }
@@ -50,10 +52,11 @@ export default function BrawlStarsCodesApril2026Page() {
   const relatedGames = getRelatedGames(game, 6)
 
   return (
-    <GamePageTemplate 
+    <MonthlyCodesPageTemplate 
       game={game} 
+      month={month}
+      year={year}
       relatedGames={relatedGames}
-      pageSlug="brawl-stars-codes-april-2026"
     />
   )
 }
