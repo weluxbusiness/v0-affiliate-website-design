@@ -396,7 +396,13 @@ export function GamePageTemplate({
               
               <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {recentCodes.map((code) => (
-                  <PromoCodeCard key={code.id} code={code} />
+                  <PromoCodeCard 
+                    key={code.id} 
+                    code={code}
+                    showAffiliateCTA={true}
+                    affiliateUrl={getPlayAffiliateUrl(game)}
+                    affiliateLabel={`Play ${game.shortName || game.name}`}
+                  />
                 ))}
               </div>
               
@@ -429,25 +435,86 @@ export function GamePageTemplate({
             All {activeCodes.length} working codes verified and tested. Copy any code below and redeem it in-game for free rewards.
           </p>
 
-          {activeCodes.length > 0 ? (
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {activeCodes.map((code) => (
-                <PromoCodeCard key={code.id} code={code} />
-              ))}
-            </div>
-          ) : (
-            <Card className="border-dashed">
-              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                <Tag className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  No active codes right now
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Check back soon - we update codes daily!
-                </p>
-              </CardContent>
-            </Card>
-          )}
+          {/* Regular Codes (non-exclusive) */}
+          {(() => {
+            const regularCodes = activeCodes.filter(code => !code.isExclusive)
+            const exclusiveCodes = activeCodes.filter(code => code.isExclusive)
+            
+            return (
+              <>
+                {regularCodes.length > 0 ? (
+                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-10">
+                    {regularCodes.map((code) => (
+                      <PromoCodeCard 
+                        key={code.id} 
+                        code={code}
+                        showAffiliateCTA={true}
+                        affiliateUrl={getPlayAffiliateUrl(game)}
+                        affiliateLabel={`Play ${game.shortName || game.name}`}
+                      />
+                    ))}
+                  </div>
+                ) : activeCodes.length === 0 ? (
+                  <Card className="border-dashed mb-10">
+                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                      <Tag className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
+                        No active codes right now
+                      </h3>
+                      <p className="text-muted-foreground mb-4">
+                        Check back soon - we update codes daily!
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : null}
+
+                {/* New Player / Exclusive Codes Section */}
+                {exclusiveCodes.length > 0 && (
+                  <div className="mt-8 pt-8 border-t border-border">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10">
+                        <Zap className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-foreground">
+                          New Player Codes
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          For accounts under 7 days old
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Warning Banner */}
+                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-6">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-amber-700 mb-1">Important: You Can Only Use ONE New Player Code</h4>
+                          <p className="text-sm text-amber-700/80">
+                            New player codes are exclusive - once you redeem one, you cannot use another. 
+                            Choose wisely! We recommend codes that give Legendary champions.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                      {exclusiveCodes.map((code) => (
+                        <PromoCodeCard 
+                          key={code.id} 
+                          code={code}
+                          showAffiliateCTA={true}
+                          affiliateUrl={getPlayAffiliateUrl(game)}
+                          affiliateLabel={`Play ${game.shortName || game.name}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )
+          })()}
         </PageContainer>
       </section>
 

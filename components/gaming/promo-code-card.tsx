@@ -35,6 +35,9 @@ interface PromoCodeCardProps {
   game?: Game & { id?: string }
   variant?: "default" | "compact" | "featured"
   showGame?: boolean
+  showAffiliateCTA?: boolean // Show affiliate CTA even when showGame is false
+  affiliateUrl?: string // Direct affiliate URL override
+  affiliateLabel?: string // Custom CTA label like "Play RAID"
   onCopy?: (code: string) => void
   pageSlug?: string
 }
@@ -70,6 +73,9 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   game,
   variant = "default",
   showGame = false,
+  showAffiliateCTA = false,
+  affiliateUrl: affiliateUrlProp,
+  affiliateLabel,
   onCopy,
   pageSlug
 }: PromoCodeCardProps) {
@@ -225,8 +231,8 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   // Default variant - with game logo for visual hierarchy
-  const affiliateUrl = game ? getPlayAffiliateUrl(game) : null
-  const isExternal = game ? hasExternalAffiliateLink(game) : false
+  const affiliateUrl = affiliateUrlProp || (game ? getPlayAffiliateUrl(game) : null)
+  const shouldShowCTA = showAffiliateCTA || (showGame && game && affiliateUrl)
 
   const cardContent = (
     <Card className={cn(
@@ -333,8 +339,8 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </Button>
         </div>
 
-        {/* Primary CTA - Play Now (Falconix affiliate network) */}
-        {showGame && game && affiliateUrl && (
+        {/* Primary CTA - Play Now (affiliate) */}
+        {shouldShowCTA && affiliateUrl && (
           <Button 
             asChild 
             className="w-full h-10 font-semibold bg-green-600 hover:bg-green-700 text-white mb-3 shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
@@ -347,7 +353,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               onClick={(e) => e.stopPropagation()}
             >
               <Play className="h-4 w-4 mr-2 fill-current" />
-              Play Now
+              {affiliateLabel || "Play Now"}
               <ExternalLink className="h-3 w-3 ml-2" />
             </a>
           </Button>
