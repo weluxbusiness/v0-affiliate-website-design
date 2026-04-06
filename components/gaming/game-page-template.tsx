@@ -446,14 +446,48 @@ export function GamePageTemplate({
                       </a>
                     </Button>
                     
-                    {/* Social Proof */}
+                    {/* Compliant Social Proof */}
                     <p className="text-center text-xs text-muted-foreground mt-3">
-                      <Users className="h-3 w-3 inline mr-1" />
-                      {Math.floor((code.successRate || 90) * 15 + Math.random() * 100)} players used today
+                      <Flame className="h-3 w-3 inline mr-1 text-amber-500" />
+                      Popular code among players
                     </p>
                   </CardContent>
                 </Card>
               ))}
+            </div>
+
+            {/* Value Block - What You Get */}
+            <div className="mt-8 max-w-2xl mx-auto">
+              <Card className="border-green-500/20 bg-gradient-to-br from-green-500/5 to-emerald-500/5">
+                <CardContent className="p-5">
+                  <h3 className="font-bold text-foreground text-center mb-4">
+                    What you get with these codes:
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Gift className="h-5 w-5 text-primary" />
+                      </div>
+                      <p className="text-sm font-medium text-foreground">Free Champions</p>
+                      <p className="text-xs text-muted-foreground">Worth $20+ value</p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
+                        <Star className="h-5 w-5 text-amber-500" />
+                      </div>
+                      <p className="text-sm font-medium text-foreground">Silver Rewards</p>
+                      <p className="text-xs text-muted-foreground">In-game currency</p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+                        <Zap className="h-5 w-5 text-blue-500" />
+                      </div>
+                      <p className="text-sm font-medium text-foreground">Energy Boosts</p>
+                      <p className="text-xs text-muted-foreground">Play more, progress faster</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </PageContainer>
         </section>

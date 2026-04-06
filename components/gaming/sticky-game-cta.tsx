@@ -46,10 +46,10 @@ export function StickyGameCTA({ gameName, affiliateUrl, className }: StickyGameC
               </div>
               <div>
                 <p className="font-bold text-sm sm:text-base">
-                  Play {gameName} + Get Free Rewards
+                  Play {gameName} → Unlock Rewards
                 </p>
                 <p className="text-xs text-white/80 hidden sm:block">
-                  Redeem promo codes for free in-game items
+                  Redeem codes for free in-game items
                 </p>
               </div>
             </div>

@@ -98,10 +98,10 @@ export function ExitIntentPopup({
               <Gift className="h-7 w-7 text-primary" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">
-              Wait! Use this code before you go
+              Before you go — here&apos;s a popular code
             </h3>
             <p className="text-muted-foreground">
-              Don&apos;t miss out on free rewards in {gameShortName || gameName}
+              Save this {gameShortName || gameName} code for free rewards
             </p>
           </div>
 
@@ -123,21 +123,28 @@ export function ExitIntentPopup({
               </div>
               <Button 
                 onClick={handleCopy} 
-                variant="outline" 
+                variant={copied ? "default" : "outline"}
                 size="lg"
-                className="shrink-0"
+                className={copied ? "shrink-0 bg-green-600 hover:bg-green-600 text-white" : "shrink-0"}
               >
                 {copied ? (
-                  <Check className="h-5 w-5 text-green-600" />
+                  <><Check className="h-5 w-5" /> Copied</>
                 ) : (
                   <Copy className="h-5 w-5" />
                 )}
               </Button>
             </div>
             
-            <p className="text-center text-sm font-medium text-foreground">
-              {bestCodeReward}
-            </p>
+            {/* Copy confirmation */}
+            {copied ? (
+              <p className="text-center text-sm font-medium text-green-600">
+                Code copied — open the game to redeem it
+              </p>
+            ) : (
+              <p className="text-center text-sm font-medium text-foreground">
+                {bestCodeReward}
+              </p>
+            )}
           </div>
 
           {/* CTA */}
@@ -161,7 +168,7 @@ export function ExitIntentPopup({
             onClick={() => setIsVisible(false)}
             className="w-full mt-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            No thanks, I&apos;ll pass on free rewards
+            Maybe later
           </button>
         </CardContent>
       </Card>

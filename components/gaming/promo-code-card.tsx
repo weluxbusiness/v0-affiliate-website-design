@@ -16,8 +16,7 @@ import {
   Flame,
   Star,
   ExternalLink,
-  Play,
-  Users
+  Play
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
@@ -96,7 +95,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
       page_slug: pageSlug,
     })
     
-    setTimeout(() => setCopied(false), 2000)
+    setTimeout(() => setCopied(false), 3000)
   }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy])
 
   const expiringSoon = isExpiringSoon(code.expiresAt)
@@ -283,9 +282,9 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               </Badge>
             )}
             {expiringSoon && (
-              <Badge variant="destructive" className="text-xs animate-pulse">
+              <Badge variant="outline" className="text-xs text-amber-600 border-amber-500/50 bg-amber-500/10">
                 <Clock className="h-3 w-3 mr-1" />
-                Expires Soon!
+                Limited-time
               </Badge>
             )}
           </div>
@@ -301,9 +300,9 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               </Badge>
             )}
             {expiringSoon && (
-              <Badge variant="destructive" className="text-xs">
-                <Flame className="h-3 w-3 mr-1" />
-                Expiring Soon
+              <Badge variant="outline" className="text-xs text-amber-600 border-amber-500/50 bg-amber-500/10">
+                <Clock className="h-3 w-3 mr-1" />
+                Limited-time
               </Badge>
             )}
           </div>
@@ -324,21 +323,28 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </div>
           <Button 
             size="sm" 
-            variant="outline"
+            variant={copied ? "default" : "outline"}
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
               handleCopy()
             }}
-            className="shrink-0"
+            className={cn("shrink-0 transition-all", copied && "bg-green-600 hover:bg-green-600 text-white")}
           >
             {copied ? (
-              <Check className="h-4 w-4" />
+              <><Check className="h-4 w-4 mr-1" /> Copied</>
             ) : (
               <Copy className="h-4 w-4" />
             )}
           </Button>
         </div>
+
+        {/* Copy Confirmation Message */}
+        {copied && (
+          <p className="text-xs text-green-600 font-medium mb-2 animate-in fade-in">
+            Code copied — open the game to redeem it
+          </p>
+        )}
 
         {/* Primary CTA - Play & Redeem (affiliate) */}
         {shouldShowCTA && affiliateUrl && (
@@ -360,13 +366,13 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </Button>
         )}
 
-        {/* Footer Info - Trust & Urgency Signals */}
+        {/* Footer Info - Trust Signals (Compliance-Safe) */}
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground pt-2 border-t border-border">
           <div className="flex items-center gap-3">
             {code.expiresAt ? (
               <span className={cn(
                 "flex items-center gap-1",
-                expiringSoon && "text-destructive font-medium"
+                expiringSoon && "text-amber-600 font-medium"
               )}>
                 <Clock className="h-3 w-3" />
                 {formatTimeRemaining(code.expiresAt)}
@@ -377,11 +383,13 @@ export const PromoCodeCard = memo(function PromoCodeCard({
                 No expiration
               </span>
             )}
-            {/* Social proof - simulated usage count based on success rate */}
-            <span className="flex items-center gap-1 text-muted-foreground">
-              <Users className="h-3 w-3" />
-              {Math.floor((code.successRate || 90) * 12 + Math.random() * 50)} used today
-            </span>
+            {/* Compliant social proof - no fake numbers */}
+            {code.isVerified && (
+              <span className="flex items-center gap-1 text-blue-600">
+                <Flame className="h-3 w-3" />
+                Popular code
+              </span>
+            )}
           </div>
           {code.successRate && (
             <span className="flex items-center gap-1 text-green-600 font-medium">
