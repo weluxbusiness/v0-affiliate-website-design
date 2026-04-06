@@ -262,7 +262,7 @@ export function GamePageTemplate({
           </nav>
 
           {/* Game Info with Logo */}
-          <div className="flex flex-col md:flex-row gap-6 items-start">
+          <div className="flex flex-col md:flex-row gap-6 items-start relative z-10">
             {/* Game Logo - Large Visual Anchor */}
             <div className="relative h-24 w-24 md:h-28 md:w-28 shrink-0 rounded-2xl overflow-hidden ring-4 ring-white/20 shadow-2xl bg-white/10">
               {game.logoUrl ? (
@@ -330,7 +330,7 @@ export function GamePageTemplate({
             </div>
 
             {/* Primary CTA - Always shows with fallback monetization */}
-            <div className="shrink-0 flex flex-col gap-2">
+            <div className="shrink-0 flex flex-col gap-2 relative z-20">
               <Button 
                 size="lg" 
                 asChild 
