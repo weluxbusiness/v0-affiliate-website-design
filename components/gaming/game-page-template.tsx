@@ -398,14 +398,24 @@ export function GamePageTemplate({
       {activeCodes.length > 0 && (
         <section className="py-10 border-b border-border bg-gradient-to-b from-primary/5 to-muted/30">
           <PageContainer>
+            {/* Visual Hook */}
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+                Claim Your Free Rewards in {game.shortName || game.name}
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Copy a code below and redeem it in-game
+              </p>
+            </div>
+
             <div className="text-center mb-6">
               <Badge className="bg-primary text-primary-foreground mb-3">
                 <Flame className="h-3 w-3 mr-1" />
                 Top Codes - Use These First
               </Badge>
-              <h2 className="text-2xl font-bold text-foreground">
+              <h3 className="text-xl font-bold text-foreground">
                 Best {game.shortName || game.name} Codes ({currentMonth} {currentYear})
-              </h2>
+              </h3>
               <p className="text-muted-foreground mt-2">
                 Highest value codes verified and working right now
               </p>
@@ -1181,6 +1191,19 @@ export function GamePageTemplate({
                 <p className="font-medium text-foreground text-sm">Leveling Tips</p>
                 <p className="text-xs text-muted-foreground">Progress faster</p>
               </div>
+            </Link>
+          </div>
+
+          {/* Monetization Link - Looking to save more? */}
+          <div className="mt-8 text-center">
+            <p className="text-muted-foreground mb-3">Looking to save more?</p>
+            <Link
+              href="/deals"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary font-medium transition-colors"
+            >
+              <Gift className="h-5 w-5" />
+              Browse All Deals & Savings
+              <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
         </PageContainer>

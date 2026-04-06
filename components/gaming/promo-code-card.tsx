@@ -1,6 +1,6 @@
 "use client"
 
-import { memo, useState, useCallback, useRef } from "react"
+import { memo, useState, useCallback } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -80,17 +80,13 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   pageSlug
 }: PromoCodeCardProps) {
   const [copied, setCopied] = useState(false)
-  const [redirecting, setRedirecting] = useState(false)
-  const hasClickedCTA = useRef(false)
   const { trackCodeCopy } = useGamingAnalytics()
 
-  // Compute affiliate URL for auto-redirect
+  // Compute affiliate URL
   const computedAffiliateUrl = affiliateUrlProp || (game ? getPlayAffiliateUrl(game) : null)
-  const shouldAutoRedirect = showAffiliateCTA && computedAffiliateUrl
 
   const handleCopy = useCallback(() => {
-    // Prevent double-triggering
-    if (copied || redirecting) return
+    if (copied) return
     
     navigator.clipboard.writeText(code.code)
     setCopied(true)
@@ -104,24 +100,8 @@ export const PromoCodeCard = memo(function PromoCodeCard({
       page_slug: pageSlug,
     })
     
-    // Auto-redirect after 800ms if user hasn't clicked CTA
-    if (shouldAutoRedirect && !hasClickedCTA.current) {
-      setRedirecting(true)
-      setTimeout(() => {
-        if (!hasClickedCTA.current) {
-          window.open(computedAffiliateUrl, '_blank', 'noopener,noreferrer')
-        }
-        setRedirecting(false)
-      }, 800)
-    }
-    
-    setTimeout(() => setCopied(false), 3000)
-  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy, copied, redirecting, shouldAutoRedirect, computedAffiliateUrl])
-
-  // Mark CTA as clicked to prevent auto-redirect
-  const handleCTAClick = useCallback(() => {
-    hasClickedCTA.current = true
-  }, [])
+    setTimeout(() => setCopied(false), 5000)
+  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy, copied])
 
   const expiringSoon = isExpiringSoon(code.expiresAt)
 
@@ -364,15 +344,38 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </Button>
         </div>
 
-        {/* Copy Confirmation Message - Shows opening game notification */}
-        {copied && (
+        {/* Copy Confirmation + Open Game CTA */}
+        {copied && shouldShowCTA && affiliateUrl ? (
+          <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg animate-in fade-in">
+            <p className="text-sm text-green-700 font-medium mb-2 flex items-center gap-1.5">
+              <Check className="h-4 w-4" />
+              Code copied — open the game to redeem
+            </p>
+            <Button 
+              asChild 
+              className="w-full h-10 font-bold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
+              size="sm"
+            >
+              <a 
+                href={affiliateUrl} 
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Play className="h-4 w-4 mr-2 fill-current" />
+                {affiliateLabel?.replace('& Redeem', '').trim() || "Open Game"}
+                <ExternalLink className="h-3 w-3 ml-2" />
+              </a>
+            </Button>
+          </div>
+        ) : copied ? (
           <p className="text-xs text-green-600 font-medium mb-2 animate-in fade-in">
-            {redirecting ? "Code copied — opening game..." : "Code copied — open the game to redeem it"}
+            Code copied — open the game to redeem it
           </p>
-        )}
+        ) : null}
 
-        {/* Primary CTA - Play & Redeem (affiliate) */}
-        {shouldShowCTA && affiliateUrl && (
+        {/* Primary CTA - Play & Redeem (affiliate) - Only show when not copied */}
+        {!copied && shouldShowCTA && affiliateUrl && (
           <Button 
             asChild 
             className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
@@ -382,10 +385,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               href={affiliateUrl} 
               target="_blank"
               rel="nofollow sponsored noopener"
-              onClick={(e) => {
-                e.stopPropagation()
-                handleCTAClick()
-              }}
+              onClick={(e) => e.stopPropagation()}
             >
               <Play className="h-4 w-4 mr-2 fill-current" />
               {affiliateLabel || "Play & Redeem Code"}
