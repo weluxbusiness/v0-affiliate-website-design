@@ -2636,7 +2636,7 @@ export const gamesData: Game[] = [
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android'],
     imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/monopoly-go.webp',
+    logoUrl: '/images/games/monopoly-go.jpg',
     developer: 'Scopely',
     publisher: 'Scopely',
     promoCodes: [
