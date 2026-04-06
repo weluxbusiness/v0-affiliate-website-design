@@ -138,6 +138,35 @@
     -webkit-overflow-scrolling: touch;
   }
   
+  /* Clickable elements - ensure pointer cursor */
+  button,
+  a,
+  [role="button"],
+  [role="link"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"],
+  label[for],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="submit"],
+  input[type="button"],
+  select,
+  summary,
+  .clickable,
+  [onclick],
+  [data-clickable="true"] {
+    cursor: pointer;
+  }
+  
+  /* Disabled elements should show not-allowed cursor */
+  button:disabled,
+  a[aria-disabled="true"],
+  [role="button"][aria-disabled="true"],
+  .disabled {
+    cursor: not-allowed;
+  }
+  
   /* Better touch targets - only for interactive elements that need it */
   button:not(.min-h-0), 
   [role="button"]:not(.min-h-0) {
@@ -145,7 +174,9 @@
   }
   
   /* Tap feedback */
-  button:active, a:active, [role="button"]:active {
+  button:active:not(:disabled), 
+  a:active, 
+  [role="button"]:active:not([aria-disabled="true"]) {
     transform: scale(0.98);
     transition: transform 0.1s ease;
   }
