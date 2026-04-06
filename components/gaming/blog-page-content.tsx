@@ -87,7 +87,7 @@ interface BlogPageContentProps {
 export function BlogPageContent({ game, pageType, slug }: BlogPageContentProps) {
   const config = BLOG_CONFIG[pageType]
   const activeCodes = getActivePromoCodes(game.promoCodes)
-  const relatedGames = getRelatedGames(game.id, 6)
+  const relatedGames = getRelatedGames(game, 6)
   
   const today = new Date()
   const monthYear = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
