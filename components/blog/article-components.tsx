@@ -287,25 +287,14 @@ export function ExtensionCTA() {
           </svg>
         </div>
         <div className="flex-1">
-          <h3 className="text-2xl font-bold">Start Saving Automatically</h3>
+          <h3 className="text-2xl font-bold">Try SaveSmart Free</h3>
           <p className="mt-2 text-primary-foreground/80">
-            Install the free SaveSmart extension and save up to 30% on your purchases. 
+            Save up to 30% on your purchases automatically. 
             Works on 25,000+ stores with automatic coupon codes.
           </p>
-          <ul className="mt-4 flex flex-wrap justify-center gap-4 text-sm sm:justify-start">
-            <li className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4" />
-              Free forever
-            </li>
-            <li className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4" />
-              No credit card
-            </li>
-            <li className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4" />
-              Privacy focused
-            </li>
-          </ul>
+          <p className="mt-2 text-sm text-primary-foreground/70">
+            No signup required - Works instantly
+          </p>
         </div>
         <Button 
           size="lg" 
@@ -318,7 +307,7 @@ export function ExtensionCTA() {
             target="_blank"
             rel="nofollow sponsored noopener"
           >
-            Add Free Extension
+            Start Saving Now
             <ArrowRight className="h-4 w-4" />
           </a>
         </Button>
@@ -355,6 +344,29 @@ export function ArticleImage({ src, alt, caption, priority = false }: ArticleIma
         </figcaption>
       )}
     </figure>
+  )
+}
+
+// Gaming Cross-Link Component - for internal linking boost
+export function GamingCrossLink() {
+  return (
+    <div className="my-10 overflow-hidden rounded-xl border border-secondary/30 bg-secondary/5 p-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-bold text-foreground">Want free in-game rewards?</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Browse the latest promo codes for popular games.
+          </p>
+        </div>
+        <Link 
+          href="/gaming"
+          className="shrink-0 inline-flex items-center gap-2 rounded-lg bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground hover:bg-secondary/80 transition-colors"
+        >
+          View Gaming Codes
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
   )
 }
 

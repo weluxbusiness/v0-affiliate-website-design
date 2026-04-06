@@ -145,9 +145,9 @@ export function BlogSidebar({ popularDeals = [], relatedPosts = [] }: BlogSideba
 
         {/* Install Extension Banner */}
         <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-5 text-primary-foreground">
-          <h3 className="font-bold text-lg">Save More Today</h3>
+          <h3 className="font-bold text-lg">Try SaveSmart Free</h3>
           <p className="mt-2 text-sm text-primary-foreground/80">
-            Install SaveSmart and start saving automatically on every purchase.
+            Save automatically on every purchase. No signup required.
           </p>
           <Button 
             size="sm" 
@@ -160,7 +160,7 @@ export function BlogSidebar({ popularDeals = [], relatedPosts = [] }: BlogSideba
               target="_blank"
               rel="nofollow sponsored noopener"
             >
-              Add Free Extension
+              Start Saving Now
               <ExternalLink className="h-3 w-3" />
             </a>
           </Button>

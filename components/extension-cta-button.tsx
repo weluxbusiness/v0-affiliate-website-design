@@ -93,7 +93,7 @@ export function ExtensionCTAButton({
         onClick={() => setIsOpen(true)}
       >
         {showIcon && <Chrome className="h-5 w-5" />}
-        {children || "Add Free Chrome Extension"}
+        {children || "Start Saving Now"}
       </Button>
 
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -105,10 +105,10 @@ export function ExtensionCTAButton({
                   <Chrome className="h-7 w-7 text-primary" />
                 </div>
                 <DialogTitle className="text-xl">
-                  Install SaveSmart Extension
+                  Try SaveSmart Free
                 </DialogTitle>
                 <DialogDescription className="text-base">
-                  Start saving money automatically at 30,000+ stores.
+                  No signup required. Works instantly at 30,000+ stores.
                 </DialogDescription>
               </DialogHeader>
 

@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
 import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getPlayAffiliateUrl, getRewardAffiliateUrl, hasAffiliateLinks } from "@/lib/gaming-data"
 import { getSeoUrl } from "@/lib/seo-routes"
-import { Clock, AlertCircle, BookOpen, CheckCircle2 } from "lucide-react"
+import { Clock, AlertCircle, BookOpen, CheckCircle2, ArrowRight } from "lucide-react"
 
 // ============================================
 // TYPES
@@ -138,7 +138,7 @@ export function generateGameSchemaMarkup(game: Game, codes: PromoCode[]) {
 // SUB-COMPONENTS
 // ============================================
 
-function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; rewardAffiliateUrl: string | null }) {
+function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; rewardAffiliateUrl: string }) {
   const typeColors: Record<GameReward['type'], string> = {
     'Free': 'bg-green-500/10 text-green-600',
     'New Player': 'bg-primary/10 text-primary',
@@ -148,7 +148,7 @@ function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; reward
     'Achievement': 'bg-purple-500/10 text-purple-600',
   }
 
-  // Only show CTA if there's a link (reward-specific or affiliate)
+  // Use reward-specific link if available, otherwise use affiliate fallback
   const ctaLink = reward.link || rewardAffiliateUrl
 
   return (
@@ -177,24 +177,22 @@ function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; reward
             )}
           </div>
         </div>
-        {/* Only show CTA button if there's a valid link */}
-        {ctaLink && (
-          <Button 
-            asChild 
-            size="sm"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
+        {/* CTA - always shows with fallback monetization */}
+        <Button 
+          asChild 
+          size="sm"
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
+        >
+          <a 
+            href={ctaLink} 
+            target="_blank"
+            rel="nofollow sponsored noopener"
           >
-            <a 
-              href={ctaLink} 
-              target="_blank"
-              rel="nofollow sponsored noopener"
-            >
-              <Gift className="h-4 w-4 mr-2" />
-              View Rewards
-              <ExternalLink className="h-3 w-3 ml-2" />
-            </a>
-          </Button>
-        )}
+            <Gift className="h-4 w-4 mr-2" />
+            View Rewards
+            <ExternalLink className="h-3 w-3 ml-2" />
+          </a>
+        </Button>
       </CardContent>
     </Card>
   )
@@ -331,27 +329,25 @@ export function GamePageTemplate({
               </div>
             </div>
 
-            {/* Primary CTA - Only show for games with affiliate partnerships */}
-            {hasAffiliateLinks(game) && (
-              <div className="shrink-0 flex flex-col gap-2">
-                <Button 
-                  size="lg" 
-                  asChild 
-                  className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
+            {/* Primary CTA - Always shows with fallback monetization */}
+            <div className="shrink-0 flex flex-col gap-2">
+              <Button 
+                size="lg" 
+                asChild 
+                className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
+              >
+                <a 
+                  href={getPlayAffiliateUrl(game)} 
+                  target="_blank"
+                  rel="nofollow sponsored noopener"
                 >
-                  <a 
-                    href={getPlayAffiliateUrl(game)!} 
-                    target="_blank"
-                    rel="nofollow sponsored noopener"
-                  >
-                    <Play className="h-6 w-6 fill-current" />
-                    Play {game.shortName || game.name}
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </Button>
-                <p className="text-xs text-white/60 text-center">Free to play</p>
-              </div>
-            )}
+                  <Play className="h-6 w-6 fill-current" />
+                  Play {game.shortName || game.name}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+              <p className="text-xs text-white/60 text-center">Free to play</p>
+            </div>
           </div>
         </PageContainer>
       </section>
@@ -737,6 +733,26 @@ export function GamePageTemplate({
                 <div className="text-sm text-muted-foreground">Expired Codes</div>
               </div>
             </div>
+          </div>
+        </PageContainer>
+      </section>
+
+      {/* Deals Cross-Link Section - Internal Linking for SEO + Monetization */}
+      <section className="py-8 border-t border-border bg-gradient-to-r from-primary/5 to-secondary/5">
+        <PageContainer>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 rounded-xl border border-primary/20 bg-card">
+            <div>
+              <h3 className="text-lg font-bold text-foreground">Looking for real savings?</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Check the latest deals and discounts available now.
+              </p>
+            </div>
+            <Button asChild variant="default" className="shrink-0">
+              <Link href="/deals">
+                See All Deals
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
           </div>
         </PageContainer>
       </section>

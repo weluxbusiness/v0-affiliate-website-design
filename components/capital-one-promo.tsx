@@ -49,7 +49,7 @@ export function CapitalOnePromo({ variant = "banner", dismissible = true }: Capi
           </p>
           <Button size="sm" className="w-full gap-2 bg-blue-600 hover:bg-blue-700" asChild>
             <a href={affiliateLink} target="_blank" rel="nofollow sponsored noopener">
-              Add to Browser
+              Start Saving Now
               <ExternalLink className="h-3 w-3" />
             </a>
           </Button>
@@ -141,7 +141,7 @@ export function CapitalOnePromo({ variant = "banner", dismissible = true }: Capi
             <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-50 gap-2 shrink-0" asChild>
               <a href={affiliateLink} target="_blank" rel="nofollow sponsored noopener">
                 <Sparkles className="h-5 w-5" />
-                Add to Browser - It's Free
+                Start Saving Now
               </a>
             </Button>
           </div>
@@ -195,7 +195,7 @@ export function FloatingCapitalOnePromo() {
               </p>
               <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700" asChild>
                 <a href={affiliateLink} target="_blank" rel="nofollow sponsored noopener">
-                  Get It Free
+                  Start Saving
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </Button>

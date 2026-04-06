@@ -67,10 +67,10 @@ export function HeroSection() {
                 size="lg" 
                 className="gap-2 bg-primary px-8 text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90"
               >
-                Add Free Chrome Extension
+                Start Saving Now
               </ExtensionCTAButton>
               <span className="text-sm text-muted-foreground">
-                Free forever - No credit card required
+                Save up to 30% automatically at checkout
               </span>
             </div>
 

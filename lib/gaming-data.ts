@@ -86,9 +86,9 @@ const gameAffiliateConfig: Record<string, { play?: string; reward?: string }> = 
   // 'game-slug': { play: 'url', reward: 'url' }
 }
 
-// Global affiliate links (not game-specific)
+// Global affiliate links (fallback for all traffic monetization)
 export const GLOBAL_AFFILIATE_LINKS = {
-  // Capital One Shopping / SaveSmart extension
+  // Capital One Shopping / SaveSmart extension - FALLBACK FOR ALL GAMES
   save: `${AFFILIATE_BASE_URL}/save`,
   extension: `${AFFILIATE_BASE_URL}/save`,
   deals: `${AFFILIATE_BASE_URL}/save`,
@@ -96,26 +96,28 @@ export const GLOBAL_AFFILIATE_LINKS = {
 
 /**
  * Get the "Play [Game]" affiliate link (primary CTA)
- * Returns null if game has no affiliate partnership
+ * Returns game-specific URL if configured, otherwise falls back to /save
+ * This ensures ALL traffic is monetized
  */
-export function getPlayAffiliateUrl(game: Game): string | null {
+export function getPlayAffiliateUrl(game: Game): string {
   const config = gameAffiliateConfig[game.slug]
-  return config?.play || null
+  return config?.play || GLOBAL_AFFILIATE_LINKS.save
 }
 
 /**
- * Get the "Get Reward" affiliate link (reward sections)
- * Returns null if game has no affiliate partnership
+ * Get the "View Rewards" affiliate link (reward sections)
+ * Returns game-specific URL if configured, otherwise falls back to /save
+ * This ensures ALL traffic is monetized
  */
-export function getRewardAffiliateUrl(game: Game): string | null {
+export function getRewardAffiliateUrl(game: Game): string {
   const config = gameAffiliateConfig[game.slug]
-  return config?.reward || null
+  return config?.reward || GLOBAL_AFFILIATE_LINKS.save
 }
 
 /**
- * Check if game has any affiliate links configured
+ * Check if game has SPECIFIC affiliate links (not fallback)
  */
-export function hasAffiliateLinks(game: Game): boolean {
+export function hasGameSpecificAffiliateLinks(game: Game): boolean {
   return game.slug in gameAffiliateConfig
 }
 
@@ -127,14 +129,19 @@ export function getDealsAffiliateUrl(): string {
   return GLOBAL_AFFILIATE_LINKS.save
 }
 
-// Legacy helper - returns play URL or null
-export function getGameAffiliateUrl(game: Game): string | null {
+// Legacy helper - always returns a URL now (with fallback)
+export function getGameAffiliateUrl(game: Game): string {
   return getPlayAffiliateUrl(game)
 }
 
-// Check if game has external affiliate link
+// All games now have affiliate links (with fallback)
 export function hasExternalAffiliateLink(game: Game): boolean {
-  return hasAffiliateLinks(game)
+  return true // Always true - fallback ensures monetization
+}
+
+// Keep for backward compatibility
+export function hasAffiliateLinks(game: Game): boolean {
+  return true // Always true - fallback ensures monetization
 }
 
 // ============================================
