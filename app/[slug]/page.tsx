@@ -498,22 +498,10 @@ export default async function SeoPage({ params }: PageProps) {
               <HeroIcon className="h-3 w-3 mr-1" />
               {config.badge}
             </Badge>
-            {pageType === 'working-codes' && (
+            {pageType === 'codes' && (
               <Badge className="bg-emerald-400/20 text-emerald-100 border-0">
                 <CheckCircle2 className="h-3 w-3 mr-1" />
-                {verifiedCodes.length} Tested Today
-              </Badge>
-            )}
-            {pageType === 'new-codes' && (
-              <Badge className="bg-amber-300/20 text-amber-100 border-0">
-                <Zap className="h-3 w-3 mr-1" />
-                {newThisWeek.length} Added This Week
-              </Badge>
-            )}
-            {pageType === 'free-rewards' && (
-              <Badge className="bg-pink-300/20 text-pink-100 border-0">
-                <Sparkles className="h-3 w-3 mr-1" />
-                {activeCodes.length + game.rewards.length}+ Rewards
+                {verifiedCodes.length} Verified
               </Badge>
             )}
             <span className="inline-flex items-center px-3 py-1 rounded-full border border-white/30 text-white text-sm font-medium">
@@ -527,10 +515,7 @@ export default async function SeoPage({ params }: PageProps) {
           </h1>
           
           <p className="text-lg text-white/80 max-w-2xl mb-6">
-            {pageType === 'codes-today' && `All working ${game.name} promo codes for ${dateStr}. We check and verify codes every hour.`}
-            {pageType === 'working-codes' && `Every code on this page has been verified and tested by our team. We check ${game.name} codes multiple times daily.`}
-            {pageType === 'new-codes' && `The latest ${game.name} promo codes released this month. We update this list daily so you never miss a new code.`}
-            {pageType === 'free-rewards' && `Every way to get free rewards in ${game.name}! All working promo codes, daily bonuses, and free items.`}
+            {pageType === 'codes' && `All working ${game.name} promo codes for ${monthYear}. We check and verify codes multiple times daily.`}
             {pageType === 'redeem-codes' && `Complete guide to redeeming ${game.name} promo codes on ${game.platforms.join(', ')}.`}
           </p>
           
@@ -542,7 +527,7 @@ export default async function SeoPage({ params }: PageProps) {
                 <p className="text-lg font-bold">{activeCodes.length}</p>
               </div>
             </div>
-            {pageType === 'working-codes' && (
+            {pageType === 'codes' && (
               <>
                 <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10">
                   <CheckCircle2 className="h-5 w-5" />
@@ -559,15 +544,6 @@ export default async function SeoPage({ params }: PageProps) {
                   </div>
                 </div>
               </>
-            )}
-            {pageType === 'free-rewards' && (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10">
-                <Gift className="h-5 w-5" />
-                <div>
-                  <p className="text-xs text-white/70">Bonus Rewards</p>
-                  <p className="text-lg font-bold">{game.rewards.length}</p>
-                </div>
-              </div>
             )}
           </div>
           
@@ -596,152 +572,64 @@ export default async function SeoPage({ params }: PageProps) {
         </section>
       )}
       
-      {/* Codes Section - varies by page type */}
-      {pageType === 'new-codes' ? (
-        <>
-          {/* New This Week */}
-          {newThisWeek.length > 0 && (
-            <section className="py-10 md:py-12">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
-                    <Zap className="h-5 w-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">New This Week ({newThisWeek.length})</h2>
-                    <p className="text-sm text-muted-foreground">Fresh codes added in the last 7 days</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {newThisWeek.map((code) => (
-                    <PromoCodeCard key={code.id} code={code} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
+      {/* Codes Section - for 'codes' and 'redeem-codes' page types */}
+      <section className="py-10 md:py-12">
+        <PageContainer>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <Tag className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">All Working Codes ({activeCodes.length})</h2>
+              <p className="text-sm text-muted-foreground">
+                {pageType === 'redeem-codes' 
+                  ? 'Copy any code and follow the redemption guide below' 
+                  : 'Verified and tested - redeem these codes for free rewards'}
+              </p>
+            </div>
+          </div>
+          {activeCodes.length > 0 ? (
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {activeCodes.map((code) => (
+                <PromoCodeCard key={code.id} code={code} />
+              ))}
+            </div>
+          ) : (
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+                <Tag className="h-10 w-10 text-muted-foreground/50 mb-3" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">No promo codes available</h3>
+                <p className="text-sm text-muted-foreground">Check back soon for new codes!</p>
+              </CardContent>
+            </Card>
           )}
-          
-          {/* Earlier This Month */}
-          {newThisMonth.length > 0 && (
-            <section className="py-10 md:py-12 bg-muted/30">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                    <Calendar className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">Earlier This Month ({newThisMonth.length})</h2>
-                    <p className="text-sm text-muted-foreground">Codes added 1-4 weeks ago - still working!</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {newThisMonth.map((code) => (
-                    <PromoCodeCard key={code.id} code={code} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
-          )}
-          
-          {/* Older Active Codes */}
-          {olderCodes.length > 0 && (
-            <section className="py-10 md:py-12">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-500/10">
-                    <CheckCircle2 className="h-5 w-5 text-gray-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">Still Working ({olderCodes.length})</h2>
-                    <p className="text-sm text-muted-foreground">Older codes that are still active</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {olderCodes.map((code) => (
-                    <PromoCodeCard key={code.id} code={code} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
-          )}
-        </>
-      ) : pageType === 'free-rewards' ? (
-        <>
-          {/* Free Promo Codes */}
-          <section className="py-10 md:py-12">
-            <PageContainer>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Tag className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-foreground">Free Promo Codes ({activeCodes.length})</h2>
-                  <p className="text-sm text-muted-foreground">Redeem these codes for instant free rewards</p>
-                </div>
+        </PageContainer>
+      </section>
+
+      {/* Rewards Section - show for 'codes' page type */}
+      {pageType === 'codes' && game.rewards.length > 0 && rewardsByType.daily.length > 0 && (
+        <section className="py-10 md:py-12 bg-muted/30">
+          <PageContainer>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
+                <Calendar className="h-5 w-5 text-blue-600" />
               </div>
-              {activeCodes.length > 0 ? (
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {activeCodes.map((code) => (
-                    <PromoCodeCard key={code.id} code={code} />
-                  ))}
-                </div>
-              ) : (
-                <Card className="border-dashed">
-                  <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-                    <Tag className="h-10 w-10 text-muted-foreground/50 mb-3" />
-                    <h3 className="text-lg font-semibold text-foreground mb-2">No promo codes available</h3>
-                    <p className="text-sm text-muted-foreground">Check back soon for new codes!</p>
-                  </CardContent>
-                </Card>
-              )}
-            </PageContainer>
-          </section>
-          
-          {/* Daily Rewards */}
-          {rewardsByType.daily.length > 0 && (
-            <section className="py-10 md:py-12 bg-muted/30">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                    <Calendar className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">Daily Login Rewards</h2>
-                    <p className="text-sm text-muted-foreground">Log in every day to claim these bonuses</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                  {rewardsByType.daily.map((reward) => (
-                    <RewardCard key={reward.id} reward={reward} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
-          )}
-          
-          {/* New Player Rewards */}
-          {rewardsByType.newPlayer.length > 0 && (
-            <section className="py-10 md:py-12">
-              <PageContainer>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
-                    <Zap className="h-5 w-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground">New Player Rewards</h2>
-                    <p className="text-sm text-muted-foreground">One-time bonuses for starting players</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                  {rewardsByType.newPlayer.map((reward) => (
-                    <RewardCard key={reward.id} reward={reward} />
-                  ))}
-                </div>
-              </PageContainer>
-            </section>
-          )}
-        </>
-      ) : pageType === 'redeem-codes' ? (
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Daily Login Rewards</h2>
+                <p className="text-sm text-muted-foreground">Log in every day to claim these bonuses</p>
+              </div>
+            </div>
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+              {rewardsByType.daily.map((reward) => (
+                <RewardCard key={reward.id} reward={reward} />
+              ))}
+            </div>
+          </PageContainer>
+        </section>
+      )}
+
+      {/* Redeem Guide - show for 'redeem-codes' page type */}
+      {pageType === 'redeem-codes' && (
         /* Redeem Guide Step-by-Step */
         <section className="py-10 md:py-12">
           <PageContainer>
@@ -890,42 +778,6 @@ export default async function SeoPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
-          </PageContainer>
-        </section>
-      ) : (
-        /* Default codes list for codes-today and working-codes */
-        <section className="py-10 md:py-12">
-          <PageContainer>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">
-                  {pageType === 'codes-today' ? `All Codes for Today (${activeCodes.length})` : `All Working Codes (${activeCodes.length})`}
-                </h2>
-                <p className="text-sm text-muted-foreground">Verified and tested as of {dateStr}</p>
-              </div>
-            </div>
-            
-            {activeCodes.length > 0 ? (
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {activeCodes.map((code) => (
-                  <PromoCodeCard key={code.id} code={code} />
-                ))}
-              </div>
-            ) : (
-              <Card className="border-dashed">
-                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                  <Tag className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">No working codes available right now</h3>
-                  <p className="text-muted-foreground mb-4">Check back soon - we update codes every 10 minutes!</p>
-                  <Button asChild>
-                    <Link href={`/gaming/${game.slug}`}>View All {game.name} Content</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
           </PageContainer>
         </section>
       )}
