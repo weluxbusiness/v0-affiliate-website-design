@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { GamePageTemplate } from "@/components/gaming/game-page-template"
-import { getGameBySlug, gamesData, getRelatedGames } from "@/lib/gaming-data"
+import { getGameBySlug, getRelatedGames } from "@/lib/gaming-data"
 
 const gameSlug = "brawl-stars"
 
@@ -47,7 +47,7 @@ export default function BrawlStarsCodesApril2026Page() {
     redirect("/gaming")
   }
 
-  const relatedGames = getRelatedGames(game, gamesData)
+  const relatedGames = getRelatedGames(game, 6)
 
   return (
     <GamePageTemplate 
