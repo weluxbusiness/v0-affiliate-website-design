@@ -58,18 +58,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   return {
     title: `${game.shortName || game.name} New Codes – ${codeCount}+ Free ${benefit} (${shortMonth})`,
-    description: `Discover the newest ${game.name} promo codes for ${monthYear}. ${codeCount}+ fresh codes just released. Get free gems, skins & exclusive rewards - updated daily!`,
+    description: `Discover the newest ${game.name} promo codes for ${shortMonth}. ${codeCount}+ fresh codes just released. Get free gems, skins & exclusive rewards - updated daily!`,
     keywords: [
       `${game.name} new codes`,
       `${game.name} latest codes`,
       `new ${game.name} promo codes`,
-      `${game.name} codes ${monthYear.toLowerCase()}`,
+      `${game.name} codes ${shortMonth.toLowerCase()}`,
       `${game.name} fresh codes`,
       `${game.name} recent codes`,
       `${game.name} codes this month`,
     ],
     openGraph: {
-      title: `${game.name} New Codes - Latest ${codeCount}+ Rewards | ${monthYear}`,
+      title: `${game.name} New Codes - Latest ${codeCount}+ Rewards | ${shortMonth}`,
       description: `${codeCount}+ new codes just released. Free gems, skins & rewards!`,
       url: `https://savesmart.bio/gaming/${game.slug}/new-codes`,
     },

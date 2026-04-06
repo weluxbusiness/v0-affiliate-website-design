@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   return {
     title: `${game.shortName || game.name} Working Codes – ${codeCount}+ Verified (${shortMonth})`,
-    description: `All ${codeCount}+ working ${game.name} promo codes for ${monthYear}. Every code verified and tested by our team. Get free gems, skins & rewards - redeem before they expire!`,
+    description: `All ${codeCount}+ working ${game.name} promo codes for ${shortMonth}. Every code verified and tested by our team. Get free gems, skins & rewards - redeem before they expire!`,
     keywords: [
       `${game.name} working codes`,
       `${game.name} codes that work`,
@@ -65,10 +65,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `${game.name} tested codes`,
       `working ${game.name} promo codes`,
       `${game.name} active codes`,
-      `${game.name} codes ${monthYear.toLowerCase()}`,
+      `${game.name} codes ${shortMonth.toLowerCase()}`,
     ],
     openGraph: {
-      title: `${game.name} Working Codes - ${codeCount}+ Verified | ${monthYear}`,
+      title: `${game.name} Working Codes - ${codeCount}+ Verified | ${shortMonth}`,
       description: `${codeCount}+ verified working codes. Free gems, skins & rewards. Updated hourly!`,
       url: `https://savesmart.bio/gaming/${game.slug}/working-codes`,
     },
