@@ -163,7 +163,7 @@ export function generateGameSchemaMarkup(game: Game, codes: PromoCode[]) {
 // SUB-COMPONENTS
 // ============================================
 
-function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; rewardAffiliateUrl: string }) {
+function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; rewardAffiliateUrl?: string }) {
   const typeColors: Record<GameReward['type'], string> = {
     'Free': 'bg-green-500/10 text-green-600',
     'New Player': 'bg-primary/10 text-primary',
@@ -174,7 +174,7 @@ function RewardCard({ reward, rewardAffiliateUrl }: { reward: GameReward; reward
   }
 
   // Use reward-specific link if available, otherwise use affiliate fallback
-  const ctaLink = reward.link || rewardAffiliateUrl
+  const ctaLink = reward.link || rewardAffiliateUrl || '#'
 
   return (
     <Card className="border-border/50 hover:border-green-500/30 hover:shadow-md transition-all">
