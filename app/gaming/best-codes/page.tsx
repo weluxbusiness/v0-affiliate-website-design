@@ -294,7 +294,7 @@ export default function BestCodesPage() {
                             className="bg-green-600 hover:bg-green-700 text-white"
                           >
                             <a 
-                              href={affiliateUrl} 
+                              href={affiliateUrl || undefined} 
                               target={isExternal ? "_blank" : undefined}
                               rel={isExternal ? "noopener noreferrer" : undefined}
                             >
