@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/layout/page-container"
 import type { Game } from "@/lib/gaming-data"
-import { getPlayAffiliateUrl } from "@/lib/gaming-data"
+import { getGameCtaInfo } from "@/lib/gaming-data"
 
 interface GuideSection {
   title: string
@@ -48,7 +48,7 @@ export function GuidePageTemplate({
 }: GuidePageTemplateProps) {
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().toLocaleString('default', { month: 'long' })
-  const affiliateUrl = getPlayAffiliateUrl(game)
+  const ctaInfo = getGameCtaInfo(game)
 
   const guideIcons = {
     guide: BookOpen,
@@ -114,7 +114,7 @@ export function GuidePageTemplate({
             </div>
 
             {/* CTA */}
-            {affiliateUrl && (
+            {ctaInfo.url && (
               <div className="shrink-0 flex flex-col gap-2 relative z-20">
                 <Button 
                   size="lg" 
@@ -122,16 +122,18 @@ export function GuidePageTemplate({
                   className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
                 >
                   <a 
-                    href={affiliateUrl} 
+                    href={ctaInfo.url} 
                     target="_blank"
-                    rel="nofollow sponsored noopener"
+                    rel={ctaInfo.rel}
                   >
-                    <Zap className="h-6 w-6" />
-                    Play {game.shortName || game.name}
+                    {ctaInfo.isAffiliate ? <Gift className="h-6 w-6" /> : <Zap className="h-6 w-6" />}
+                    {ctaInfo.isAffiliate ? "Claim FREE Rewards" : `Play ${game.shortName || game.name}`}
                     <ExternalLink className="h-4 w-4" />
                   </a>
                 </Button>
-                <p className="text-xs text-white/70 text-center font-medium">Free to play</p>
+                <p className="text-xs text-white/70 text-center font-medium">
+                  {ctaInfo.isAffiliate ? "Unlock rewards after installing" : "Official game link"}
+                </p>
               </div>
             )}
           </div>
@@ -220,14 +222,14 @@ export function GuidePageTemplate({
                       Get Free Codes
                     </Link>
                   </Button>
-                  {affiliateUrl && (
+                  {ctaInfo.url && (
                     <Button asChild size="lg" variant="outline">
                       <a 
-                        href={affiliateUrl}
+                        href={ctaInfo.url}
                         target="_blank"
-                        rel="nofollow sponsored noopener"
+                        rel={ctaInfo.rel}
                       >
-                        Play Now
+                        {ctaInfo.isAffiliate ? "Claim Rewards" : "Play Now"}
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </a>
                     </Button>

@@ -12,7 +12,7 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import type { Game, GameCategory } from "@/lib/gaming-data"
-import { getGameLogoUrl, getPlayAffiliateUrl } from "@/lib/gaming-data"
+import { getGameLogoUrl, getGameCtaInfo } from "@/lib/gaming-data"
 import { Button } from "@/components/ui/button"
 import { ExternalLink, Play } from "lucide-react"
 
@@ -263,7 +263,7 @@ interface GameCardCompactProps {
 export function GameCardCompact({ game, codeCount, showBadge = false }: GameCardCompactProps) {
   const logoUrl = getGameLogoUrl(game)
   const hasLogo = game.logoUrl
-  const affiliateUrl = getPlayAffiliateUrl(game)
+  const ctaInfo = getGameCtaInfo(game)
 
   return (
     <div className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-md transition-all duration-200 group">
@@ -308,20 +308,20 @@ export function GameCardCompact({ game, codeCount, showBadge = false }: GameCard
         </div>
       </Link>
 
-      {/* Play Now CTA - Falconix affiliate network */}
-      {affiliateUrl && (
+      {/* Play Now CTA */}
+      {ctaInfo.url && (
         <Button 
           asChild 
           size="sm"
           className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
         >
           <a 
-            href={affiliateUrl} 
+            href={ctaInfo.url} 
             target="_blank"
-            rel="nofollow sponsored noopener"
+            rel={ctaInfo.rel}
           >
-            <Play className="h-4 w-4 mr-1 fill-current" />
-            Play
+            {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
+            {ctaInfo.isAffiliate ? "Claim" : "Play"}
             <ExternalLink className="h-3 w-3 ml-1" />
           </a>
         </Button>
@@ -344,7 +344,7 @@ interface TrendingCodeItemProps {
 export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCodeItemProps) {
   const logoUrl = getGameLogoUrl(game)
   const hasLogo = game.logoUrl
-  const affiliateUrl = getPlayAffiliateUrl(game)
+  const ctaInfo = getGameCtaInfo(game)
 
   return (
     <div className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:border-green-500/30 hover:shadow-md transition-all duration-200 group">
@@ -383,20 +383,20 @@ export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCod
         <p className="text-xs text-muted-foreground mt-1">{game.shortName || game.name}</p>
       </Link>
 
-      {/* Play Now CTA - Falconix affiliate network */}
-      {affiliateUrl && (
+      {/* Play Now CTA */}
+      {ctaInfo.url && (
         <Button 
           asChild 
           size="sm"
           className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
         >
           <a 
-            href={affiliateUrl} 
+            href={ctaInfo.url} 
             target="_blank"
-            rel="nofollow sponsored noopener"
+            rel={ctaInfo.rel}
           >
-            <Play className="h-4 w-4 mr-1 fill-current" />
-            Play
+            {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
+            {ctaInfo.isAffiliate ? "Claim" : "Play"}
           </a>
         </Button>
       )}

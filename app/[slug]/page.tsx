@@ -37,7 +37,7 @@ import {
   sortPromoCodesByValue,
   getRelatedGames,
   getBestPromoCode,
-  getPlayAffiliateUrl
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 import type { GameReward } from "@/lib/gaming-data"
 import { 
@@ -547,15 +547,18 @@ export default async function SeoPage({ params }: PageProps) {
             )}
           </div>
           
-          {getPlayAffiliateUrl(game) && (
-            <Button size="lg" variant="secondary" asChild className="gap-2">
-              <a href={getPlayAffiliateUrl(game)!} target="_blank" rel="nofollow sponsored noopener">
-                <Gamepad2 className="h-5 w-5" />
-                Play {game.shortName || game.name}
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </Button>
-          )}
+          {(() => {
+            const ctaInfo = getGameCtaInfo(game)
+            return ctaInfo.url ? (
+              <Button size="lg" variant="secondary" asChild className="gap-2">
+                <a href={ctaInfo.url} target="_blank" rel={ctaInfo.rel}>
+                  {ctaInfo.isAffiliate ? <Gift className="h-5 w-5" /> : <Gamepad2 className="h-5 w-5" />}
+                  {ctaInfo.isAffiliate ? "Claim FREE Rewards" : `Play ${game.shortName || game.name}`}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+            ) : null
+          })()}
         </PageContainer>
       </section>
       

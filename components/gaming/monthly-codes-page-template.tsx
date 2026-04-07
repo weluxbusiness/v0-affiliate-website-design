@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode } from "@/lib/gaming-data"
-import { getActivePromoCodes, sortPromoCodesByValue, getPlayAffiliateUrl } from "@/lib/gaming-data"
+import { getActivePromoCodes, sortPromoCodesByValue, getGameCtaInfo } from "@/lib/gaming-data"
 
 // Game-specific image configurations for SEO and CRO
 const gameImages: Record<string, {
@@ -66,6 +66,9 @@ export function MonthlyCodesPageTemplate({
   
   // Get game-specific images if available
   const images = gameImages[game.slug]
+  
+  // Get CTA info with fallback logic (affiliate > official > null)
+  const ctaInfo = getGameCtaInfo(game)
 
   return (
     <>
@@ -194,18 +197,21 @@ export function MonthlyCodesPageTemplate({
                   <h3 className="font-bold text-foreground text-lg">First time playing {game.shortName || game.name}?</h3>
                   <p className="text-muted-foreground text-sm">Use code GOFAST or MONKEYKING for a free Legendary champion</p>
                 </div>
-                {getPlayAffiliateUrl(game) && (
+                {ctaInfo.url && (
                   <Button 
                     asChild 
-                    className="bg-purple-600 hover:bg-purple-700 text-white font-semibold shrink-0"
+                    className={ctaInfo.isAffiliate 
+                      ? "bg-green-600 hover:bg-green-700 text-white font-semibold shrink-0"
+                      : "bg-purple-600 hover:bg-purple-700 text-white font-semibold shrink-0"
+                    }
                   >
                     <a 
-                      href={getPlayAffiliateUrl(game)!} 
+                      href={ctaInfo.url} 
                       target="_blank"
-                      rel="nofollow sponsored noopener"
+                      rel={ctaInfo.rel}
                     >
-                      <Play className="h-4 w-4 mr-2 fill-current" />
-                      Start Playing Free
+                      {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                      {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Free Game"}
                     </a>
                   </Button>
                 )}
@@ -296,18 +302,18 @@ export function MonthlyCodesPageTemplate({
                     </div>
                   </div>
 
-                  {getPlayAffiliateUrl(game) && (
+                  {ctaInfo.url && (
                     <Button 
                       asChild 
                       className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
                     >
                       <a 
-                        href={getPlayAffiliateUrl(game)!} 
+                        href={ctaInfo.url} 
                         target="_blank"
-                        rel="nofollow sponsored noopener"
+                        rel={ctaInfo.rel}
                       >
-                        <Play className="h-4 w-4 mr-2 fill-current" />
-                        Play & Redeem
+                        {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                        {ctaInfo.isAffiliate ? "Claim Rewards" : "Play & Redeem"}
                       </a>
                     </Button>
                   )}
@@ -523,11 +529,11 @@ export function MonthlyCodesPageTemplate({
         </PageContainer>
       </section>
 
-      {/* Sticky CTA - only show if affiliate URL exists */}
-      {getPlayAffiliateUrl(game) && (
+      {/* Sticky CTA - show if any URL exists */}
+      {ctaInfo.url && (
         <StickyGameCTA 
           gameName={game.shortName || game.name}
-          affiliateUrl={getPlayAffiliateUrl(game)!}
+          affiliateUrl={ctaInfo.url}
         />
       )}
     </>

@@ -27,8 +27,7 @@ import {
   getBestPromoCode,
   sortPromoCodesByValue,
   getGameLogoUrl,
-  getGameAffiliateUrl,
-  hasExternalAffiliateLink
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -219,8 +218,7 @@ export default function BestCodesPage() {
             {gamesWithBestCodes.map(({ game, bestCode, allCodes }, index) => {
               const logoUrl = getGameLogoUrl(game)
               const hasLogo = game.logoUrl
-              const affiliateUrl = getGameAffiliateUrl(game)
-              const isExternal = hasExternalAffiliateLink(game)
+              const ctaInfo = getGameCtaInfo(game)
               
               return (
                 <Card key={game.id} className="overflow-hidden border-border/50 hover:border-amber-500/30 transition-all">
@@ -288,20 +286,20 @@ export default function BestCodesPage() {
                               <ArrowRight className="h-4 w-4 ml-2" />
                             </Link>
                           </Button>
-                          {affiliateUrl && (
+                          {ctaInfo.url && (
                             <Button 
                               asChild 
                               size="sm"
                               className="bg-green-600 hover:bg-green-700 text-white"
                             >
                               <a 
-                                href={affiliateUrl} 
-                                target={isExternal ? "_blank" : undefined}
-                                rel={isExternal ? "noopener noreferrer" : undefined}
+                                href={ctaInfo.url} 
+                                target="_blank"
+                                rel={ctaInfo.rel}
                               >
-                                <Play className="h-4 w-4 mr-1 fill-current" />
-                                Play Now
-                                {isExternal && <ExternalLink className="h-3 w-3 ml-1" />}
+                                {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
+                                {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Free Game"}
+                                <ExternalLink className="h-3 w-3 ml-1" />
                               </a>
                             </Button>
                           )}
