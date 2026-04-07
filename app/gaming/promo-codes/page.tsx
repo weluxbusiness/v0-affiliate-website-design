@@ -26,8 +26,8 @@ import {
   getTotalActiveCodesCount,
   sortPromoCodesByValue,
   getGameLogoUrl,
-  getGameAffiliateUrl,
-  hasExternalAffiliateLink
+  getPlayAffiliateUrl,
+  hasGameSpecificAffiliateLinks
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -164,8 +164,8 @@ export default function GamingPromoCodesPage() {
               {gameCodesMap.map(({ game, codes }) => {
                 const logoUrl = getGameLogoUrl(game)
                 const hasLogo = game.logoUrl
-                const affiliateUrl = getGameAffiliateUrl(game)
-                const isExternal = hasExternalAffiliateLink(game)
+                const hasRealAffiliate = hasGameSpecificAffiliateLinks(game)
+                const affiliateUrl = hasRealAffiliate ? getPlayAffiliateUrl(game) : null
                 
                 return (
                   <div key={game.id} className="bg-card rounded-xl border border-border/50 p-6 hover:border-green-500/20 transition-colors">
@@ -206,23 +206,49 @@ export default function GamingPromoCodesPage() {
                           </div>
                           <p className="text-sm text-muted-foreground">
                             {codes.length} active codes | {game.categories[0]}
+                            {hasRealAffiliate && (
+                              <span className="ml-2 text-green-600 font-medium">
+                                · Official offer
+                              </span>
+                            )}
+                            {!hasRealAffiliate && (
+                              <span className="ml-2 text-blue-600">
+                                · Codes & guides
+                              </span>
+                            )}
                           </p>
                         </div>
                       </Link>
-                      <Button 
-                        asChild 
-                        className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-                      >
-                        <a 
-                          href={affiliateUrl} 
-                          target={isExternal ? "_blank" : undefined}
-                          rel={isExternal ? "noopener noreferrer" : undefined}
+                      
+                      {/* Conditional CTA based on affiliate availability */}
+                      {hasRealAffiliate && affiliateUrl ? (
+                        <Button 
+                          asChild 
+                          className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
                         >
-                          <Play className="h-4 w-4 mr-2 fill-current" />
-                          Play Now
-                          {isExternal && <ExternalLink className="h-4 w-4 ml-2" />}
-                        </a>
-                      </Button>
+                          <a 
+                            href={affiliateUrl} 
+                            target="_blank"
+                            rel="nofollow sponsored noopener"
+                          >
+                            <Play className="h-4 w-4 mr-2 fill-current" />
+                            Play Now
+                            <ExternalLink className="h-4 w-4 ml-2" />
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button 
+                          asChild 
+                          variant="outline"
+                          className="font-semibold hover:bg-primary/5 transition-all"
+                        >
+                          <Link href={`/gaming/${game.slug}`}>
+                            <Tag className="h-4 w-4 mr-2" />
+                            View Codes
+                            <ArrowRight className="h-4 w-4 ml-2" />
+                          </Link>
+                        </Button>
+                      )}
                     </div>
 
                     {/* Codes Grid */}
