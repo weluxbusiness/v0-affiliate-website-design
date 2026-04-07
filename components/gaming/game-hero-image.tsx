@@ -41,8 +41,8 @@ export function GameHeroImage({
   
   return (
     <div className={`relative w-full overflow-hidden rounded-xl ${className}`}>
-      {/* Image */}
-      <div className="relative aspect-[21/9] w-full">
+      {/* Image - Mobile: max 180px height, Desktop: full aspect ratio */}
+      <div className="relative h-[160px] md:h-auto md:aspect-[21/9] w-full">
         <Image
           src={src}
           alt={alt}
@@ -54,74 +54,45 @@ export function GameHeroImage({
         
         {/* Overlay gradient - stronger for text readability */}
         {overlay && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40" />
         )}
         
-        {/* Top Badges */}
-        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-          {badge && (
-            <Badge className="bg-green-600 text-white font-bold shadow-lg text-sm px-3 py-1.5">
-              <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
-              {badge}
-            </Badge>
-          )}
-          {showUpdatedBadge && (
-            <Badge className="bg-amber-500 text-white font-semibold shadow-lg text-sm px-3 py-1.5">
-              <Clock className="h-3.5 w-3.5 mr-1.5" />
-              Updated Daily
-            </Badge>
-          )}
-        </div>
-        
-        {/* HIGH IMPACT OVERLAY TEXT - CTR Optimized */}
+        {/* HIGH IMPACT OVERLAY TEXT - Mobile optimized, simplified */}
         {showOverlayText && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
             {/* WORKING CODES - Primary headline */}
-            <div className="mb-2">
-              <span className="inline-flex items-center gap-2 bg-green-600/90 text-white font-black text-lg md:text-2xl lg:text-3xl px-4 md:px-6 py-2 md:py-3 rounded-lg shadow-2xl uppercase tracking-wide">
-                <Zap className="h-5 w-5 md:h-7 md:w-7 fill-current" />
-                Working Codes
-                <Zap className="h-5 w-5 md:h-7 md:w-7 fill-current" />
-              </span>
-            </div>
+            <span className="inline-flex items-center gap-1.5 bg-green-600 text-white font-black text-sm md:text-2xl lg:text-3xl px-3 md:px-6 py-1.5 md:py-3 rounded-lg shadow-xl uppercase tracking-wide mb-1 md:mb-2">
+              <Zap className="h-4 w-4 md:h-7 md:w-7 fill-current" />
+              Working Codes
+              <Zap className="h-4 w-4 md:h-7 md:w-7 fill-current" />
+            </span>
             
             {/* Month Year */}
-            <div className="mb-3">
-              <span className="text-white font-bold text-xl md:text-3xl lg:text-4xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] uppercase tracking-wider">
-                {displayMonth} {displayYear}
-              </span>
-            </div>
+            <span className="text-white font-bold text-base md:text-3xl lg:text-4xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] uppercase tracking-wider mb-1 md:mb-3">
+              {displayMonth} {displayYear}
+            </span>
             
             {/* FREE REWARDS */}
-            <div className="flex items-center gap-2">
-              <Gift className="h-5 w-5 md:h-6 md:w-6 text-amber-400" />
-              <span className="text-amber-400 font-bold text-base md:text-xl lg:text-2xl drop-shadow-lg uppercase">
+            <div className="flex items-center gap-1.5">
+              <Gift className="h-4 w-4 md:h-6 md:w-6 text-amber-400" />
+              <span className="text-amber-400 font-bold text-sm md:text-xl lg:text-2xl drop-shadow-lg uppercase">
                 Free Rewards
               </span>
-              <Gift className="h-5 w-5 md:h-6 md:w-6 text-amber-400" />
+              <Gift className="h-4 w-4 md:h-6 md:w-6 text-amber-400" />
             </div>
-            
-            {/* Code count if available */}
-            {codeCount && codeCount > 0 && (
-              <div className="mt-3">
-                <Badge className="bg-white/20 backdrop-blur-sm text-white font-semibold text-sm md:text-base px-4 py-1.5">
-                  {codeCount}+ Active Codes
-                </Badge>
-              </div>
-            )}
           </div>
         )}
         
         {/* Bottom title overlay (legacy support) */}
         {(title || subtitle) && !showOverlayText && (
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
             {title && (
-              <h2 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg text-balance">
+              <h2 className="text-xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg text-balance">
                 {title}
               </h2>
             )}
             {subtitle && (
-              <p className="text-white/90 text-lg md:text-xl drop-shadow-md">
+              <p className="text-white/90 text-base md:text-xl drop-shadow-md">
                 {subtitle}
               </p>
             )}

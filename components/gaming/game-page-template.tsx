@@ -23,6 +23,7 @@ import { StickyGameCTA } from "@/components/gaming/sticky-game-cta"
 import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { GameHeroImage } from "@/components/gaming/game-hero-image"
 import { GameSectionImage } from "@/components/gaming/game-section-image"
+import { CopyCodeButton } from "@/components/gaming/copy-code-button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -264,30 +265,22 @@ export function GamePageTemplate({
         />
       )}
 
-      {/* Intent Match Block - Above Hero for Search Intent */}
-      <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4">
+      {/* Intent Match Block - Compact on mobile */}
+      <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2 md:py-4">
         <PageContainer>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-200" />
-                <span className="font-bold text-lg">
-                  Working {game.shortName || game.name} Codes ({currentMonth} {currentYear})
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-4 text-sm">
-              <span className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1">
-                <Tag className="h-3.5 w-3.5" />
-                {activeCodes.length} active codes
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 md:gap-2 min-w-0">
+              <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-green-200 shrink-0" />
+              <span className="font-bold text-sm md:text-lg truncate">
+                {game.shortName || game.name} Codes
               </span>
-              {bestCode && (
-                <span className="flex items-center gap-1.5 bg-amber-400/20 rounded-full px-3 py-1">
-                  <Star className="h-3.5 w-3.5 text-amber-300" />
-                  Best: {bestCode.code}
-                </span>
-              )}
-              <span className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1">
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="flex items-center gap-1 bg-white/20 rounded-full px-2 py-0.5 md:px-3 md:py-1 text-xs md:text-sm">
+                <Tag className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                {activeCodes.length}
+              </span>
+              <span className="hidden sm:flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1 text-sm">
                 <Clock className="h-3.5 w-3.5" />
                 Updated daily
               </span>
@@ -296,13 +289,13 @@ export function GamePageTemplate({
         </PageContainer>
       </section>
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-8 md:py-12 overflow-hidden">
+      {/* Hero Section - Compact on mobile */}
+      <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-4 md:py-12 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <PageContainer>
+        <PageContainer className="px-4">
           {/* Hero Image - Visual anchor for CRO with high-impact overlay */}
           {images && (
-            <div className="mb-8">
+            <div className="mb-4 md:mb-8">
               <GameHeroImage
                 src={images.hero}
                 alt={`${game.name} working codes ${currentMonth.toLowerCase()} ${currentYear} free rewards`}
@@ -310,125 +303,180 @@ export function GamePageTemplate({
                 month={currentMonth}
                 year={currentYear}
                 codeCount={activeCodes.length}
-                badge="Verified"
-                showUpdatedBadge={true}
                 showOverlayText={true}
                 priority={true}
               />
             </div>
           )}
-          
-          {/* Breadcrumbs */}
-          <nav aria-label="Breadcrumb" className="relative z-10 mb-6 flex flex-wrap items-center gap-2 text-sm">
-            <Link 
-              href="/" 
-              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
-            >
-              Home
-            </Link>
-            <ChevronRight className="h-4 w-4 text-white/50" />
-            <Link 
-              href="/gaming" 
-              className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
-            >
-              Gaming
-            </Link>
-            <ChevronRight className="h-4 w-4 text-white/50" />
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-medium">
-              {game.shortName || game.name}
-            </span>
-          </nav>
 
-          {/* Game Info with Logo */}
-          <div className="flex flex-col md:flex-row gap-6 items-start relative z-10">
-            {/* Game Logo - Large Visual Anchor */}
-            <div className="relative h-24 w-24 md:h-28 md:w-28 shrink-0 rounded-2xl overflow-hidden ring-4 ring-white/20 shadow-2xl bg-white/10">
-              {game.logoUrl ? (
-                <Image
-                  src={getGameLogoUrl(game)}
-                  alt={`${game.name} codes ${currentMonth} ${currentYear} - free rewards`}
-                  width={112}
-                  height={112}
-                  className="rounded-2xl object-cover"
-                  priority
-                />
-              ) : (
-                <div className="h-full w-full flex items-center justify-center bg-white/10">
-                  <Gamepad2 className="h-12 w-12 text-white" />
-                </div>
-              )}
-            </div>
-
-            <div className="flex-1">
-              {/* Category Badges */}
-              <div className="flex flex-wrap items-center gap-2 mb-4">
-                {game.categories.slice(0, 3).map(cat => (
-                  <Badge key={cat} className="bg-white/10 text-white border-0">
-                    {cat}
-                  </Badge>
-                ))}
-                {game.playerCount && (
-                  <Badge variant="outline" className="border-white/30 text-white">
-                    <Users className="h-3 w-3 mr-1" />
-                    {game.playerCount}
-                  </Badge>
+          {/* Mobile: Compact header with logo + title + CTAs */}
+          <div className="md:hidden">
+            {/* Game Logo + Title Row */}
+            <div className="flex items-center gap-3 mb-3">
+              <div className="relative h-12 w-12 shrink-0 rounded-xl overflow-hidden ring-2 ring-white/20 shadow-lg bg-white/10">
+                {game.logoUrl ? (
+                  <Image
+                    src={getGameLogoUrl(game)}
+                    alt={game.name}
+                    width={48}
+                    height={48}
+                    className="rounded-xl object-cover"
+                    priority
+                  />
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center">
+                    <Gamepad2 className="h-6 w-6 text-white" />
+                  </div>
                 )}
               </div>
-
-              {/* Title - Keyword optimized H1 */}
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
-                {game.name} Promo Codes {new Date().toLocaleString('default', { month: 'long' })} {new Date().getFullYear()}
-              </h1>
-
-              {/* Subtitle with value proposition */}
-              <p className="text-xl text-white/90 font-medium mb-2">
-                {activeCodes.length}+ Working Codes - Free Rewards & Bonuses
-              </p>
-
-              {/* Description */}
-              <p className="text-lg text-white/80 max-w-2xl mb-6 hero-description">
-                Get all active {game.name} promo codes and redeem free in-game rewards. All codes verified and updated daily.
-              </p>
-
-              {/* Stats + Freshness Signals */}
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
-                  <Tag className="h-4 w-4" />
-                  <span>{activeCodes.length} Active Codes</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
-                  <Trophy className="h-4 w-4" />
-                  <span>{game.rewards.length} Rewards</span>
-                </div>
-                <div className="flex items-center gap-2 bg-green-500/20 text-green-100 rounded-full px-4 py-2 border border-green-400/30">
-                  <Calendar className="h-4 w-4" />
-                  <span>Last updated: {currentMonth} {currentYear}</span>
-                </div>
-                <div className="flex items-center gap-2 bg-blue-500/20 text-blue-100 rounded-full px-4 py-2 border border-blue-400/30">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>Codes tested hourly</span>
-                </div>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg font-bold tracking-tight truncate">
+                  {game.shortName || game.name} Codes
+                </h1>
+                <p className="text-xs text-white/80">
+                  {activeCodes.length} codes · {currentMonth} {currentYear}
+                </p>
               </div>
             </div>
 
-            {/* Primary CTA - Always shows with fallback monetization */}
-            <div className="shrink-0 flex flex-col gap-2 relative z-20">
+            {/* Mobile CTAs - Full width, above fold */}
+            <div className="flex gap-2 mb-4">
+              {bestCode && (
+                <CopyCodeButton 
+                  code={bestCode.code}
+                  className="flex-1 bg-white text-primary hover:bg-white/90 font-bold shadow-lg text-sm h-12"
+                >
+                  <Tag className="h-4 w-4 mr-1.5" />
+                  Copy Best Code
+                </CopyCodeButton>
+              )}
               <Button 
                 size="lg" 
                 asChild 
-                className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
+                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg text-sm h-12"
               >
                 <a 
                   href={getPlayAffiliateUrl(game)} 
                   target="_blank"
                   rel="nofollow sponsored noopener"
                 >
-                  <Play className="h-6 w-6 fill-current" />
-                  Play {game.shortName || game.name} & Redeem
-                  <ExternalLink className="h-4 w-4" />
+                  <Play className="h-4 w-4 fill-current mr-1.5" />
+                  Play Now
                 </a>
               </Button>
-              <p className="text-xs text-white/70 text-center font-medium">No signup required • Takes 30 seconds</p>
+            </div>
+          </div>
+          
+          {/* Desktop: Full layout */}
+          <div className="hidden md:block">
+            {/* Breadcrumbs */}
+            <nav aria-label="Breadcrumb" className="relative z-10 mb-6 flex flex-wrap items-center gap-2 text-sm">
+              <Link 
+                href="/" 
+                className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+              >
+                Home
+              </Link>
+              <ChevronRight className="h-4 w-4 text-white/50" />
+              <Link 
+                href="/gaming" 
+                className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+              >
+                Gaming
+              </Link>
+              <ChevronRight className="h-4 w-4 text-white/50" />
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-medium">
+                {game.shortName || game.name}
+              </span>
+            </nav>
+
+            {/* Game Info with Logo */}
+            <div className="flex gap-6 items-start relative z-10">
+              {/* Game Logo - Large Visual Anchor */}
+              <div className="relative h-28 w-28 shrink-0 rounded-2xl overflow-hidden ring-4 ring-white/20 shadow-2xl bg-white/10">
+                {game.logoUrl ? (
+                  <Image
+                    src={getGameLogoUrl(game)}
+                    alt={`${game.name} codes ${currentMonth} ${currentYear} - free rewards`}
+                    width={112}
+                    height={112}
+                    className="rounded-2xl object-cover"
+                    priority
+                  />
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center bg-white/10">
+                    <Gamepad2 className="h-12 w-12 text-white" />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex-1">
+                {/* Category Badges */}
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  {game.categories.slice(0, 3).map(cat => (
+                    <Badge key={cat} className="bg-white/10 text-white border-0">
+                      {cat}
+                    </Badge>
+                  ))}
+                  {game.playerCount && (
+                    <Badge variant="outline" className="border-white/30 text-white">
+                      <Users className="h-3 w-3 mr-1" />
+                      {game.playerCount}
+                    </Badge>
+                  )}
+                </div>
+
+                {/* Title - Keyword optimized H1 */}
+                <h1 className="text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
+                  {game.name} Promo Codes {currentMonth} {currentYear}
+                </h1>
+
+                {/* Subtitle with value proposition */}
+                <p className="text-xl text-white/90 font-medium mb-2">
+                  {activeCodes.length}+ Working Codes - Free Rewards & Bonuses
+                </p>
+
+                {/* Description */}
+                <p className="text-lg text-white/80 max-w-2xl mb-6">
+                  Get all active {game.name} promo codes and redeem free in-game rewards. All codes verified and updated daily.
+                </p>
+
+                {/* Stats + Freshness Signals */}
+                <div className="flex flex-wrap items-center gap-3 text-sm">
+                  <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
+                    <Tag className="h-4 w-4" />
+                    <span>{activeCodes.length} Active Codes</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
+                    <Trophy className="h-4 w-4" />
+                    <span>{game.rewards.length} Rewards</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-green-500/20 text-green-100 rounded-full px-4 py-2 border border-green-400/30">
+                    <Calendar className="h-4 w-4" />
+                    <span>Updated: {currentMonth} {currentYear}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Primary CTA - Desktop */}
+              <div className="shrink-0 flex flex-col gap-2 relative z-20">
+                <Button 
+                  size="lg" 
+                  asChild 
+                  className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
+                >
+                  <a 
+                    href={getPlayAffiliateUrl(game)} 
+                    target="_blank"
+                    rel="nofollow sponsored noopener"
+                  >
+                    <Play className="h-6 w-6 fill-current" />
+                    Play & Redeem
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+                <p className="text-xs text-white/70 text-center font-medium">No signup required</p>
+              </div>
             </div>
           </div>
         </PageContainer>
@@ -436,32 +484,29 @@ export function GamePageTemplate({
 
       {/* Best Codes Section - Above the Fold for Maximum Conversions */}
       {activeCodes.length > 0 && (
-        <section className="py-10 border-b border-border bg-gradient-to-b from-primary/5 to-muted/30">
-          <PageContainer>
-            {/* Visual Hook */}
-            <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                Claim Your Free Rewards in {game.shortName || game.name}
+        <section className="py-6 md:py-10 border-b border-border bg-gradient-to-b from-primary/5 to-muted/30">
+          <PageContainer className="px-4">
+            {/* Visual Hook - Compact on mobile */}
+            <div className="text-center mb-4 md:mb-8">
+              <h2 className="text-xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 md:mb-2">
+                Claim Your Free Rewards
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-sm md:text-lg text-muted-foreground">
                 Copy a code below and redeem it in-game
               </p>
             </div>
 
-            <div className="text-center mb-6">
-              <Badge className="bg-primary text-primary-foreground mb-3">
+            <div className="text-center mb-4 md:mb-6">
+              <Badge className="bg-primary text-primary-foreground mb-2 md:mb-3 text-xs md:text-sm">
                 <Flame className="h-3 w-3 mr-1" />
-                Top Codes - Use These First
+                Top Codes
               </Badge>
-              <h3 className="text-xl font-bold text-foreground">
-                Best {game.shortName || game.name} Codes ({currentMonth} {currentYear})
+              <h3 className="text-lg md:text-xl font-bold text-foreground">
+                Best Codes ({currentMonth} {currentYear})
               </h3>
-              <p className="text-muted-foreground mt-2">
-                Highest value codes verified and working right now
-              </p>
-              <p className="text-xs text-amber-600 mt-1 flex items-center justify-center gap-1">
+              <p className="text-xs md:text-sm text-amber-600 mt-1 flex items-center justify-center gap-1">
                 <AlertCircle className="h-3 w-3" />
-                Codes expire without notice — redeem while they work
+                Codes expire without notice
               </p>
             </div>
             
