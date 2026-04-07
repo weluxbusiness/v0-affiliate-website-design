@@ -194,19 +194,21 @@ export function MonthlyCodesPageTemplate({
                   <h3 className="font-bold text-foreground text-lg">First time playing {game.shortName || game.name}?</h3>
                   <p className="text-muted-foreground text-sm">Use code GOFAST or MONKEYKING for a free Legendary champion</p>
                 </div>
-                <Button 
-                  asChild 
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-semibold shrink-0"
-                >
-                  <a 
-                    href={getPlayAffiliateUrl(game) || undefined} 
-                    target="_blank"
-                    rel="nofollow sponsored noopener"
+                {getPlayAffiliateUrl(game) && (
+                  <Button 
+                    asChild 
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-semibold shrink-0"
                   >
-                    <Play className="h-4 w-4 mr-2 fill-current" />
-                    Start Playing Free
-                  </a>
-                </Button>
+                    <a 
+                      href={getPlayAffiliateUrl(game)!} 
+                      target="_blank"
+                      rel="nofollow sponsored noopener"
+                    >
+                      <Play className="h-4 w-4 mr-2 fill-current" />
+                      Start Playing Free
+                    </a>
+                  </Button>
+                )}
               </div>
             </div>
           </PageContainer>
@@ -294,19 +296,21 @@ export function MonthlyCodesPageTemplate({
                     </div>
                   </div>
 
-                  <Button 
-                    asChild 
-                    className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
-                  >
-                    <a 
-                      href={getPlayAffiliateUrl(game) || undefined} 
-                      target="_blank"
-                      rel="nofollow sponsored noopener"
+                  {getPlayAffiliateUrl(game) && (
+                    <Button 
+                      asChild 
+                      className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
                     >
-                      <Play className="h-4 w-4 mr-2 fill-current" />
-                      Play & Redeem
-                    </a>
-                  </Button>
+                      <a 
+                        href={getPlayAffiliateUrl(game)!} 
+                        target="_blank"
+                        rel="nofollow sponsored noopener"
+                      >
+                        <Play className="h-4 w-4 mr-2 fill-current" />
+                        Play & Redeem
+                      </a>
+                    </Button>
+                  )}
 
                   <p className="text-center text-xs text-muted-foreground mt-3">
                     <Flame className="h-3 w-3 inline mr-1 text-amber-500" />
@@ -519,11 +523,13 @@ export function MonthlyCodesPageTemplate({
         </PageContainer>
       </section>
 
-      {/* Sticky CTA */}
-      <StickyGameCTA 
-        gameName={game.shortName || game.name}
-        affiliateUrl={getPlayAffiliateUrl(game) || ''}
-      />
+      {/* Sticky CTA - only show if affiliate URL exists */}
+      {getPlayAffiliateUrl(game) && (
+        <StickyGameCTA 
+          gameName={game.shortName || game.name}
+          affiliateUrl={getPlayAffiliateUrl(game)!}
+        />
+      )}
     </>
   )
 }

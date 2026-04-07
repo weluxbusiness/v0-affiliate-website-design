@@ -40,7 +40,8 @@ export function StickyGameCTA({
     return () => window.removeEventListener("scroll", handleScroll)
   }, [isDismissed])
 
-  if (!isVisible) return null
+  // Don't render if no valid URL or not visible
+  if (!isVisible || !affiliateUrl) return null
 
   return (
     <div
