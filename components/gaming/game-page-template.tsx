@@ -300,15 +300,19 @@ export function GamePageTemplate({
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-8 md:py-12 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
-          {/* Hero Image - Visual anchor for CRO */}
+          {/* Hero Image - Visual anchor for CRO with high-impact overlay */}
           {images && (
             <div className="mb-8">
               <GameHeroImage
                 src={images.hero}
-                alt={`${game.name} promo codes ${currentMonth.toLowerCase()} ${currentYear} - free rewards and working codes`}
-                title={`Working Codes ${currentMonth} ${currentYear}`}
-                badge="Working Codes"
+                alt={`${game.name} working codes ${currentMonth.toLowerCase()} ${currentYear} free rewards`}
+                gameName={game.shortName || game.name}
+                month={currentMonth}
+                year={currentYear}
+                codeCount={activeCodes.length}
+                badge="Verified"
                 showUpdatedBadge={true}
+                showOverlayText={true}
                 priority={true}
               />
             </div>
@@ -342,7 +346,7 @@ export function GamePageTemplate({
               {game.logoUrl ? (
                 <Image
                   src={getGameLogoUrl(game)}
-                  alt={`${game.name} characters artwork - promo codes and free rewards`}
+                  alt={`${game.name} codes ${currentMonth} ${currentYear} - free rewards`}
                   width={112}
                   height={112}
                   className="rounded-2xl object-cover"
@@ -1207,7 +1211,7 @@ export function GamePageTemplate({
                         {hasRelatedLogo ? (
                           <Image
                             src={relatedLogoUrl}
-                            alt={relatedGame.name}
+                            alt={`${relatedGame.name} codes ${currentMonth} ${currentYear}`}
                             width={40}
                             height={40}
                             className="rounded-lg object-cover"

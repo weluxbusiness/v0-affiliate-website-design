@@ -1901,10 +1901,10 @@ export const gamesData: Game[] = [
     description: 'Diablo Immortal brings the iconic action RPG to mobile. Fight demons, collect legendary loot, and explore the dark world of Sanctuary.',
     categories: ['RPG', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-  imageUrl: '/games/honkai-star-rail.png',
-  logoUrl: '/games/honkai-star-rail.png',
-  developer: 'miHoYo',
-    publisher: 'HoYoverse',
+    imageUrl: '',
+    logoUrl: '',
+    developer: 'Blizzard Entertainment',
+    publisher: 'Blizzard Entertainment',
     promoCodes: [
       {
         id: 'zzz-1',
