@@ -83,7 +83,7 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                       {hasLogo ? (
                         <Image
                           src={logoUrl}
-                          alt={game.name}
+                          alt={`${game.name} characters artwork`}
                           width={56}
                           height={56}
                           className="rounded-xl object-cover"

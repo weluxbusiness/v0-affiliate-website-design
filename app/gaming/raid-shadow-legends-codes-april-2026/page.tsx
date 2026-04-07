@@ -40,6 +40,20 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `RAID Shadow Legends Codes (${month} ${year}) – ${activeCodes.length}+ Working Codes`,
       description: `All working RAID codes for ${month} ${year}. Free champions, silver & energy. Updated daily.`,
       type: "website",
+      images: [
+        {
+          url: "https://savesmart.bio/games/raid-shadow-legends.png",
+          width: 256,
+          height: 256,
+          alt: "RAID Shadow Legends characters artwork - promo codes and free rewards",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary",
+      title: `RAID Shadow Legends Codes (${month} ${year})`,
+      description: `${activeCodes.length}+ working RAID codes. Free champions & rewards!`,
+      images: ["https://savesmart.bio/games/raid-shadow-legends.png"],
     },
   }
 }

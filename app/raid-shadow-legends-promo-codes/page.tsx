@@ -67,17 +67,18 @@ export const metadata: Metadata = {
     siteName: "SaveSmart",
     images: [
       {
-        url: "https://savesmart.bio/og/raid-shadow-legends-promo-codes.jpg",
-        width: 1200,
-        height: 630,
-        alt: "RAID Shadow Legends Promo Codes - Free Rewards",
+        url: "https://savesmart.bio/games/raid-shadow-legends.png",
+        width: 256,
+        height: 256,
+        alt: "RAID Shadow Legends characters artwork - promo codes and free rewards",
       },
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "RAID Shadow Legends Promo Codes – Free Rewards Today",
     description: "15+ working codes. Free energy, silver & champions. Redeem now!",
+    images: ["https://savesmart.bio/games/raid-shadow-legends.png"],
   },
   alternates: {
     canonical: "/raid-shadow-legends-promo-codes",

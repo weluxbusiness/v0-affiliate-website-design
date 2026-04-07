@@ -342,7 +342,7 @@ export function GamePageTemplate({
               {game.logoUrl ? (
                 <Image
                   src={getGameLogoUrl(game)}
-                  alt={game.name}
+                  alt={`${game.name} characters artwork - promo codes and free rewards`}
                   width={112}
                   height={112}
                   className="rounded-2xl object-cover"
