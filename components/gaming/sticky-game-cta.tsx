@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Play, X, Gift } from "lucide-react"
+import { Play, X, Gift, Gamepad2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface StickyGameCTAProps {
@@ -73,7 +73,7 @@ export function StickyGameCTA({
                   "font-bold shadow-lg hover:scale-105 transition-all",
                   isAffiliate 
                     ? "bg-white text-green-700 hover:bg-white/90"
-                    : "bg-white text-primary hover:bg-white/90"
+                    : "bg-white text-blue-700 hover:bg-white/90"
                 )}
               >
                 <a
@@ -81,7 +81,11 @@ export function StickyGameCTA({
                   target="_blank"
                   rel={ctaRel}
                 >
-                  <Play className="h-4 w-4 mr-2 fill-current" />
+                  {isAffiliate ? (
+                    <Play className="h-4 w-4 mr-2 fill-current" />
+                  ) : (
+                    <Gamepad2 className="h-4 w-4 mr-2" />
+                  )}
                   {ctaLabel}
                 </a>
               </Button>

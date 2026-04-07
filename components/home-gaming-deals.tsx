@@ -138,9 +138,9 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                       <Button 
                         asChild 
                         className={`flex-1 h-10 font-semibold shadow-md hover:shadow-lg transition-all ${
-                          ctaInfo.isAffiliate 
+                          ctaInfo.buttonStyle === 'affiliate' 
                             ? 'bg-green-600 hover:bg-green-700 text-white'
-                            : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
                         }`}
                       >
                         <a 
@@ -148,7 +148,11 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                           target="_blank"
                           rel={ctaInfo.rel}
                         >
-                          <Play className="h-4 w-4 mr-2 fill-current" />
+                          {ctaInfo.isAffiliate ? (
+                            <Play className="h-4 w-4 mr-2 fill-current" />
+                          ) : (
+                            <Gamepad2 className="h-4 w-4 mr-2" />
+                          )}
                           {ctaInfo.label}
                         <ExternalLink className="h-3 w-3 ml-1" />
                       </a>

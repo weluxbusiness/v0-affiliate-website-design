@@ -384,14 +384,14 @@ export default async function GamingPage() {
                       </Badge>
                     </div>
 
-                    {/* Primary CTA - Play Now or Play Game */}
+                    {/* Primary CTA - Play Now or Play Free */}
                     {ctaInfo.url ? (
                       <Button
                         asChild
                         className={`w-full h-11 font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all ${
-                          ctaInfo.isAffiliate 
+                          ctaInfo.buttonStyle === 'affiliate' 
                             ? 'bg-green-600 hover:bg-green-700 text-white'
-                            : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
                         }`}
                       >
                         <a
@@ -399,7 +399,11 @@ export default async function GamingPage() {
                           target="_blank"
                           rel={ctaInfo.rel}
                         >
-                          <Play className="h-5 w-5 mr-2 fill-current" />
+                          {ctaInfo.isAffiliate ? (
+                            <Play className="h-5 w-5 mr-2 fill-current" />
+                          ) : (
+                            <Gamepad2 className="h-5 w-5 mr-2" />
+                          )}
                           {ctaInfo.label}
                           <ExternalLink className="h-4 w-4 ml-2" />
                         </a>

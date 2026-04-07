@@ -135,9 +135,11 @@ export function getDealsAffiliateUrl(): string {
 export function getGameCtaInfo(game: Game): {
   url: string | null
   label: string
-  sublabel?: string
+  labelShort: string
+  sublabel: string
   isAffiliate: boolean
   rel: string
+  buttonStyle: 'affiliate' | 'official' | 'neutral'
 } {
   const affiliateUrl = getPlayAffiliateUrl(game)
   
@@ -145,9 +147,11 @@ export function getGameCtaInfo(game: Game): {
     return {
       url: affiliateUrl,
       label: 'Play Now',
-      sublabel: 'Exclusive offer',
+      labelShort: 'Play',
+      sublabel: 'Unlock rewards after installing',
       isAffiliate: true,
       rel: 'nofollow sponsored noopener',
+      buttonStyle: 'affiliate',
     }
   }
   
@@ -155,18 +159,23 @@ export function getGameCtaInfo(game: Game): {
   if (officialUrl) {
     return {
       url: officialUrl,
-      label: 'Play Game',
+      label: 'Play Free',
+      labelShort: 'Play',
       sublabel: 'Official game link',
       isAffiliate: false,
       rel: 'noopener noreferrer',
+      buttonStyle: 'official',
     }
   }
   
   return {
     url: null,
     label: 'View Codes',
+    labelShort: 'Codes',
+    sublabel: '',
     isAffiliate: false,
     rel: '',
+    buttonStyle: 'neutral',
   }
 }
 

@@ -359,9 +359,9 @@ export function GamePageTemplate({
                   asChild 
                   className={cn(
                     "flex-1 font-bold shadow-lg text-sm h-12",
-                    ctaInfo.isAffiliate 
+                    ctaInfo.buttonStyle === 'affiliate' 
                       ? "bg-green-500 hover:bg-green-600 text-white" 
-                      : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
                   )}
                 >
                   <a 
@@ -369,7 +369,11 @@ export function GamePageTemplate({
                     target="_blank"
                     rel={ctaInfo.rel}
                   >
-                    <Play className="h-4 w-4 fill-current mr-1.5" />
+                    {ctaInfo.isAffiliate ? (
+                      <Play className="h-4 w-4 fill-current mr-1.5" />
+                    ) : (
+                      <Gamepad2 className="h-4 w-4 mr-1.5" />
+                    )}
                     {ctaInfo.label}
                   </a>
                 </Button>
@@ -476,9 +480,9 @@ export function GamePageTemplate({
                     asChild 
                     className={cn(
                       "gap-2 font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6",
-                      ctaInfo.isAffiliate 
+                      ctaInfo.buttonStyle === 'affiliate' 
                         ? "bg-green-500 hover:bg-green-600 text-white" 
-                        : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                        : "bg-blue-600 hover:bg-blue-700 text-white"
                     )}
                   >
                     <a 
@@ -486,13 +490,17 @@ export function GamePageTemplate({
                       target="_blank"
                       rel={ctaInfo.rel}
                     >
-                      <Play className="h-6 w-6 fill-current" />
-                      {ctaInfo.isAffiliate ? 'Play & Redeem' : 'Play Game'}
+                      {ctaInfo.isAffiliate ? (
+                        <Play className="h-6 w-6 fill-current" />
+                      ) : (
+                        <Gamepad2 className="h-6 w-6" />
+                      )}
+                      {ctaInfo.isAffiliate ? 'Play & Redeem' : 'Play Free'}
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
                   <p className="text-xs text-white/70 text-center font-medium">
-                    {ctaInfo.sublabel || 'Official game link'}
+                    {ctaInfo.sublabel}
                   </p>
                 </div>
               )}
@@ -592,9 +600,9 @@ export function GamePageTemplate({
                         asChild 
                         className={cn(
                           "w-full h-11 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
-                          ctaInfo.isAffiliate 
+                          ctaInfo.buttonStyle === 'affiliate' 
                             ? "bg-green-600 hover:bg-green-700 text-white" 
-                            : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                            : "bg-blue-600 hover:bg-blue-700 text-white"
                         )}
                       >
                         <a 
@@ -602,8 +610,12 @@ export function GamePageTemplate({
                           target="_blank"
                           rel={ctaInfo.rel}
                         >
-                          <Play className="h-4 w-4 mr-2 fill-current" />
-                          {ctaInfo.isAffiliate ? `Play ${game.shortName || game.name} & Redeem` : `Play ${game.shortName || game.name}`}
+                          {ctaInfo.isAffiliate ? (
+                            <Play className="h-4 w-4 mr-2 fill-current" />
+                          ) : (
+                            <Gamepad2 className="h-4 w-4 mr-2" />
+                          )}
+                          {ctaInfo.isAffiliate ? `Play ${game.shortName || game.name} & Redeem` : `Play ${game.shortName || game.name} Free`}
                         </a>
                       </Button>
                     )}
@@ -846,9 +858,9 @@ showAffiliateCTA={!!ctaInfo.url}
                                 size="lg"
                                 className={cn(
                                   "h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
-                                  ctaInfo.isAffiliate 
+                                  ctaInfo.buttonStyle === 'affiliate' 
                                     ? "bg-purple-600 hover:bg-purple-700 text-white"
-                                    : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                                    : "bg-blue-600 hover:bg-blue-700 text-white"
                                 )}
                               >
                                 <a 
@@ -856,8 +868,12 @@ showAffiliateCTA={!!ctaInfo.url}
                                   target="_blank"
                                   rel={ctaInfo.rel}
                                 >
-                                  <Play className="h-5 w-5 mr-2 fill-current" />
-                                  {ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Game'}
+                                  {ctaInfo.isAffiliate ? (
+                                    <Play className="h-5 w-5 mr-2 fill-current" />
+                                  ) : (
+                                    <Gamepad2 className="h-5 w-5 mr-2" />
+                                  )}
+                                  {ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Free'}
                                 </a>
                               </Button>
                             )}
@@ -1077,7 +1093,7 @@ showAffiliateCTA={!!ctaInfo.url}
                       "font-semibold shrink-0",
                       ctaInfo.isAffiliate 
                         ? "bg-purple-600 hover:bg-purple-700 text-white"
-                        : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                        : "bg-blue-600 hover:bg-blue-700 text-white"
                     )}
                   >
                     <a 
@@ -1085,8 +1101,12 @@ showAffiliateCTA={!!ctaInfo.url}
                       target="_blank"
                       rel={ctaInfo.rel}
                     >
-                      <Play className="h-4 w-4 mr-2 fill-current" />
-                      {ctaInfo.isAffiliate ? 'Start Playing Free' : 'Play Game'}
+                      {ctaInfo.isAffiliate ? (
+                        <Play className="h-4 w-4 mr-2 fill-current" />
+                      ) : (
+                        <Gamepad2 className="h-4 w-4 mr-2" />
+                      )}
+                      {ctaInfo.isAffiliate ? 'Start Playing Free' : 'Play Free'}
                     </a>
                   </Button>
                 )}
@@ -1328,9 +1348,9 @@ showAffiliateCTA={!!ctaInfo.url}
                         size="sm"
                         className={cn(
                           "w-full font-semibold shadow-sm hover:shadow-md hover:scale-[1.01] transition-all",
-                          relatedCtaInfo.isAffiliate 
+                          relatedCtaInfo.buttonStyle === 'affiliate' 
                             ? "bg-green-600 hover:bg-green-700 text-white"
-                            : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                            : "bg-blue-600 hover:bg-blue-700 text-white"
                         )}
                       >
                         <a 
@@ -1338,7 +1358,11 @@ showAffiliateCTA={!!ctaInfo.url}
                           target="_blank"
                           rel={relatedCtaInfo.rel}
                         >
-                          <Play className="h-4 w-4 mr-1 fill-current" />
+                          {relatedCtaInfo.isAffiliate ? (
+                            <Play className="h-4 w-4 mr-1 fill-current" />
+                          ) : (
+                            <Gamepad2 className="h-4 w-4 mr-1" />
+                          )}
                           {relatedCtaInfo.label}
                         </a>
                       </Button>

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Play, X, Gift, Copy, Check, Sparkles } from "lucide-react"
+import { Play, X, Gift, Copy, Check, Sparkles, Gamepad2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface ExitIntentPopupProps {
@@ -161,7 +161,7 @@ export function ExitIntentPopup({
               "w-full h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
               isAffiliate 
                 ? "bg-green-600 hover:bg-green-700 text-white"
-                : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
             )}
           >
             <a
@@ -169,8 +169,12 @@ export function ExitIntentPopup({
               target="_blank"
               rel={ctaRel}
             >
-              <Play className="h-5 w-5 mr-2 fill-current" />
-              {isAffiliate ? `Play ${gameShortName || gameName} & Redeem` : `Play ${gameShortName || gameName}`}
+              {isAffiliate ? (
+                <Play className="h-5 w-5 mr-2 fill-current" />
+              ) : (
+                <Gamepad2 className="h-5 w-5 mr-2" />
+              )}
+              {isAffiliate ? `Play ${gameShortName || gameName} & Redeem` : `Play ${gameShortName || gameName} Free`}
             </a>
           </Button>
 
