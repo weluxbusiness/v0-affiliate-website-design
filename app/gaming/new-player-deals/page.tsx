@@ -223,20 +223,22 @@ export default function NewPlayerDealsPage() {
                       </Link>
                       <div className="flex items-center gap-3">
                         {/* Play Now CTA */}
-                        <Button 
-                          asChild 
-                          className="h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-                        >
-                          <a 
-                            href={affiliateUrl || undefined} 
-                            target={isExternal ? "_blank" : undefined}
-                            rel={isExternal ? "noopener noreferrer" : undefined}
+                        {affiliateUrl && (
+                          <Button 
+                            asChild 
+                            className="h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
                           >
-                            <Play className="h-4 w-4 mr-2 fill-current" />
-                            Play Now
-                            {isExternal && <ExternalLink className="h-3.5 w-3.5 ml-2" />}
-                          </a>
-                        </Button>
+                            <a 
+                              href={affiliateUrl} 
+                              target={isExternal ? "_blank" : undefined}
+                              rel={isExternal ? "noopener noreferrer" : undefined}
+                            >
+                              <Play className="h-4 w-4 mr-2 fill-current" />
+                              Play Now
+                              {isExternal && <ExternalLink className="h-3.5 w-3.5 ml-2" />}
+                            </a>
+                          </Button>
+                        )}
                         <Link 
                           href={`/gaming/${game.slug}`}
                           className="text-sm font-medium text-primary hover:underline flex items-center gap-1 group"

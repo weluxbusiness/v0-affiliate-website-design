@@ -324,21 +324,23 @@ export default function GamingFreeRewardsPage() {
                     </Link>
 
                     {/* Play Now CTA */}
-                    <Button 
-                      asChild 
-                      className="w-full h-9 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-                      size="sm"
-                    >
-                      <a 
-                        href={affiliateUrl || undefined} 
-                        target={isExternal ? "_blank" : undefined}
-                        rel={isExternal ? "noopener noreferrer" : undefined}
+                    {affiliateUrl && (
+                      <Button 
+                        asChild 
+                        className="w-full h-9 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                        size="sm"
                       >
-                        <Play className="h-4 w-4 mr-1.5 fill-current" />
-                        Play Now
-                        {isExternal && <ExternalLink className="h-3.5 w-3.5 ml-1.5" />}
-                      </a>
-                    </Button>
+                        <a 
+                          href={affiliateUrl} 
+                          target={isExternal ? "_blank" : undefined}
+                          rel={isExternal ? "noopener noreferrer" : undefined}
+                        >
+                          <Play className="h-4 w-4 mr-1.5 fill-current" />
+                          Play Now
+                          {isExternal && <ExternalLink className="h-3.5 w-3.5 ml-1.5" />}
+                        </a>
+                      </Button>
+                    )}
 
                     {/* View Rewards Link */}
                     <Link 

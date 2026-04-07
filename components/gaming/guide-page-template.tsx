@@ -114,24 +114,26 @@ export function GuidePageTemplate({
             </div>
 
             {/* CTA */}
-            <div className="shrink-0 flex flex-col gap-2 relative z-20">
-              <Button 
-                size="lg" 
-                asChild 
-                className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
-              >
-                <a 
-                  href={affiliateUrl || undefined} 
-                  target="_blank"
-                  rel="nofollow sponsored noopener"
+            {affiliateUrl && (
+              <div className="shrink-0 flex flex-col gap-2 relative z-20">
+                <Button 
+                  size="lg" 
+                  asChild 
+                  className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
                 >
-                  <Zap className="h-6 w-6" />
-                  Play {game.shortName || game.name}
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-              </Button>
-              <p className="text-xs text-white/70 text-center font-medium">Free to play</p>
-            </div>
+                  <a 
+                    href={affiliateUrl} 
+                    target="_blank"
+                    rel="nofollow sponsored noopener"
+                  >
+                    <Zap className="h-6 w-6" />
+                    Play {game.shortName || game.name}
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+                <p className="text-xs text-white/70 text-center font-medium">Free to play</p>
+              </div>
+            )}
           </div>
         </PageContainer>
       </section>
@@ -218,16 +220,18 @@ export function GuidePageTemplate({
                       Get Free Codes
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline">
-                    <a 
-                      href={affiliateUrl || undefined}
-                      target="_blank"
-                      rel="nofollow sponsored noopener"
-                    >
-                      Play Now
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </a>
-                  </Button>
+                  {affiliateUrl && (
+                    <Button asChild size="lg" variant="outline">
+                      <a 
+                        href={affiliateUrl}
+                        target="_blank"
+                        rel="nofollow sponsored noopener"
+                      >
+                        Play Now
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

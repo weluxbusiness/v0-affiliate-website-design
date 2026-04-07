@@ -288,21 +288,23 @@ export default function BestCodesPage() {
                               <ArrowRight className="h-4 w-4 ml-2" />
                             </Link>
                           </Button>
-                          <Button 
-                            asChild 
-                            size="sm"
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                          >
-                            <a 
-                              href={affiliateUrl || undefined} 
-                              target={isExternal ? "_blank" : undefined}
-                              rel={isExternal ? "noopener noreferrer" : undefined}
+                          {affiliateUrl && (
+                            <Button 
+                              asChild 
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-700 text-white"
                             >
-                              <Play className="h-4 w-4 mr-1 fill-current" />
-                              Play Now
-                              {isExternal && <ExternalLink className="h-3 w-3 ml-1" />}
-                            </a>
-                          </Button>
+                              <a 
+                                href={affiliateUrl} 
+                                target={isExternal ? "_blank" : undefined}
+                                rel={isExternal ? "noopener noreferrer" : undefined}
+                              >
+                                <Play className="h-4 w-4 mr-1 fill-current" />
+                                Play Now
+                                {isExternal && <ExternalLink className="h-3 w-3 ml-1" />}
+                              </a>
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -309,21 +309,23 @@ export function GameCardCompact({ game, codeCount, showBadge = false }: GameCard
       </Link>
 
       {/* Play Now CTA - Falconix affiliate network */}
-      <Button 
-        asChild 
-        size="sm"
-        className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-      >
-        <a 
-          href={affiliateUrl || undefined} 
-          target="_blank"
-          rel="nofollow sponsored noopener"
+      {affiliateUrl && (
+        <Button 
+          asChild 
+          size="sm"
+          className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
         >
-          <Play className="h-4 w-4 mr-1 fill-current" />
-          Play
-          <ExternalLink className="h-3 w-3 ml-1" />
-        </a>
-      </Button>
+          <a 
+            href={affiliateUrl} 
+            target="_blank"
+            rel="nofollow sponsored noopener"
+          >
+            <Play className="h-4 w-4 mr-1 fill-current" />
+            Play
+            <ExternalLink className="h-3 w-3 ml-1" />
+          </a>
+        </Button>
+      )}
     </div>
   )
 }
@@ -382,20 +384,22 @@ export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCod
       </Link>
 
       {/* Play Now CTA - Falconix affiliate network */}
-      <Button 
-        asChild 
-        size="sm"
-        className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-      >
-        <a 
-          href={affiliateUrl || undefined} 
-          target="_blank"
-          rel="nofollow sponsored noopener"
+      {affiliateUrl && (
+        <Button 
+          asChild 
+          size="sm"
+          className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
         >
-          <Play className="h-4 w-4 mr-1 fill-current" />
-          Play
-        </a>
-      </Button>
+          <a 
+            href={affiliateUrl} 
+            target="_blank"
+            rel="nofollow sponsored noopener"
+          >
+            <Play className="h-4 w-4 mr-1 fill-current" />
+            Play
+          </a>
+        </Button>
+      )}
     </div>
   )
 }
