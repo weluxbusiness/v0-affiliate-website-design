@@ -49,6 +49,13 @@ export const metadata: Metadata = {
     title: "All Gaming Promo Codes April 2026 - 500+ Working Codes | SaveSmart",
     description: "500+ verified gaming promo codes. Free gems, rewards & bonuses. Redeem now!",
     url: "https://savesmart.bio/gaming/promo-codes",
+    type: "website",
+    siteName: "SaveSmart",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "All Gaming Promo Codes April 2026",
+    description: "500+ verified codes for 100+ games. Free gems & rewards!",
   },
   alternates: {
     canonical: "/gaming/promo-codes",

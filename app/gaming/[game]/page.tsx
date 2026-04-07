@@ -100,10 +100,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: `${game.name} Promo Codes ${currentMonth} ${currentYear}`,
       description: `${codeCount}+ working codes. Free gems & rewards!`,
-      images: game.logoUrl ? [`https://savesmart.bio${game.logoUrl}`] : undefined,
     },
     alternates: {
       canonical: `/gaming/${game.slug}`,
