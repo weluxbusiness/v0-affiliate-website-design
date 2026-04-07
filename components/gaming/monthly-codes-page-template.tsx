@@ -299,7 +299,7 @@ export function MonthlyCodesPageTemplate({
                     className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
                   >
                     <a 
-                      href={getPlayAffiliateUrl(game)} 
+                      href={getPlayAffiliateUrl(game) || undefined} 
                       target="_blank"
                       rel="nofollow sponsored noopener"
                     >
