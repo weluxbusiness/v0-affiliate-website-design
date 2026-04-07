@@ -356,8 +356,8 @@ export const gamesData: Game[] = [
     description: 'RAID: Shadow Legends is a turn-based fantasy RPG featuring over 800 champions to collect and customize. Build your ultimate team and battle through a rich storyline across dungeons, arena battles, and clan boss fights.',
     categories: ['RPG', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/raid-shadow-legends.jpg',
+    imageUrl: '/games/raid-shadow-legends.png',
+    logoUrl: '/games/raid-shadow-legends.png',
     developer: 'Plarium',
     publisher: 'Plarium',
     promoCodes: [

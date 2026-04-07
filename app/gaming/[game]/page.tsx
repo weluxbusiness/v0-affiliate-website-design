@@ -90,17 +90,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       siteName: "SaveSmart",
       images: [
         {
-          url: game.logoUrl || `https://savesmart.bio/og/gaming/${game.slug}.jpg`,
-          width: 1200,
-          height: 630,
-          alt: `${game.name} Promo Codes`,
+          url: game.logoUrl 
+            ? `https://savesmart.bio${game.logoUrl}` 
+            : `https://savesmart.bio/og/gaming/${game.slug}.jpg`,
+          width: 256,
+          height: 256,
+          alt: `${game.name} characters artwork - promo codes and free rewards`,
         },
       ],
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title: `${game.name} Promo Codes ${currentMonth} ${currentYear}`,
       description: `${codeCount}+ working codes. Free gems & rewards!`,
+      images: game.logoUrl ? [`https://savesmart.bio${game.logoUrl}`] : undefined,
     },
     alternates: {
       canonical: `/gaming/${game.slug}`,
