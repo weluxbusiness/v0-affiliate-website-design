@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils"
 import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
 import { GameLogo } from "@/components/gaming/game-logo"
+import { useCopyContext } from "@/components/gaming/copy-code-button"
 import type { PromoCode, Game } from "@/lib/gaming-data"
 import { getGameCtaInfo, hasGameSpecificAffiliateLinks } from "@/lib/gaming-data"
 
@@ -83,6 +84,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
 }: PromoCodeCardProps) {
   const [copied, setCopied] = useState(false)
   const { trackCodeCopy } = useGamingAnalytics()
+  const copyContext = useCopyContext()
   
   // Compute CTA info from game or use prop overrides
   const gameCtaInfo = game ? getGameCtaInfo(game) : null
@@ -96,6 +98,9 @@ export const PromoCodeCard = memo(function PromoCodeCard({
     setCopied(true)
     onCopy?.(code.code)
     
+    // Notify context for PostCopyStickyBar
+    copyContext?.setHasCopied(true, code.code)
+    
     // Track the copy event
     trackCodeCopy({
       game_id: code.game_id || game?.id,
@@ -105,7 +110,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
     })
     
     setTimeout(() => setCopied(false), 5000)
-  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy, copied])
+  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy, copied, copyContext])
 
   const expiringSoon = isExpiringSoon(code.expiresAt)
 

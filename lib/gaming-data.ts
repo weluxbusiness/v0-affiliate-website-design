@@ -139,6 +139,7 @@ export function getGameCtaInfo(game: Game): {
   labelShort: string
   sublabel: string
   trustText: string
+  urgencyText: string
   isAffiliate: boolean
   rel: string
   buttonStyle: 'affiliate' | 'official' | 'neutral'
@@ -150,10 +151,11 @@ export function getGameCtaInfo(game: Game): {
   if (affiliateUrl) {
     return {
       url: affiliateUrl,
-      label: 'Play & Get Rewards',
-      labelShort: 'Get Rewards',
-      sublabel: 'Unlock exclusive free rewards',
+      label: 'Claim FREE Rewards',
+      labelShort: 'Claim FREE Rewards',
+      sublabel: 'Exclusive in-game items',
       trustText: 'No signup required · Takes 30 seconds',
+      urgencyText: 'Works today — may expire soon',
       isAffiliate: true,
       rel: 'nofollow sponsored noopener',
       buttonStyle: 'affiliate',
@@ -168,6 +170,7 @@ export function getGameCtaInfo(game: Game): {
       labelShort: 'Play',
       sublabel: 'Official game link',
       trustText: '',
+      urgencyText: '',
       isAffiliate: false,
       rel: 'noopener noreferrer',
       buttonStyle: 'official',
@@ -181,6 +184,7 @@ export function getGameCtaInfo(game: Game): {
     labelShort: 'Codes',
     sublabel: '',
     trustText: '',
+    urgencyText: '',
     isAffiliate: false,
     rel: '',
     buttonStyle: 'neutral',

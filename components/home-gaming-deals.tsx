@@ -132,12 +132,12 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                     {rewardHighlight}
                   </p>
 
-                  {/* CTAs - Show Play button when URL available, otherwise just View Codes */}
-                  <div className="flex gap-2">
-                    {ctaInfo.url ? (
+                  {/* CTAs - Affiliate CTA primary, View Codes secondary */}
+                  <div className="flex flex-col gap-2">
+                    {ctaInfo.url && (
                       <Button 
                         asChild 
-                        className={`flex-1 h-10 font-semibold shadow-md hover:shadow-lg transition-all ${
+                        className={`w-full h-10 font-bold shadow-md hover:shadow-lg transition-all ${
                           ctaInfo.buttonStyle === 'affiliate' 
                             ? 'bg-green-600 hover:bg-green-700 text-white'
                             : 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -149,22 +149,29 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                           rel={ctaInfo.rel}
                         >
                           {ctaInfo.isAffiliate ? (
-                            <Play className="h-4 w-4 mr-2 fill-current" />
+                            <Gift className="h-4 w-4 mr-2" />
                           ) : (
                             <Gamepad2 className="h-4 w-4 mr-2" />
                           )}
-                          {ctaInfo.label}
+                          {ctaInfo.isAffiliate ? 'Claim FREE Rewards' : ctaInfo.label}
                         <ExternalLink className="h-3 w-3 ml-1" />
                       </a>
                     </Button>
-                    ) : null}
+                    )}
+                    {/* Urgency text for affiliate */}
+                    {ctaInfo.isAffiliate && ctaInfo.urgencyText && (
+                      <p className="text-xs text-amber-600 text-center font-medium -mt-1">
+                        {ctaInfo.urgencyText}
+                      </p>
+                    )}
                     <Button 
                       asChild 
-                      variant={ctaInfo.url ? "outline" : "default"}
-                      className={`h-10 font-medium ${!ctaInfo.url ? 'flex-1' : ''}`}
+                      variant="outline"
+                      size="sm"
+                      className="w-full h-8 font-medium text-xs"
                     >
                       <Link href={`/gaming/${game.slug}`}>
-                        View Codes
+                        View All Codes
                       </Link>
                     </Button>
                   </div>

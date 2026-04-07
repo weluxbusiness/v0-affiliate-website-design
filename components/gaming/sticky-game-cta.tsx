@@ -12,16 +12,18 @@ interface StickyGameCTAProps {
   ctaRel?: string
   isAffiliate?: boolean
   trustText?: string
+  urgencyText?: string
   className?: string
 }
 
 export function StickyGameCTA({ 
   gameName, 
   affiliateUrl, 
-  ctaLabel = 'Get Rewards',
+  ctaLabel = 'Claim FREE Rewards',
   ctaRel = 'noopener noreferrer',
   isAffiliate = false,
   trustText,
+  urgencyText,
   className 
 }: StickyGameCTAProps) {
   const [isVisible, setIsVisible] = useState(false)
@@ -58,11 +60,12 @@ export function StickyGameCTA({
               </div>
               <div>
                 <p className="font-bold text-sm sm:text-base">
-                  {isAffiliate ? `Play ${gameName} & Get Free Rewards` : `Play ${gameName}`}
+                  {isAffiliate ? `${gameName} — Claim FREE Rewards` : `Play ${gameName}`}
                 </p>
-                <p className="text-xs text-white/80 hidden sm:block">
-                  {trustText || 'No signup required · Takes 30 seconds'}
-                </p>
+                <div className="text-xs hidden sm:block">
+                  {urgencyText && <span className="text-amber-300 font-medium mr-2">{urgencyText}</span>}
+                  <span className="text-white/70">{trustText || 'No signup required'}</span>
+                </div>
               </div>
             </div>
 

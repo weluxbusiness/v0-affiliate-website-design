@@ -384,11 +384,11 @@ export default async function GamingPage() {
                       </Badge>
                     </div>
 
-                    {/* Primary CTA - Play Now or Play Free */}
-                    {ctaInfo.url ? (
+                    {/* Primary CTA - Claim FREE Rewards or Play Free */}
+                    {ctaInfo.url && (
                       <Button
                         asChild
-                        className={`w-full h-11 font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all ${
+                        className={`w-full h-11 font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all ${
                           ctaInfo.buttonStyle === 'affiliate' 
                             ? 'bg-green-600 hover:bg-green-700 text-white'
                             : 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -400,7 +400,7 @@ export default async function GamingPage() {
                           rel={ctaInfo.rel}
                         >
                           {ctaInfo.isAffiliate ? (
-                            <Play className="h-5 w-5 mr-2 fill-current" />
+                            <Gift className="h-5 w-5 mr-2" />
                           ) : (
                             <Gamepad2 className="h-5 w-5 mr-2" />
                           )}
@@ -408,25 +408,25 @@ export default async function GamingPage() {
                           <ExternalLink className="h-4 w-4 ml-2" />
                         </a>
                       </Button>
-                    ) : (
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="w-full h-11 font-semibold"
-                      >
-                        <Link href={`/gaming/${game.slug}`}>
-                          <Tag className="h-5 w-5 mr-2" />
-                          View Codes
-                        </Link>
-                      </Button>
+                    )}
+                    
+                    {/* Urgency text for affiliate */}
+                    {ctaInfo.isAffiliate && ctaInfo.urgencyText && (
+                      <p className="text-xs text-amber-600 text-center font-medium mt-1">
+                        {ctaInfo.urgencyText}
+                      </p>
                     )}
 
-                    {/* View Codes Link */}
+                    {/* View Codes Link - smaller for affiliate, primary for non-affiliate */}
                     <Link 
                       href={`/gaming/${game.slug}`}
-                      className="flex items-center justify-center gap-1 mt-3 text-sm font-medium text-primary hover:underline"
+                      className={`flex items-center justify-center gap-1 mt-2 text-sm ${
+                        ctaInfo.isAffiliate 
+                          ? 'font-medium text-muted-foreground hover:text-foreground' 
+                          : 'font-semibold text-primary hover:underline'
+                      }`}
                     >
-                      View Codes
+                      View All Codes
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </CardContent>

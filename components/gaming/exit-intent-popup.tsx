@@ -17,6 +17,7 @@ interface ExitIntentPopupProps {
   ctaRel?: string
   isAffiliate?: boolean
   trustText?: string
+  urgencyText?: string
 }
 
 export function ExitIntentPopup({ 
@@ -25,10 +26,11 @@ export function ExitIntentPopup({
   affiliateUrl, 
   bestCode,
   bestCodeReward,
-  ctaLabel = 'Play & Get Rewards',
+  ctaLabel = 'Claim FREE Rewards',
   ctaRel = 'noopener noreferrer',
   isAffiliate = false,
-  trustText
+  trustText,
+  urgencyText
 }: ExitIntentPopupProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [hasShown, setHasShown] = useState(false)
@@ -102,14 +104,14 @@ export function ExitIntentPopup({
 
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-primary/10 mb-4">
-              <Gift className="h-7 w-7 text-primary" />
+            <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-amber-500/10 mb-4">
+              <Gift className="h-7 w-7 text-amber-500" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">
-              Before you go — here&apos;s a popular code
+              Don&apos;t leave — use this code before it stops working
             </h3>
             <p className="text-muted-foreground">
-              Save this {gameShortName || gameName} code for free rewards
+              Best {gameShortName || gameName} code right now:
             </p>
           </div>
 
@@ -180,11 +182,20 @@ export function ExitIntentPopup({
             </a>
           </Button>
           
-          {/* Trust text */}
-          {isAffiliate && trustText && (
-            <p className="text-center text-xs text-muted-foreground mt-2">
-              {trustText}
-            </p>
+          {/* Urgency + Trust text */}
+          {isAffiliate && (
+            <div className="text-center mt-2 space-y-0.5">
+              {urgencyText && (
+                <p className="text-xs text-amber-600 font-medium">
+                  {urgencyText}
+                </p>
+              )}
+              {trustText && (
+                <p className="text-xs text-muted-foreground">
+                  {trustText}
+                </p>
+              )}
+            </div>
           )}
 
           {/* Secondary action */}

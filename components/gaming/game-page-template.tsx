@@ -23,7 +23,7 @@ import { StickyGameCTA } from "@/components/gaming/sticky-game-cta"
 import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { GameHeroImage } from "@/components/gaming/game-hero-image"
 import { GameSectionImage } from "@/components/gaming/game-section-image"
-import { CopyCodeButton } from "@/components/gaming/copy-code-button"
+import { CopyCodeButton, CopyProvider, PostCopyStickyBar } from "@/components/gaming/copy-code-button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -247,6 +247,7 @@ export function GamePageTemplate({
   const images = gameImages[game.slug]
 
   return (
+    <CopyProvider>
     <main className="min-h-screen bg-background">
       {/* Schema Markup */}
       <script
@@ -342,9 +343,19 @@ export function GamePageTemplate({
               </div>
             </div>
 
-            {/* Mobile CTAs - Full width, above fold */}
+            {/* Mobile CTAs - Optimized for conversion */}
             <div className="flex flex-col gap-2 mb-4 relative z-20">
-              {/* Primary CTA - Affiliate (bigger, more prominent) */}
+              {/* Best Code Signal */}
+              {bestCode && ctaInfo.isAffiliate && (
+                <div className="flex items-center justify-center gap-2 bg-white/10 rounded-lg px-3 py-2">
+                  <Sparkles className="h-4 w-4 text-amber-300" />
+                  <span className="text-sm text-white/90">
+                    Best code right now: <code className="font-mono font-bold text-amber-300">{bestCode.code}</code>
+                  </span>
+                </div>
+              )}
+              
+              {/* 1. Primary CTA - Affiliate (biggest, most prominent) */}
               {ctaInfo.isAffiliate && ctaInfo.url && (
                 <Button 
                   size="lg" 
@@ -363,23 +374,30 @@ export function GamePageTemplate({
                 </Button>
               )}
               
-              {/* Secondary row - Copy Code + Official Game (for affiliate games) */}
+              {/* Urgency + Trust text (for affiliate) */}
+              {ctaInfo.isAffiliate && (
+                <div className="text-center space-y-0.5">
+                  {ctaInfo.urgencyText && (
+                    <p className="text-xs text-amber-300 font-medium">
+                      {ctaInfo.urgencyText}
+                    </p>
+                  )}
+                  {ctaInfo.trustText && (
+                    <p className="text-xs text-white/60">
+                      {ctaInfo.trustText}
+                    </p>
+                  )}
+                </div>
+              )}
+              
+              {/* 2. Secondary row - Official Game first, then Copy Code (lower priority) */}
               <div className="flex gap-2">
-                {bestCode && (
-                  <CopyCodeButton 
-                    code={bestCode.code}
-                    className="flex-1 bg-white text-primary hover:bg-white/90 font-bold shadow-lg text-sm h-11"
-                  >
-                    <Tag className="h-4 w-4 mr-1.5" />
-                    Copy Code
-                  </CopyCodeButton>
-                )}
                 {ctaInfo.isAffiliate && ctaInfo.officialUrl && (
                   <Button 
-                    size="lg" 
+                    size="sm" 
                     asChild 
                     variant="outline"
-                    className="flex-1 font-semibold text-sm h-11 bg-white/10 border-white/30 text-white hover:bg-white/20"
+                    className="flex-1 font-medium text-sm h-9 bg-white/10 border-white/30 text-white hover:bg-white/20"
                   >
                     <a 
                       href={ctaInfo.officialUrl} 
@@ -390,6 +408,16 @@ export function GamePageTemplate({
                       Official Game
                     </a>
                   </Button>
+                )}
+                {/* 3. Copy Code - smallest, least prominent */}
+                {bestCode && (
+                  <CopyCodeButton 
+                    code={bestCode.code}
+                    className="flex-1 bg-white/5 text-white/80 hover:bg-white/10 font-medium text-xs h-9 border border-white/20"
+                  >
+                    <Tag className="h-3 w-3 mr-1" />
+                    Copy Code
+                  </CopyCodeButton>
                 )}
                 {/* Non-affiliate: just show Play Free button */}
                 {!ctaInfo.isAffiliate && ctaInfo.url && (
@@ -409,13 +437,6 @@ export function GamePageTemplate({
                   </Button>
                 )}
               </div>
-              
-              {/* Trust text */}
-              {ctaInfo.trustText && (
-                <p className="text-xs text-white/70 text-center font-medium">
-                  {ctaInfo.trustText}
-                </p>
-              )}
             </div>
           </div>
           
@@ -513,6 +534,16 @@ export function GamePageTemplate({
               {/* Primary CTA - Desktop */}
               {ctaInfo.url && (
                 <div className="shrink-0 flex flex-col gap-3 relative z-20">
+                  {/* Best Code Signal */}
+                  {bestCode && ctaInfo.isAffiliate && (
+                    <div className="flex items-center justify-center gap-2 bg-white/10 rounded-lg px-4 py-2">
+                      <Sparkles className="h-4 w-4 text-amber-300" />
+                      <span className="text-sm text-white/90">
+                        Best code: <code className="font-mono font-bold text-amber-300">{bestCode.code}</code>
+                      </span>
+                    </div>
+                  )}
+                  
                   {/* Primary CTA - Affiliate (larger, more prominent) */}
                   <Button 
                     size="lg" 
@@ -534,10 +565,26 @@ export function GamePageTemplate({
                       ) : (
                         <Gamepad2 className="h-6 w-6" />
                       )}
-                      {ctaInfo.isAffiliate ? 'Play & Get Rewards' : 'Play Free'}
+                      {ctaInfo.label}
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
+                  
+                  {/* Urgency + Trust text (for affiliate) */}
+                  {ctaInfo.isAffiliate && (
+                    <div className="text-center space-y-0.5">
+                      {ctaInfo.urgencyText && (
+                        <p className="text-xs text-amber-300 font-medium">
+                          {ctaInfo.urgencyText}
+                        </p>
+                      )}
+                      {ctaInfo.trustText && (
+                        <p className="text-xs text-white/60">
+                          {ctaInfo.trustText}
+                        </p>
+                      )}
+                    </div>
+                  )}
                   
                   {/* Secondary CTA - Official Game (for affiliate games only) */}
                   {ctaInfo.isAffiliate && ctaInfo.officialUrl && (
@@ -553,17 +600,13 @@ export function GamePageTemplate({
                         rel="noopener noreferrer"
                       >
                         <Gamepad2 className="h-4 w-4" />
-                        Play Official Game
+                        Official Game
                       </a>
                     </Button>
                   )}
                   
-                  {/* Trust text */}
-                  {ctaInfo.trustText ? (
-                    <p className="text-xs text-white/70 text-center font-medium">
-                      {ctaInfo.trustText}
-                    </p>
-                  ) : (
+                  {/* Non-affiliate: show sublabel */}
+                  {!ctaInfo.isAffiliate && ctaInfo.sublabel && (
                     <p className="text-xs text-white/70 text-center font-medium">
                       {ctaInfo.sublabel}
                     </p>
@@ -681,24 +724,27 @@ export function GamePageTemplate({
                           ) : (
                             <Gamepad2 className="h-5 w-5 mr-2" />
                           )}
-                          {ctaInfo.isAffiliate ? `Get Rewards` : `Play Free`}
+                          {ctaInfo.label}
                           <ExternalLink className="h-4 w-4 ml-2" />
                         </a>
                       </Button>
                     )}
                     
-                    {/* Trust text for affiliate */}
-                    {ctaInfo.isAffiliate && ctaInfo.trustText && (
-                      <p className="text-center text-xs text-muted-foreground mt-2">
-                        {ctaInfo.trustText}
-                      </p>
+                    {/* Urgency + Trust text for affiliate */}
+                    {ctaInfo.isAffiliate && (
+                      <div className="text-center mt-2 space-y-0.5">
+                        {ctaInfo.urgencyText && (
+                          <p className="text-xs text-amber-600 font-medium">
+                            {ctaInfo.urgencyText}
+                          </p>
+                        )}
+                        {ctaInfo.trustText && (
+                          <p className="text-xs text-muted-foreground">
+                            {ctaInfo.trustText}
+                          </p>
+                        )}
+                      </div>
                     )}
-                    
-                    {/* Compliant Social Proof */}
-                    <p className="text-center text-xs text-muted-foreground mt-2">
-                      <Flame className="h-3 w-3 inline mr-1 text-amber-500" />
-                      Popular code among players
-                    </p>
                   </CardContent>
                 </Card>
               ))}
@@ -1740,10 +1786,11 @@ showAffiliateCTA={!!ctaInfo.url}
         <StickyGameCTA
           gameName={game.shortName || game.name}
           affiliateUrl={ctaInfo.url}
-          ctaLabel={ctaInfo.isAffiliate ? 'Get Rewards' : ctaInfo.label}
+          ctaLabel={ctaInfo.label}
           ctaRel={ctaInfo.rel}
           isAffiliate={ctaInfo.isAffiliate}
           trustText={ctaInfo.trustText}
+          urgencyText={ctaInfo.urgencyText}
         />
       )}
 
@@ -1755,12 +1802,24 @@ showAffiliateCTA={!!ctaInfo.url}
           affiliateUrl={ctaInfo.url}
           bestCode={bestCode.code}
           bestCodeReward={bestCode.reward}
-          ctaLabel={ctaInfo.isAffiliate ? 'Play & Get Rewards' : ctaInfo.label}
+          ctaLabel={ctaInfo.label}
           ctaRel={ctaInfo.rel}
           isAffiliate={ctaInfo.isAffiliate}
           trustText={ctaInfo.trustText}
+          urgencyText={ctaInfo.urgencyText}
+        />
+      )}
+      
+      {/* Post-Copy Sticky Bar - appears after user copies a code */}
+      {ctaInfo.isAffiliate && ctaInfo.url && (
+        <PostCopyStickyBar
+          gameName={game.shortName || game.name}
+          affiliateUrl={ctaInfo.url}
+          ctaRel={ctaInfo.rel}
+          isAffiliate={ctaInfo.isAffiliate}
         />
       )}
     </main>
+    </CopyProvider>
   )
 }
