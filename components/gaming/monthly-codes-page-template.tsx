@@ -20,11 +20,28 @@ import {
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
 import { StickyGameCTA } from "@/components/gaming/sticky-game-cta"
+import { GameHeroImage } from "@/components/gaming/game-hero-image"
+import { GameSectionImage } from "@/components/gaming/game-section-image"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode } from "@/lib/gaming-data"
 import { getActivePromoCodes, sortPromoCodesByValue, getPlayAffiliateUrl } from "@/lib/gaming-data"
+
+// Game-specific image configurations for SEO and CRO
+const gameImages: Record<string, {
+  hero: string
+  rewards: string
+  gameplay: string
+  characters: string
+}> = {
+  "raid-shadow-legends": {
+    hero: "/images/gaming/raid-hero.jpg",
+    rewards: "/images/gaming/raid-rewards.jpg",
+    gameplay: "/images/gaming/raid-gameplay.jpg",
+    characters: "/images/gaming/raid-characters.jpg",
+  },
+}
 
 interface MonthlyCodesPageTemplateProps {
   game: Game
@@ -46,6 +63,9 @@ export function MonthlyCodesPageTemplate({
     day: 'numeric', 
     year: 'numeric' 
   })
+  
+  // Get game-specific images if available
+  const images = gameImages[game.slug]
 
   return (
     <>
@@ -73,10 +93,24 @@ export function MonthlyCodesPageTemplate({
         </PageContainer>
       </section>
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-12 md:py-16">
+      {/* Hero Section with Featured Image */}
+      <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-8 md:py-12">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
+          {/* Hero Image - High-converting visual */}
+          {images && (
+            <div className="mb-8">
+              <GameHeroImage
+                src={images.hero}
+                alt={`${game.name} codes ${month.toLowerCase()} ${year} - free rewards and working promo codes`}
+                title={`Working Codes ${month} ${year}`}
+                badge="Working Codes"
+                showUpdatedBadge={true}
+                priority={true}
+              />
+            </div>
+          )}
+          
           <div className="text-center max-w-3xl mx-auto">
             <Badge className="bg-white/20 text-white mb-4">
               <Flame className="h-3 w-3 mr-1" />
@@ -114,6 +148,70 @@ export function MonthlyCodesPageTemplate({
           </div>
         </PageContainer>
       </section>
+
+      {/* Visual CRO: Rewards, Gameplay, Characters Images */}
+      {images && (
+        <section className="py-10 bg-muted/30">
+          <PageContainer>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-foreground mb-2">
+                What You Can Get in {game.shortName || game.name}
+              </h2>
+              <p className="text-muted-foreground">
+                Redeem codes to unlock these rewards and bonuses
+              </p>
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-3">
+              <GameSectionImage
+                src={images.rewards}
+                alt={`${game.name} free rewards - silver, champions, energy`}
+                badge="free-rewards"
+                title="Silver, Energy & More"
+              />
+              <GameSectionImage
+                src={images.gameplay}
+                alt={`${game.name} gameplay and battle system`}
+                badge="gameplay"
+                title="Turn-Based Combat"
+              />
+              <GameSectionImage
+                src={images.characters}
+                alt={`${game.name} champions and characters collection`}
+                badge="characters"
+                title="800+ Champions"
+              />
+            </div>
+            
+            {/* New Player CTA */}
+            <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-center sm:text-left">
+                  <Badge className="bg-purple-600 text-white mb-2">
+                    <Sparkles className="h-3 w-3 mr-1" />
+                    New Player Bonuses
+                  </Badge>
+                  <h3 className="font-bold text-foreground text-lg">First time playing {game.shortName || game.name}?</h3>
+                  <p className="text-muted-foreground text-sm">Use code GOFAST or MONKEYKING for a free Legendary champion</p>
+                </div>
+                <Button 
+                  asChild 
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-semibold shrink-0"
+                >
+                  <a 
+                    href={getPlayAffiliateUrl(game)} 
+                    target="_blank"
+                    rel="nofollow sponsored noopener"
+                  >
+                    <Play className="h-4 w-4 mr-2 fill-current" />
+                    Start Playing Free
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </PageContainer>
+        </section>
+      )}
 
       {/* SEO Intro Content - 300-500 words */}
       <section className="py-8 border-b border-border">
