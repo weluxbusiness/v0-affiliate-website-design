@@ -59,12 +59,12 @@ export interface Game {
   faqs?: { question: string; answer: string }[]
 }
 
-// Default fallback logo
-export const DEFAULT_GAME_LOGO = '/images/games/default-game-logo.svg'
+// Default fallback logo - empty string triggers GameLogo component's built-in fallback icon
+export const DEFAULT_GAME_LOGO = ''
 
 // Helper to get logo URL with fallback
 export function getGameLogoUrl(game: Game): string {
-  return game.logoUrl || DEFAULT_GAME_LOGO
+  return game.logoUrl || ''
 }
 
 // ============================================
@@ -489,8 +489,8 @@ export const gamesData: Game[] = [
     description: 'Genshin Impact is an open-world action RPG set in the fantasy world of Teyvat. Explore seven nations, master elemental combat, and uncover the mysteries of this breathtaking anime-style adventure.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC', 'Console'],
     platforms: ['PC', 'Mobile', 'PlayStation', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/genshin-impact.webp',
+    imageUrl: '/games/genshin-impact.webp',
+    logoUrl: '/games/genshin-impact.webp',
     developer: 'miHoYo',
     publisher: 'HoYoverse',
     promoCodes: [
@@ -588,8 +588,8 @@ export const gamesData: Game[] = [
     description: 'Fortnite is a free-to-play battle royale game where 100 players compete to be the last one standing. Build structures, find weapons, and outlast opponents in this ever-evolving cultural phenomenon.',
     categories: ['Battle Royale', 'FPS', 'PC', 'Console', 'Mobile'],
     platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1589241062272-c0a000072dfa?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/fortnite.webp',
+    imageUrl: '/games/fortnite.png',
+    logoUrl: '/games/fortnite.png',
     developer: 'Epic Games',
     publisher: 'Epic Games',
     promoCodes: [
@@ -666,9 +666,9 @@ export const gamesData: Game[] = [
     description: 'Call of Duty Mobile brings the iconic FPS franchise to mobile devices with multiplayer modes, battle royale, and classic maps from the console games.',
     categories: ['FPS', 'Mobile', 'Battle Royale'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0b?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/call-of-duty-mobile.webp',
-    developer: 'TiMi Studio Group',
+  imageUrl: '/games/call-of-duty-mobile.webp',
+  logoUrl: '/games/call-of-duty-mobile.webp',
+  developer: 'TiMi Studio Group',
     publisher: 'Activision',
     promoCodes: [
       {
@@ -743,8 +743,8 @@ export const gamesData: Game[] = [
     description: 'Roblox is a global platform where millions of people create and play games together. Build your own experiences or explore thousands of user-created worlds.',
     categories: ['Simulation', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'Xbox', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1493711662062-fa541f7f3d24?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/roblox.webp',
+    imageUrl: '/games/roblox.png',
+    logoUrl: '/games/roblox.png',
     developer: 'Roblox Corporation',
     publisher: 'Roblox Corporation',
     promoCodes: [
@@ -823,8 +823,8 @@ export const gamesData: Game[] = [
     description: 'Honkai: Star Rail is a space fantasy RPG from HoYoverse. Hop aboard the Astral Express and experience the galaxy through turn-based combat and stunning visuals.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'PlayStation', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/honkai-star-rail.webp',
+    imageUrl: '/games/honkai-star-rail.png',
+    logoUrl: '/games/honkai-star-rail.png',
     developer: 'miHoYo',
     publisher: 'HoYoverse',
     promoCodes: [
@@ -900,9 +900,9 @@ export const gamesData: Game[] = [
     description: 'Apex Legends is a free-to-play hero shooter battle royale. Master unique character abilities, team up with your squad, and conquer the Outlands.',
     categories: ['Battle Royale', 'FPS', 'PC', 'Console'],
     platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile'],
-    imageUrl: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/apex-legends.webp',
-    developer: 'Respawn Entertainment',
+  imageUrl: '/games/apex-legends.png',
+  logoUrl: '/games/apex-legends.png',
+  developer: 'Respawn Entertainment',
     publisher: 'Electronic Arts',
     promoCodes: [
       {
@@ -950,8 +950,8 @@ export const gamesData: Game[] = [
     description: 'Pokemon GO is an augmented reality mobile game that lets you catch Pokemon in the real world. Explore your neighborhood, battle in gyms, and join community events.',
     categories: ['Mobile', 'RPG'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/pokemon-go.webp',
+    imageUrl: '/games/pokemon-go.webp',
+    logoUrl: '/games/pokemon-go.webp',
     developer: 'Niantic',
     publisher: 'Niantic',
     promoCodes: [
@@ -1011,12 +1011,12 @@ export const gamesData: Game[] = [
     description: 'Clash of Clans is a strategy game where you build your village, train troops, and battle with millions of players worldwide. Join a Clan and dominate the battlefield.',
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/clash-of-clans.webp',
-    developer: 'Supercell',
-    publisher: 'Supercell',
-    promoCodes: [
-      {
+  imageUrl: '/games/clash-of-clans.png',
+  logoUrl: '/games/clash-of-clans.png',
+  developer: 'Supercell',
+  publisher: 'Supercell',
+  promoCodes: [
+  {
         id: 'coc-1',
         code: 'CLASHON2024',
         reward: '500 Gems + 1 Day Shield',
@@ -1060,8 +1060,8 @@ export const gamesData: Game[] = [
     description: 'Minecraft is the best-selling video game of all time. Build anything you can imagine, explore infinite worlds, and survive against creatures in this sandbox adventure.',
     categories: ['Simulation', 'PC', 'Console', 'Mobile'],
     platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1587573089734-09cb69c0f2b4?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/minecraft.webp',
+    imageUrl: '/games/minecraft.webp',
+    logoUrl: '/games/minecraft.webp',
     developer: 'Mojang Studios',
     publisher: 'Xbox Game Studios',
     promoCodes: [
@@ -1110,8 +1110,8 @@ export const gamesData: Game[] = [
     description: 'VALORANT is a 5v5 character-based tactical shooter from Riot Games. Precise gunplay meets unique agent abilities in this competitive free-to-play shooter.',
     categories: ['FPS', 'PC'],
     platforms: ['PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/valorant.webp',
+    imageUrl: '/games/valorant.avif',
+    logoUrl: '/games/valorant.avif',
     developer: 'Riot Games',
     publisher: 'Riot Games',
     promoCodes: [
@@ -1167,8 +1167,8 @@ export const gamesData: Game[] = [
     description: 'League of Legends is the world\'s most popular MOBA. Choose from over 160 champions and team up for intense 5v5 battles on Summoner\'s Rift.',
     categories: ['PC', 'MMORPG'],
     platforms: ['PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/league-of-legends.webp',
+    imageUrl: '/games/league-of-legends.png',
+    logoUrl: '/games/league-of-legends.png',
     developer: 'Riot Games',
     publisher: 'Riot Games',
     promoCodes: [
@@ -1224,9 +1224,9 @@ export const gamesData: Game[] = [
     description: 'Free Fire is a fast-paced battle royale game designed for mobile. 50 players, 10-minute matches, and intense survival gameplay.',
     categories: ['Battle Royale', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/free-fire.webp',
-    developer: '111 Dots Studio',
+  imageUrl: '/games/free-fire.jpg',
+  logoUrl: '/games/free-fire.jpg',
+  developer: '111 Dots Studio',
     publisher: 'Garena',
     promoCodes: [
       {
@@ -1283,8 +1283,8 @@ export const gamesData: Game[] = [
     description: 'PUBG Mobile is the mobile version of the iconic battle royale game. Drop in, loot up, and be the last one standing in intense 100-player matches.',
     categories: ['Battle Royale', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1542549237432-a176cb9d5e6e?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/pubg-mobile.webp',
+    imageUrl: '/games/pubg-mobile.png',
+    logoUrl: '/games/pubg-mobile.png',
     developer: 'LightSpeed & Quantum Studios',
     publisher: 'Tencent Games',
     promoCodes: [
@@ -1344,9 +1344,9 @@ export const gamesData: Game[] = [
     description: 'Mobile Legends: Bang Bang is a mobile MOBA where two teams of five battle to destroy the enemy base. Fast-paced 10-minute matches with easy controls and deep strategy.',
     categories: ['MMORPG', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/mobile-legends.webp',
-    developer: 'Moonton',
+  imageUrl: '/games/mobile-legends-bang-bang.jpg',
+  logoUrl: '/games/mobile-legends-bang-bang.jpg',
+  developer: 'Moonton',
     publisher: 'Moonton',
     promoCodes: [
       {
@@ -1411,12 +1411,12 @@ export const gamesData: Game[] = [
     description: 'Brawl Stars is a fast-paced 3v3 multiplayer and battle royale game from Supercell. Unlock and upgrade dozens of Brawlers, each with unique abilities and super attacks.',
     categories: ['Mobile', 'Battle Royale'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/brawl-stars.webp',
-    developer: 'Supercell',
-    publisher: 'Supercell',
-    promoCodes: [
-      {
+  imageUrl: '/games/brawl-stars.png',
+  logoUrl: '/games/brawl-stars.png',
+  developer: 'Supercell',
+  publisher: 'Supercell',
+  promoCodes: [
+  {
         id: 'brawl-1',
         code: 'BRAWL2026',
         reward: '200 Coins + 50 Gems',
@@ -1471,13 +1471,13 @@ export const gamesData: Game[] = [
     description: 'Clash Royale is a real-time multiplayer card game where you collect and upgrade cards featuring Clash of Clans troops, spells, and defenses. Battle players worldwide in fast-paced duels.',
     categories: ['Simulation', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1493711662062-fa541f7f3d24?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/clash-royale.webp',
-    developer: 'Supercell',
-    publisher: 'Supercell',
-    promoCodes: [
-      {
-        id: 'cr-1',
+  imageUrl: '/games/clash-royale.webp',
+  logoUrl: '/games/clash-royale.webp',
+  developer: 'Supercell',
+  publisher: 'Supercell',
+  promoCodes: [
+  {
+  id: 'cr-1',
         code: 'ROYALE2024',
         reward: '250 Gems + Legendary Chest',
         rewardValue: 400,
@@ -1531,9 +1531,9 @@ export const gamesData: Game[] = [
     description: 'AFK Arena is an idle RPG where heroes fight for you even when offline. Collect over 100 unique heroes across 7 factions and build the ultimate team.',
     categories: ['RPG', 'Gacha', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/afk-arena.webp',
-    developer: 'Lilith Games',
+  imageUrl: '/games/afk-arena.jpg',
+  logoUrl: '/games/afk-arena.jpg',
+  developer: 'Lilith Games',
     publisher: 'Lilith Games',
     promoCodes: [
       {
@@ -1603,8 +1603,8 @@ export const gamesData: Game[] = [
     description: 'State of Survival is a zombie apocalypse survival strategy game. Build your settlement, rescue survivors, and fight against the infected hordes.',
     categories: ['RPG', 'Simulation', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/state-of-survival.webp',
+    imageUrl: '/games/state-of-survival.png',
+    logoUrl: '/games/state-of-survival.png',
     developer: 'KingsGroup Holdings',
     publisher: 'FunPlus',
     promoCodes: [
@@ -1657,9 +1657,9 @@ export const gamesData: Game[] = [
     description: 'Rise of Kingdoms is a real-time strategy game where you build a civilization from scratch. Choose from 13 civilizations and lead legendary commanders to conquer the world.',
     categories: ['RPG', 'Simulation', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/rise-of-kingdoms.webp',
-    developer: 'Lilith Games',
+  imageUrl: '/games/rise-of-kingdoms.webp',
+  logoUrl: '/games/rise-of-kingdoms.webp',
+  developer: 'Lilith Games',
     publisher: 'Lilith Games',
     promoCodes: [
       {
@@ -1718,8 +1718,8 @@ export const gamesData: Game[] = [
     description: 'Summoners War is a mobile turn-based strategy game featuring over 1000 monsters to collect. Assemble the perfect team and dominate in PvP Arena battles.',
     categories: ['RPG', 'Gacha', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/summoners-war.webp',
+    imageUrl: '/games/summoners-war.jpg',
+    logoUrl: '/games/summoners-war.jpg',
     developer: 'Com2uS',
     publisher: 'Com2uS',
     promoCodes: [
@@ -1779,9 +1779,9 @@ export const gamesData: Game[] = [
     description: 'Coin Master is a casual mobile game combining slot machines with base building. Spin to earn coins, attack other players, and build your viking village.',
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/coin-master.webp',
-    developer: 'Moon Active',
+  imageUrl: '/games/coin-master.jpg',
+  logoUrl: '/games/coin-master.jpg',
+  developer: 'Moon Active',
     publisher: 'Moon Active',
     promoCodes: [
       {
@@ -1840,8 +1840,8 @@ export const gamesData: Game[] = [
     description: 'Tower of Fantasy is an open-world action RPG set on the planet Aida. Explore a vast sci-fi world, unlock powerful weapons, and team up with friends.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/tower-of-fantasy.webp',
+    imageUrl: '/games/tower-of-fantasy.webp',
+    logoUrl: '/games/tower-of-fantasy.webp',
     developer: 'Hotta Studio',
     publisher: 'Level Infinite',
     promoCodes: [
@@ -1901,673 +1901,9 @@ export const gamesData: Game[] = [
     description: 'Diablo Immortal brings the iconic action RPG to mobile. Fight demons, collect legendary loot, and explore the dark world of Sanctuary.',
     categories: ['RPG', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/diablo-immortal.webp',
-    developer: 'Blizzard Entertainment',
-    publisher: 'Blizzard Entertainment',
-    promoCodes: [
-      {
-        id: 'di-1',
-        code: 'DIABLO2026',
-        reward: '100 Eternal Orbs + Legendary Crest',
-        rewardValue: 200,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 80,
-      },
-      {
-        id: 'di-2',
-        code: 'SANCTUARY',
-        reward: '50 Eternal Orbs + Rare Crest x3',
-        rewardValue: 100,
-        rewardType: 'Gems',
-        expiresAt: twoWeeksFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 78,
-      },
-    ],
-    rewards: [
-      {
-        id: 'di-r1',
-        title: 'Daily Login',
-        description: 'Log in daily for Hilts and rewards',
-        type: 'Daily',
-        value: 'Hilts currency',
-      },
-      {
-        id: 'di-r2',
-        title: 'Battle Pass Free Track',
-        description: 'Earn rewards from the free battle pass track',
-        type: 'Free',
-        value: 'Legendary gear',
-      },
-    ],
-    affiliateLink: 'https://diabloimmortal.blizzard.com',
-    websiteUrl: 'https://diabloimmortal.blizzard.com',
-    popularityScore: 76,
-    playerCount: '30M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Last Shelter: Survival
-  // ============================================
-  {
-    id: 'last-shelter-survival',
-    name: 'Last Shelter: Survival',
-    slug: 'last-shelter-survival',
-    shortName: 'Last Shelter',
-    description: 'Last Shelter: Survival is a post-apocalyptic strategy game. Build your shelter, train your army, and survive against zombies and other players.',
-    categories: ['RPG', 'Simulation', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/last-shelter.webp',
-    developer: 'Long Tech Network',
-    publisher: 'Long Tech Network',
-    promoCodes: [
-      {
-        id: 'ls-1',
-        code: 'SHELTER2026',
-        reward: '500 Diamonds + Speedups',
-        rewardValue: 500,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-      {
-        id: 'ls-2',
-        code: 'LASTSURVIVE',
-        reward: '200 Diamonds + Resources',
-        rewardValue: 200,
-        rewardType: 'Gems',
-        expiresAt: oneMonthFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 82,
-      },
-    ],
-    rewards: [
-      {
-        id: 'ls-r1',
-        title: 'Daily Rewards',
-        description: 'Collect daily rewards for diamonds and resources',
-        type: 'Daily',
-        value: 'Diamonds',
-      },
-    ],
-    affiliateLink: 'https://www.lastsheltergame.com',
-    websiteUrl: 'https://www.lastsheltergame.com',
-    popularityScore: 75,
-    playerCount: '50M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Gardenscapes
-  // ============================================
-  {
-    id: 'gardenscapes',
-    name: 'Gardenscapes',
-    slug: 'gardenscapes',
-    shortName: 'Gardenscapes',
-    description: 'Gardenscapes combines match-3 puzzles with garden restoration gameplay. Solve puzzles to earn stars and restore a beautiful garden with Austin the butler.',
-    categories: ['Mobile', 'Simulation'],
-    platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/gardenscapes.webp',
-    developer: 'Playrix',
-    publisher: 'Playrix',
-    promoCodes: [
-      {
-        id: 'gs-1',
-        code: 'GARDEN2026',
-        reward: '100 Coins + 30 Lives',
-        rewardValue: 200,
-        rewardType: 'Coins',
-        isVerified: true,
-        addedAt: now,
-        successRate: 88,
-      },
-      {
-        id: 'gs-2',
-        code: 'AUSTINGIFT',
-        reward: '50 Coins + Boosters',
-        rewardValue: 100,
-        rewardType: 'Items',
-        expiresAt: twoWeeksFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-    ],
-    rewards: [
-      {
-        id: 'gs-r1',
-        title: 'Daily Bonus',
-        description: 'Collect daily bonus coins and lives',
-        type: 'Daily',
-        value: 'Coins and lives',
-      },
-      {
-        id: 'gs-r2',
-        title: 'Facebook Rewards',
-        description: 'Connect to Facebook for extra lives from friends',
-        type: 'Free',
-        value: 'Free lives',
-      },
-    ],
-    affiliateLink: 'https://www.playrix.com/gardenscapes/',
-    websiteUrl: 'https://www.playrix.com/gardenscapes/',
-    popularityScore: 84,
-    playerCount: '100M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Lords Mobile
-  // ============================================
-  {
-    id: 'lords-mobile',
-    name: 'Lords Mobile',
-    slug: 'lords-mobile',
-    shortName: 'Lords Mobile',
-    description: 'Lords Mobile is a real-time strategy game where you build your kingdom, train heroes, and conquer enemy lands in epic PvP battles.',
-    categories: ['RPG', 'Simulation', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/lords-mobile.webp',
-    developer: 'IGG',
-    publisher: 'IGG',
-    promoCodes: [
-      {
-        id: 'lm-1',
-        code: 'LORDS2026',
-        reward: '500 Gems + Speedups',
-        rewardValue: 500,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-      {
-        id: 'lm-2',
-        code: 'KINGDOM500',
-        reward: '200 Gems + Hero Medals',
-        rewardValue: 200,
-        rewardType: 'Gems',
-        expiresAt: oneMonthFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 82,
-      },
-    ],
-    rewards: [
-      {
-        id: 'lm-r1',
-        title: 'Daily Quests',
-        description: 'Complete daily quests for gems and resources',
-        type: 'Daily',
-        value: 'Gems and items',
-      },
-      {
-        id: 'lm-r2',
-        title: 'Guild Rewards',
-        description: 'Join a guild for exclusive rewards',
-        type: 'Free',
-        value: 'Guild gifts',
-      },
-    ],
-    affiliateLink: 'https://lordsmobile.igg.com',
-    websiteUrl: 'https://lordsmobile.igg.com',
-    popularityScore: 81,
-    playerCount: '400M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Idle Heroes
-  // ============================================
-  {
-    id: 'idle-heroes',
-    name: 'Idle Heroes',
-    slug: 'idle-heroes',
-    shortName: 'Idle Heroes',
-    description: 'Idle Heroes is an idle RPG where your heroes fight automatically. Collect over 200 heroes, build strategic teams, and progress even while offline.',
-    categories: ['RPG', 'Gacha', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/idle-heroes.webp',
-    developer: 'DH Games',
-    publisher: 'DH Games',
-    promoCodes: [
-      {
-        id: 'ih-1',
-        code: 'IDLE2026',
-        reward: '500 Gems + Hero Scrolls',
-        rewardValue: 500,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 88,
-      },
-      {
-        id: 'ih-2',
-        code: 'HEROIC',
-        reward: '200 Gems + Prophet Orbs',
-        rewardValue: 200,
-        rewardType: 'Gems',
-        expiresAt: twoWeeksFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-    ],
-    rewards: [
-      {
-        id: 'ih-r1',
-        title: 'Idle Rewards',
-        description: 'Collect rewards generated while offline',
-        type: 'Free',
-        value: 'Gold and hero XP',
-      },
-      {
-        id: 'ih-r2',
-        title: 'Daily Events',
-        description: 'Participate in daily events for rewards',
-        type: 'Daily',
-        value: 'Scrolls and orbs',
-      },
-    ],
-    affiliateLink: 'https://www.idleheroes.com',
-    websiteUrl: 'https://www.idleheroes.com',
-    popularityScore: 77,
-    playerCount: '50M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // World of Tanks Blitz
-  // ============================================
-  {
-    id: 'world-of-tanks-blitz',
-    name: 'World of Tanks Blitz',
-    slug: 'world-of-tanks-blitz',
-    shortName: 'WoT Blitz',
-    description: 'World of Tanks Blitz is a mobile tank battle game featuring over 400 tanks from 10 nations. Engage in 7v7 PvP battles in this fast-paced action game.',
-    categories: ['FPS', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/wot-blitz.webp',
-    developer: 'Wargaming',
-    publisher: 'Wargaming',
-    promoCodes: [
-      {
-        id: 'wotb-1',
-        code: 'BLITZ2026',
-        reward: '500 Gold + Premium Time',
-        rewardValue: 500,
-        rewardType: 'Currency',
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-      {
-        id: 'wotb-2',
-        code: 'TANKMASTER',
-        reward: '200 Gold + Credits',
-        rewardValue: 200,
-        rewardType: 'Currency',
-        expiresAt: oneMonthFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 80,
-      },
-    ],
-    rewards: [
-      {
-        id: 'wotb-r1',
-        title: 'Daily Missions',
-        description: 'Complete daily missions for gold and credits',
-        type: 'Daily',
-        value: 'Gold and credits',
-      },
-      {
-        id: 'wotb-r2',
-        title: 'Battle Pass',
-        description: 'Earn rewards through the battle pass',
-        type: 'Free',
-        value: 'Tanks and gold',
-      },
-    ],
-    affiliateLink: 'https://wotblitz.com',
-    websiteUrl: 'https://wotblitz.com',
-    popularityScore: 78,
-    playerCount: '160M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Call of Duty: Warzone Mobile
-  // ============================================
-  {
-    id: 'warzone-mobile',
-    name: 'Call of Duty: Warzone Mobile',
-    slug: 'warzone-mobile',
-    shortName: 'Warzone Mobile',
-    description: 'Warzone Mobile brings the popular battle royale experience to mobile devices. Drop into Verdansk, loot weapons, and fight to be the last squad standing.',
-    categories: ['Battle Royale', 'FPS', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/warzone-mobile.webp',
-    developer: 'Activision',
-    publisher: 'Activision',
-    promoCodes: [
-      {
-        id: 'wzm-1',
-        code: 'WARZONE2026',
-        reward: '500 CP + Operator Skin',
-        rewardValue: 500,
-        rewardType: 'CP',
-        isVerified: true,
-        addedAt: now,
-        successRate: 82,
-      },
-      {
-        id: 'wzm-2',
-        code: 'VERDANSK',
-        reward: '200 CP + Weapon Blueprint',
-        rewardValue: 200,
-        rewardType: 'CP',
-        expiresAt: twoWeeksFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 80,
-      },
-    ],
-    rewards: [
-      {
-        id: 'wzm-r1',
-        title: 'Daily Challenges',
-        description: 'Complete daily challenges for XP and rewards',
-        type: 'Daily',
-        value: 'XP and items',
-      },
-      {
-        id: 'wzm-r2',
-        title: 'Battle Pass Free Track',
-        description: 'Earn free rewards through the battle pass',
-        type: 'Free',
-        value: 'Skins and blueprints',
-      },
-    ],
-    affiliateLink: 'https://www.callofduty.com/warzonemobile',
-    websiteUrl: 'https://www.callofduty.com/warzonemobile',
-    popularityScore: 86,
-    playerCount: '50M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Epic Seven
-  // ============================================
-  {
-    id: 'epic-seven',
-    name: 'Epic Seven',
-    slug: 'epic-seven',
-    shortName: 'Epic Seven',
-    description: 'Epic Seven is a turn-based RPG with stunning anime-style graphics. Collect heroes, engage in strategic battles, and explore a rich story across the 7th World.',
-    categories: ['RPG', 'Gacha', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/epic-seven.webp',
-    developer: 'Smilegate',
-    publisher: 'Super Creative',
-    promoCodes: [
-      {
-        id: 'e7-1',
-        code: 'EPIC2026',
-        reward: '500 Skystones + Leif x5',
-        rewardValue: 500,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 88,
-      },
-      {
-        id: 'e7-2',
-        code: 'COVENANT',
-        reward: '10 Covenant Bookmarks + Gold',
-        rewardValue: 200,
-        rewardType: 'Items',
-        expiresAt: oneMonthFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-    ],
-    rewards: [
-      {
-        id: 'e7-r1',
-        title: 'Daily Login',
-        description: 'Log in daily for skystones and bookmarks',
-        type: 'Daily',
-        value: 'Skystones',
-      },
-      {
-        id: 'e7-r2',
-        title: 'Web Events',
-        description: 'Participate in web events for extra rewards',
-        type: 'Event',
-        value: 'Bookmarks and gold',
-      },
-    ],
-    affiliateLink: 'https://epic7.smilegatemegaport.com',
-    websiteUrl: 'https://epic7.smilegatemegaport.com',
-    popularityScore: 79,
-    playerCount: '30M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Dragon Ball Legends
-  // ============================================
-  {
-    id: 'dragon-ball-legends',
-    name: 'Dragon Ball Legends',
-    slug: 'dragon-ball-legends',
-    shortName: 'DB Legends',
-    description: 'Dragon Ball Legends is an action fighting game featuring characters from the Dragon Ball universe. Engage in real-time PvP battles with card-based combat.',
-    categories: ['RPG', 'Gacha', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/db-legends.webp',
-    developer: 'Bandai Namco',
-    publisher: 'Bandai Namco',
-    promoCodes: [
-      {
-        id: 'dbl-1',
-        code: 'LEGENDS2026',
-        reward: '500 Chrono Crystals',
-        rewardValue: 500,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-      {
-        id: 'dbl-2',
-        code: 'SAIYAN',
-        reward: '100 Chrono Crystals + Energy',
-        rewardValue: 100,
-        rewardType: 'Gems',
-        expiresAt: twoWeeksFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 82,
-      },
-    ],
-    rewards: [
-      {
-        id: 'dbl-r1',
-        title: 'Daily Missions',
-        description: 'Complete daily missions for Chrono Crystals',
-        type: 'Daily',
-        value: 'Chrono Crystals',
-      },
-      {
-        id: 'dbl-r2',
-        title: 'Login Bonus',
-        description: 'Log in daily for bonus rewards',
-        type: 'Daily',
-        value: 'Items and crystals',
-      },
-    ],
-    affiliateLink: 'https://legends.dbz.space',
-    websiteUrl: 'https://legends.dbz.space',
-    popularityScore: 80,
-    playerCount: '50M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Arknights
-  // ============================================
-  {
-    id: 'arknights',
-    name: 'Arknights',
-    slug: 'arknights',
-    shortName: 'Arknights',
-    description: 'Arknights is a tower defense RPG set in a dark sci-fi world. Deploy Operators with unique abilities to defend against waves of enemies.',
-    categories: ['RPG', 'Gacha', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/arknights.webp',
-    developer: 'Hypergryph',
-    publisher: 'Yostar',
-    promoCodes: [
-      {
-        id: 'ark-1',
-        code: 'ARKNIGHTS2026',
-        reward: '200 Orundum + LMD',
-        rewardValue: 200,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 88,
-      },
-      {
-        id: 'ark-2',
-        code: 'RHODES',
-        reward: '100 Orundum + Sanity Pots',
-        rewardValue: 100,
-        rewardType: 'Gems',
-        expiresAt: oneMonthFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-    ],
-    rewards: [
-      {
-        id: 'ark-r1',
-        title: 'Daily Missions',
-        description: 'Complete daily missions for Orundum',
-        type: 'Daily',
-        value: 'Orundum',
-      },
-      {
-        id: 'ark-r2',
-        title: 'Annihilation',
-        description: 'Weekly Annihilation mode for Orundum',
-        type: 'Event',
-        value: '1800 Orundum weekly',
-      },
-    ],
-    affiliateLink: 'https://www.arknights.global',
-    websiteUrl: 'https://www.arknights.global',
-    popularityScore: 78,
-    playerCount: '20M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Blue Archive
-  // ============================================
-  {
-    id: 'blue-archive',
-    name: 'Blue Archive',
-    slug: 'blue-archive',
-    shortName: 'Blue Archive',
-    description: 'Blue Archive is a tactical RPG set in the academy city of Kivotos. Command students with unique abilities in strategic real-time battles.',
-    categories: ['RPG', 'Gacha', 'Mobile'],
-    platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/blue-archive.webp',
-    developer: 'NAT Games',
-    publisher: 'Nexon',
-    promoCodes: [
-      {
-        id: 'ba-1',
-        code: 'BLUEARCHIVE2026',
-        reward: '1200 Pyroxene',
-        rewardValue: 1200,
-        rewardType: 'Gems',
-        isVerified: true,
-        addedAt: now,
-        successRate: 88,
-      },
-      {
-        id: 'ba-2',
-        code: 'KIVOTOS',
-        reward: '600 Pyroxene + Activity Reports',
-        rewardValue: 600,
-        rewardType: 'Gems',
-        expiresAt: twoWeeksFromNow,
-        isVerified: true,
-        addedAt: now,
-        successRate: 85,
-      },
-    ],
-    rewards: [
-      {
-        id: 'ba-r1',
-        title: 'Daily Missions',
-        description: 'Complete daily missions for Pyroxene',
-        type: 'Daily',
-        value: 'Pyroxene',
-      },
-      {
-        id: 'ba-r2',
-        title: 'Maintenance Compensation',
-        description: 'Receive compensation after game maintenance',
-        type: 'Event',
-        value: 'Pyroxene',
-      },
-    ],
-    affiliateLink: 'https://bluearchive.nexon.com',
-    websiteUrl: 'https://bluearchive.nexon.com',
-    popularityScore: 76,
-    playerCount: '15M+ downloads',
-    lastUpdated: now,
-  },
-
-  // ============================================
-  // Zenless Zone Zero
-  // ============================================
-  {
-    id: 'zenless-zone-zero',
-    name: 'Zenless Zone Zero',
-    slug: 'zenless-zone-zero',
-    shortName: 'ZZZ',
-    description: 'Zenless Zone Zero is an action RPG from HoYoverse set in a post-apocalyptic urban world. Master fast-paced combat and explore the mysterious Hollows.',
-    categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
-    platforms: ['PC', 'Mobile', 'iOS', 'Android', 'PlayStation'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/zzz.webp',
-    developer: 'miHoYo',
+  imageUrl: '/games/honkai-star-rail.png',
+  logoUrl: '/games/honkai-star-rail.png',
+  developer: 'miHoYo',
     publisher: 'HoYoverse',
     promoCodes: [
       {
@@ -2626,8 +1962,8 @@ export const gamesData: Game[] = [
     description: 'Wuthering Waves is an open-world action RPG from Kuro Games. Explore a post-apocalyptic world, collect Resonators, and engage in fast-paced combat.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android', 'PlayStation'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/wuthering-waves.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Kuro Games',
     publisher: 'Kuro Games',
     promoCodes: [
@@ -2687,9 +2023,9 @@ export const gamesData: Game[] = [
     description: 'Monopoly GO is a mobile board game that brings the classic Monopoly experience to your phone. Roll dice, collect properties, and compete in tournaments with players worldwide.',
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/monopoly-go.jpg',
-    developer: 'Scopely',
+  imageUrl: '/games/monopoly-go.webp',
+  logoUrl: '/games/monopoly-go.webp',
+  developer: 'Scopely',
     publisher: 'Scopely',
     promoCodes: [
       {
@@ -2795,8 +2131,8 @@ export const gamesData: Game[] = [
     description: 'Marvel Snap is a fast-paced card battler featuring Marvel heroes and villains. Build decks, collect cards, and battle in quick 3-minute matches.',
     categories: ['Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/marvel-snap.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Second Dinner',
     publisher: 'Nuverse',
     promoCodes: [
@@ -2874,8 +2210,8 @@ export const gamesData: Game[] = [
     description: 'Star Wars: Galaxy of Heroes is a turn-based RPG featuring characters from across the Star Wars universe. Collect heroes, build squads, and battle in PvP and PvE.',
     categories: ['RPG', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/swgoh.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Capital Games',
     publisher: 'Electronic Arts',
     promoCodes: [
@@ -2952,9 +2288,9 @@ export const gamesData: Game[] = [
     description: 'EA Sports FC Mobile is the premier mobile football game. Build your ultimate team, compete in seasons, and play against others worldwide.',
     categories: ['Sports', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/fc-mobile.webp',
-    developer: 'EA Sports',
+  imageUrl: '/games/fifa-mobile.webp',
+  logoUrl: '/games/fifa-mobile.webp',
+  developer: 'EA Sports',
     publisher: 'Electronic Arts',
     promoCodes: [
       {
@@ -3031,9 +2367,9 @@ export const gamesData: Game[] = [
     description: 'Candy Crush Saga is the iconic match-3 puzzle game. Match candies, beat challenging levels, and progress through hundreds of sweet adventures.',
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/candy-crush.webp',
-    developer: 'King',
+  imageUrl: '/games/candy-crush-saga.webp',
+  logoUrl: '/games/candy-crush-saga.webp',
+  developer: 'King',
     publisher: 'King',
     promoCodes: [
       {
@@ -3109,8 +2445,8 @@ export const gamesData: Game[] = [
     description: 'Mobile Legends Adventure is an idle RPG based on the popular MOBA. Collect heroes, build teams, and progress through an epic campaign.',
     categories: ['RPG', 'Mobile', 'Gacha'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/mla.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Moonton',
     publisher: 'Moonton',
     promoCodes: [
@@ -3187,8 +2523,8 @@ export const gamesData: Game[] = [
     description: 'Stumble Guys is a multiplayer party knockout game. Race through obstacle courses, avoid eliminations, and be the last one standing.',
     categories: ['Mobile', 'Battle Royale'],
     platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/stumble-guys.webp',
+    imageUrl: '/games/stumble-guys.jpg',
+    logoUrl: '/games/stumble-guys.jpg',
     developer: 'Kitka Games',
     publisher: 'Scopely',
     promoCodes: [
@@ -3265,8 +2601,8 @@ export const gamesData: Game[] = [
     description: 'Summoners War Chronicles is an action MMORPG set in the Summoners War universe. Explore, battle, and collect monsters in real-time.',
     categories: ['RPG', 'MMORPG', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/swc.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Com2uS',
     publisher: 'Com2uS',
     promoCodes: [
@@ -3326,8 +2662,8 @@ export const gamesData: Game[] = [
     description: 'Nikke: Goddess of Victory is a third-person shooter RPG featuring stylized characters. Build squads, engage in cover-based combat, and collect Nikkes.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/nikke.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Shift Up',
     publisher: 'Level Infinite',
     promoCodes: [
@@ -3404,8 +2740,8 @@ export const gamesData: Game[] = [
     description: 'Reverse: 1999 is a story-driven turn-based RPG set across different time periods. Collect characters, master card-based combat, and unravel mysteries.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/reverse-1999.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Bluepoch',
     publisher: 'Bluepoch',
     promoCodes: [
@@ -3472,8 +2808,8 @@ export const gamesData: Game[] = [
     description: 'Path to Nowhere is a tower defense RPG with a dark, immersive story. Command Sinners in strategic real-time battles.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/ptn.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'AISNO Games',
     publisher: 'AISNO Games',
     promoCodes: [
@@ -3533,8 +2869,8 @@ export const gamesData: Game[] = [
     description: 'Aether Gazer is a fast-paced action RPG featuring stylish combat and mythological characters. Master combos and build powerful teams.',
     categories: ['RPG', 'Gacha', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/aether-gazer.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Yostar',
     publisher: 'Yostar',
     promoCodes: [
