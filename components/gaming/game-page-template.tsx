@@ -1257,7 +1257,7 @@ showAffiliateCTA={!!ctaInfo.url}
                 <RewardCard 
                   key={reward.id} 
                   reward={reward} 
-                  rewardAffiliateUrl={getRewardAffiliateUrl(game)}
+                  rewardAffiliateUrl={getRewardAffiliateUrl(game) || undefined}
                 />
               ))}
             </div>
