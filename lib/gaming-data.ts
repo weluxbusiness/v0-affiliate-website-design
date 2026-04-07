@@ -59,12 +59,12 @@ export interface Game {
   faqs?: { question: string; answer: string }[]
 }
 
-// Default fallback logo
-export const DEFAULT_GAME_LOGO = '/images/games/default-game-logo.svg'
+// Default fallback logo - empty string triggers GameLogo component's built-in fallback icon
+export const DEFAULT_GAME_LOGO = ''
 
 // Helper to get logo URL with fallback
 export function getGameLogoUrl(game: Game): string {
-  return game.logoUrl || DEFAULT_GAME_LOGO
+  return game.logoUrl || ''
 }
 
 // ============================================
@@ -823,8 +823,8 @@ export const gamesData: Game[] = [
     description: 'Honkai: Star Rail is a space fantasy RPG from HoYoverse. Hop aboard the Astral Express and experience the galaxy through turn-based combat and stunning visuals.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'PlayStation', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/honkai-star-rail.webp',
+    imageUrl: '/games/honkai-star-rail.png',
+    logoUrl: '/games/honkai-star-rail.png',
     developer: 'miHoYo',
     publisher: 'HoYoverse',
     promoCodes: [
@@ -1962,8 +1962,8 @@ export const gamesData: Game[] = [
     description: 'Wuthering Waves is an open-world action RPG from Kuro Games. Explore a post-apocalyptic world, collect Resonators, and engage in fast-paced combat.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android', 'PlayStation'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/wuthering-waves.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Kuro Games',
     publisher: 'Kuro Games',
     promoCodes: [
@@ -2131,8 +2131,8 @@ export const gamesData: Game[] = [
     description: 'Marvel Snap is a fast-paced card battler featuring Marvel heroes and villains. Build decks, collect cards, and battle in quick 3-minute matches.',
     categories: ['Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/marvel-snap.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Second Dinner',
     publisher: 'Nuverse',
     promoCodes: [
@@ -2210,8 +2210,8 @@ export const gamesData: Game[] = [
     description: 'Star Wars: Galaxy of Heroes is a turn-based RPG featuring characters from across the Star Wars universe. Collect heroes, build squads, and battle in PvP and PvE.',
     categories: ['RPG', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/swgoh.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Capital Games',
     publisher: 'Electronic Arts',
     promoCodes: [
@@ -2445,8 +2445,8 @@ export const gamesData: Game[] = [
     description: 'Mobile Legends Adventure is an idle RPG based on the popular MOBA. Collect heroes, build teams, and progress through an epic campaign.',
     categories: ['RPG', 'Mobile', 'Gacha'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/mla.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Moonton',
     publisher: 'Moonton',
     promoCodes: [
@@ -2601,8 +2601,8 @@ export const gamesData: Game[] = [
     description: 'Summoners War Chronicles is an action MMORPG set in the Summoners War universe. Explore, battle, and collect monsters in real-time.',
     categories: ['RPG', 'MMORPG', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/swc.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Com2uS',
     publisher: 'Com2uS',
     promoCodes: [
@@ -2662,8 +2662,8 @@ export const gamesData: Game[] = [
     description: 'Nikke: Goddess of Victory is a third-person shooter RPG featuring stylized characters. Build squads, engage in cover-based combat, and collect Nikkes.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/nikke.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Shift Up',
     publisher: 'Level Infinite',
     promoCodes: [
@@ -2740,8 +2740,8 @@ export const gamesData: Game[] = [
     description: 'Reverse: 1999 is a story-driven turn-based RPG set across different time periods. Collect characters, master card-based combat, and unravel mysteries.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/reverse-1999.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Bluepoch',
     publisher: 'Bluepoch',
     promoCodes: [
@@ -2808,8 +2808,8 @@ export const gamesData: Game[] = [
     description: 'Path to Nowhere is a tower defense RPG with a dark, immersive story. Command Sinners in strategic real-time battles.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC'],
     platforms: ['PC', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/ptn.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'AISNO Games',
     publisher: 'AISNO Games',
     promoCodes: [
@@ -2869,8 +2869,8 @@ export const gamesData: Game[] = [
     description: 'Aether Gazer is a fast-paced action RPG featuring stylish combat and mythological characters. Master combos and build powerful teams.',
     categories: ['RPG', 'Gacha', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/aether-gazer.webp',
+    imageUrl: '',
+    logoUrl: '',
     developer: 'Yostar',
     publisher: 'Yostar',
     promoCodes: [
