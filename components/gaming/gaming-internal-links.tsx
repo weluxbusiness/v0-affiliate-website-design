@@ -315,7 +315,7 @@ export function GameCardCompact({ game, codeCount, showBadge = false }: GameCard
         className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
       >
         <a 
-          href={affiliateUrl} 
+          href={affiliateUrl || undefined} 
           target="_blank"
           rel="nofollow sponsored noopener"
         >
