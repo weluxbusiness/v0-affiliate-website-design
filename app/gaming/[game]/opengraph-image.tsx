@@ -37,7 +37,7 @@ export default async function Image({ params }: { params: { game: string } }) {
 
   const currentMonth = new Date().toLocaleString('default', { month: 'long' })
   const currentYear = new Date().getFullYear()
-  const codeCount = getActivePromoCodes(game).length
+  const codeCount = getActivePromoCodes(game.promoCodes).length
 
   return new ImageResponse(
     (
