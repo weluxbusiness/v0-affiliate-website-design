@@ -21,8 +21,9 @@ import {
 import { cn } from "@/lib/utils"
 import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
 import { GameLogo } from "@/components/gaming/game-logo"
+import { useCopyContext } from "@/components/gaming/copy-code-button"
 import type { PromoCode, Game } from "@/lib/gaming-data"
-import { getPlayAffiliateUrl, hasExternalAffiliateLink } from "@/lib/gaming-data"
+import { getGameCtaInfo, hasGameSpecificAffiliateLinks } from "@/lib/gaming-data"
 
 // Extended type to support both static data and database records
 export type PromoCodeWithId = PromoCode & {
@@ -38,6 +39,7 @@ interface PromoCodeCardProps {
   showAffiliateCTA?: boolean // Show affiliate CTA even when showGame is false
   affiliateUrl?: string // Direct affiliate URL override
   affiliateLabel?: string // Custom CTA label like "Play RAID"
+  affiliateRel?: string // Custom rel attribute for affiliate link
   onCopy?: (code: string) => void
   pageSlug?: string
 }
@@ -76,14 +78,18 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   showAffiliateCTA = false,
   affiliateUrl: affiliateUrlProp,
   affiliateLabel,
+  affiliateRel: affiliateRelProp,
   onCopy,
   pageSlug
 }: PromoCodeCardProps) {
   const [copied, setCopied] = useState(false)
   const { trackCodeCopy } = useGamingAnalytics()
-
-  // Compute affiliate URL
-  const computedAffiliateUrl = affiliateUrlProp || (game ? getPlayAffiliateUrl(game) : null)
+  const copyContext = useCopyContext()
+  
+  // Compute CTA info from game or use prop overrides
+  const gameCtaInfo = game ? getGameCtaInfo(game) : null
+  const computedAffiliateUrl = affiliateUrlProp || gameCtaInfo?.url || null
+  const computedAffiliateRel = affiliateRelProp || gameCtaInfo?.rel || 'noopener noreferrer'
 
   const handleCopy = useCallback(() => {
     if (copied) return
@@ -91,6 +97,9 @@ export const PromoCodeCard = memo(function PromoCodeCard({
     navigator.clipboard.writeText(code.code)
     setCopied(true)
     onCopy?.(code.code)
+    
+    // Notify context for PostCopyStickyBar
+    copyContext?.setHasCopied(true, code.code)
     
     // Track the copy event
     trackCodeCopy({
@@ -101,7 +110,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
     })
     
     setTimeout(() => setCopied(false), 5000)
-  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy, copied])
+  }, [code.code, code.id, code.game_id, game?.id, pageSlug, onCopy, trackCodeCopy, copied, copyContext])
 
   const expiringSoon = isExpiringSoon(code.expiresAt)
 
@@ -129,8 +138,9 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   if (variant === "featured") {
-    const affiliateUrl = game ? getPlayAffiliateUrl(game) : null
-    const isExternal = game ? hasExternalAffiliateLink(game) : false
+    const featuredCtaInfo = game ? getGameCtaInfo(game) : null
+    const affiliateUrl = featuredCtaInfo?.url || null
+    const isExternal = game ? hasGameSpecificAffiliateLinks(game) : false
 
     return (
       <Card className="overflow-hidden border-2 border-primary/50 bg-gradient-to-br from-primary/5 to-secondary/5 hover:shadow-xl transition-all duration-300">
@@ -200,15 +210,15 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               asChild 
               className="w-full h-12 text-base font-semibold bg-green-600 hover:bg-green-700 text-white mb-4 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
             >
-              <a 
-                href={affiliateUrl} 
-                target="_blank"
-                rel="nofollow sponsored noopener"
-              >
-                <Play className="h-5 w-5 mr-2 fill-current" />
-                Play {game.shortName || game.name}
-                <ExternalLink className="h-4 w-4 ml-2" />
-              </a>
+                  <a
+                    href={affiliateUrl}
+                    target="_blank"
+                    rel={featuredCtaInfo?.rel || 'noopener noreferrer'}
+                  >
+                    <Play className="h-5 w-5 mr-2 fill-current" />
+                    {featuredCtaInfo?.isAffiliate ? `Play ${game.shortName || game.name}` : `Play ${game.shortName || game.name}`}
+                    <ExternalLink className="h-4 w-4 ml-2" />
+                  </a>
             </Button>
           )}
 
@@ -236,7 +246,8 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   }
 
   // Default variant - with game logo for visual hierarchy
-  const affiliateUrl = affiliateUrlProp || (game ? getPlayAffiliateUrl(game) : null)
+  const affiliateUrl = computedAffiliateUrl
+  const affiliateRel = computedAffiliateRel
   const shouldShowCTA = showAffiliateCTA || (showGame && game && affiliateUrl)
 
   const cardContent = (
@@ -356,14 +367,14 @@ export const PromoCodeCard = memo(function PromoCodeCard({
               className="w-full h-10 font-bold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
               size="sm"
             >
-              <a 
-                href={affiliateUrl} 
-                target="_blank"
-                rel="nofollow sponsored noopener"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Play className="h-4 w-4 mr-2 fill-current" />
-                {affiliateLabel?.replace('& Redeem', '').trim() || "Open Game"}
+                    <a
+                      href={affiliateUrl}
+                      target="_blank"
+                      rel={affiliateRel}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Play className="h-4 w-4 mr-2 fill-current" />
+                      {affiliateLabel?.replace('& Redeem', '').trim() || "Open Game"}
                 <ExternalLink className="h-3 w-3 ml-2" />
               </a>
             </Button>
@@ -384,7 +395,7 @@ export const PromoCodeCard = memo(function PromoCodeCard({
             <a 
               href={affiliateUrl} 
               target="_blank"
-              rel="nofollow sponsored noopener"
+              rel={affiliateRel}
               onClick={(e) => e.stopPropagation()}
             >
               <Play className="h-4 w-4 mr-2 fill-current" />

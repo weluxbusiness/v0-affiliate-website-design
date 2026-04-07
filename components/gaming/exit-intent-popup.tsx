@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Play, X, Gift, Copy, Check, Sparkles } from "lucide-react"
+import { Play, X, Gift, Copy, Check, Sparkles, Gamepad2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface ExitIntentPopupProps {
@@ -13,6 +13,11 @@ interface ExitIntentPopupProps {
   affiliateUrl: string
   bestCode: string
   bestCodeReward: string
+  ctaLabel?: string
+  ctaRel?: string
+  isAffiliate?: boolean
+  trustText?: string
+  urgencyText?: string
 }
 
 export function ExitIntentPopup({ 
@@ -20,7 +25,12 @@ export function ExitIntentPopup({
   gameShortName,
   affiliateUrl, 
   bestCode,
-  bestCodeReward
+  bestCodeReward,
+  ctaLabel = 'Claim FREE Rewards',
+  ctaRel = 'noopener noreferrer',
+  isAffiliate = false,
+  trustText,
+  urgencyText
 }: ExitIntentPopupProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [hasShown, setHasShown] = useState(false)
@@ -94,14 +104,14 @@ export function ExitIntentPopup({
 
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-primary/10 mb-4">
-              <Gift className="h-7 w-7 text-primary" />
+            <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-amber-500/10 mb-4">
+              <Gift className="h-7 w-7 text-amber-500" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">
-              Before you go — here&apos;s a popular code
+              Don&apos;t leave — use this code before it stops working
             </h3>
             <p className="text-muted-foreground">
-              Save this {gameShortName || gameName} code for free rewards
+              Best {gameShortName || gameName} code right now:
             </p>
           </div>
 
@@ -151,17 +161,42 @@ export function ExitIntentPopup({
           <Button
             asChild
             size="lg"
-            className="w-full h-12 font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+            className={cn(
+              "w-full h-14 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all text-base",
+              isAffiliate 
+                ? "bg-green-600 hover:bg-green-700 text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+            )}
           >
             <a
               href={affiliateUrl}
               target="_blank"
-              rel="nofollow sponsored noopener"
+              rel={ctaRel}
             >
-              <Play className="h-5 w-5 mr-2 fill-current" />
-              Play {gameShortName || gameName} & Redeem
+              {isAffiliate ? (
+                <Gift className="h-5 w-5 mr-2" />
+              ) : (
+                <Gamepad2 className="h-5 w-5 mr-2" />
+              )}
+              {ctaLabel}
             </a>
           </Button>
+          
+          {/* Urgency + Trust text */}
+          {isAffiliate && (
+            <div className="text-center mt-2 space-y-0.5">
+              {urgencyText && (
+                <p className="text-xs text-amber-600 font-medium">
+                  {urgencyText}
+                </p>
+              )}
+              {trustText && (
+                <p className="text-xs text-muted-foreground">
+                  {trustText}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Secondary action */}
           <button

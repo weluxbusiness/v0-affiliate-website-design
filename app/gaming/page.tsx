@@ -37,7 +37,7 @@ import {
   getAllCategories,
   getTotalActiveCodesCount,
   getGameLogoUrl,
-  getPlayAffiliateUrl
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
 
@@ -330,10 +330,10 @@ export default async function GamingPage() {
 
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             {featuredGames.map((game) => {
-              const codeCount = getActivePromoCodes(game.promoCodes).length
-              const logoUrl = getGameLogoUrl(game)
-              const hasLogo = game.logoUrl
-              const affiliateUrl = getPlayAffiliateUrl(game)
+                const codeCount = getActivePromoCodes(game.promoCodes).length
+                const logoUrl = getGameLogoUrl(game)
+                const hasLogo = game.logoUrl
+                const ctaInfo = getGameCtaInfo(game)
               
               return (
                 <Card key={game.id} className="overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-200 group">
@@ -384,28 +384,49 @@ export default async function GamingPage() {
                       </Badge>
                     </div>
 
-                    {/* Primary CTA - Play Now (Falconix affiliate network) */}
-                    <Button 
-                      asChild 
-                      className="w-full h-11 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-                    >
-                      <a 
-                        href={affiliateUrl} 
-                        target="_blank"
-                        rel="nofollow sponsored noopener"
+                    {/* Primary CTA - Claim FREE Rewards or Play Free */}
+                    {ctaInfo.url && (
+                      <Button
+                        asChild
+                        className={`w-full h-11 font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all ${
+                          ctaInfo.buttonStyle === 'affiliate' 
+                            ? 'bg-green-600 hover:bg-green-700 text-white'
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        }`}
                       >
-                        <Play className="h-5 w-5 mr-2 fill-current" />
-                        Play Now
-                        <ExternalLink className="h-4 w-4 ml-2" />
-                      </a>
-                    </Button>
+                        <a
+                          href={ctaInfo.url}
+                          target="_blank"
+                          rel={ctaInfo.rel}
+                        >
+                          {ctaInfo.isAffiliate ? (
+                            <Gift className="h-5 w-5 mr-2" />
+                          ) : (
+                            <Gamepad2 className="h-5 w-5 mr-2" />
+                          )}
+                          {ctaInfo.label}
+                          <ExternalLink className="h-4 w-4 ml-2" />
+                        </a>
+                      </Button>
+                    )}
+                    
+                    {/* Urgency text for affiliate */}
+                    {ctaInfo.isAffiliate && ctaInfo.urgencyText && (
+                      <p className="text-xs text-amber-600 text-center font-medium mt-1">
+                        {ctaInfo.urgencyText}
+                      </p>
+                    )}
 
-                    {/* View Codes Link */}
+                    {/* View Codes Link - smaller for affiliate, primary for non-affiliate */}
                     <Link 
                       href={`/gaming/${game.slug}`}
-                      className="flex items-center justify-center gap-1 mt-3 text-sm font-medium text-primary hover:underline"
+                      className={`flex items-center justify-center gap-1 mt-2 text-sm ${
+                        ctaInfo.isAffiliate 
+                          ? 'font-medium text-muted-foreground hover:text-foreground' 
+                          : 'font-semibold text-primary hover:underline'
+                      }`}
                     >
-                      View Codes
+                      View All Codes
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </CardContent>

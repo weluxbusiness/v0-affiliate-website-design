@@ -199,7 +199,7 @@ export function MonthlyCodesPageTemplate({
                   className="bg-purple-600 hover:bg-purple-700 text-white font-semibold shrink-0"
                 >
                   <a 
-                    href={getPlayAffiliateUrl(game)} 
+                    href={getPlayAffiliateUrl(game) || undefined} 
                     target="_blank"
                     rel="nofollow sponsored noopener"
                   >
@@ -299,7 +299,7 @@ export function MonthlyCodesPageTemplate({
                     className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
                   >
                     <a 
-                      href={getPlayAffiliateUrl(game)} 
+                      href={getPlayAffiliateUrl(game) || undefined} 
                       target="_blank"
                       rel="nofollow sponsored noopener"
                     >
@@ -522,7 +522,7 @@ export function MonthlyCodesPageTemplate({
       {/* Sticky CTA */}
       <StickyGameCTA 
         gameName={game.shortName || game.name}
-        affiliateUrl={getPlayAffiliateUrl(game)}
+        affiliateUrl={getPlayAffiliateUrl(game) || ''}
       />
     </>
   )

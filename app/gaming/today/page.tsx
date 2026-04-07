@@ -304,7 +304,7 @@ export default function GamingTodayPage() {
                       size="sm"
                     >
                       <a 
-                        href={affiliateUrl} 
+                        href={affiliateUrl || undefined} 
                         target={isExternal ? "_blank" : undefined}
                         rel={isExternal ? "noopener noreferrer" : undefined}
                       >

@@ -2,16 +2,30 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Play, X, Gift } from "lucide-react"
+import { Play, X, Gift, Gamepad2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface StickyGameCTAProps {
   gameName: string
   affiliateUrl: string
+  ctaLabel?: string
+  ctaRel?: string
+  isAffiliate?: boolean
+  trustText?: string
+  urgencyText?: string
   className?: string
 }
 
-export function StickyGameCTA({ gameName, affiliateUrl, className }: StickyGameCTAProps) {
+export function StickyGameCTA({ 
+  gameName, 
+  affiliateUrl, 
+  ctaLabel = 'Claim FREE Rewards',
+  ctaRel = 'noopener noreferrer',
+  isAffiliate = false,
+  trustText,
+  urgencyText,
+  className 
+}: StickyGameCTAProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
 
@@ -46,11 +60,12 @@ export function StickyGameCTA({ gameName, affiliateUrl, className }: StickyGameC
               </div>
               <div>
                 <p className="font-bold text-sm sm:text-base">
-                  Play {gameName} → Unlock Rewards
+                  {isAffiliate ? `${gameName} — Claim FREE Rewards` : `Play ${gameName}`}
                 </p>
-                <p className="text-xs text-white/80 hidden sm:block">
-                  Redeem codes for free in-game items
-                </p>
+                <div className="text-xs hidden sm:block">
+                  {urgencyText && <span className="text-amber-300 font-medium mr-2">{urgencyText}</span>}
+                  <span className="text-white/70">{trustText || 'No signup required'}</span>
+                </div>
               </div>
             </div>
 
@@ -59,15 +74,24 @@ export function StickyGameCTA({ gameName, affiliateUrl, className }: StickyGameC
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-green-700 hover:bg-white/90 font-bold shadow-lg hover:scale-105 transition-all"
+                className={cn(
+                  "font-bold shadow-lg hover:scale-105 transition-all px-6",
+                  isAffiliate 
+                    ? "bg-white text-green-700 hover:bg-white/90"
+                    : "bg-white text-blue-700 hover:bg-white/90"
+                )}
               >
                 <a
                   href={affiliateUrl}
                   target="_blank"
-                  rel="nofollow sponsored noopener"
+                  rel={ctaRel}
                 >
-                  <Play className="h-4 w-4 mr-2 fill-current" />
-                  Play Now
+                  {isAffiliate ? (
+                    <Gift className="h-4 w-4 mr-2" />
+                  ) : (
+                    <Gamepad2 className="h-4 w-4 mr-2" />
+                  )}
+                  {ctaLabel}
                 </a>
               </Button>
               <button

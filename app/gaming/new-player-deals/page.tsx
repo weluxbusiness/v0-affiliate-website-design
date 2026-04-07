@@ -228,7 +228,7 @@ export default function NewPlayerDealsPage() {
                           className="h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
                         >
                           <a 
-                            href={affiliateUrl} 
+                            href={affiliateUrl || undefined} 
                             target={isExternal ? "_blank" : undefined}
                             rel={isExternal ? "noopener noreferrer" : undefined}
                           >
