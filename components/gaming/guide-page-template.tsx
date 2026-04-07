@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/layout/page-container"
 import type { Game } from "@/lib/gaming-data"
-import { getPlayAffiliateUrl } from "@/lib/gaming-data"
+import { getGameCtaInfo } from "@/lib/gaming-data"
 
 interface GuideSection {
   title: string
@@ -48,7 +48,7 @@ export function GuidePageTemplate({
 }: GuidePageTemplateProps) {
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().toLocaleString('default', { month: 'long' })
-  const affiliateUrl = getPlayAffiliateUrl(game)
+  const ctaInfo = getGameCtaInfo(game)
 
   const guideIcons = {
     guide: BookOpen,
@@ -114,24 +114,28 @@ export function GuidePageTemplate({
             </div>
 
             {/* CTA */}
-            <div className="shrink-0 flex flex-col gap-2 relative z-20">
-              <Button 
-                size="lg" 
-                asChild 
-                className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
-              >
-                <a 
-                  href={affiliateUrl || undefined} 
-                  target="_blank"
-                  rel="nofollow sponsored noopener"
+            {ctaInfo.url && (
+              <div className="shrink-0 flex flex-col gap-2 relative z-20">
+                <Button 
+                  size="lg" 
+                  asChild 
+                  className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
                 >
-                  <Zap className="h-6 w-6" />
-                  Play {game.shortName || game.name}
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-              </Button>
-              <p className="text-xs text-white/70 text-center font-medium">Free to play</p>
-            </div>
+                  <a 
+                    href={ctaInfo.url} 
+                    target="_blank"
+                    rel={ctaInfo.rel}
+                  >
+                    {ctaInfo.isAffiliate ? <Gift className="h-6 w-6" /> : <Zap className="h-6 w-6" />}
+                    {ctaInfo.isAffiliate ? "Claim FREE Rewards" : `Play ${game.shortName || game.name}`}
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+                <p className="text-xs text-white/70 text-center font-medium">
+                  {ctaInfo.isAffiliate ? "Unlock rewards after installing" : "Official game link"}
+                </p>
+              </div>
+            )}
           </div>
         </PageContainer>
       </section>
@@ -218,16 +222,18 @@ export function GuidePageTemplate({
                       Get Free Codes
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline">
-                    <a 
-                      href={affiliateUrl || undefined}
-                      target="_blank"
-                      rel="nofollow sponsored noopener"
-                    >
-                      Play Now
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </a>
-                  </Button>
+                  {ctaInfo.url && (
+                    <Button asChild size="lg" variant="outline">
+                      <a 
+                        href={ctaInfo.url}
+                        target="_blank"
+                        rel={ctaInfo.rel}
+                      >
+                        {ctaInfo.isAffiliate ? "Claim Rewards" : "Play Now"}
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

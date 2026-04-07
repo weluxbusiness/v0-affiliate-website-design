@@ -26,8 +26,7 @@ import {
   getActivePromoCodes,
   getPopularGames,
   getGameLogoUrl,
-  getGameAffiliateUrl,
-  hasExternalAffiliateLink
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -195,8 +194,7 @@ export default function TopGamesPage() {
               const codeCount = getActivePromoCodes(game.promoCodes).length
               const logoUrl = getGameLogoUrl(game)
               const hasLogo = game.logoUrl
-              const affiliateUrl = getGameAffiliateUrl(game)
-              const isExternal = hasExternalAffiliateLink(game)
+              const ctaInfo = getGameCtaInfo(game)
               
               return (
                 <Card key={game.id} className="overflow-hidden border-border/50 hover:border-orange-500/30 transition-all">
@@ -281,20 +279,22 @@ export default function TopGamesPage() {
                               <ArrowRight className="h-4 w-4 ml-2" />
                             </Link>
                           </Button>
-                          <Button 
-                            asChild 
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                          >
-                            <a 
-                              href={affiliateUrl || undefined} 
-                              target={isExternal ? "_blank" : undefined}
-                              rel={isExternal ? "noopener noreferrer" : undefined}
+                          {ctaInfo.url && (
+                            <Button 
+                              asChild 
+                              className="bg-green-600 hover:bg-green-700 text-white"
                             >
-                              <Play className="h-4 w-4 mr-1 fill-current" />
-                              Play Now
-                              {isExternal && <ExternalLink className="h-3 w-3 ml-1" />}
-                            </a>
-                          </Button>
+                              <a 
+                                href={ctaInfo.url} 
+                                target="_blank"
+                                rel={ctaInfo.rel}
+                              >
+                                {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
+                                {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Free Game"}
+                                <ExternalLink className="h-3 w-3 ml-1" />
+                              </a>
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -32,8 +32,7 @@ import {
   getActivePromoCodes,
   getBestPromoCode,
   getGameLogoUrl,
-  getGameAffiliateUrl,
-  hasExternalAffiliateLink
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 
 // ISR with 5 minute revalidation for "daily" updates
@@ -263,8 +262,7 @@ export default function GamingTodayPage() {
               const codeCount = getActivePromoCodes(game.promoCodes).length
               const logoUrl = getGameLogoUrl(game)
               const hasLogo = game.logoUrl
-              const affiliateUrl = getGameAffiliateUrl(game)
-              const isExternal = hasExternalAffiliateLink(game)
+              const ctaInfo = getGameCtaInfo(game)
               
               return (
                 <Card key={game.id} className="overflow-hidden border-border/50 hover:border-blue-500/30 hover:shadow-lg transition-all duration-200 group">
@@ -298,21 +296,23 @@ export default function GamingTodayPage() {
                     </Link>
 
                     {/* Play Now CTA */}
-                    <Button 
-                      asChild 
-                      className="w-full h-9 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-                      size="sm"
-                    >
-                      <a 
-                        href={affiliateUrl || undefined} 
-                        target={isExternal ? "_blank" : undefined}
-                        rel={isExternal ? "noopener noreferrer" : undefined}
+                    {ctaInfo.url && (
+                      <Button 
+                        asChild 
+                        className="w-full h-9 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                        size="sm"
                       >
-                        <Play className="h-4 w-4 mr-1.5 fill-current" />
-                        Play Now
-                        {isExternal && <ExternalLink className="h-3.5 w-3.5 ml-1.5" />}
-                      </a>
-                    </Button>
+                        <a 
+                          href={ctaInfo.url} 
+                          target="_blank"
+                          rel={ctaInfo.rel}
+                        >
+                          {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1.5" /> : <Play className="h-4 w-4 mr-1.5 fill-current" />}
+                          {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Free Game"}
+                          <ExternalLink className="h-3.5 w-3.5 ml-1.5" />
+                        </a>
+                      </Button>
+                    )}
 
                     {/* View Codes Link */}
                     <Link 
