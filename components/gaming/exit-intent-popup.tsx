@@ -16,6 +16,7 @@ interface ExitIntentPopupProps {
   ctaLabel?: string
   ctaRel?: string
   isAffiliate?: boolean
+  trustText?: string
 }
 
 export function ExitIntentPopup({ 
@@ -24,9 +25,10 @@ export function ExitIntentPopup({
   affiliateUrl, 
   bestCode,
   bestCodeReward,
-  ctaLabel = 'Play Now',
+  ctaLabel = 'Play & Get Rewards',
   ctaRel = 'noopener noreferrer',
-  isAffiliate = false
+  isAffiliate = false,
+  trustText
 }: ExitIntentPopupProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [hasShown, setHasShown] = useState(false)
@@ -158,7 +160,7 @@ export function ExitIntentPopup({
             asChild
             size="lg"
             className={cn(
-              "w-full h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
+              "w-full h-14 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all text-base",
               isAffiliate 
                 ? "bg-green-600 hover:bg-green-700 text-white"
                 : "bg-blue-600 hover:bg-blue-700 text-white"
@@ -170,13 +172,20 @@ export function ExitIntentPopup({
               rel={ctaRel}
             >
               {isAffiliate ? (
-                <Play className="h-5 w-5 mr-2 fill-current" />
+                <Gift className="h-5 w-5 mr-2" />
               ) : (
                 <Gamepad2 className="h-5 w-5 mr-2" />
               )}
-              {isAffiliate ? `Play ${gameShortName || gameName} & Redeem` : `Play ${gameShortName || gameName} Free`}
+              {ctaLabel}
             </a>
           </Button>
+          
+          {/* Trust text */}
+          {isAffiliate && trustText && (
+            <p className="text-center text-xs text-muted-foreground mt-2">
+              {trustText}
+            </p>
+          )}
 
           {/* Secondary action */}
           <button

@@ -131,40 +131,47 @@ export function getDealsAffiliateUrl(): string {
 /**
 * Get the appropriate game CTA URL and metadata
 * Priority: affiliate link > official URL > null
+* For affiliate games, also returns officialUrl for dual CTA support
 */
 export function getGameCtaInfo(game: Game): {
   url: string | null
   label: string
   labelShort: string
   sublabel: string
+  trustText: string
   isAffiliate: boolean
   rel: string
   buttonStyle: 'affiliate' | 'official' | 'neutral'
+  officialUrl: string | null // For dual CTA - secondary "Play Official" button
 } {
   const affiliateUrl = getPlayAffiliateUrl(game)
+  const officialUrl = game.officialUrl || game.websiteUrl || null
   
   if (affiliateUrl) {
     return {
       url: affiliateUrl,
-      label: 'Play Now',
-      labelShort: 'Play',
-      sublabel: 'Unlock rewards after installing',
+      label: 'Play & Get Rewards',
+      labelShort: 'Get Rewards',
+      sublabel: 'Unlock exclusive free rewards',
+      trustText: 'No signup required · Takes 30 seconds',
       isAffiliate: true,
       rel: 'nofollow sponsored noopener',
       buttonStyle: 'affiliate',
+      officialUrl: officialUrl, // For secondary CTA
     }
   }
   
-  const officialUrl = game.officialUrl || game.websiteUrl
   if (officialUrl) {
     return {
       url: officialUrl,
       label: 'Play Free',
       labelShort: 'Play',
       sublabel: 'Official game link',
+      trustText: '',
       isAffiliate: false,
       rel: 'noopener noreferrer',
       buttonStyle: 'official',
+      officialUrl: officialUrl,
     }
   }
   
@@ -173,9 +180,11 @@ export function getGameCtaInfo(game: Game): {
     label: 'View Codes',
     labelShort: 'Codes',
     sublabel: '',
+    trustText: '',
     isAffiliate: false,
     rel: '',
     buttonStyle: 'neutral',
+    officialUrl: null,
   }
 }
 

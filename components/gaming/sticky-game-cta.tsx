@@ -11,15 +11,17 @@ interface StickyGameCTAProps {
   ctaLabel?: string
   ctaRel?: string
   isAffiliate?: boolean
+  trustText?: string
   className?: string
 }
 
 export function StickyGameCTA({ 
   gameName, 
   affiliateUrl, 
-  ctaLabel = 'Play Now',
+  ctaLabel = 'Get Rewards',
   ctaRel = 'noopener noreferrer',
   isAffiliate = false,
+  trustText,
   className 
 }: StickyGameCTAProps) {
   const [isVisible, setIsVisible] = useState(false)
@@ -56,10 +58,10 @@ export function StickyGameCTA({
               </div>
               <div>
                 <p className="font-bold text-sm sm:text-base">
-                  Play {gameName} → Unlock Rewards
+                  {isAffiliate ? `Play ${gameName} & Get Free Rewards` : `Play ${gameName}`}
                 </p>
                 <p className="text-xs text-white/80 hidden sm:block">
-                  Redeem codes for free in-game items
+                  {trustText || 'No signup required · Takes 30 seconds'}
                 </p>
               </div>
             </div>
@@ -70,7 +72,7 @@ export function StickyGameCTA({
                 asChild
                 size="lg"
                 className={cn(
-                  "font-bold shadow-lg hover:scale-105 transition-all",
+                  "font-bold shadow-lg hover:scale-105 transition-all px-6",
                   isAffiliate 
                     ? "bg-white text-green-700 hover:bg-white/90"
                     : "bg-white text-blue-700 hover:bg-white/90"
@@ -82,7 +84,7 @@ export function StickyGameCTA({
                   rel={ctaRel}
                 >
                   {isAffiliate ? (
-                    <Play className="h-4 w-4 mr-2 fill-current" />
+                    <Gift className="h-4 w-4 mr-2" />
                   ) : (
                     <Gamepad2 className="h-4 w-4 mr-2" />
                   )}
