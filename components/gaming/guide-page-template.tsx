@@ -220,7 +220,7 @@ export function GuidePageTemplate({
                   </Button>
                   <Button asChild size="lg" variant="outline">
                     <a 
-                      href={affiliateUrl}
+                      href={affiliateUrl || undefined}
                       target="_blank"
                       rel="nofollow sponsored noopener"
                     >
