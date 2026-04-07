@@ -522,7 +522,7 @@ export function MonthlyCodesPageTemplate({
       {/* Sticky CTA */}
       <StickyGameCTA 
         gameName={game.shortName || game.name}
-        affiliateUrl={getPlayAffiliateUrl(game)}
+        affiliateUrl={getPlayAffiliateUrl(game) || ''}
       />
     </>
   )
