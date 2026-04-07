@@ -37,7 +37,7 @@ import {
   getAllCategories,
   getTotalActiveCodesCount,
   getGameLogoUrl,
-  getPlayAffiliateUrl
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 import { getAllGames, getFeaturedGames, getRecentCodes, getStats } from "@/lib/gaming-server"
 
@@ -330,10 +330,10 @@ export default async function GamingPage() {
 
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             {featuredGames.map((game) => {
-              const codeCount = getActivePromoCodes(game.promoCodes).length
-              const logoUrl = getGameLogoUrl(game)
-              const hasLogo = game.logoUrl
-              const affiliateUrl = getPlayAffiliateUrl(game)
+                const codeCount = getActivePromoCodes(game.promoCodes).length
+                const logoUrl = getGameLogoUrl(game)
+                const hasLogo = game.logoUrl
+                const ctaInfo = getGameCtaInfo(game)
               
               return (
                 <Card key={game.id} className="overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-200 group">
@@ -384,21 +384,38 @@ export default async function GamingPage() {
                       </Badge>
                     </div>
 
-                    {/* Primary CTA - Play Now (Falconix affiliate network) */}
-                    <Button 
-                      asChild 
-                      className="w-full h-11 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-                    >
-                      <a 
-                        href={affiliateUrl} 
-                        target="_blank"
-                        rel="nofollow sponsored noopener"
+                    {/* Primary CTA - Play Now or Play Game */}
+                    {ctaInfo.url ? (
+                      <Button
+                        asChild
+                        className={`w-full h-11 font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all ${
+                          ctaInfo.isAffiliate 
+                            ? 'bg-green-600 hover:bg-green-700 text-white'
+                            : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                        }`}
                       >
-                        <Play className="h-5 w-5 mr-2 fill-current" />
-                        Play Now
-                        <ExternalLink className="h-4 w-4 ml-2" />
-                      </a>
-                    </Button>
+                        <a
+                          href={ctaInfo.url}
+                          target="_blank"
+                          rel={ctaInfo.rel}
+                        >
+                          <Play className="h-5 w-5 mr-2 fill-current" />
+                          {ctaInfo.label}
+                          <ExternalLink className="h-4 w-4 ml-2" />
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full h-11 font-semibold"
+                      >
+                        <Link href={`/gaming/${game.slug}`}>
+                          <Tag className="h-5 w-5 mr-2" />
+                          View Codes
+                        </Link>
+                      </Button>
+                    )}
 
                     {/* View Codes Link */}
                     <Link 

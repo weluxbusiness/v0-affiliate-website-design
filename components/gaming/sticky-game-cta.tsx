@@ -8,10 +8,20 @@ import { cn } from "@/lib/utils"
 interface StickyGameCTAProps {
   gameName: string
   affiliateUrl: string
+  ctaLabel?: string
+  ctaRel?: string
+  isAffiliate?: boolean
   className?: string
 }
 
-export function StickyGameCTA({ gameName, affiliateUrl, className }: StickyGameCTAProps) {
+export function StickyGameCTA({ 
+  gameName, 
+  affiliateUrl, 
+  ctaLabel = 'Play Now',
+  ctaRel = 'noopener noreferrer',
+  isAffiliate = false,
+  className 
+}: StickyGameCTAProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
 
@@ -59,15 +69,20 @@ export function StickyGameCTA({ gameName, affiliateUrl, className }: StickyGameC
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-green-700 hover:bg-white/90 font-bold shadow-lg hover:scale-105 transition-all"
+                className={cn(
+                  "font-bold shadow-lg hover:scale-105 transition-all",
+                  isAffiliate 
+                    ? "bg-white text-green-700 hover:bg-white/90"
+                    : "bg-white text-primary hover:bg-white/90"
+                )}
               >
                 <a
                   href={affiliateUrl}
                   target="_blank"
-                  rel="nofollow sponsored noopener"
+                  rel={ctaRel}
                 >
                   <Play className="h-4 w-4 mr-2 fill-current" />
-                  Play Now
+                  {ctaLabel}
                 </a>
               </Button>
               <button

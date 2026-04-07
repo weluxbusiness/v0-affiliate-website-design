@@ -13,6 +13,9 @@ interface ExitIntentPopupProps {
   affiliateUrl: string
   bestCode: string
   bestCodeReward: string
+  ctaLabel?: string
+  ctaRel?: string
+  isAffiliate?: boolean
 }
 
 export function ExitIntentPopup({ 
@@ -20,7 +23,10 @@ export function ExitIntentPopup({
   gameShortName,
   affiliateUrl, 
   bestCode,
-  bestCodeReward
+  bestCodeReward,
+  ctaLabel = 'Play Now',
+  ctaRel = 'noopener noreferrer',
+  isAffiliate = false
 }: ExitIntentPopupProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [hasShown, setHasShown] = useState(false)
@@ -151,15 +157,20 @@ export function ExitIntentPopup({
           <Button
             asChild
             size="lg"
-            className="w-full h-12 font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+            className={cn(
+              "w-full h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
+              isAffiliate 
+                ? "bg-green-600 hover:bg-green-700 text-white"
+                : "bg-primary hover:bg-primary/90 text-primary-foreground"
+            )}
           >
             <a
               href={affiliateUrl}
               target="_blank"
-              rel="nofollow sponsored noopener"
+              rel={ctaRel}
             >
               <Play className="h-5 w-5 mr-2 fill-current" />
-              Play {gameShortName || gameName} & Redeem
+              {isAffiliate ? `Play ${gameShortName || gameName} & Redeem` : `Play ${gameShortName || gameName}`}
             </a>
           </Button>
 

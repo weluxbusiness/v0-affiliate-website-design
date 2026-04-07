@@ -50,6 +50,7 @@ export interface Game {
   promoCodes: PromoCode[]
   rewards: GameReward[]
   affiliateLink: string
+  officialUrl?: string // Official game website/store link (used when no affiliate)
   websiteUrl?: string
   popularityScore: number // 1-100, used for sorting
   playerCount?: string // e.g., "50M+ players"
@@ -95,53 +96,93 @@ export const GLOBAL_AFFILIATE_LINKS = {
 }
 
 /**
- * Get the "Play [Game]" affiliate link (primary CTA)
- * Returns game-specific URL if configured, otherwise falls back to /save
- * This ensures ALL traffic is monetized
- */
-export function getPlayAffiliateUrl(game: Game): string {
+* Get the "Play [Game]" affiliate link (primary CTA)
+* Returns game-specific URL if configured, otherwise null
+*/
+export function getPlayAffiliateUrl(game: Game): string | null {
   const config = gameAffiliateConfig[game.slug]
-  return config?.play || GLOBAL_AFFILIATE_LINKS.save
+  return config?.play || null
 }
 
 /**
- * Get the "View Rewards" affiliate link (reward sections)
- * Returns game-specific URL if configured, otherwise falls back to /save
- * This ensures ALL traffic is monetized
- */
-export function getRewardAffiliateUrl(game: Game): string {
+* Get the "View Rewards" affiliate link (reward sections)
+* Returns game-specific URL if configured, otherwise null
+*/
+export function getRewardAffiliateUrl(game: Game): string | null {
   const config = gameAffiliateConfig[game.slug]
-  return config?.reward || GLOBAL_AFFILIATE_LINKS.save
+  return config?.reward || null
 }
 
 /**
- * Check if game has SPECIFIC affiliate links (not fallback)
- */
+* Check if game has SPECIFIC affiliate links (not fallback)
+*/
 export function hasGameSpecificAffiliateLinks(game: Game): boolean {
   return game.slug in gameAffiliateConfig
 }
 
 /**
- * Get deals/savings affiliate link (Capital One Shopping)
- * Used for homepage CTAs, blog CTAs, deals pages
- */
+* Get deals/savings affiliate link (Capital One Shopping)
+* Used for homepage CTAs, blog CTAs, deals pages - NOT for game CTAs
+*/
 export function getDealsAffiliateUrl(): string {
   return GLOBAL_AFFILIATE_LINKS.save
 }
 
-// Legacy helper - always returns a URL now (with fallback)
-export function getGameAffiliateUrl(game: Game): string {
+/**
+* Get the appropriate game CTA URL and metadata
+* Priority: affiliate link > official URL > null
+*/
+export function getGameCtaInfo(game: Game): {
+  url: string | null
+  label: string
+  sublabel?: string
+  isAffiliate: boolean
+  rel: string
+} {
+  const affiliateUrl = getPlayAffiliateUrl(game)
+  
+  if (affiliateUrl) {
+    return {
+      url: affiliateUrl,
+      label: 'Play Now',
+      sublabel: 'Exclusive offer',
+      isAffiliate: true,
+      rel: 'nofollow sponsored noopener',
+    }
+  }
+  
+  const officialUrl = game.officialUrl || game.websiteUrl
+  if (officialUrl) {
+    return {
+      url: officialUrl,
+      label: 'Play Game',
+      sublabel: 'Official game link',
+      isAffiliate: false,
+      rel: 'noopener noreferrer',
+    }
+  }
+  
+  return {
+    url: null,
+    label: 'View Codes',
+    isAffiliate: false,
+    rel: '',
+  }
+}
+
+// Legacy helper - returns affiliate URL or null (no fallback to /save)
+export function getGameAffiliateUrl(game: Game): string | null {
   return getPlayAffiliateUrl(game)
 }
 
-// All games now have affiliate links (with fallback)
+// Check if game has external affiliate link (not fallback)
 export function hasExternalAffiliateLink(game: Game): boolean {
-  return true // Always true - fallback ensures monetization
+  return hasGameSpecificAffiliateLinks(game)
 }
 
-// Keep for backward compatibility
+// Check if game has affiliate links
 export function hasAffiliateLinks(game: Game): boolean {
-  return true // Always true - fallback ensures monetization
+  return hasGameSpecificAffiliateLinks(game)
 }
 
 // ============================================
@@ -561,10 +602,11 @@ export const gamesData: Game[] = [
         value: '300+ Primogems',
       },
     ],
-    affiliateLink: 'https://genshin.hoyoverse.com',
-    websiteUrl: 'https://genshin.hoyoverse.com',
-    popularityScore: 98,
-    playerCount: '65M+ players',
+  affiliateLink: 'https://genshin.hoyoverse.com',
+  officialUrl: 'https://genshin.hoyoverse.com',
+  websiteUrl: 'https://genshin.hoyoverse.com',
+  popularityScore: 98,
+  playerCount: '65M+ players',
     lastUpdated: now,
     faqs: [
       {
@@ -2113,11 +2155,12 @@ export const gamesData: Game[] = [
         value: '100 Free Dice',
       },
     ],
-    affiliateLink: 'https://www.monopolygo.com',
-    websiteUrl: 'https://www.monopolygo.com',
-    popularityScore: 95,
-    playerCount: '100M+ downloads',
-    lastUpdated: now,
+  affiliateLink: 'https://www.monopolygo.com',
+  officialUrl: 'https://play.google.com/store/apps/details?id=com.scopely.monopolygo',
+  websiteUrl: 'https://www.monopolygo.com',
+  popularityScore: 95,
+  playerCount: '100M+ downloads',
+  lastUpdated: now,
   },
 
   // ============================================

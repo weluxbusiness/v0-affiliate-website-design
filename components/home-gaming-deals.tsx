@@ -18,7 +18,7 @@ import {
   getPopularGames, 
   getActivePromoCodes,
   getGameLogoUrl,
-  getPlayAffiliateUrl
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 
 interface HomeGamingDealsProps {
@@ -62,7 +62,7 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
             const codeCount = getActivePromoCodes(game.promoCodes).length
             const logoUrl = getGameLogoUrl(game)
             const hasLogo = game.logoUrl
-            const affiliateUrl = getPlayAffiliateUrl(game)
+            const ctaInfo = getGameCtaInfo(game)
             
             // Determine reward highlight text
             const rewardHighlight = game.rewards.length > 0 
@@ -132,26 +132,32 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                     {rewardHighlight}
                   </p>
 
-                  {/* CTAs - Always show both buttons with fallback monetization */}
+                  {/* CTAs - Show Play button when URL available, otherwise just View Codes */}
                   <div className="flex gap-2">
-                    <Button 
-                      asChild 
-                      className="flex-1 h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
-                    >
-                      <a 
-                        href={affiliateUrl} 
-                        target="_blank"
-                        rel="nofollow sponsored noopener"
+                    {ctaInfo.url ? (
+                      <Button 
+                        asChild 
+                        className={`flex-1 h-10 font-semibold shadow-md hover:shadow-lg transition-all ${
+                          ctaInfo.isAffiliate 
+                            ? 'bg-green-600 hover:bg-green-700 text-white'
+                            : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                        }`}
                       >
-                        <Play className="h-4 w-4 mr-2 fill-current" />
-                        Play Now
+                        <a 
+                          href={ctaInfo.url} 
+                          target="_blank"
+                          rel={ctaInfo.rel}
+                        >
+                          <Play className="h-4 w-4 mr-2 fill-current" />
+                          {ctaInfo.label}
                         <ExternalLink className="h-3 w-3 ml-1" />
                       </a>
                     </Button>
+                    ) : null}
                     <Button 
                       asChild 
-                      variant="outline"
-                      className="h-10 font-medium"
+                      variant={ctaInfo.url ? "outline" : "default"}
+                      className={`h-10 font-medium ${!ctaInfo.url ? 'flex-1' : ''}`}
                     >
                       <Link href={`/gaming/${game.slug}`}>
                         View Codes

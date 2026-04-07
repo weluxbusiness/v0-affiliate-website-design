@@ -28,7 +28,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
-import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getPlayAffiliateUrl, getRewardAffiliateUrl, hasAffiliateLinks } from "@/lib/gaming-data"
+import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getGameCtaInfo, hasGameSpecificAffiliateLinks } from "@/lib/gaming-data"
 import { cn } from "@/lib/utils"
 import { getSeoUrl } from "@/lib/seo-routes"
 import { Clock, AlertCircle, BookOpen, CheckCircle2, ArrowRight, TrendingUp } from "lucide-react"
@@ -240,6 +240,9 @@ export function GamePageTemplate({
   const currentMonth = new Date().toLocaleString('default', { month: 'long' })
   const currentYear = new Date().getFullYear()
   
+  // Get game CTA info (affiliate vs official link)
+  const ctaInfo = getGameCtaInfo(game)
+  
   // Get game-specific images if available
   const images = gameImages[game.slug]
 
@@ -350,20 +353,27 @@ export function GamePageTemplate({
                   Copy Best Code
                 </CopyCodeButton>
               )}
-              <Button 
-                size="lg" 
-                asChild 
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg text-sm h-12"
-              >
-                <a 
-                  href={getPlayAffiliateUrl(game)} 
-                  target="_blank"
-                  rel="nofollow sponsored noopener"
+              {ctaInfo.url && (
+                <Button 
+                  size="lg" 
+                  asChild 
+                  className={cn(
+                    "flex-1 font-bold shadow-lg text-sm h-12",
+                    ctaInfo.isAffiliate 
+                      ? "bg-green-500 hover:bg-green-600 text-white" 
+                      : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                  )}
                 >
-                  <Play className="h-4 w-4 fill-current mr-1.5" />
-                  Play Now
-                </a>
-              </Button>
+                  <a 
+                    href={ctaInfo.url} 
+                    target="_blank"
+                    rel={ctaInfo.rel}
+                  >
+                    <Play className="h-4 w-4 fill-current mr-1.5" />
+                    {ctaInfo.label}
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
           
@@ -459,24 +469,33 @@ export function GamePageTemplate({
               </div>
 
               {/* Primary CTA - Desktop */}
-              <div className="shrink-0 flex flex-col gap-2 relative z-20">
-                <Button 
-                  size="lg" 
-                  asChild 
-                  className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
-                >
-                  <a 
-                    href={getPlayAffiliateUrl(game)} 
-                    target="_blank"
-                    rel="nofollow sponsored noopener"
+              {ctaInfo.url && (
+                <div className="shrink-0 flex flex-col gap-2 relative z-20">
+                  <Button 
+                    size="lg" 
+                    asChild 
+                    className={cn(
+                      "gap-2 font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6",
+                      ctaInfo.isAffiliate 
+                        ? "bg-green-500 hover:bg-green-600 text-white" 
+                        : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                    )}
                   >
-                    <Play className="h-6 w-6 fill-current" />
-                    Play & Redeem
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </Button>
-                <p className="text-xs text-white/70 text-center font-medium">No signup required</p>
-              </div>
+                    <a 
+                      href={ctaInfo.url} 
+                      target="_blank"
+                      rel={ctaInfo.rel}
+                    >
+                      <Play className="h-6 w-6 fill-current" />
+                      {ctaInfo.isAffiliate ? 'Play & Redeem' : 'Play Game'}
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                  <p className="text-xs text-white/70 text-center font-medium">
+                    {ctaInfo.sublabel || 'Official game link'}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </PageContainer>
@@ -568,19 +587,26 @@ export function GamePageTemplate({
                     </div>
                     
                     {/* CTA */}
-                    <Button 
-                      asChild 
-                      className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
-                    >
-                      <a 
-                        href={getPlayAffiliateUrl(game)} 
-                        target="_blank"
-                        rel="nofollow sponsored noopener"
+                    {ctaInfo.url && (
+                      <Button 
+                        asChild 
+                        className={cn(
+                          "w-full h-11 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
+                          ctaInfo.isAffiliate 
+                            ? "bg-green-600 hover:bg-green-700 text-white" 
+                            : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                        )}
                       >
-                        <Play className="h-4 w-4 mr-2 fill-current" />
-                        Play {game.shortName || game.name} & Redeem
-                      </a>
-                    </Button>
+                        <a 
+                          href={ctaInfo.url} 
+                          target="_blank"
+                          rel={ctaInfo.rel}
+                        >
+                          <Play className="h-4 w-4 mr-2 fill-current" />
+                          {ctaInfo.isAffiliate ? `Play ${game.shortName || game.name} & Redeem` : `Play ${game.shortName || game.name}`}
+                        </a>
+                      </Button>
+                    )}
                     
                     {/* Compliant Social Proof */}
                     <p className="text-center text-xs text-muted-foreground mt-3">
@@ -683,9 +709,10 @@ export function GamePageTemplate({
                   <PromoCodeCard 
                     key={code.id} 
                     code={code}
-                    showAffiliateCTA={true}
-                    affiliateUrl={getPlayAffiliateUrl(game)}
-                    affiliateLabel={`Play ${game.shortName || game.name} & Redeem`}
+showAffiliateCTA={!!ctaInfo.url}
+                affiliateUrl={ctaInfo.url || ''}
+                affiliateLabel={ctaInfo.isAffiliate ? `Play ${game.shortName || game.name} & Redeem` : `Play ${game.shortName || game.name}`}
+                affiliateRel={ctaInfo.rel}
                   />
                 ))}
               </div>
@@ -732,9 +759,10 @@ export function GamePageTemplate({
                       <PromoCodeCard 
                         key={code.id} 
                         code={code}
-                        showAffiliateCTA={true}
-                        affiliateUrl={getPlayAffiliateUrl(game)}
-                        affiliateLabel={`Play ${game.shortName || game.name} & Redeem`}
+                        showAffiliateCTA={!!ctaInfo.url}
+                        affiliateUrl={ctaInfo.url || ''}
+                        affiliateLabel={ctaInfo.isAffiliate ? `Play ${game.shortName || game.name} & Redeem` : `Play ${game.shortName || game.name}`}
+                        affiliateRel={ctaInfo.rel}
                       />
                     ))}
                   </div>
@@ -812,20 +840,27 @@ export function GamePageTemplate({
                                 </code>
                               </div>
                             </div>
-                            <Button 
-                              asChild 
-                              size="lg"
-                              className="h-12 font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
-                            >
-                              <a 
-                                href={getPlayAffiliateUrl(game)} 
-                                target="_blank"
-                                rel="nofollow sponsored noopener"
+                            {ctaInfo.url && (
+                              <Button 
+                                asChild 
+                                size="lg"
+                                className={cn(
+                                  "h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
+                                  ctaInfo.isAffiliate 
+                                    ? "bg-purple-600 hover:bg-purple-700 text-white"
+                                    : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                                )}
                               >
-                                <Play className="h-5 w-5 mr-2 fill-current" />
-                                Play & Get Legendary Champion
-                              </a>
-                            </Button>
+                                <a 
+                                  href={ctaInfo.url} 
+                                  target="_blank"
+                                  rel={ctaInfo.rel}
+                                >
+                                  <Play className="h-5 w-5 mr-2 fill-current" />
+                                  {ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Game'}
+                                </a>
+                              </Button>
+                            )}
                           </div>
                         </div>
                       )
@@ -838,9 +873,10 @@ export function GamePageTemplate({
                         <PromoCodeCard 
                           key={code.id} 
                           code={code}
-                          showAffiliateCTA={true}
-                          affiliateUrl={getPlayAffiliateUrl(game)}
-                          affiliateLabel={`Play ${game.shortName || game.name} & Redeem`}
+                          showAffiliateCTA={!!ctaInfo.url}
+                          affiliateUrl={ctaInfo.url || ''}
+                          affiliateLabel={ctaInfo.isAffiliate ? `Play ${game.shortName || game.name} & Redeem` : `Play ${game.shortName || game.name}`}
+                          affiliateRel={ctaInfo.rel}
                         />
                       ))}
                     </div>
@@ -1034,19 +1070,26 @@ export function GamePageTemplate({
                   <h3 className="font-bold text-foreground text-lg">First time playing {game.shortName || game.name}?</h3>
                   <p className="text-muted-foreground text-sm">Use code GOFAST or MONKEYKING for a free Legendary champion</p>
                 </div>
-                <Button 
-                  asChild 
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-semibold shrink-0"
-                >
-                  <a 
-                    href={getPlayAffiliateUrl(game)} 
-                    target="_blank"
-                    rel="nofollow sponsored noopener"
+                {ctaInfo.url && (
+                  <Button 
+                    asChild 
+                    className={cn(
+                      "font-semibold shrink-0",
+                      ctaInfo.isAffiliate 
+                        ? "bg-purple-600 hover:bg-purple-700 text-white"
+                        : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                    )}
                   >
-                    <Play className="h-4 w-4 mr-2 fill-current" />
-                    Start Playing Free
-                  </a>
-                </Button>
+                    <a 
+                      href={ctaInfo.url} 
+                      target="_blank"
+                      rel={ctaInfo.rel}
+                    >
+                      <Play className="h-4 w-4 mr-2 fill-current" />
+                      {ctaInfo.isAffiliate ? 'Start Playing Free' : 'Play Game'}
+                    </a>
+                  </Button>
+                )}
               </div>
             </div>
           </PageContainer>
@@ -1240,10 +1283,10 @@ export function GamePageTemplate({
 
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {relatedGames.map((relatedGame) => {
-                const relatedLogoUrl = getGameLogoUrl(relatedGame)
-                const hasRelatedLogo = relatedGame.logoUrl
-                const relatedCodeCount = getActivePromoCodes(relatedGame.promoCodes).length
-                const relatedAffiliateUrl = getPlayAffiliateUrl(relatedGame)
+                  const relatedLogoUrl = getGameLogoUrl(relatedGame)
+                  const hasRelatedLogo = relatedGame.logoUrl
+                  const relatedCodeCount = getActivePromoCodes(relatedGame.promoCodes).length
+                  const relatedCtaInfo = getGameCtaInfo(relatedGame)
                 
                 return (
                   <div
@@ -1279,20 +1322,39 @@ export function GamePageTemplate({
                       </div>
                     </Link>
                     {/* Play CTA */}
-                    <Button 
-                      asChild 
-                      size="sm"
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-sm hover:shadow-md hover:scale-[1.01] transition-all"
-                    >
-                      <a 
-                        href={relatedAffiliateUrl} 
-                        target="_blank"
-                        rel="nofollow sponsored noopener"
+                    {relatedCtaInfo.url ? (
+                      <Button 
+                        asChild 
+                        size="sm"
+                        className={cn(
+                          "w-full font-semibold shadow-sm hover:shadow-md hover:scale-[1.01] transition-all",
+                          relatedCtaInfo.isAffiliate 
+                            ? "bg-green-600 hover:bg-green-700 text-white"
+                            : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                        )}
                       >
-                        <Play className="h-4 w-4 mr-1 fill-current" />
-                        Play
-                      </a>
-                    </Button>
+                        <a 
+                          href={relatedCtaInfo.url} 
+                          target="_blank"
+                          rel={relatedCtaInfo.rel}
+                        >
+                          <Play className="h-4 w-4 mr-1 fill-current" />
+                          {relatedCtaInfo.label}
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button 
+                        asChild 
+                        size="sm"
+                        variant="outline"
+                        className="w-full font-semibold"
+                      >
+                        <Link href={`/gaming/${relatedGame.slug}`}>
+                          <Tag className="h-4 w-4 mr-1" />
+                          View Codes
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 )
               })}
@@ -1576,19 +1638,27 @@ export function GamePageTemplate({
       </section>
 
       {/* Sticky CTA - Mobile & Desktop */}
-      <StickyGameCTA
-        gameName={game.shortName || game.name}
-        affiliateUrl={getPlayAffiliateUrl(game)}
-      />
+      {ctaInfo.url && (
+        <StickyGameCTA
+          gameName={game.shortName || game.name}
+          affiliateUrl={ctaInfo.url}
+          ctaLabel={ctaInfo.label}
+          ctaRel={ctaInfo.rel}
+          isAffiliate={ctaInfo.isAffiliate}
+        />
+      )}
 
       {/* Exit Intent Popup */}
-      {bestCode && (
+      {bestCode && ctaInfo.url && (
         <ExitIntentPopup
           gameName={game.name}
           gameShortName={game.shortName}
-          affiliateUrl={getPlayAffiliateUrl(game)}
+          affiliateUrl={ctaInfo.url}
           bestCode={bestCode.code}
           bestCodeReward={bestCode.reward}
+          ctaLabel={ctaInfo.label}
+          ctaRel={ctaInfo.rel}
+          isAffiliate={ctaInfo.isAffiliate}
         />
       )}
     </main>
