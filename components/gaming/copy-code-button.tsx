@@ -134,10 +134,10 @@ export function PostCopyStickyBar({
   
   useEffect(() => {
     if (copyContext?.hasCopied && !isDismissed) {
-      // Small delay to let the copy confirmation show first
+      // 800ms delay - let the copy confirmation show first, then appear
       const timer = setTimeout(() => {
         setIsVisible(true)
-      }, 500)
+      }, 800)
       return () => clearTimeout(timer)
     }
   }, [copyContext?.hasCopied, isDismissed])
@@ -153,39 +153,45 @@ export function PostCopyStickyBar({
       "animate-in slide-in-from-bottom duration-300"
     )}>
       <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
-        {/* Left side - Message */}
+        {/* Left side - Progress Step Message */}
         <div className="flex items-center gap-3 text-white">
           <div className="hidden sm:flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
             <Check className="h-5 w-5" />
           </div>
           <div>
-            <p className="font-bold text-sm sm:text-base">
-              Code copied! Now open the game to redeem it
+            <p className="font-bold text-sm sm:text-base flex items-center gap-2">
+              <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-semibold">Step 1/2</span>
+              Code copied!
             </p>
-            <p className="text-xs text-white/80 hidden sm:block">
-              Your rewards are waiting in {gameName}
+            <p className="text-xs sm:text-sm text-white/90">
+              Now open the game to redeem it
             </p>
           </div>
         </div>
 
         {/* Right side - CTA + Close */}
         <div className="flex items-center gap-2">
-          <Button
-            asChild
-            size="lg"
-            className="font-bold shadow-lg hover:scale-105 transition-all px-6 bg-white text-green-700 hover:bg-white/90"
-          >
-            <a
-              href={affiliateUrl}
-              target="_blank"
-              rel={ctaRel}
+          <div className="flex flex-col items-end gap-1">
+            <Button
+              asChild
+              size="lg"
+              className="font-bold shadow-lg hover:scale-105 transition-all px-6 bg-white text-green-700 hover:bg-white/90"
             >
-              <Gift className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Open Game & Claim Rewards</span>
-              <span className="sm:hidden">Claim Rewards</span>
-              <ExternalLink className="h-3 w-3 ml-1.5" />
-            </a>
-          </Button>
+              <a
+                href={affiliateUrl}
+                target="_blank"
+                rel={ctaRel}
+              >
+                <span className="hidden sm:inline">Continue → Get Rewards</span>
+                <span className="sm:hidden">Continue →</span>
+                <ExternalLink className="h-3 w-3 ml-1.5" />
+              </a>
+            </Button>
+            {/* Micro trust text */}
+            <p className="text-[10px] sm:text-xs text-white/70 hidden sm:block">
+              No signup required · Takes 30 seconds
+            </p>
+          </div>
           
           <button
             onClick={() => setIsDismissed(true)}
