@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og'
-import { gamesData } from '@/lib/gaming-data'
+import { gamesData, getActivePromoCodes } from '@/lib/gaming-data'
 
 export const runtime = 'edge'
 
@@ -37,7 +37,7 @@ export default async function Image({ params }: { params: { game: string } }) {
 
   const currentMonth = new Date().toLocaleString('default', { month: 'long' })
   const currentYear = new Date().getFullYear()
-  const codeCount = game.promoCodes.filter(c => c.status === 'active').length
+  const codeCount = getActivePromoCodes(game).length
 
   return new ImageResponse(
     (
