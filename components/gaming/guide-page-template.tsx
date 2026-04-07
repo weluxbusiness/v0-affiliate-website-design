@@ -121,7 +121,7 @@ export function GuidePageTemplate({
                 className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
               >
                 <a 
-                  href={affiliateUrl} 
+                  href={affiliateUrl || undefined} 
                   target="_blank"
                   rel="nofollow sponsored noopener"
                 >
