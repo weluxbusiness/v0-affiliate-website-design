@@ -330,7 +330,7 @@ export default function GamingFreeRewardsPage() {
                       size="sm"
                     >
                       <a 
-                        href={affiliateUrl} 
+                        href={affiliateUrl || undefined} 
                         target={isExternal ? "_blank" : undefined}
                         rel={isExternal ? "noopener noreferrer" : undefined}
                       >
