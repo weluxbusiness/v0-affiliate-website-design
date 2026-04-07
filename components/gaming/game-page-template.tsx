@@ -291,8 +291,8 @@ export function GamePageTemplate({
 
       {/* Hero Section - Compact on mobile */}
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-4 md:py-12 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <PageContainer className="px-4">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 pointer-events-none" />
+        <PageContainer className="px-4 relative z-10">
           {/* Hero Image - Visual anchor for CRO with high-impact overlay */}
           {images && (
             <div className="mb-4 md:mb-8">
@@ -340,7 +340,7 @@ export function GamePageTemplate({
             </div>
 
             {/* Mobile CTAs - Full width, above fold */}
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-2 mb-4 relative z-20">
               {bestCode && (
                 <CopyCodeButton 
                   code={bestCode.code}

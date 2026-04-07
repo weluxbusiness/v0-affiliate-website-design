@@ -54,12 +54,12 @@ export function GameHeroImage({
         
         {/* Overlay gradient - stronger for text readability */}
         {overlay && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40 pointer-events-none" />
         )}
         
         {/* HIGH IMPACT OVERLAY TEXT - Mobile optimized, simplified */}
         {showOverlayText && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3 pointer-events-none">
             {/* WORKING CODES - Primary headline */}
             <span className="inline-flex items-center gap-1.5 bg-green-600 text-white font-black text-sm md:text-2xl lg:text-3xl px-3 md:px-6 py-1.5 md:py-3 rounded-lg shadow-xl uppercase tracking-wide mb-1 md:mb-2">
               <Zap className="h-4 w-4 md:h-7 md:w-7 fill-current" />
