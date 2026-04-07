@@ -55,15 +55,7 @@ export default async function Image({ params }: { params: { game: string } }) {
           position: 'relative',
         }}
       >
-        {/* Background pattern */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(34, 197, 94, 0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.1) 0%, transparent 50%)',
-            display: 'flex',
-          }}
-        />
+
         
         {/* Top badge */}
         <div

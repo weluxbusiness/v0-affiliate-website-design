@@ -32,15 +32,7 @@ export default async function Image() {
           position: 'relative',
         }}
       >
-        {/* Background pattern */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(34, 197, 94, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.15) 0%, transparent 40%)',
-            display: 'flex',
-          }}
-        />
+
         
         {/* Top badge */}
         <div
