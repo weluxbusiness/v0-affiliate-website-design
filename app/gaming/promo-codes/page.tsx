@@ -180,7 +180,7 @@ export default function GamingPromoCodesPage() {
                           {hasLogo ? (
                             <Image
                               src={logoUrl}
-                              alt={game.name}
+                              alt={`${game.name} codes April 2026`}
                               width={48}
                               height={48}
                               className="rounded-xl object-cover"

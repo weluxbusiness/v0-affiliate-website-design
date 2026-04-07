@@ -95,7 +95,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             : `https://savesmart.bio/og/gaming/${game.slug}.jpg`,
           width: 256,
           height: 256,
-          alt: `${game.name} characters artwork - promo codes and free rewards`,
+          alt: `${game.name} codes ${currentMonth} ${currentYear} - free rewards and working promo codes`,
         },
       ],
     },

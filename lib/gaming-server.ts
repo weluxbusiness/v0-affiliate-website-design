@@ -16,7 +16,7 @@ function normalizeDbGame(dbGame: Awaited<ReturnType<typeof getGameBySlug>>): Gam
     description: dbGame.description ?? '',
     categories: dbGame.categories as Game['categories'],
     platforms: dbGame.platforms as Game['platforms'],
-    imageUrl: dbGame.image_url ?? '/images/games/default.webp',
+    imageUrl: dbGame.image_url ?? '',
     iconUrl: dbGame.icon_url ?? undefined,
     developer: dbGame.developer ?? 'Unknown',
     publisher: dbGame.publisher ?? 'Unknown',

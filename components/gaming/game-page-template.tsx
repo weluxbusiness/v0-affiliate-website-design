@@ -342,7 +342,7 @@ export function GamePageTemplate({
               {game.logoUrl ? (
                 <Image
                   src={getGameLogoUrl(game)}
-                  alt={`${game.name} characters artwork - promo codes and free rewards`}
+                  alt={`${game.name} codes ${currentMonth} ${currentYear} - free rewards`}
                   width={112}
                   height={112}
                   className="rounded-2xl object-cover"
@@ -1207,7 +1207,7 @@ export function GamePageTemplate({
                         {hasRelatedLogo ? (
                           <Image
                             src={relatedLogoUrl}
-                            alt={relatedGame.name}
+                            alt={`${relatedGame.name} codes ${currentMonth} ${currentYear}`}
                             width={40}
                             height={40}
                             className="rounded-lg object-cover"
