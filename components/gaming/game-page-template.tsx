@@ -23,6 +23,7 @@ import { StickyGameCTA } from "@/components/gaming/sticky-game-cta"
 import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { GameHeroImage } from "@/components/gaming/game-hero-image"
 import { GameSectionImage } from "@/components/gaming/game-section-image"
+import { CopyCodeButton } from "@/components/gaming/copy-code-button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -341,16 +342,13 @@ export function GamePageTemplate({
             {/* Mobile CTAs - Full width, above fold */}
             <div className="flex gap-2 mb-4">
               {bestCode && (
-                <Button 
-                  size="lg"
+                <CopyCodeButton 
+                  code={bestCode.code}
                   className="flex-1 bg-white text-primary hover:bg-white/90 font-bold shadow-lg text-sm h-12"
-                  onClick={() => {
-                    navigator.clipboard.writeText(bestCode.code)
-                  }}
                 >
                   <Tag className="h-4 w-4 mr-1.5" />
                   Copy Best Code
-                </Button>
+                </CopyCodeButton>
               )}
               <Button 
                 size="lg" 
