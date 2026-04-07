@@ -489,8 +489,8 @@ export const gamesData: Game[] = [
     description: 'Genshin Impact is an open-world action RPG set in the fantasy world of Teyvat. Explore seven nations, master elemental combat, and uncover the mysteries of this breathtaking anime-style adventure.',
     categories: ['RPG', 'Gacha', 'Mobile', 'PC', 'Console'],
     platforms: ['PC', 'Mobile', 'PlayStation', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/genshin-impact.webp',
+    imageUrl: '/games/genshin-impact.webp',
+    logoUrl: '/games/genshin-impact.webp',
     developer: 'miHoYo',
     publisher: 'HoYoverse',
     promoCodes: [
@@ -588,8 +588,8 @@ export const gamesData: Game[] = [
     description: 'Fortnite is a free-to-play battle royale game where 100 players compete to be the last one standing. Build structures, find weapons, and outlast opponents in this ever-evolving cultural phenomenon.',
     categories: ['Battle Royale', 'FPS', 'PC', 'Console', 'Mobile'],
     platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1589241062272-c0a000072dfa?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/fortnite.webp',
+    imageUrl: '/games/fortnite.png',
+    logoUrl: '/games/fortnite.png',
     developer: 'Epic Games',
     publisher: 'Epic Games',
     promoCodes: [
@@ -666,9 +666,9 @@ export const gamesData: Game[] = [
     description: 'Call of Duty Mobile brings the iconic FPS franchise to mobile devices with multiplayer modes, battle royale, and classic maps from the console games.',
     categories: ['FPS', 'Mobile', 'Battle Royale'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0b?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/call-of-duty-mobile.webp',
-    developer: 'TiMi Studio Group',
+  imageUrl: '/games/call-of-duty-mobile.webp',
+  logoUrl: '/games/call-of-duty-mobile.webp',
+  developer: 'TiMi Studio Group',
     publisher: 'Activision',
     promoCodes: [
       {
@@ -900,9 +900,9 @@ export const gamesData: Game[] = [
     description: 'Apex Legends is a free-to-play hero shooter battle royale. Master unique character abilities, team up with your squad, and conquer the Outlands.',
     categories: ['Battle Royale', 'FPS', 'PC', 'Console'],
     platforms: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch', 'Mobile'],
-    imageUrl: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/apex-legends.webp',
-    developer: 'Respawn Entertainment',
+  imageUrl: '/games/apex-legends.png',
+  logoUrl: '/games/apex-legends.png',
+  developer: 'Respawn Entertainment',
     publisher: 'Electronic Arts',
     promoCodes: [
       {
@@ -1011,12 +1011,12 @@ export const gamesData: Game[] = [
     description: 'Clash of Clans is a strategy game where you build your village, train troops, and battle with millions of players worldwide. Join a Clan and dominate the battlefield.',
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/clash-of-clans.webp',
-    developer: 'Supercell',
-    publisher: 'Supercell',
-    promoCodes: [
-      {
+  imageUrl: '/games/clash-of-clans.png',
+  logoUrl: '/games/clash-of-clans.png',
+  developer: 'Supercell',
+  publisher: 'Supercell',
+  promoCodes: [
+  {
         id: 'coc-1',
         code: 'CLASHON2024',
         reward: '500 Gems + 1 Day Shield',
@@ -1224,9 +1224,9 @@ export const gamesData: Game[] = [
     description: 'Free Fire is a fast-paced battle royale game designed for mobile. 50 players, 10-minute matches, and intense survival gameplay.',
     categories: ['Battle Royale', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/free-fire.webp',
-    developer: '111 Dots Studio',
+  imageUrl: '/games/free-fire.jpg',
+  logoUrl: '/games/free-fire.jpg',
+  developer: '111 Dots Studio',
     publisher: 'Garena',
     promoCodes: [
       {
@@ -1411,12 +1411,12 @@ export const gamesData: Game[] = [
     description: 'Brawl Stars is a fast-paced 3v3 multiplayer and battle royale game from Supercell. Unlock and upgrade dozens of Brawlers, each with unique abilities and super attacks.',
     categories: ['Mobile', 'Battle Royale'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/brawl-stars.webp',
-    developer: 'Supercell',
-    publisher: 'Supercell',
-    promoCodes: [
-      {
+  imageUrl: '/games/brawl-stars.png',
+  logoUrl: '/games/brawl-stars.png',
+  developer: 'Supercell',
+  publisher: 'Supercell',
+  promoCodes: [
+  {
         id: 'brawl-1',
         code: 'BRAWL2026',
         reward: '200 Coins + 50 Gems',
@@ -1471,13 +1471,13 @@ export const gamesData: Game[] = [
     description: 'Clash Royale is a real-time multiplayer card game where you collect and upgrade cards featuring Clash of Clans troops, spells, and defenses. Battle players worldwide in fast-paced duels.',
     categories: ['Simulation', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1493711662062-fa541f7f3d24?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/clash-royale.webp',
-    developer: 'Supercell',
-    publisher: 'Supercell',
-    promoCodes: [
-      {
-        id: 'cr-1',
+  imageUrl: '/games/clash-royale.webp',
+  logoUrl: '/games/clash-royale.webp',
+  developer: 'Supercell',
+  publisher: 'Supercell',
+  promoCodes: [
+  {
+  id: 'cr-1',
         code: 'ROYALE2024',
         reward: '250 Gems + Legendary Chest',
         rewardValue: 400,
@@ -1531,9 +1531,9 @@ export const gamesData: Game[] = [
     description: 'AFK Arena is an idle RPG where heroes fight for you even when offline. Collect over 100 unique heroes across 7 factions and build the ultimate team.',
     categories: ['RPG', 'Gacha', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/afk-arena.webp',
-    developer: 'Lilith Games',
+  imageUrl: '/games/afk-arena.jpg',
+  logoUrl: '/games/afk-arena.jpg',
+  developer: 'Lilith Games',
     publisher: 'Lilith Games',
     promoCodes: [
       {
@@ -1779,9 +1779,9 @@ export const gamesData: Game[] = [
     description: 'Coin Master is a casual mobile game combining slot machines with base building. Spin to earn coins, attack other players, and build your viking village.',
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/coin-master.webp',
-    developer: 'Moon Active',
+  imageUrl: '/games/coin-master.jpg',
+  logoUrl: '/games/coin-master.jpg',
+  developer: 'Moon Active',
     publisher: 'Moon Active',
     promoCodes: [
       {
@@ -2382,9 +2382,9 @@ export const gamesData: Game[] = [
     description: 'Dragon Ball Legends is an action fighting game featuring characters from the Dragon Ball universe. Engage in real-time PvP battles with card-based combat.',
     categories: ['RPG', 'Gacha', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/db-legends.webp',
-    developer: 'Bandai Namco',
+  imageUrl: '/games/dragon-ball-legends.webp',
+  logoUrl: '/games/dragon-ball-legends.webp',
+  developer: 'Bandai Namco',
     publisher: 'Bandai Namco',
     promoCodes: [
       {
@@ -2504,9 +2504,9 @@ export const gamesData: Game[] = [
     description: 'Blue Archive is a tactical RPG set in the academy city of Kivotos. Command students with unique abilities in strategic real-time battles.',
     categories: ['RPG', 'Gacha', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/blue-archive.webp',
-    developer: 'NAT Games',
+  imageUrl: '/games/blue-archive.webp',
+  logoUrl: '/games/blue-archive.webp',
+  developer: 'NAT Games',
     publisher: 'Nexon',
     promoCodes: [
       {
@@ -2952,9 +2952,9 @@ export const gamesData: Game[] = [
     description: 'EA Sports FC Mobile is the premier mobile football game. Build your ultimate team, compete in seasons, and play against others worldwide.',
     categories: ['Sports', 'Mobile'],
     platforms: ['Mobile', 'iOS', 'Android'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/fc-mobile.webp',
-    developer: 'EA Sports',
+  imageUrl: '/games/fifa-mobile.webp',
+  logoUrl: '/games/fifa-mobile.webp',
+  developer: 'EA Sports',
     publisher: 'Electronic Arts',
     promoCodes: [
       {
@@ -3031,9 +3031,9 @@ export const gamesData: Game[] = [
     description: 'Candy Crush Saga is the iconic match-3 puzzle game. Match candies, beat challenging levels, and progress through hundreds of sweet adventures.',
     categories: ['Mobile', 'Simulation'],
     platforms: ['Mobile', 'iOS', 'Android', 'PC'],
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-    logoUrl: '/images/games/candy-crush.webp',
-    developer: 'King',
+  imageUrl: '/games/candy-crush-saga.webp',
+  logoUrl: '/games/candy-crush-saga.webp',
+  developer: 'King',
     publisher: 'King',
     promoCodes: [
       {
