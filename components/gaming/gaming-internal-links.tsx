@@ -308,24 +308,22 @@ export function GameCardCompact({ game, codeCount, showBadge = false }: GameCard
         </div>
       </Link>
 
-      {/* Play Now CTA */}
-      {ctaInfo.url && (
-        <Button 
-          asChild 
-          size="sm"
-          className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+      {/* Play Now CTA - Always shown */}
+      <Button 
+        asChild 
+        size="sm"
+        className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+      >
+        <a 
+          href={ctaInfo.url} 
+          target="_blank"
+          rel={ctaInfo.rel}
         >
-          <a 
-            href={ctaInfo.url} 
-            target="_blank"
-            rel={ctaInfo.rel}
-          >
-            {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
-            {ctaInfo.isAffiliate ? "Claim" : "Play"}
-            <ExternalLink className="h-3 w-3 ml-1" />
-          </a>
-        </Button>
-      )}
+          {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
+          {ctaInfo.isAffiliate ? "Claim" : "Play"}
+          <ExternalLink className="h-3 w-3 ml-1" />
+        </a>
+      </Button>
     </div>
   )
 }
@@ -383,23 +381,21 @@ export function TrendingCodeItem({ game, code, reward, isVerified }: TrendingCod
         <p className="text-xs text-muted-foreground mt-1">{game.shortName || game.name}</p>
       </Link>
 
-      {/* Play Now CTA */}
-      {ctaInfo.url && (
-        <Button 
-          asChild 
-          size="sm"
-          className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+      {/* Play Now CTA - Always shown */}
+      <Button 
+        asChild 
+        size="sm"
+        className="shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+      >
+        <a 
+          href={ctaInfo.url} 
+          target="_blank"
+          rel={ctaInfo.rel}
         >
-          <a 
-            href={ctaInfo.url} 
-            target="_blank"
-            rel={ctaInfo.rel}
-          >
-            {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
-            {ctaInfo.isAffiliate ? "Claim" : "Play"}
-          </a>
-        </Button>
-      )}
+          {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
+          {ctaInfo.isAffiliate ? "Claim" : "Play"}
+        </a>
+      </Button>
     </div>
   )
 }

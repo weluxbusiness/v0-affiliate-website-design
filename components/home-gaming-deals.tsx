@@ -140,32 +140,30 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
                     {rewardHighlight}
                   </p>
 
-                  {/* CTAs - Affiliate CTA primary, View Codes secondary */}
+                  {/* CTAs - Affiliate CTA primary, View Codes secondary - Always shown */}
                   <div className="flex flex-col gap-2">
-                    {ctaInfo.url && (
-                      <Button 
-                        asChild 
-                        className={`w-full h-10 font-bold shadow-md hover:shadow-lg transition-all ${
-                          ctaInfo.buttonStyle === 'affiliate' 
-                            ? 'bg-green-600 hover:bg-green-700 text-white'
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'
-                        }`}
+                    <Button 
+                      asChild 
+                      className={`w-full h-10 font-bold shadow-md hover:shadow-lg transition-all ${
+                        ctaInfo.buttonStyle === 'affiliate' 
+                          ? 'bg-green-600 hover:bg-green-700 text-white'
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
+                    >
+                      <a 
+                        href={ctaInfo.url} 
+                        target="_blank"
+                        rel={ctaInfo.rel}
                       >
-                        <a 
-                          href={ctaInfo.url} 
-                          target="_blank"
-                          rel={ctaInfo.rel}
-                        >
-                          {ctaInfo.isAffiliate ? (
-                            <Gift className="h-4 w-4 mr-2" />
-                          ) : (
-                            <Gamepad2 className="h-4 w-4 mr-2" />
-                          )}
-                          {ctaInfo.isAffiliate ? 'Claim FREE Rewards' : ctaInfo.label}
+                        {ctaInfo.isAffiliate ? (
+                          <Gift className="h-4 w-4 mr-2" />
+                        ) : (
+                          <Gamepad2 className="h-4 w-4 mr-2" />
+                        )}
+                        {ctaInfo.isAffiliate ? 'Claim FREE Rewards' : 'Play Official Game'}
                         <ExternalLink className="h-3 w-3 ml-1" />
                       </a>
                     </Button>
-                    )}
                     {/* Urgency text for affiliate */}
                     {ctaInfo.isAffiliate && ctaInfo.urgencyText && (
                       <p className="text-xs text-amber-600 text-center font-medium -mt-1">
