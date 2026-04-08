@@ -74,16 +74,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "article",
     },
     alternates: {
-      canonical: `/gaming/${game.slug}/redeem-codes`,
+      canonical: `/gaming/${game.slug}`,
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
       googleBot: {
-        index: true,
+        index: false,
         follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1,
       },
     },
   }

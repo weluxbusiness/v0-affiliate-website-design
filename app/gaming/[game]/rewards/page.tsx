@@ -77,16 +77,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: `Claim free daily bonuses, gems & skins today!`,
     },
     alternates: {
-      canonical: `/gaming/${game.slug}/rewards`,
+      canonical: `/gaming/${game.slug}`,
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
       googleBot: {
-        index: true,
+        index: false,
         follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1,
       },
     },
   }
