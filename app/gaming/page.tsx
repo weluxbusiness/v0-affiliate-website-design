@@ -453,16 +453,76 @@ export default async function GamingPage() {
         </PageContainer>
       </section>
 
+      {/* Recently Updated Games - SEO Freshness Signal */}
+      <section className="py-10 md:py-12 bg-muted/30">
+        <PageContainer>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
+                <Clock className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Recently Updated
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Games with new codes added today
+                </p>
+              </div>
+            </div>
+            <Link 
+              href="/gaming/all-games"
+              className="text-sm font-medium text-primary hover:underline flex items-center gap-1"
+            >
+              View All {gamesData.length} Games
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {popularGames.slice(0, 8).map((game) => {
+              const codeCount = getActivePromoCodes(game.promoCodes).length
+              return (
+                <Link 
+                  key={game.id}
+                  href={`/gaming/${game.slug}`}
+                  className="flex items-center justify-between p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <span className="font-medium group-hover:text-primary transition-colors">
+                      {game.shortName || game.name}
+                    </span>
+                  </div>
+                  <Badge variant="secondary" className="text-xs">
+                    {codeCount} codes
+                  </Badge>
+                </Link>
+              )
+            })}
+          </div>
+        </PageContainer>
+      </section>
+
       {/* All Games List */}
       <section className="py-10 md:py-12">
         <PageContainer>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <Gamepad2 className="h-5 w-5 text-primary" />
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <Gamepad2 className="h-5 w-5 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">
+                All Games with Promo Codes
+              </h2>
             </div>
-            <h2 className="text-2xl font-bold text-foreground">
-              All Games with Promo Codes
-            </h2>
+            <Link 
+              href="/gaming/all-games"
+              className="text-sm font-medium text-primary hover:underline flex items-center gap-1"
+            >
+              Browse All
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
 
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -478,7 +538,7 @@ export default async function GamingPage() {
           {gamesData.length > 12 && (
             <div className="text-center mt-8">
               <Button variant="outline" size="lg" asChild>
-                <Link href="/gaming/promo-codes">
+                <Link href="/gaming/all-games">
                   View All {gamesData.length} Games
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
@@ -543,6 +603,13 @@ export default async function GamingPage() {
               More Resources
             </h4>
             <div className="flex flex-wrap gap-3">
+              <Link 
+                href="/gaming/all-games"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 text-green-600 hover:bg-green-500/20 text-sm font-medium transition-colors"
+              >
+                <Gamepad2 className="h-4 w-4" />
+                All {gamesData.length} Games
+              </Link>
               <Link 
                 href="/gaming/best-codes"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 text-sm font-medium transition-colors"
