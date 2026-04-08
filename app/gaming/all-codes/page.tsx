@@ -14,13 +14,19 @@ import {
   Trophy,
   Calendar,
   Search,
-  Flame
+  Flame,
+  Play,
+  ExternalLink,
+  ArrowRight
 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { 
   gamesData,
   getActivePromoCodes,
   getTotalActiveCodesCount,
-  sortPromoCodesByValue
+  sortPromoCodesByValue,
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -213,14 +219,35 @@ export default function AllCodesPage() {
               </h2>
             </div>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {todaysCodes.map(({ game, code }) => (
-                <PromoCodeCard 
-                  key={`${game.id}-${code.code}`}
-                  code={code}
-                  game={game}
-                  showGame={true}
-                />
-              ))}
+              {todaysCodes.map(({ game, code }) => {
+                const ctaInfo = getGameCtaInfo(game)
+                return (
+                  <div key={`${game.id}-${code.code}`} className="flex flex-col gap-3">
+                    <PromoCodeCard 
+                      code={code}
+                      game={game}
+                      showGame={true}
+                    />
+                    {/* CTA Button */}
+                    {ctaInfo.url ? (
+                      <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold">
+                        <a href={ctaInfo.url} target="_blank" rel={ctaInfo.rel}>
+                          {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                          {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+                          <ExternalLink className="h-3 w-3 ml-2" />
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button asChild variant="outline" className="w-full">
+                        <Link href={`/gaming/${game.slug}`}>
+                          View All {game.shortName || game.name} Codes
+                          <ArrowRight className="h-4 w-4 ml-2" />
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </PageContainer>
         </section>
@@ -240,14 +267,35 @@ export default function AllCodesPage() {
               </h2>
             </div>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {yesterdaysCodes.map(({ game, code }) => (
-                <PromoCodeCard 
-                  key={`${game.id}-${code.code}`}
-                  code={code}
-                  game={game}
-                  showGame={true}
-                />
-              ))}
+              {yesterdaysCodes.map(({ game, code }) => {
+                const ctaInfo = getGameCtaInfo(game)
+                return (
+                  <div key={`${game.id}-${code.code}`} className="flex flex-col gap-3">
+                    <PromoCodeCard 
+                      code={code}
+                      game={game}
+                      showGame={true}
+                    />
+                    {/* CTA Button */}
+                    {ctaInfo.url ? (
+                      <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold">
+                        <a href={ctaInfo.url} target="_blank" rel={ctaInfo.rel}>
+                          {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                          {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+                          <ExternalLink className="h-3 w-3 ml-2" />
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button asChild variant="outline" className="w-full">
+                        <Link href={`/gaming/${game.slug}`}>
+                          View All {game.shortName || game.name} Codes
+                          <ArrowRight className="h-4 w-4 ml-2" />
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </PageContainer>
         </section>
@@ -264,14 +312,35 @@ export default function AllCodesPage() {
           
           {olderCodes.length > 0 ? (
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {olderCodes.map(({ game, code }) => (
-                <PromoCodeCard 
-                  key={`${game.id}-${code.code}`}
-                  code={code}
-                  game={game}
-                  showGame={true}
-                />
-              ))}
+              {olderCodes.map(({ game, code }) => {
+                const ctaInfo = getGameCtaInfo(game)
+                return (
+                  <div key={`${game.id}-${code.code}`} className="flex flex-col gap-3">
+                    <PromoCodeCard 
+                      code={code}
+                      game={game}
+                      showGame={true}
+                    />
+                    {/* CTA Button */}
+                    {ctaInfo.url ? (
+                      <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold">
+                        <a href={ctaInfo.url} target="_blank" rel={ctaInfo.rel}>
+                          {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                          {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+                          <ExternalLink className="h-3 w-3 ml-2" />
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button asChild variant="outline" className="w-full">
+                        <Link href={`/gaming/${game.slug}`}>
+                          View All {game.shortName || game.name} Codes
+                          <ArrowRight className="h-4 w-4 ml-2" />
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           ) : (
             <Card className="border-dashed">
@@ -319,6 +388,29 @@ export default function AllCodesPage() {
           </div>
         </PageContainer>
       </section>
+
+      {/* Exit Intent Popup for RAID (main affiliate game) */}
+      {(() => {
+        const raidGame = gamesData.find(g => g.slug === 'raid-shadow-legends')
+        if (!raidGame) return null
+        const raidCtaInfo = getGameCtaInfo(raidGame)
+        const raidBestCode = sortPromoCodesByValue(getActivePromoCodes(raidGame.promoCodes))[0]
+        if (!raidCtaInfo.url || !raidBestCode) return null
+        return (
+          <ExitIntentPopup
+            gameName={raidGame.name}
+            gameShortName={raidGame.shortName}
+            affiliateUrl={raidCtaInfo.url}
+            bestCode={raidBestCode.code}
+            bestCodeReward={raidBestCode.reward}
+            ctaLabel={raidCtaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+            ctaRel={raidCtaInfo.rel}
+            isAffiliate={raidCtaInfo.isAffiliate}
+            urgencyText="Limited time offer"
+            trustText="Free to play · No credit card needed"
+          />
+        )
+      })()}
 
       <Footer />
     </div>

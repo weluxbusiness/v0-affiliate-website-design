@@ -123,8 +123,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ])
   
   // ============================================
-  // MONTHLY CODES PAGES - TOP 5 GAMES (April 2026)
-  // Priority 0.9 - Seasonal SEO pages
+  // MONTHLY CODES PAGES - TOP 5 GAMES (Legacy April 2026)
+  // Priority 0.9 - Original seasonal SEO pages
   // ============================================
   const monthlyCodesPages: MetadataRoute.Sitemap = guideGameSlugs.map((slug) => ({
     url: `${BASE_URL}/gaming/${slug}-codes-april-2026`,
@@ -133,5 +133,58 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }))
   
-  return [...mainPages, ...hubPages, ...gamePages, ...guidePages, ...monthlyCodesPages]
+  // ============================================
+  // SCALABLE MONTHLY PAGES - ALL GAMES x ALL MONTHS
+  // Creates 500+ indexed pages for long-tail SEO
+  // April 2026 through March 2027 = 12 months x 50+ games
+  // ============================================
+  const monthlyPages = [
+    'april-2026',
+    'may-2026',
+    'june-2026', 
+    'july-2026',
+    'august-2026',
+    'september-2026',
+    'october-2026',
+    'november-2026',
+    'december-2026',
+    'january-2027',
+    'february-2027',
+    'march-2027',
+  ]
+  
+  const allMonthlyPages: MetadataRoute.Sitemap = gamesData.flatMap((game) => {
+    const isTopGame = TOP_GAME_SLUGS.includes(game.slug)
+    
+    return monthlyPages.map((monthYear) => ({
+      url: `${BASE_URL}/gaming/${game.slug}/codes-${monthYear}`,
+      lastModified: currentDate,
+      changeFrequency: 'daily' as const,
+      priority: isTopGame ? 0.9 : 0.7,
+    }))
+  })
+  
+  // ============================================
+  // CODES-TODAY PAGES - ALL GAMES
+  // Daily updated pages for each game
+  // ============================================
+  const codesTodayPages: MetadataRoute.Sitemap = gamesData.map((game) => {
+    const isTopGame = TOP_GAME_SLUGS.includes(game.slug)
+    return {
+      url: `${BASE_URL}/gaming/${game.slug}/codes-today`,
+      lastModified: currentDate,
+      changeFrequency: 'daily' as const,
+      priority: isTopGame ? 0.8 : 0.6,
+    }
+  })
+  
+  return [
+    ...mainPages, 
+    ...hubPages, 
+    ...gamePages, 
+    ...guidePages, 
+    ...monthlyCodesPages,
+    ...allMonthlyPages,
+    ...codesTodayPages,
+  ]
 }

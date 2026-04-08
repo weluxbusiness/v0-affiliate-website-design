@@ -20,14 +20,14 @@ import {
   ExternalLink
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { 
   gamesData,
   getActivePromoCodes,
   getTotalActiveCodesCount,
   sortPromoCodesByValue,
   getGameLogoUrl,
-  getPlayAffiliateUrl,
-  hasGameSpecificAffiliateLinks
+  getGameCtaInfo
 } from "@/lib/gaming-data"
 
 export const revalidate = 300
@@ -171,8 +171,7 @@ export default function GamingPromoCodesPage() {
               {gameCodesMap.map(({ game, codes }) => {
                 const logoUrl = getGameLogoUrl(game)
                 const hasLogo = game.logoUrl
-                const hasRealAffiliate = hasGameSpecificAffiliateLinks(game)
-                const affiliateUrl = hasRealAffiliate ? getPlayAffiliateUrl(game) : null
+                const ctaInfo = getGameCtaInfo(game)
                 
                 return (
                   <div key={game.id} className="bg-card rounded-xl border border-border/50 p-6 hover:border-green-500/20 transition-colors">
@@ -213,12 +212,12 @@ export default function GamingPromoCodesPage() {
                           </div>
                           <p className="text-sm text-muted-foreground">
                             {codes.length} active codes | {game.categories[0]}
-                            {hasRealAffiliate && (
+                            {ctaInfo.isAffiliate && (
                               <span className="ml-2 text-green-600 font-medium">
                                 · Official offer
                               </span>
                             )}
-                            {!hasRealAffiliate && (
+                            {!ctaInfo.isAffiliate && ctaInfo.url && (
                               <span className="ml-2 text-blue-600">
                                 · Codes & guides
                               </span>
@@ -227,19 +226,19 @@ export default function GamingPromoCodesPage() {
                         </div>
                       </Link>
                       
-                      {/* Conditional CTA based on affiliate availability */}
-                      {hasRealAffiliate && affiliateUrl ? (
+                      {/* Conditional CTA based on URL availability */}
+                      {ctaInfo.url ? (
                         <Button 
                           asChild 
                           className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
                         >
                           <a 
-                            href={affiliateUrl} 
+                            href={ctaInfo.url} 
                             target="_blank"
-                            rel="nofollow sponsored noopener"
+                            rel={ctaInfo.rel}
                           >
-                            <Play className="h-4 w-4 mr-2 fill-current" />
-                            Play Now
+                            {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                            {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
                             <ExternalLink className="h-4 w-4 ml-2" />
                           </a>
                         </Button>
@@ -283,6 +282,29 @@ export default function GamingPromoCodesPage() {
           )}
         </PageContainer>
       </section>
+
+      {/* Exit Intent Popup for RAID (main affiliate game) */}
+      {(() => {
+        const raidGame = gamesData.find(g => g.slug === 'raid-shadow-legends')
+        if (!raidGame) return null
+        const raidCtaInfo = getGameCtaInfo(raidGame)
+        const raidBestCode = sortPromoCodesByValue(getActivePromoCodes(raidGame.promoCodes))[0]
+        if (!raidCtaInfo.url || !raidBestCode) return null
+        return (
+          <ExitIntentPopup
+            gameName={raidGame.name}
+            gameShortName={raidGame.shortName}
+            affiliateUrl={raidCtaInfo.url}
+            bestCode={raidBestCode.code}
+            bestCodeReward={raidBestCode.reward}
+            ctaLabel={raidCtaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+            ctaRel={raidCtaInfo.rel}
+            isAffiliate={raidCtaInfo.isAffiliate}
+            urgencyText="Limited time offer"
+            trustText="Free to play · No credit card needed"
+          />
+        )
+      })()}
 
       <Footer />
     </div>

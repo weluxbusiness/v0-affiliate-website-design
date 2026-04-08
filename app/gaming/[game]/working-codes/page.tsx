@@ -86,8 +86,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       googleBot: {
         index: false,
         follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1,
       },
     },
   }

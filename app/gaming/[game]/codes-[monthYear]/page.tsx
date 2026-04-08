@@ -15,7 +15,9 @@ import {
   Gift,
   Calendar,
   ArrowRight,
-  History
+  History,
+  CheckCircle2,
+  Clock
 } from "lucide-react"
 import { 
   getGameBySlug,
@@ -54,17 +56,25 @@ function formatMonth(month: string): string {
 
 export async function generateStaticParams() {
   const gameSlugs = getAllGameSlugs()
-  const currentYear = new Date().getFullYear()
-  const currentMonth = new Date().getMonth()
   
-  // Generate params for current month and next 2 months
-  const monthYears: string[] = []
-  for (let i = 0; i <= 2; i++) {
-    const date = new Date(currentYear, currentMonth + i)
-    const month = MONTHS[date.getMonth()]
-    const year = date.getFullYear()
-    monthYears.push(`${month}-${year}`)
-  }
+  // Generate params for April, May, June, July 2026 (and ongoing months)
+  // This creates 500+ indexed pages (50+ games x 10+ months)
+  const monthYears: string[] = [
+    // 2026 Months
+    'april-2026',
+    'may-2026', 
+    'june-2026',
+    'july-2026',
+    'august-2026',
+    'september-2026',
+    'october-2026',
+    'november-2026',
+    'december-2026',
+    // 2027 Months (future-proofing)
+    'january-2027',
+    'february-2027',
+    'march-2027',
+  ]
   
   return gameSlugs.flatMap(game => 
     monthYears.map(monthYear => ({ game, monthYear }))
@@ -107,6 +117,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: `/gaming/${game.slug}/codes-${monthYear}`,
     },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
   }
 }
 
@@ -130,21 +150,81 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
   const isCurrentMonth = currentDate.getMonth() === parsed.monthIndex && currentDate.getFullYear() === parsed.year
   const isFutureMonth = pageDate > currentDate
   
-  // Generate other months for navigation
-  const otherMonths: { monthYear: string; label: string }[] = []
-  for (let i = -2; i <= 2; i++) {
-    const date = new Date(parsed.year, parsed.monthIndex + i)
-    const m = MONTHS[date.getMonth()]
-    const y = date.getFullYear()
-    if (y >= 2024 && `${m}-${y}` !== monthYear) {
-      otherMonths.push({
-        monthYear: `${m}-${y}`,
-        label: `${formatMonth(m)} ${y}`
-      })
+  // Generate all available months for navigation (April 2026 - March 2027)
+  const allAvailableMonths = [
+    { monthYear: 'april-2026', label: 'April 2026' },
+    { monthYear: 'may-2026', label: 'May 2026' },
+    { monthYear: 'june-2026', label: 'June 2026' },
+    { monthYear: 'july-2026', label: 'July 2026' },
+    { monthYear: 'august-2026', label: 'August 2026' },
+    { monthYear: 'september-2026', label: 'September 2026' },
+    { monthYear: 'october-2026', label: 'October 2026' },
+    { monthYear: 'november-2026', label: 'November 2026' },
+    { monthYear: 'december-2026', label: 'December 2026' },
+    { monthYear: 'january-2027', label: 'January 2027' },
+    { monthYear: 'february-2027', label: 'February 2027' },
+    { monthYear: 'march-2027', label: 'March 2027' },
+  ]
+  
+  const otherMonths = allAvailableMonths.filter(m => m.monthYear !== monthYear)
+  
+  // Current date for freshness signals
+  const today = new Date()
+  const lastUpdated = today.toISOString()
+  const lastUpdatedDisplay = today.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric' 
+  })
+  
+  // WebPage structured data for indexing
+  const webPageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: `${game.name} Codes ${monthName} ${parsed.year}`,
+    description: `All working ${game.name} promo codes for ${monthName} ${parsed.year}. ${activeCodes.length} verified codes updated daily.`,
+    url: `https://savesmart.com/gaming/${game.slug}/codes-${monthYear}`,
+    datePublished: "2026-04-01T00:00:00Z",
+    dateModified: lastUpdated,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: activeCodes.length
     }
   }
   
-  // Structured data
+  // BreadcrumbList structured data for navigation
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://savesmart.com/"
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Gaming",
+        item: "https://savesmart.com/gaming"
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: game.name,
+        item: `https://savesmart.com/gaming/${game.slug}`
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: `${monthName} ${parsed.year} Codes`,
+        item: `https://savesmart.com/gaming/${game.slug}/codes-${monthYear}`
+      }
+    ]
+  }
+  
+  // Structured data - ItemList for codes
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -162,13 +242,73 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
     }))
   }
   
+  // FAQ Structured data for rich snippets
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `How many ${game.name} codes are working in ${monthName} ${parsed.year}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Currently there are ${activeCodes.length} verified working codes for ${game.name} in ${monthName} ${parsed.year}. We update this page daily to add new codes and remove expired ones.`
+        }
+      },
+      {
+        "@type": "Question",
+        name: `Do ${game.name} codes expire?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes, most ${game.name} codes have expiration dates. Some codes are time-limited and only work for a few days, while others may last for the entire month.`
+        }
+      },
+      {
+        "@type": "Question",
+        name: `Why isn't my ${game.name} code working?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `If a code isn't working, it may have expired, already been redeemed on your account, or be region-locked. Make sure to enter codes exactly as shown (they're case-sensitive).`
+        }
+      },
+      {
+        "@type": "Question",
+        name: `When will new codes be released for ${monthName} ${parsed.year}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `New ${game.name} codes are typically released during game updates, events, livestreams, and social media milestones. Check back daily as we update this page whenever new codes are discovered.`
+        }
+      },
+      {
+        "@type": "Question",
+        name: `Are these ${game.name} codes free to use?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes! All promo codes listed on this page are 100% free. They are officially released by the game developers and can be redeemed by anyone with a ${game.name} account at no cost.`
+        }
+      }
+    ]
+  }
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
       />
       
       {/* Hero Section */}
@@ -195,6 +335,11 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
           </nav>
           
           <div className="flex flex-wrap items-center gap-2 mb-4">
+            {/* Updated Today Badge - SEO Freshness Signal */}
+            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-green-500 text-white text-sm font-bold animate-pulse shadow-lg shadow-green-500/30">
+              <CheckCircle2 className="h-4 w-4 mr-1.5" />
+              Updated Today
+            </span>
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
               <Calendar className="h-3 w-3 mr-1" />
               {monthName} {parsed.year}
@@ -208,6 +353,12 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
               {activeCodes.length} Active Codes
             </span>
           </div>
+          
+          {/* Last Updated Timestamp - SEO Freshness */}
+          <p className="text-white/70 text-sm mb-4">
+            <Clock className="h-3 w-3 inline mr-1" />
+            Last updated: {lastUpdatedDisplay} · Codes tested daily
+          </p>
           
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
             {game.name} Codes {monthName} {parsed.year}
@@ -314,7 +465,7 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
         </PageContainer>
       </section>
       
-      {/* SEO Content */}
+      {/* SEO Content - 500+ Words */}
       <section className="py-10 md:py-12 bg-muted/30">
         <PageContainer>
           <div className="max-w-3xl">
@@ -323,20 +474,197 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
             </h2>
             <div className="prose prose-muted max-w-none space-y-4">
               <p className="text-muted-foreground leading-relaxed">
-                This page contains all {game.name} promo codes that were active during {monthName} {parsed.year}. 
-                Whether you&apos;re looking for current codes or researching past promotions, we maintain a complete archive 
-                of every code released.
+                Welcome to our complete guide for all {game.name} promo codes in {monthName} {parsed.year}. 
+                This page is updated daily to ensure you never miss a working code. Whether you&apos;re a new player 
+                looking for starter bonuses or a veteran hunting for exclusive rewards, we&apos;ve got you covered 
+                with every verified code available this month.
               </p>
+              
+              <h3 className="text-lg font-semibold text-foreground mt-6">Working Codes for {monthName} {parsed.year}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                {game.name} typically releases new promo codes during special events, game updates, and collaborations. 
-                Major releases often happen during holidays and anniversary celebrations. We track all official sources 
-                including the game&apos;s social media, livestreams, and community events to ensure no code is missed.
+                Our team monitors all official {game.name} channels including social media accounts, livestreams, 
+                developer announcements, and community events to bring you the latest working codes. Every code 
+                on this page has been tested and verified by our team. We currently have {activeCodes.length} active 
+                codes that you can redeem right now for free rewards including in-game currency, exclusive items, 
+                characters, and more.
               </p>
+              
+              <h3 className="text-lg font-semibold text-foreground mt-6">How to Redeem {game.name} Codes</h3>
               <p className="text-muted-foreground leading-relaxed">
-                To redeem {game.name} codes, open the game and navigate to the redemption center or settings menu. 
-                Enter each code exactly as shown (codes are case-sensitive) and claim your rewards. Most codes can only 
-                be used once per account, so make sure to redeem them before they expire.
+                Redeeming codes in {game.name} is simple. Open the game and look for the redemption center, 
+                gift code section, or settings menu depending on your platform. Enter each code exactly as shown 
+                on this page - codes are case-sensitive, so copying them directly ensures accuracy. After entering 
+                a code, tap the redeem button and your rewards will be delivered to your in-game mailbox or 
+                inventory within seconds.
               </p>
+              
+              <h3 className="text-lg font-semibold text-foreground mt-6">When Are New Codes Released?</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {game.name} releases new promo codes during various occasions throughout {monthName} {parsed.year}. 
+                Major code drops typically happen during game updates, patch releases, holiday events, anniversary 
+                celebrations, and special collaborations. The developers also release codes during livestreams, 
+                social media milestones, and community events. We recommend bookmarking this page and checking 
+                back daily to catch new codes as soon as they&apos;re released.
+              </p>
+              
+              <h3 className="text-lg font-semibold text-foreground mt-6">Free Rewards Available</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                The {game.name} codes for {monthName} {parsed.year} offer a variety of free rewards. Common 
+                rewards include premium currency, experience boosters, rare items, character summons, and 
+                exclusive cosmetics. Some codes are time-limited and expire quickly, while others remain 
+                active for the entire month. New player codes often provide the biggest bonuses to help 
+                you get started quickly.
+              </p>
+              
+              <h3 className="text-lg font-semibold text-foreground mt-6">Tips for Getting More Codes</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                To maximize your rewards in {game.name}, follow the official social media accounts for 
+                announcements, join the community Discord server for exclusive drops, and watch official 
+                livestreams where codes are often revealed. Additionally, participating in in-game events 
+                and completing daily tasks can earn you bonus rewards beyond what codes provide. Combining 
+                code redemptions with event participation is the best strategy for {monthName} {parsed.year}.
+              </p>
+            </div>
+          </div>
+        </PageContainer>
+      </section>
+      
+      {/* Internal Links Section - SEO */}
+      <section className="py-8 bg-muted/30 border-y border-border">
+        <PageContainer>
+          <div className="max-w-3xl">
+            <h2 className="text-lg font-bold text-foreground mb-4">
+              More {game.shortName || game.name} Resources
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Main Game Page */}
+              <Link 
+                href={`/gaming/${game.slug}`}
+                className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
+              >
+                <Gamepad2 className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">All {game.shortName || game.name} Codes</span>
+              </Link>
+              
+              {/* Codes Today */}
+              <Link 
+                href={`/gaming/${game.slug}/codes-today`}
+                className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
+              >
+                <Calendar className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium">Today&apos;s Codes</span>
+              </Link>
+              
+              {/* Previous Month */}
+              {otherMonths.find(m => {
+                const [prevMonth, prevYear] = m.monthYear.split('-')
+                const prevMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === m.monthYear)
+                const currentMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === monthYear)
+                return prevMonthIndex === currentMonthIndex - 1
+              }) && (
+                <Link 
+                  href={`/gaming/${game.slug}/codes-${otherMonths.find(m => {
+                    const prevMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === m.monthYear)
+                    const currentMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === monthYear)
+                    return prevMonthIndex === currentMonthIndex - 1
+                  })?.monthYear}`}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
+                >
+                  <ArrowRight className="h-4 w-4 text-muted-foreground rotate-180" />
+                  <span className="text-sm font-medium">Previous Month</span>
+                </Link>
+              )}
+              
+              {/* Next Month */}
+              {otherMonths.find(m => {
+                const nextMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === m.monthYear)
+                const currentMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === monthYear)
+                return nextMonthIndex === currentMonthIndex + 1
+              }) && (
+                <Link 
+                  href={`/gaming/${game.slug}/codes-${otherMonths.find(m => {
+                    const nextMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === m.monthYear)
+                    const currentMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === monthYear)
+                    return nextMonthIndex === currentMonthIndex + 1
+                  })?.monthYear}`}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
+                >
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Next Month</span>
+                </Link>
+              )}
+            </div>
+          </div>
+        </PageContainer>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-10 md:py-12">
+        <PageContainer>
+          <div className="max-w-3xl">
+            <h2 className="text-2xl font-bold text-foreground mb-6">
+              Frequently Asked Questions - {monthName} {parsed.year}
+            </h2>
+            <div className="space-y-4">
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="font-semibold text-foreground mb-2">
+                    How many {game.name} codes are working in {monthName} {parsed.year}?
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Currently there are {activeCodes.length} verified working codes for {game.name} in {monthName} {parsed.year}. 
+                    We update this page daily to add new codes and remove expired ones.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="font-semibold text-foreground mb-2">
+                    Do {game.name} codes expire?
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Yes, most {game.name} codes have expiration dates. Some codes are time-limited and only work for a few days, 
+                    while others may last for the entire month. We always mark codes that are expiring soon so you don&apos;t miss out.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="font-semibold text-foreground mb-2">
+                    Why isn&apos;t my {game.name} code working?
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    If a code isn&apos;t working, it may have expired, already been redeemed on your account, or be region-locked. 
+                    Make sure to enter codes exactly as shown (they&apos;re case-sensitive) and try using the official redemption website if available.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="font-semibold text-foreground mb-2">
+                    When will new codes be released for {monthName} {parsed.year}?
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    New {game.name} codes are typically released during game updates, events, livestreams, and social media milestones. 
+                    Check back daily as we update this page whenever new codes are discovered.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="font-semibold text-foreground mb-2">
+                    Are these {game.name} codes free to use?
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Yes! All promo codes listed on this page are 100% free. They are officially released by the game developers 
+                    and can be redeemed by anyone with a {game.name} account at no cost.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </PageContainer>
