@@ -5,6 +5,8 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
+import { Breadcrumbs, getGameCodesTodayBreadcrumbs, generateBreadcrumbSchema } from "@/components/gaming/breadcrumbs"
+import { SEOInternalLinks, SEOFooterLinks } from "@/components/gaming/seo-internal-links"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,7 +18,8 @@ import {
   Calendar,
   Clock,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  CheckCircle2
 } from "lucide-react"
 import { 
   getGameBySlug,
@@ -137,6 +140,9 @@ export default async function GameCodesTodayPage({ params }: PageProps) {
     }))
   }
   
+  // Breadcrumb schema for SEO
+  const breadcrumbSchema = generateBreadcrumbSchema(getGameCodesTodayBreadcrumbs(game.name, game.slug))
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -144,6 +150,10 @@ export default async function GameCodesTodayPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       
       {/* Hero Section */}
@@ -347,6 +357,17 @@ export default async function GameCodesTodayPage({ params }: PageProps) {
           )}
         </PageContainer>
       </section>
+      
+      {/* SEO Internal Links */}
+      <SEOInternalLinks 
+        currentGameSlug={game.slug}
+        showPopularGames={true}
+        showLatestCodes={true}
+        showMonthlyNav={true}
+      />
+      
+      {/* SEO Footer Links */}
+      <SEOFooterLinks currentGameSlug={game.slug} />
       
       <Footer />
     </div>

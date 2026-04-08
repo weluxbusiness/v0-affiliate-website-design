@@ -72,6 +72,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.7,
     },
+    // HTML Sitemap - All Games Directory
+    {
+      url: `${BASE_URL}/gaming/all-games`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
   ]
   
   // ============================================
