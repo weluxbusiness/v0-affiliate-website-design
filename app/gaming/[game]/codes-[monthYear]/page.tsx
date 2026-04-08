@@ -100,18 +100,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const benefit = primaryReward === 'Primogems' ? 'Primogems' : primaryReward === 'V-Bucks' ? 'V-Bucks' : primaryReward === 'Gems' ? 'Gems' : 'Rewards'
   
   return {
-    title: `${game.shortName || game.name} Codes (${monthName} ${parsed.year}) – ${codeCount}+ Free ${benefit}`,
-    description: `Complete list of all ${game.name} promo codes for ${monthName} ${parsed.year}. ${codeCount} verified working codes. Redeem for free rewards and in-game items.`,
+    // CTR-optimized title: [GAME] Codes (Month Year) – X Working Codes + Free Rewards
+    title: `${game.shortName || game.name} Codes (${monthName} ${parsed.year}) – ${codeCount} Working Codes + Free Rewards`,
+    // CTR-optimized description: number of codes, "updated today", "free rewards"
+    description: `${codeCount} working ${game.name} codes for ${monthName} ${parsed.year}. Updated today with verified codes. Redeem for FREE rewards, gems & exclusive items!`,
     keywords: [
       `${game.name} codes ${monthName} ${parsed.year}`,
       `${game.name} promo codes ${parsed.year}`,
       `${game.name} codes ${monthName.toLowerCase()}`,
       `${game.name} ${parsed.year} codes`,
       `new ${game.name} codes`,
+      `working ${game.name} codes`,
+      `${game.name} free rewards`,
     ],
     openGraph: {
-      title: `${game.name} Codes - ${monthName} ${parsed.year}`,
-      description: `All working ${game.name} promo codes for ${monthName} ${parsed.year}.`,
+      // OG title with "WORKING CODES" + month/year + code count
+      title: `${game.name} WORKING CODES (${monthName} ${parsed.year}) – ${codeCount} Free Rewards`,
+      description: `${codeCount} verified working codes. Updated today! FREE rewards, gems & items.`,
       url: `https://savesmart.bio/gaming/${game.slug}/codes-${monthYear}`,
     },
     alternates: {

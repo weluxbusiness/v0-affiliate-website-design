@@ -57,11 +57,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   // SEO-optimized title: keyword-first, count, benefit, urgency - under 60 chars
   const title = game.metaTitle || 
-    `${game.shortName || game.name} Codes (${shortMonth} ${currentYear}) – ${codeCount}+ ${benefit}`
+    // CTR-optimized title: [GAME] Codes (Month Year) – X Working Codes + Free Rewards
+    `${game.shortName || game.name} Codes (${currentMonth} ${currentYear}) – ${codeCount} Working Codes + Free Rewards`
   
-  // Description targeting featured snippets with specific value propositions
+  // CTR-optimized description: number of codes, "updated today", "free rewards"
   const description = game.metaDescription || 
-    `Get ${codeCount}+ working ${game.name} promo codes for ${currentMonth} ${currentYear}. Free gems, rewards & bonuses. All codes verified daily - redeem now before they expire!`
+    `${codeCount} working ${game.name} codes for ${currentMonth} ${currentYear}. Updated today with verified codes. Redeem for FREE rewards, gems & exclusive items!`
   
   return {
     title,
@@ -83,8 +84,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ...game.categories.map(cat => `${cat.toLowerCase()} game codes`),
     ],
     openGraph: {
-      title: `${game.name} Promo Codes ${currentMonth} ${currentYear} | SaveSmart`,
-      description: `${codeCount}+ working ${game.name} codes. Free gems, rewards & bonuses. Updated daily!`,
+      // OG title with "WORKING CODES" + month/year + code count
+      title: `${game.name} WORKING CODES (${currentMonth} ${currentYear}) – ${codeCount} Free Rewards`,
+      description: `${codeCount} verified working codes. Updated today! FREE rewards, gems & items.`,
       url: `https://savesmart.bio/gaming/${game.slug}`,
       type: "website",
       siteName: "SaveSmart",
@@ -95,14 +97,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             : `https://savesmart.bio/og/gaming/${game.slug}.jpg`,
           width: 256,
           height: 256,
-          alt: `${game.name} codes ${currentMonth} ${currentYear} - free rewards and working promo codes`,
+          alt: `${game.name} WORKING CODES ${currentMonth} ${currentYear} - ${codeCount} free rewards`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${game.name} Promo Codes ${currentMonth} ${currentYear}`,
-      description: `${codeCount}+ working codes. Free gems & rewards!`,
+      title: `${game.name} WORKING CODES – ${codeCount} Free Rewards`,
+      description: `${codeCount} verified codes. Updated today! FREE rewards & gems.`,
     },
     alternates: {
       canonical: `/gaming/${game.slug}`,

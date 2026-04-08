@@ -53,8 +53,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const benefit = primaryReward === 'Primogems' ? 'Primogems' : primaryReward === 'V-Bucks' ? 'V-Bucks' : primaryReward === 'Gems' ? 'Gems' : 'Rewards'
   
   return {
-    title: `${game.shortName || game.name} Codes Today – ${codeCount}+ Free ${benefit} (${shortMonth})`,
-    description: `All ${codeCount}+ working ${game.name} promo codes for ${dateStr}. Get FREE gems, skins & rewards. Verified hourly - redeem before they expire!`,
+    // CTR-optimized title: [GAME] Codes (Month Year) – X Working Codes + Free Rewards
+    title: `${game.shortName || game.name} Codes (${shortMonth}) – ${codeCount} Working Codes + Free Rewards`,
+    // CTR-optimized description: number of codes, "updated today", "free rewards"
+    description: `${codeCount} working ${game.name} codes for today. Updated today with verified codes. Redeem for FREE rewards, gems & exclusive items!`,
     keywords: [
       `${game.name} codes today`,
       `${game.name} new codes`,
@@ -65,14 +67,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `${game.name} free rewards today`,
     ],
     openGraph: {
-      title: `${game.name} Codes Today - ${codeCount}+ FREE Rewards | ${shortMonth}`,
-      description: `${codeCount}+ working codes. Free gems, skins & rewards. Updated hourly!`,
+      // OG title with "WORKING CODES" + month/year + code count
+      title: `${game.name} WORKING CODES (${shortMonth}) – ${codeCount} Free Rewards`,
+      description: `${codeCount} verified working codes. Updated today! FREE rewards, gems & items.`,
       url: `https://savesmart.bio/gaming/${game.slug}/codes-today`,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${game.name} Codes Today - FREE Rewards`,
-      description: `${codeCount}+ working codes verified today. Redeem now!`,
+      title: `${game.name} WORKING CODES – ${codeCount} Free Rewards`,
+      description: `${codeCount} verified codes. Updated today! FREE rewards & gems.`,
     },
     alternates: {
       canonical: `/gaming/${game.slug}/codes-today`,
