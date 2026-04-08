@@ -216,25 +216,25 @@ export function MonthlyCodesPageTemplate({
 
   return (
     <CopyProvider>
-      {/* Trust Banner */}
+      {/* Trust Banner with Freshness Signals */}
       <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3">
         <PageContainer>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
-            <span className="flex items-center gap-1.5">
+            {/* Updated Today Badge - SEO Freshness Signal */}
+            <span className="flex items-center gap-1.5 bg-white/20 px-3 py-1 rounded-full font-bold">
               <CheckCircle2 className="h-4 w-4" />
+              Updated Today
+            </span>
+            <span className="flex items-center gap-1.5">
               <strong>{activeCodes.length} Working Codes</strong>
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="h-4 w-4" />
-              Updated Daily
+              Last updated: {lastUpdated}
             </span>
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4" />
-              Codes Tested Regularly
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
-              {month} {year}
+              Codes Tested Daily
             </span>
           </div>
         </PageContainer>

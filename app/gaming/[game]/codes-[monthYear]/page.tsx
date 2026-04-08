@@ -15,7 +15,9 @@ import {
   Gift,
   Calendar,
   ArrowRight,
-  History
+  History,
+  CheckCircle2,
+  Clock
 } from "lucide-react"
 import { 
   getGameBySlug,
@@ -166,6 +168,62 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
   
   const otherMonths = allAvailableMonths.filter(m => m.monthYear !== monthYear)
   
+  // Current date for freshness signals
+  const today = new Date()
+  const lastUpdated = today.toISOString()
+  const lastUpdatedDisplay = today.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric' 
+  })
+  
+  // WebPage structured data for indexing
+  const webPageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: `${game.name} Codes ${monthName} ${parsed.year}`,
+    description: `All working ${game.name} promo codes for ${monthName} ${parsed.year}. ${activeCodes.length} verified codes updated daily.`,
+    url: `https://savesmart.com/gaming/${game.slug}/codes-${monthYear}`,
+    datePublished: "2026-04-01T00:00:00Z",
+    dateModified: lastUpdated,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: activeCodes.length
+    }
+  }
+  
+  // BreadcrumbList structured data for navigation
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://savesmart.com/"
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Gaming",
+        item: "https://savesmart.com/gaming"
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: game.name,
+        item: `https://savesmart.com/gaming/${game.slug}`
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: `${monthName} ${parsed.year} Codes`,
+        item: `https://savesmart.com/gaming/${game.slug}/codes-${monthYear}`
+      }
+    ]
+  }
+  
   // Structured data - ItemList for codes
   const structuredData = {
     "@context": "https://schema.org",
@@ -238,6 +296,14 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
       
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <script
@@ -269,6 +335,11 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
           </nav>
           
           <div className="flex flex-wrap items-center gap-2 mb-4">
+            {/* Updated Today Badge - SEO Freshness Signal */}
+            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-green-500 text-white text-sm font-bold animate-pulse shadow-lg shadow-green-500/30">
+              <CheckCircle2 className="h-4 w-4 mr-1.5" />
+              Updated Today
+            </span>
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
               <Calendar className="h-3 w-3 mr-1" />
               {monthName} {parsed.year}
@@ -282,6 +353,12 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
               {activeCodes.length} Active Codes
             </span>
           </div>
+          
+          {/* Last Updated Timestamp - SEO Freshness */}
+          <p className="text-white/70 text-sm mb-4">
+            <Clock className="h-3 w-3 inline mr-1" />
+            Last updated: {lastUpdatedDisplay} · Codes tested daily
+          </p>
           
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-balance">
             {game.name} Codes {monthName} {parsed.year}
@@ -452,6 +529,75 @@ export default async function GameCodesMonthPage({ params }: PageProps) {
         </PageContainer>
       </section>
       
+      {/* Internal Links Section - SEO */}
+      <section className="py-8 bg-muted/30 border-y border-border">
+        <PageContainer>
+          <div className="max-w-3xl">
+            <h2 className="text-lg font-bold text-foreground mb-4">
+              More {game.shortName || game.name} Resources
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Main Game Page */}
+              <Link 
+                href={`/gaming/${game.slug}`}
+                className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
+              >
+                <Gamepad2 className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">All {game.shortName || game.name} Codes</span>
+              </Link>
+              
+              {/* Codes Today */}
+              <Link 
+                href={`/gaming/${game.slug}/codes-today`}
+                className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
+              >
+                <Calendar className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium">Today&apos;s Codes</span>
+              </Link>
+              
+              {/* Previous Month */}
+              {otherMonths.find(m => {
+                const [prevMonth, prevYear] = m.monthYear.split('-')
+                const prevMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === m.monthYear)
+                const currentMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === monthYear)
+                return prevMonthIndex === currentMonthIndex - 1
+              }) && (
+                <Link 
+                  href={`/gaming/${game.slug}/codes-${otherMonths.find(m => {
+                    const prevMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === m.monthYear)
+                    const currentMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === monthYear)
+                    return prevMonthIndex === currentMonthIndex - 1
+                  })?.monthYear}`}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
+                >
+                  <ArrowRight className="h-4 w-4 text-muted-foreground rotate-180" />
+                  <span className="text-sm font-medium">Previous Month</span>
+                </Link>
+              )}
+              
+              {/* Next Month */}
+              {otherMonths.find(m => {
+                const nextMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === m.monthYear)
+                const currentMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === monthYear)
+                return nextMonthIndex === currentMonthIndex + 1
+              }) && (
+                <Link 
+                  href={`/gaming/${game.slug}/codes-${otherMonths.find(m => {
+                    const nextMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === m.monthYear)
+                    const currentMonthIndex = allAvailableMonths.findIndex(am => am.monthYear === monthYear)
+                    return nextMonthIndex === currentMonthIndex + 1
+                  })?.monthYear}`}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
+                >
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Next Month</span>
+                </Link>
+              )}
+            </div>
+          </div>
+        </PageContainer>
+      </section>
+
       {/* FAQ Section */}
       <section className="py-10 md:py-12">
         <PageContainer>
