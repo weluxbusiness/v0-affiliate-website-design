@@ -133,5 +133,69 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }))
   
-  return [...mainPages, ...hubPages, ...gamePages, ...guidePages, ...monthlyCodesPages]
+  // ============================================
+  // LONG-TAIL GAME VARIANT PAGES - ALL GAMES
+  // These are the SEO traffic drivers for "working codes", "new codes", etc.
+  // Priority varies: top games 0.8, others 0.6
+  // ============================================
+  const currentMonth = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toLowerCase().replace(' ', '-')
+  
+  const gameVariantPages: MetadataRoute.Sitemap = gamesData.flatMap((game) => {
+    const isTopGame = TOP_GAME_SLUGS.includes(game.slug)
+    const priority = isTopGame ? 0.8 : 0.6
+    
+    return [
+      // [game]/codes-today - Daily SEO page
+      {
+        url: `${BASE_URL}/gaming/${game.slug}/codes-today`,
+        lastModified: currentDate,
+        changeFrequency: 'daily' as const,
+        priority: priority,
+      },
+      // [game]/working-codes - High-intent SEO page  
+      {
+        url: `${BASE_URL}/gaming/${game.slug}/working-codes`,
+        lastModified: currentDate,
+        changeFrequency: 'daily' as const,
+        priority: priority,
+      },
+      // [game]/new-codes - Fresh content SEO page
+      {
+        url: `${BASE_URL}/gaming/${game.slug}/new-codes`,
+        lastModified: currentDate,
+        changeFrequency: 'daily' as const,
+        priority: priority,
+      },
+      // [game]/redeem-codes - How-to SEO page
+      {
+        url: `${BASE_URL}/gaming/${game.slug}/redeem-codes`,
+        lastModified: currentDate,
+        changeFrequency: 'weekly' as const,
+        priority: priority - 0.1,
+      },
+      // [game]/free-rewards - Reward-focused SEO page
+      {
+        url: `${BASE_URL}/gaming/${game.slug}/free-rewards`,
+        lastModified: currentDate,
+        changeFrequency: 'daily' as const,
+        priority: priority,
+      },
+      // [game]/rewards - Daily rewards SEO page
+      {
+        url: `${BASE_URL}/gaming/${game.slug}/rewards`,
+        lastModified: currentDate,
+        changeFrequency: 'daily' as const,
+        priority: priority - 0.1,
+      },
+      // [game]/codes-[monthYear] - Monthly SEO pages (dynamic)
+      {
+        url: `${BASE_URL}/gaming/${game.slug}/codes-${currentMonth}`,
+        lastModified: currentDate,
+        changeFrequency: 'daily' as const,
+        priority: isTopGame ? 0.9 : 0.7,
+      },
+    ]
+  })
+  
+  return [...mainPages, ...hubPages, ...gamePages, ...guidePages, ...monthlyCodesPages, ...gameVariantPages]
 }

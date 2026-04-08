@@ -82,14 +82,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: `${codeCount}+ free codes and daily rewards. Claim now!`,
     },
     alternates: {
-      canonical: `/gaming/${game.slug}`,
+      canonical: `/gaming/${game.slug}/free-rewards`,
     },
     robots: {
-      index: false,
+      index: true,
       follow: true,
       googleBot: {
-        index: false,
+        index: true,
         follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
     },
   }
