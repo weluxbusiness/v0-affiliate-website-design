@@ -48,12 +48,20 @@ export function HomeGamingDeals({ games }: HomeGamingDealsProps) {
               Discover the latest promo codes, free rewards, and exclusive bonuses for top games.
             </p>
           </div>
-          <Button variant="outline" className="gap-2 shrink-0" asChild>
-            <Link href="/gaming">
-              View All Games
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <div className="flex gap-2 shrink-0">
+            <Button variant="outline" className="gap-2" asChild>
+              <Link href="/gaming">
+                Gaming Hub
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button variant="default" className="gap-2" asChild>
+              <Link href="/gaming/all-games">
+                All Games
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {/* Game Cards Grid */}

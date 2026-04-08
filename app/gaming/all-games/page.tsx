@@ -1,6 +1,8 @@
 import { Metadata } from "next"
 import Link from "next/link"
 import { gamesData, getActivePromoCodes } from "@/lib/gaming-data"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -16,12 +18,14 @@ import {
   ChevronRight,
   CheckCircle2,
   Clock,
-  Search
+  Search,
+  Tag,
+  ArrowRight
 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "All Game Codes – 50+ Games with Free Rewards | SaveSmart",
-  description: "Complete list of all games with working promo codes. 50+ games updated daily with free rewards, gems & exclusive items. Find codes for any game!",
+  title: "All Game Codes – 90+ Games with Free Rewards | SaveSmart",
+  description: "Complete list of all games with working promo codes. 90+ games updated daily with free rewards, gems & exclusive items. Find codes for any game!",
   keywords: [
     "game codes",
     "promo codes",
@@ -86,11 +90,13 @@ export default function AllGamesPage() {
   const breadcrumbSchema = generateBreadcrumbSchema(getAllGamesBreadcrumbs())
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/10 via-background to-background py-8 border-b border-border">
@@ -150,40 +156,51 @@ export default function AllGamesPage() {
                     const activeCodes = getActivePromoCodes(game.promoCodes)
                     
                     return (
-                      <Link 
-                        key={game.slug}
-                        href={`/gaming/${game.slug}`}
-                        className="group"
-                      >
-                        <Card className="h-full hover:border-primary/50 transition-colors">
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between gap-2 mb-2">
+                      <Card key={game.slug} className="h-full hover:border-primary/50 transition-colors group">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <Link href={`/gaming/${game.slug}`}>
                               <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                                 {game.shortName || game.name}
                               </h3>
-                              <Badge 
-                                variant={activeCodes.length > 0 ? "default" : "secondary"}
-                                className={activeCodes.length > 0 ? "bg-green-600" : ""}
-                              >
-                                {activeCodes.length} codes
-                              </Badge>
-                            </div>
-                            
-                            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                              {game.description}
-                            </p>
-                            
-                            {/* Quick Info */}
-                            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                              <span>All Codes</span>
-                              <span>•</span>
-                              <span>Today&apos;s Codes</span>
-                              <span>•</span>
-                              <span>April 2026</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
+                            </Link>
+                            <Badge 
+                              variant={activeCodes.length > 0 ? "default" : "secondary"}
+                              className={activeCodes.length > 0 ? "bg-green-600" : ""}
+                            >
+                              {activeCodes.length} codes
+                            </Badge>
+                          </div>
+                          
+                          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                            {game.description}
+                          </p>
+                          
+                          {/* Quick Links - Real links for crawling */}
+                          <div className="flex flex-wrap gap-2 text-xs">
+                            <Link 
+                              href={`/gaming/${game.slug}`}
+                              className="text-primary hover:underline"
+                            >
+                              All Codes
+                            </Link>
+                            <span className="text-muted-foreground">•</span>
+                            <Link 
+                              href={`/gaming/${game.slug}/codes-today`}
+                              className="text-primary hover:underline"
+                            >
+                              Today
+                            </Link>
+                            <span className="text-muted-foreground">•</span>
+                            <Link 
+                              href={`/gaming/${game.slug}/codes-april-2026`}
+                              className="text-primary hover:underline"
+                            >
+                              April 2026
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
                     )
                   })}
                 </div>
@@ -270,12 +287,14 @@ export default function AllGamesPage() {
         </PageContainer>
       </section>
 
-      {/* SEO Internal Links */}
-      <SEOInternalLinks 
-        showPopularGames={true}
-        showLatestCodes={true}
-        showMonthlyNav={true}
-      />
-    </>
+        {/* SEO Internal Links */}
+        <SEOInternalLinks 
+          showPopularGames={true}
+          showLatestCodes={true}
+          showMonthlyNav={true}
+        />
+      </main>
+      <Footer />
+    </div>
   )
 }

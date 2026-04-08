@@ -10,7 +10,7 @@ import {
   TrendingUp
 } from "lucide-react"
 
-// Top 10 Popular Games for internal linking
+// Top 20 Popular Games for internal linking
 const POPULAR_GAMES = [
   { slug: 'raid-shadow-legends', name: 'RAID', codes: 15 },
   { slug: 'genshin-impact', name: 'Genshin Impact', codes: 12 },
@@ -22,6 +22,16 @@ const POPULAR_GAMES = [
   { slug: 'pokemon-go', name: 'Pokemon GO', codes: 8 },
   { slug: 'apex-legends', name: 'Apex Legends', codes: 4 },
   { slug: 'valorant', name: 'VALORANT', codes: 3 },
+  { slug: 'zenless-zone-zero', name: 'Zenless Zone Zero', codes: 8 },
+  { slug: 'wuthering-waves', name: 'Wuthering Waves', codes: 6 },
+  { slug: 'brawl-stars', name: 'Brawl Stars', codes: 7 },
+  { slug: 'clash-royale', name: 'Clash Royale', codes: 5 },
+  { slug: 'pubg-mobile', name: 'PUBG Mobile', codes: 6 },
+  { slug: 'free-fire', name: 'Free Fire', codes: 10 },
+  { slug: 'counter-strike-2', name: 'CS2', codes: 3 },
+  { slug: 'league-of-legends', name: 'League of Legends', codes: 4 },
+  { slug: 'arknights', name: 'Arknights', codes: 5 },
+  { slug: 'blue-archive', name: 'Blue Archive', codes: 6 },
 ]
 
 // Available months for navigation
