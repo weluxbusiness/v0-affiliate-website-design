@@ -20,8 +20,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/layout/page-container"
+import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import type { Game } from "@/lib/gaming-data"
-import { getGameCtaInfo } from "@/lib/gaming-data"
+import { getGameCtaInfo, getActivePromoCodes, sortPromoCodesByValue } from "@/lib/gaming-data"
 
 interface GuideSection {
   title: string
@@ -49,6 +50,11 @@ export function GuidePageTemplate({
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().toLocaleString('default', { month: 'long' })
   const ctaInfo = getGameCtaInfo(game)
+  
+  // Get best code for exit popup
+  const activeCodes = getActivePromoCodes(game.promoCodes)
+  const sortedCodes = sortPromoCodesByValue(activeCodes)
+  const bestCode = sortedCodes[0]
 
   const guideIcons = {
     guide: BookOpen,
@@ -338,6 +344,22 @@ export function GuidePageTemplate({
           </div>
         </PageContainer>
       </section>
+      
+      {/* Exit Intent Popup */}
+      {ctaInfo.url && bestCode && (
+        <ExitIntentPopup
+          gameName={game.name}
+          gameShortName={game.shortName}
+          affiliateUrl={ctaInfo.url}
+          bestCode={bestCode.code}
+          bestCodeReward={bestCode.reward}
+          ctaLabel={ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+          ctaRel={ctaInfo.rel}
+          isAffiliate={ctaInfo.isAffiliate}
+          urgencyText="Limited time offer"
+          trustText="Free to play · No credit card needed"
+        />
+      )}
     </main>
   )
 }

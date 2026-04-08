@@ -20,6 +20,8 @@ import {
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
 import { StickyGameCTA } from "@/components/gaming/sticky-game-cta"
+import { CopyProvider, PostCopyStickyBar } from "@/components/gaming/copy-code-button"
+import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { GameHeroImage } from "@/components/gaming/game-hero-image"
 import { GameSectionImage } from "@/components/gaming/game-section-image"
 import { Badge } from "@/components/ui/badge"
@@ -69,9 +71,12 @@ export function MonthlyCodesPageTemplate({
   
   // Get CTA info with fallback logic (affiliate > official > null)
   const ctaInfo = getGameCtaInfo(game)
+  
+  // Get best code for exit popup
+  const bestCode = sortedCodes[0]
 
   return (
-    <>
+    <CopyProvider>
       {/* Trust Banner */}
       <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3">
         <PageContainer>
@@ -536,6 +541,32 @@ export function MonthlyCodesPageTemplate({
           affiliateUrl={ctaInfo.url}
         />
       )}
-    </>
+      
+      {/* Post-copy sticky bar - appears after user copies a code */}
+      {ctaInfo.url && (
+        <PostCopyStickyBar
+          gameName={game.shortName || game.name}
+          affiliateUrl={ctaInfo.url}
+          ctaRel={ctaInfo.rel}
+          isAffiliate={ctaInfo.isAffiliate}
+        />
+      )}
+      
+      {/* Exit Intent Popup */}
+      {ctaInfo.url && bestCode && (
+        <ExitIntentPopup
+          gameName={game.name}
+          gameShortName={game.shortName}
+          affiliateUrl={ctaInfo.url}
+          bestCode={bestCode.code}
+          bestCodeReward={bestCode.reward}
+          ctaLabel={ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+          ctaRel={ctaInfo.rel}
+          isAffiliate={ctaInfo.isAffiliate}
+          urgencyText="Limited time offer"
+          trustText="Free to play · No credit card needed"
+        />
+      )}
+    </CopyProvider>
   )
 }
