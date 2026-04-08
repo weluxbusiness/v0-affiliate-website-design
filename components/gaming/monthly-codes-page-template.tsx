@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useState, useCallback } from "react"
 import { 
   Gift, 
   Tag,
@@ -15,12 +16,17 @@ import {
   ArrowRight,
   Clock,
   Gamepad2,
-  BookOpen
+  BookOpen,
+  Copy,
+  Check,
+  ExternalLink,
+  Zap,
+  Crown
 } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
 import { StickyGameCTA } from "@/components/gaming/sticky-game-cta"
-import { CopyProvider, PostCopyStickyBar } from "@/components/gaming/copy-code-button"
+import { CopyProvider, PostCopyStickyBar, useCopyContext } from "@/components/gaming/copy-code-button"
 import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { GameHeroImage } from "@/components/gaming/game-hero-image"
 import { GameSectionImage } from "@/components/gaming/game-section-image"
@@ -50,6 +56,139 @@ interface MonthlyCodesPageTemplateProps {
   month: string
   year: number
   relatedGames: Game[]
+}
+
+// Above-the-Fold Best Code CTA Block Component
+function BestCodeCTABlock({ 
+  game, 
+  bestCode, 
+  month, 
+  year, 
+  ctaInfo 
+}: { 
+  game: Game
+  bestCode: PromoCode
+  month: string
+  year: number
+  ctaInfo: ReturnType<typeof getGameCtaInfo>
+}) {
+  const [copied, setCopied] = useState(false)
+  const copyContext = useCopyContext()
+  
+  const handleCopy = useCallback(() => {
+    if (copied) return
+    navigator.clipboard.writeText(bestCode.code)
+    setCopied(true)
+    copyContext?.setHasCopied(true, bestCode.code)
+    setTimeout(() => setCopied(false), 5000)
+  }, [bestCode.code, copied, copyContext])
+
+  return (
+    <section className="py-6 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-yellow-500/10 border-b-2 border-amber-500/30">
+      <PageContainer>
+        <div className="max-w-3xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-4">
+            <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white mb-2 px-3 py-1">
+              <Crown className="h-3 w-3 mr-1" />
+              Best Code Right Now
+            </Badge>
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">
+              Working {game.shortName || game.name} Codes ({month} {year})
+            </h2>
+          </div>
+
+          {/* Best Code Card */}
+          <Card className="border-2 border-amber-500/50 bg-gradient-to-br from-amber-500/10 to-orange-500/5 shadow-lg overflow-hidden">
+            <CardContent className="p-5">
+              <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                {/* Code Info */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-green-600 text-white text-xs">
+                      <ShieldCheck className="h-3 w-3 mr-1" />
+                      Verified Working
+                    </Badge>
+                    <Badge variant="outline" className="text-amber-600 border-amber-500/50 text-xs">
+                      <Flame className="h-3 w-3 mr-1" />
+                      Most Popular
+                    </Badge>
+                  </div>
+                  <p className="font-bold text-foreground text-lg mb-2">{bestCode.reward}</p>
+                  
+                  {/* Code Box + Copy */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 flex items-center gap-2 border-2 border-dashed border-amber-500/50 rounded-lg px-4 py-3 bg-background">
+                      <Gift className="h-5 w-5 text-amber-600" />
+                      <code className="font-mono font-bold text-amber-600 text-lg tracking-wide">
+                        {bestCode.code}
+                      </code>
+                    </div>
+                    <Button 
+                      onClick={handleCopy}
+                      variant={copied ? "default" : "outline"}
+                      className={copied 
+                        ? "bg-green-600 hover:bg-green-600 text-white shrink-0 h-12 px-5" 
+                        : "shrink-0 h-12 px-5 border-amber-500/50 hover:bg-amber-500/10"
+                      }
+                    >
+                      {copied ? (
+                        <><Check className="h-4 w-4 mr-2" /> Copied!</>
+                      ) : (
+                        <><Copy className="h-4 w-4 mr-2" /> Copy Code</>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* CTA */}
+                {ctaInfo.url && (
+                  <div className="flex flex-col gap-2 lg:w-auto">
+                    <Button 
+                      asChild 
+                      size="lg"
+                      className="h-14 px-8 font-bold text-base bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                    >
+                      <a href={ctaInfo.url} target="_blank" rel={ctaInfo.rel}>
+                        {ctaInfo.isAffiliate ? <Gift className="h-5 w-5 mr-2" /> : <Play className="h-5 w-5 mr-2 fill-current" />}
+                        {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play & Redeem"}
+                        <ExternalLink className="h-4 w-4 ml-2" />
+                      </a>
+                    </Button>
+                    {/* Micro Trust Signals */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3 text-green-600" />
+                        No signup
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Zap className="h-3 w-3 text-amber-500" />
+                        30 seconds
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Gamepad2 className="h-3 w-3 text-blue-500" />
+                        iOS & Android
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Post-copy step indicator */}
+              {copied && (
+                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg animate-in fade-in slide-in-from-top-2">
+                  <p className="text-sm text-green-700 font-medium flex items-center gap-2">
+                    <span className="bg-green-600 text-white px-2 py-0.5 rounded text-xs font-bold">Step 1/2</span>
+                    Code copied! Now open the game to redeem it.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </PageContainer>
+    </section>
+  )
 }
 
 export function MonthlyCodesPageTemplate({ 
@@ -100,6 +239,17 @@ export function MonthlyCodesPageTemplate({
           </div>
         </PageContainer>
       </section>
+
+      {/* ABOVE-THE-FOLD: Best Code CTA Block */}
+      {bestCode && (
+        <BestCodeCTABlock
+          game={game}
+          bestCode={bestCode}
+          month={month}
+          year={year}
+          ctaInfo={ctaInfo}
+        />
+      )}
 
       {/* Hero Section with Featured Image */}
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-8 md:py-12">
@@ -191,34 +341,57 @@ export function MonthlyCodesPageTemplate({
               />
             </div>
             
-            {/* New Player CTA */}
-            <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="text-center sm:text-left">
-                  <Badge className="bg-purple-600 text-white mb-2">
-                    <Sparkles className="h-3 w-3 mr-1" />
-                    New Player Bonuses
-                  </Badge>
-                  <h3 className="font-bold text-foreground text-lg">First time playing {game.shortName || game.name}?</h3>
-                  <p className="text-muted-foreground text-sm">Use code GOFAST or MONKEYKING for a free Legendary champion</p>
+            {/* New Player CTA - Enhanced */}
+            <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-2 border-purple-500/30 shadow-lg relative overflow-hidden">
+              {/* Decorative element */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-500/20 to-transparent rounded-bl-full" />
+              
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
+                <div className="text-center lg:text-left flex-1">
+                  <div className="flex flex-wrap items-center gap-2 justify-center lg:justify-start mb-3">
+                    <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1">
+                      <Crown className="h-3 w-3 mr-1" />
+                      Best New Player Code
+                    </Badge>
+                    <Badge variant="outline" className="text-green-600 border-green-500/50">
+                      <ShieldCheck className="h-3 w-3 mr-1" />
+                      Verified
+                    </Badge>
+                  </div>
+                  <h3 className="font-bold text-foreground text-xl mb-2">First time playing {game.shortName || game.name}?</h3>
+                  <p className="text-muted-foreground mb-3">Start with a free Legendary champion to boost your progress!</p>
+                  
+                  {/* Featured new player code */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                    <Gift className="h-4 w-4 text-purple-600" />
+                    <code className="font-mono font-bold text-purple-600 text-lg">GOFAST</code>
+                    <span className="text-sm text-muted-foreground">or</span>
+                    <code className="font-mono font-bold text-purple-600 text-lg">MONKEYKING</code>
+                  </div>
                 </div>
+                
                 {ctaInfo.url && (
-                  <Button 
-                    asChild 
-                    className={ctaInfo.isAffiliate 
-                      ? "bg-green-600 hover:bg-green-700 text-white font-semibold shrink-0"
-                      : "bg-purple-600 hover:bg-purple-700 text-white font-semibold shrink-0"
-                    }
-                  >
-                    <a 
-                      href={ctaInfo.url} 
-                      target="_blank"
-                      rel={ctaInfo.rel}
+                  <div className="flex flex-col gap-2 shrink-0">
+                    <Button 
+                      asChild 
+                      size="lg"
+                      className="h-14 px-8 font-bold text-base bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
                     >
-                      {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
-                      {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Free Game"}
-                    </a>
-                  </Button>
+                      <a 
+                        href={ctaInfo.url} 
+                        target="_blank"
+                        rel={ctaInfo.rel}
+                      >
+                        {ctaInfo.isAffiliate ? <Gift className="h-5 w-5 mr-2" /> : <Play className="h-5 w-5 mr-2 fill-current" />}
+                        {ctaInfo.isAffiliate ? "Start + Get Rewards" : "Start Playing Free"}
+                        <ExternalLink className="h-4 w-4 ml-2" />
+                      </a>
+                    </Button>
+                    {/* Trust signals */}
+                    <p className="text-xs text-center text-muted-foreground">
+                      Works on iOS & Android · No credit card
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -252,6 +425,43 @@ export function MonthlyCodesPageTemplate({
               <strong>Pro tip:</strong> Bookmark this page and check back daily for new {month} {year} codes. 
               We add new codes as soon as they&apos;re released by the developers.
             </p>
+          </div>
+          
+          {/* Why Use Codes Block */}
+          <div className="max-w-3xl mx-auto mt-8 p-6 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30">
+            <h3 className="font-bold text-foreground text-lg mb-4 flex items-center gap-2">
+              <Gift className="h-5 w-5 text-green-600" />
+              What You Get With These Codes
+            </h3>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+                <div className="h-10 w-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-amber-500" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground text-sm">Free Currency</p>
+                  <p className="text-xs text-muted-foreground">Gems, coins, energy</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+                <div className="h-10 w-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                  <Trophy className="h-5 w-5 text-purple-500" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground text-sm">Starter Bonuses</p>
+                  <p className="text-xs text-muted-foreground">Characters, items</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+                <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                  <Star className="h-5 w-5 text-blue-500" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground text-sm">Exclusive Rewards</p>
+                  <p className="text-xs text-muted-foreground">Limited-time items</p>
+                </div>
+              </div>
+            </div>
           </div>
         </PageContainer>
       </section>
@@ -291,12 +501,20 @@ export function MonthlyCodesPageTemplate({
                     </Badge>
                   </div>
 
-                  {code.isVerified && (
-                    <Badge variant="outline" className="text-green-600 border-green-500/50 bg-green-500/10 text-xs mb-3">
-                      <ShieldCheck className="h-3 w-3 mr-1" />
-                      Verified Working
-                    </Badge>
-                  )}
+                  <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                    {code.isVerified && (
+                      <Badge variant="outline" className="text-green-600 border-green-500/50 bg-green-500/10 text-xs">
+                        <ShieldCheck className="h-3 w-3 mr-1" />
+                        Verified Working
+                      </Badge>
+                    )}
+                    {index === 0 && (
+                      <Badge variant="outline" className="text-amber-600 border-amber-500/50 bg-amber-500/10 text-xs">
+                        <Flame className="h-3 w-3 mr-1" />
+                        Most Popular
+                      </Badge>
+                    )}
+                  </div>
 
                   <p className="font-bold text-foreground text-lg mb-3">{code.reward}</p>
 
@@ -308,25 +526,27 @@ export function MonthlyCodesPageTemplate({
                   </div>
 
                   {ctaInfo.url && (
-                    <Button 
-                      asChild 
-                      className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
-                    >
-                      <a 
-                        href={ctaInfo.url} 
-                        target="_blank"
-                        rel={ctaInfo.rel}
+                    <>
+                      <Button 
+                        asChild 
+                        className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
                       >
-                        {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
-                        {ctaInfo.isAffiliate ? "Claim Rewards" : "Play & Redeem"}
-                      </a>
-                    </Button>
+                        <a 
+                          href={ctaInfo.url} 
+                          target="_blank"
+                          rel={ctaInfo.rel}
+                        >
+                          {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                          {ctaInfo.isAffiliate ? "Claim Rewards" : "Play & Redeem"}
+                        </a>
+                      </Button>
+                      {/* Micro Trust Signals */}
+                      <p className="text-center text-xs text-muted-foreground mt-2">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1 text-green-600" />
+                        No signup · Takes 30 seconds
+                      </p>
+                    </>
                   )}
-
-                  <p className="text-center text-xs text-muted-foreground mt-3">
-                    <Flame className="h-3 w-3 inline mr-1 text-amber-500" />
-                    Popular code
-                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -359,13 +579,16 @@ export function MonthlyCodesPageTemplate({
             All {game.shortName || game.name} Codes ({month} {year})
           </h2>
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {sortedCodes.map((code) => (
+            {sortedCodes.map((code, index) => (
               <PromoCodeCard 
                 key={code.id} 
                 code={code} 
                 game={game}
                 showAffiliateCTA={true}
                 pageSlug={`${game.slug}-codes-${month.toLowerCase()}-${year}`}
+                isBestCode={index === 0}
+                isMostPopular={index === 0}
+                rank={index < 3 ? index + 1 : undefined}
               />
             ))}
           </div>

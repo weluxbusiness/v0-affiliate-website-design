@@ -16,7 +16,9 @@ import {
   Flame,
   Star,
   ExternalLink,
-  Play
+  Play,
+  Crown,
+  Trophy
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useGamingAnalytics } from "@/hooks/use-gaming-analytics"
@@ -42,6 +44,9 @@ interface PromoCodeCardProps {
   affiliateRel?: string // Custom rel attribute for affiliate link
   onCopy?: (code: string) => void
   pageSlug?: string
+  isBestCode?: boolean // Show "Best Code" badge
+  isMostPopular?: boolean // Show "Most Popular" badge
+  rank?: number // Code rank (1, 2, 3) for badge display
 }
 
 function formatTimeRemaining(expiresAt: string): string {
@@ -80,7 +85,10 @@ export const PromoCodeCard = memo(function PromoCodeCard({
   affiliateLabel,
   affiliateRel: affiliateRelProp,
   onCopy,
-  pageSlug
+  pageSlug,
+  isBestCode = false,
+  isMostPopular = false,
+  rank
 }: PromoCodeCardProps) {
   const [copied, setCopied] = useState(false)
   const { trackCodeCopy } = useGamingAnalytics()
@@ -285,6 +293,31 @@ export const PromoCodeCard = memo(function PromoCodeCard({
         {/* Header Badges (when not showing game) - Trust + Urgency Signals */}
         {!showGame && (
           <div className="flex flex-wrap items-center gap-2 mb-3">
+            {/* Best Code Badge - Priority */}
+            {isBestCode && (
+              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                <Crown className="h-3 w-3 mr-1" />
+                Best Code
+              </Badge>
+            )}
+            {/* Rank Badge */}
+            {rank && rank <= 3 && !isBestCode && (
+              <Badge className={`text-xs ${
+                rank === 1 ? "bg-green-600 text-white" :
+                rank === 2 ? "bg-blue-600 text-white" :
+                "bg-amber-500 text-white"
+              }`}>
+                <Trophy className="h-3 w-3 mr-1" />
+                #{rank} Recommended
+              </Badge>
+            )}
+            {/* Most Popular Badge */}
+            {isMostPopular && (
+              <Badge variant="outline" className="text-amber-600 border-amber-500/50 bg-amber-500/10 text-xs">
+                <Flame className="h-3 w-3 mr-1" />
+                Most Popular
+              </Badge>
+            )}
             {code.isVerified && (
               <Badge variant="outline" className="text-green-600 border-green-500/50 bg-green-500/10 text-xs">
                 <ShieldCheck className="h-3 w-3 mr-1" />
@@ -355,34 +388,37 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </Button>
         </div>
 
-        {/* Copy Confirmation + Open Game CTA */}
+        {/* Copy Confirmation + Open Game CTA with Step Indicator */}
         {copied && shouldShowCTA && affiliateUrl ? (
-          <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg animate-in fade-in">
-            <p className="text-sm text-green-700 font-medium mb-2 flex items-center gap-1.5">
-              <Check className="h-4 w-4" />
-              Code copied — open the game to redeem
+          <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg animate-in fade-in slide-in-from-top-2">
+            <p className="text-sm text-green-700 font-medium mb-2 flex items-center gap-2">
+              <span className="bg-green-600 text-white px-2 py-0.5 rounded text-xs font-bold">Step 1/2</span>
+              Code copied! Now open the game to redeem.
             </p>
             <Button 
               asChild 
               className="w-full h-10 font-bold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
               size="sm"
             >
-                    <a
-                      href={affiliateUrl}
-                      target="_blank"
-                      rel={affiliateRel}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Play className="h-4 w-4 mr-2 fill-current" />
-                      {affiliateLabel?.replace('& Redeem', '').trim() || "Open Game"}
+              <a
+                href={affiliateUrl}
+                target="_blank"
+                rel={affiliateRel}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="bg-white/20 px-1.5 py-0.5 rounded text-xs mr-2">Step 2</span>
+                Continue → Claim Rewards
                 <ExternalLink className="h-3 w-3 ml-2" />
               </a>
             </Button>
           </div>
         ) : copied ? (
-          <p className="text-xs text-green-600 font-medium mb-2 animate-in fade-in">
-            Code copied — open the game to redeem it
-          </p>
+          <div className="p-2 bg-green-50 border border-green-200 rounded-lg animate-in fade-in mb-2">
+            <p className="text-xs text-green-700 font-medium flex items-center gap-2">
+              <span className="bg-green-600 text-white px-1.5 py-0.5 rounded text-[10px] font-bold">Step 1/2</span>
+              Code copied! Open the game to redeem.
+            </p>
+          </div>
         ) : null}
 
         {/* Primary CTA - Play & Redeem (affiliate) - Only show when not copied */}
