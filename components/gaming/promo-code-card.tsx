@@ -388,12 +388,12 @@ export const PromoCodeCard = memo(function PromoCodeCard({
           </Button>
         </div>
 
-        {/* Copy Confirmation + Open Game CTA with Step Indicator */}
+        {/* Copy Confirmation + Open Game CTA - Inline under code */}
         {copied && shouldShowCTA && affiliateUrl ? (
           <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg animate-in fade-in slide-in-from-top-2">
             <p className="text-sm text-green-700 font-medium mb-2 flex items-center gap-2">
-              <span className="bg-green-600 text-white px-2 py-0.5 rounded text-xs font-bold">Step 1/2</span>
-              Code copied! Now open the game to redeem.
+              <Check className="h-4 w-4" />
+              Code copied — open game to redeem
             </p>
             <Button 
               asChild 
@@ -406,8 +406,8 @@ export const PromoCodeCard = memo(function PromoCodeCard({
                 rel={affiliateRel}
                 onClick={(e) => e.stopPropagation()}
               >
-                <span className="bg-white/20 px-1.5 py-0.5 rounded text-xs mr-2">Step 2</span>
-                Continue → Claim Rewards
+                <Gift className="h-4 w-4 mr-2" />
+                Claim FREE Rewards
                 <ExternalLink className="h-3 w-3 ml-2" />
               </a>
             </Button>
@@ -415,31 +415,29 @@ export const PromoCodeCard = memo(function PromoCodeCard({
         ) : copied ? (
           <div className="p-2 bg-green-50 border border-green-200 rounded-lg animate-in fade-in mb-2">
             <p className="text-xs text-green-700 font-medium flex items-center gap-2">
-              <span className="bg-green-600 text-white px-1.5 py-0.5 rounded text-[10px] font-bold">Step 1/2</span>
-              Code copied! Open the game to redeem.
+              <Check className="h-3.5 w-3.5" />
+              Code copied — open game to redeem
             </p>
           </div>
         ) : null}
-
-        {/* Primary CTA - Play & Redeem (affiliate) - Only show when not copied */}
+        
+        {/* Inline CTA under code - Always visible when not copied */}
         {!copied && shouldShowCTA && affiliateUrl && (
-          <Button 
-            asChild 
-            className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
-            size="sm"
-          >
+          <p className="text-xs text-muted-foreground mb-3 flex items-center gap-1">
+            <ExternalLink className="h-3 w-3" />
             <a 
               href={affiliateUrl} 
-              target="_blank"
+              target="_blank" 
               rel={affiliateRel}
+              className="text-primary hover:underline"
               onClick={(e) => e.stopPropagation()}
             >
-              <Play className="h-4 w-4 mr-2 fill-current" />
-              {affiliateLabel || "Play & Redeem Code"}
-              <ExternalLink className="h-3 w-3 ml-2" />
+              Open game to redeem this code
             </a>
-          </Button>
+          </p>
         )}
+
+
 
         {/* Footer Info - Trust Signals (Compliance-Safe) */}
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground pt-2 border-t border-border">
