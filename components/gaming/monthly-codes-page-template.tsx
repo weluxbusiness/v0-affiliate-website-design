@@ -30,6 +30,8 @@ import { CopyProvider, PostCopyStickyBar, useCopyContext } from "@/components/ga
 import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { GameHeroImage } from "@/components/gaming/game-hero-image"
 import { GameSectionImage } from "@/components/gaming/game-section-image"
+import { Breadcrumbs, getGameMonthlyBreadcrumbs } from "@/components/gaming/breadcrumbs"
+import { SEOInternalLinks, SEOFooterLinks } from "@/components/gaming/seo-internal-links"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -255,6 +257,14 @@ export function MonthlyCodesPageTemplate({
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-8 md:py-12">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
+          {/* Breadcrumbs - SEO & Navigation */}
+          <div className="mb-4">
+            <Breadcrumbs 
+              items={getGameMonthlyBreadcrumbs(game.name, game.slug, `${month} ${year}`)} 
+              className="text-white/70 [&_a]:text-white/70 [&_a:hover]:text-white [&_svg]:text-white/50"
+            />
+          </div>
+          
           {/* Hero Image - High-converting visual */}
           {images && (
             <div className="mb-8">
@@ -790,6 +800,18 @@ export function MonthlyCodesPageTemplate({
           trustText="Free to play · No credit card needed"
         />
       )}
+      
+      {/* SEO Internal Links - Popular Games & Latest Codes */}
+      <SEOInternalLinks 
+        currentGameSlug={game.slug}
+        currentMonth={`${month.toLowerCase()}-${year}`}
+        showPopularGames={true}
+        showLatestCodes={true}
+        showMonthlyNav={true}
+      />
+      
+      {/* SEO Footer Links */}
+      <SEOFooterLinks currentGameSlug={game.slug} />
     </CopyProvider>
   )
 }

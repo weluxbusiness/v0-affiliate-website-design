@@ -24,6 +24,8 @@ import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { GameHeroImage } from "@/components/gaming/game-hero-image"
 import { GameSectionImage } from "@/components/gaming/game-section-image"
 import { CopyCodeButton, CopyProvider, PostCopyStickyBar } from "@/components/gaming/copy-code-button"
+import { Breadcrumbs, getGameBreadcrumbs } from "@/components/gaming/breadcrumbs"
+import { SEOInternalLinks, SEOFooterLinks } from "@/components/gaming/seo-internal-links"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -297,6 +299,14 @@ export function GamePageTemplate({
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-4 md:py-12 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 pointer-events-none" />
         <PageContainer className="px-4 relative z-10">
+          {/* Breadcrumbs - SEO & Navigation */}
+          <div className="mb-4">
+            <Breadcrumbs 
+              items={getGameBreadcrumbs(game.name, game.slug)} 
+              className="text-white/70 [&_a]:text-white/70 [&_a:hover]:text-white [&_svg]:text-white/50"
+            />
+          </div>
+          
           {/* Hero Image - Visual anchor for CRO with high-impact overlay */}
           {images && (
             <div className="mb-4 md:mb-8">
@@ -1819,6 +1829,17 @@ showAffiliateCTA={!!ctaInfo.url}
           isAffiliate={ctaInfo.isAffiliate}
         />
       )}
+      
+      {/* SEO Internal Links - Popular Games & Latest Codes */}
+      <SEOInternalLinks 
+        currentGameSlug={game.slug}
+        showPopularGames={true}
+        showLatestCodes={true}
+        showMonthlyNav={true}
+      />
+      
+      {/* SEO Footer Links */}
+      <SEOFooterLinks currentGameSlug={game.slug} />
     </main>
     </CopyProvider>
   )

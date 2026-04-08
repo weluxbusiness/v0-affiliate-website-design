@@ -5,6 +5,8 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
+import { Breadcrumbs, getGameCodesTodayBreadcrumbs, generateBreadcrumbSchema } from "@/components/gaming/breadcrumbs"
+import { SEOInternalLinks, SEOFooterLinks } from "@/components/gaming/seo-internal-links"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,7 +18,8 @@ import {
   Calendar,
   Clock,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  CheckCircle2
 } from "lucide-react"
 import { 
   getGameBySlug,
@@ -53,8 +56,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const benefit = primaryReward === 'Primogems' ? 'Primogems' : primaryReward === 'V-Bucks' ? 'V-Bucks' : primaryReward === 'Gems' ? 'Gems' : 'Rewards'
   
   return {
-    title: `${game.shortName || game.name} Codes Today – ${codeCount}+ Free ${benefit} (${shortMonth})`,
-    description: `All ${codeCount}+ working ${game.name} promo codes for ${dateStr}. Get FREE gems, skins & rewards. Verified hourly - redeem before they expire!`,
+    // CTR-optimized title: [GAME] Codes (Month Year) – X Working Codes + Free Rewards
+    title: `${game.shortName || game.name} Codes (${shortMonth}) – ${codeCount} Working Codes + Free Rewards`,
+    // CTR-optimized description: number of codes, "updated today", "free rewards"
+    description: `${codeCount} working ${game.name} codes for today. Updated today with verified codes. Redeem for FREE rewards, gems & exclusive items!`,
     keywords: [
       `${game.name} codes today`,
       `${game.name} new codes`,
@@ -65,14 +70,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `${game.name} free rewards today`,
     ],
     openGraph: {
-      title: `${game.name} Codes Today - ${codeCount}+ FREE Rewards | ${shortMonth}`,
-      description: `${codeCount}+ working codes. Free gems, skins & rewards. Updated hourly!`,
+      // OG title with "WORKING CODES" + month/year + code count
+      title: `${game.name} WORKING CODES (${shortMonth}) – ${codeCount} Free Rewards`,
+      description: `${codeCount} verified working codes. Updated today! FREE rewards, gems & items.`,
       url: `https://savesmart.bio/gaming/${game.slug}/codes-today`,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${game.name} Codes Today - FREE Rewards`,
-      description: `${codeCount}+ working codes verified today. Redeem now!`,
+      title: `${game.name} WORKING CODES – ${codeCount} Free Rewards`,
+      description: `${codeCount} verified codes. Updated today! FREE rewards & gems.`,
     },
     alternates: {
       canonical: `/gaming/${game.slug}/codes-today`,
@@ -134,6 +140,9 @@ export default async function GameCodesTodayPage({ params }: PageProps) {
     }))
   }
   
+  // Breadcrumb schema for SEO
+  const breadcrumbSchema = generateBreadcrumbSchema(getGameCodesTodayBreadcrumbs(game.name, game.slug))
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -141,6 +150,10 @@ export default async function GameCodesTodayPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       
       {/* Hero Section */}
@@ -344,6 +357,17 @@ export default async function GameCodesTodayPage({ params }: PageProps) {
           )}
         </PageContainer>
       </section>
+      
+      {/* SEO Internal Links */}
+      <SEOInternalLinks 
+        currentGameSlug={game.slug}
+        showPopularGames={true}
+        showLatestCodes={true}
+        showMonthlyNav={true}
+      />
+      
+      {/* SEO Footer Links */}
+      <SEOFooterLinks currentGameSlug={game.slug} />
       
       <Footer />
     </div>
