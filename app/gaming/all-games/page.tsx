@@ -173,27 +173,13 @@ export default function AllGamesPage() {
                               {game.description}
                             </p>
                             
-                            {/* Quick Links */}
-                            <div className="flex flex-wrap gap-2 text-xs">
-                              <span className="text-primary hover:underline">
-                                All Codes
-                              </span>
-                              <span className="text-muted-foreground">•</span>
-                              <Link 
-                                href={`/gaming/${game.slug}/codes-today`}
-                                className="text-primary hover:underline"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                Today
-                              </Link>
-                              <span className="text-muted-foreground">•</span>
-                              <Link 
-                                href={`/gaming/${game.slug}/codes-april-2026`}
-                                className="text-primary hover:underline"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                April 2026
-                              </Link>
+                            {/* Quick Info */}
+                            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                              <span>All Codes</span>
+                              <span>•</span>
+                              <span>Today&apos;s Codes</span>
+                              <span>•</span>
+                              <span>April 2026</span>
                             </div>
                           </CardContent>
                         </Card>
