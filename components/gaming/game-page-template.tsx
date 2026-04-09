@@ -307,17 +307,16 @@ export function GamePageTemplate({
             />
           </div>
           
-          {/* Hero Image - Visual anchor for CRO with high-impact overlay */}
+          {/* Hero Image - Clean visual with subtle badge */}
           {images && (
             <div className="mb-4 md:mb-8">
               <GameHeroImage
                 src={images.hero}
-                alt={`${game.name} working codes ${currentMonth.toLowerCase()} ${currentYear} free rewards`}
-                gameName={game.shortName || game.name}
+                alt={`${game.name} promo codes ${currentMonth.toLowerCase()} ${currentYear}`}
                 month={currentMonth}
                 year={currentYear}
                 codeCount={activeCodes.length}
-                showOverlayText={true}
+                showUpdatedBadge={true}
                 priority={true}
               />
             </div>
