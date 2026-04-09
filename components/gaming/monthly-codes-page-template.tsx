@@ -263,20 +263,38 @@ export function MonthlyCodesPageTemplate({
             />
           </div>
           
-          {/* Hero Image - Clean visual with subtle badge */}
+          {/* Hero Image - Clean visual */}
           {images && (
-            <div className="mb-8">
+            <div className="mb-6">
               <GameHeroImage
                 src={images.hero}
                 alt={`${game.name} codes ${month.toLowerCase()} ${year}`}
                 month={month}
                 year={year}
                 codeCount={activeCodes.length}
-                showUpdatedBadge={true}
+                showUpdatedBadge={false}
                 priority={true}
               />
             </div>
           )}
+          
+          {/* Hero Info Bar - Key conversion info below image */}
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 mb-6">
+            <div className="flex items-center gap-1.5 text-sm font-medium text-white">
+              <Flame className="h-4 w-4 text-orange-400" />
+              <span><strong>{activeCodes.length}</strong> Working Codes</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-white/30" />
+            <div className="flex items-center gap-1.5 text-sm font-medium text-white">
+              <Gift className="h-4 w-4 text-green-400" />
+              <span>Free Rewards</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-white/30" />
+            <div className="flex items-center gap-1.5 text-sm font-medium text-white">
+              <Clock className="h-4 w-4 text-blue-400" />
+              <span>Updated {month} {year}</span>
+            </div>
+          </div>
           
           <div className="text-center max-w-3xl mx-auto">
             <Badge className="bg-white/20 text-white mb-4">
