@@ -34,7 +34,7 @@ import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
 import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getGameCtaInfo, hasGameSpecificAffiliateLinks, getRewardAffiliateUrl } from "@/lib/gaming-data"
 import { cn } from "@/lib/utils"
 import { getSeoUrl } from "@/lib/seo-routes"
-import { Clock, AlertCircle, BookOpen, CheckCircle2, ArrowRight, TrendingUp } from "lucide-react"
+import { AlertCircle, BookOpen, CheckCircle2, ArrowRight, TrendingUp } from "lucide-react"
 
 // Game-specific image configurations
 const gameImages: Record<string, {
