@@ -130,11 +130,12 @@ export function getDealsAffiliateUrl(): string {
 
 /**
 * Get the appropriate game CTA URL and metadata
-* Priority: affiliate link > official URL > null
+* Priority: affiliate link > official URL > Google search fallback
+* ALWAYS returns a valid URL - no traffic wasted
 * For affiliate games, also returns officialUrl for dual CTA support
 */
 export function getGameCtaInfo(game: Game): {
-  url: string | null
+  url: string // Always valid - never null
   label: string
   labelShort: string
   sublabel: string
@@ -148,6 +149,7 @@ export function getGameCtaInfo(game: Game): {
   const affiliateUrl = getPlayAffiliateUrl(game)
   const officialUrl = game.officialUrl || game.websiteUrl || null
   
+  // Priority 1: Affiliate link (monetized)
   if (affiliateUrl) {
     return {
       url: affiliateUrl,
@@ -163,13 +165,14 @@ export function getGameCtaInfo(game: Game): {
     }
   }
   
+  // Priority 2: Official game URL
   if (officialUrl) {
     return {
       url: officialUrl,
-      label: 'Play Free',
+      label: 'Play Official Game',
       labelShort: 'Play',
       sublabel: 'Official game link',
-      trustText: '',
+      trustText: 'Free to play',
       urgencyText: '',
       isAffiliate: false,
       rel: 'noopener noreferrer',
@@ -178,15 +181,19 @@ export function getGameCtaInfo(game: Game): {
     }
   }
   
+  // Priority 3: Fallback to Google search for the game (never empty)
+  const searchQuery = encodeURIComponent(`${game.name} official game download`)
+  const fallbackUrl = `https://www.google.com/search?q=${searchQuery}`
+  
   return {
-    url: null,
-    label: 'View Codes',
-    labelShort: 'Codes',
-    sublabel: '',
+    url: fallbackUrl,
+    label: 'Find Official Game',
+    labelShort: 'Find Game',
+    sublabel: 'Search for official download',
     trustText: '',
     urgencyText: '',
     isAffiliate: false,
-    rel: '',
+    rel: 'noopener noreferrer',
     buttonStyle: 'neutral',
     officialUrl: null,
   }

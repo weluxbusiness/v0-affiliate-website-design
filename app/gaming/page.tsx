@@ -384,31 +384,29 @@ export default async function GamingPage() {
                       </Badge>
                     </div>
 
-                    {/* Primary CTA - Claim FREE Rewards or Play Free */}
-                    {ctaInfo.url && (
-                      <Button
-                        asChild
-                        className={`w-full h-11 font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all ${
-                          ctaInfo.buttonStyle === 'affiliate' 
-                            ? 'bg-green-600 hover:bg-green-700 text-white'
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'
-                        }`}
+                    {/* Primary CTA - Always shown */}
+                    <Button
+                      asChild
+                      className={`w-full h-11 font-bold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all ${
+                        ctaInfo.buttonStyle === 'affiliate' 
+                          ? 'bg-green-600 hover:bg-green-700 text-white'
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
+                    >
+                      <a
+                        href={ctaInfo.url}
+                        target="_blank"
+                        rel={ctaInfo.rel}
                       >
-                        <a
-                          href={ctaInfo.url}
-                          target="_blank"
-                          rel={ctaInfo.rel}
-                        >
-                          {ctaInfo.isAffiliate ? (
-                            <Gift className="h-5 w-5 mr-2" />
-                          ) : (
-                            <Gamepad2 className="h-5 w-5 mr-2" />
-                          )}
-                          {ctaInfo.label}
-                          <ExternalLink className="h-4 w-4 ml-2" />
-                        </a>
-                      </Button>
-                    )}
+                        {ctaInfo.isAffiliate ? (
+                          <Gift className="h-5 w-5 mr-2" />
+                        ) : (
+                          <Gamepad2 className="h-5 w-5 mr-2" />
+                        )}
+                        {ctaInfo.isAffiliate ? ctaInfo.label : 'Play Official Game'}
+                        <ExternalLink className="h-4 w-4 ml-2" />
+                      </a>
+                    </Button>
                     
                     {/* Urgency text for affiliate */}
                     {ctaInfo.isAffiliate && ctaInfo.urgencyText && (

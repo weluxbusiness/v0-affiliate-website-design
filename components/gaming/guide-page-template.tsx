@@ -119,29 +119,27 @@ export function GuidePageTemplate({
               </div>
             </div>
 
-            {/* CTA */}
-            {ctaInfo.url && (
-              <div className="shrink-0 flex flex-col gap-2 relative z-20">
-                <Button 
-                  size="lg" 
-                  asChild 
-                  className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
+            {/* CTA - Always shown */}
+            <div className="shrink-0 flex flex-col gap-2 relative z-20">
+              <Button 
+                size="lg" 
+                asChild 
+                className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all text-lg px-8 py-6"
+              >
+                <a 
+                  href={ctaInfo.url} 
+                  target="_blank"
+                  rel={ctaInfo.rel}
                 >
-                  <a 
-                    href={ctaInfo.url} 
-                    target="_blank"
-                    rel={ctaInfo.rel}
-                  >
-                    {ctaInfo.isAffiliate ? <Gift className="h-6 w-6" /> : <Zap className="h-6 w-6" />}
-                    {ctaInfo.isAffiliate ? "Claim FREE Rewards" : `Play ${game.shortName || game.name}`}
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </Button>
-                <p className="text-xs text-white/70 text-center font-medium">
-                  {ctaInfo.isAffiliate ? "Unlock rewards after installing" : "Official game link"}
-                </p>
-              </div>
-            )}
+                  {ctaInfo.isAffiliate ? <Gift className="h-6 w-6" /> : <Zap className="h-6 w-6" />}
+                  {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+              <p className="text-xs text-white/70 text-center font-medium">
+                {ctaInfo.isAffiliate ? "Unlock rewards after installing" : "Official game link"}
+              </p>
+            </div>
           </div>
         </PageContainer>
       </section>
@@ -228,18 +226,16 @@ export function GuidePageTemplate({
                       Get Free Codes
                     </Link>
                   </Button>
-                  {ctaInfo.url && (
-                    <Button asChild size="lg" variant="outline">
-                      <a 
-                        href={ctaInfo.url}
-                        target="_blank"
-                        rel={ctaInfo.rel}
-                      >
-                        {ctaInfo.isAffiliate ? "Claim Rewards" : "Play Now"}
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                      </a>
-                    </Button>
-                  )}
+                  <Button asChild size="lg" variant="outline">
+                    <a 
+                      href={ctaInfo.url}
+                      target="_blank"
+                      rel={ctaInfo.rel}
+                    >
+                      {ctaInfo.isAffiliate ? "Claim Rewards" : "Play Official Game"}
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </a>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -345,8 +341,8 @@ export function GuidePageTemplate({
         </PageContainer>
       </section>
       
-      {/* Exit Intent Popup */}
-      {ctaInfo.url && bestCode && (
+      {/* Exit Intent Popup - Always shown when there's a best code */}
+      {bestCode && (
         <ExitIntentPopup
           gameName={game.name}
           gameShortName={game.shortName}

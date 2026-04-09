@@ -143,37 +143,35 @@ function BestCodeCTABlock({
                   </div>
                 </div>
 
-                {/* CTA */}
-                {ctaInfo.url && (
-                  <div className="flex flex-col gap-2 lg:w-auto">
-                    <Button 
-                      asChild 
-                      size="lg"
-                      className="h-14 px-8 font-bold text-base bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
-                    >
-                      <a href={ctaInfo.url} target="_blank" rel={ctaInfo.rel}>
-                        {ctaInfo.isAffiliate ? <Gift className="h-5 w-5 mr-2" /> : <Play className="h-5 w-5 mr-2 fill-current" />}
-                        {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play & Redeem"}
-                        <ExternalLink className="h-4 w-4 ml-2" />
-                      </a>
-                    </Button>
-                    {/* Micro Trust Signals */}
-                    <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3 text-green-600" />
-                        No signup
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Zap className="h-3 w-3 text-amber-500" />
-                        30 seconds
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Gamepad2 className="h-3 w-3 text-blue-500" />
-                        iOS & Android
-                      </span>
-                    </div>
+                {/* CTA - Always shown */}
+                <div className="flex flex-col gap-2 lg:w-auto">
+                  <Button 
+                    asChild 
+                    size="lg"
+                    className="h-14 px-8 font-bold text-base bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                  >
+                    <a href={ctaInfo.url} target="_blank" rel={ctaInfo.rel}>
+                      {ctaInfo.isAffiliate ? <Gift className="h-5 w-5 mr-2" /> : <Play className="h-5 w-5 mr-2 fill-current" />}
+                      {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+                      <ExternalLink className="h-4 w-4 ml-2" />
+                    </a>
+                  </Button>
+                  {/* Micro Trust Signals */}
+                  <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <CheckCircle2 className="h-3 w-3 text-green-600" />
+                      No signup
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Zap className="h-3 w-3 text-amber-500" />
+                      30 seconds
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Gamepad2 className="h-3 w-3 text-blue-500" />
+                      iOS & Android
+                    </span>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Post-copy step indicator */}
@@ -380,29 +378,28 @@ export function MonthlyCodesPageTemplate({
                   </div>
                 </div>
                 
-                {ctaInfo.url && (
-                  <div className="flex flex-col gap-2 shrink-0">
-                    <Button 
-                      asChild 
-                      size="lg"
-                      className="h-14 px-8 font-bold text-base bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                {/* CTA - Always shown */}
+                <div className="flex flex-col gap-2 shrink-0">
+                  <Button 
+                    asChild 
+                    size="lg"
+                    className="h-14 px-8 font-bold text-base bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                  >
+                    <a 
+                      href={ctaInfo.url} 
+                      target="_blank"
+                      rel={ctaInfo.rel}
                     >
-                      <a 
-                        href={ctaInfo.url} 
-                        target="_blank"
-                        rel={ctaInfo.rel}
-                      >
-                        {ctaInfo.isAffiliate ? <Gift className="h-5 w-5 mr-2" /> : <Play className="h-5 w-5 mr-2 fill-current" />}
-                        {ctaInfo.isAffiliate ? "Start + Get Rewards" : "Start Playing Free"}
-                        <ExternalLink className="h-4 w-4 ml-2" />
-                      </a>
-                    </Button>
-                    {/* Trust signals */}
-                    <p className="text-xs text-center text-muted-foreground">
-                      Works on iOS & Android · No credit card
-                    </p>
-                  </div>
-                )}
+                      {ctaInfo.isAffiliate ? <Gift className="h-5 w-5 mr-2" /> : <Play className="h-5 w-5 mr-2 fill-current" />}
+                      {ctaInfo.isAffiliate ? "Start + Get Rewards" : "Play Official Game"}
+                      <ExternalLink className="h-4 w-4 ml-2" />
+                    </a>
+                  </Button>
+                  {/* Trust signals */}
+                  <p className="text-xs text-center text-muted-foreground">
+                    Works on iOS & Android · No credit card
+                  </p>
+                </div>
               </div>
             </div>
           </PageContainer>
@@ -535,28 +532,25 @@ export function MonthlyCodesPageTemplate({
                     </div>
                   </div>
 
-                  {ctaInfo.url && (
-                    <>
-                      <Button 
-                        asChild 
-                        className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
-                      >
-                        <a 
-                          href={ctaInfo.url} 
-                          target="_blank"
-                          rel={ctaInfo.rel}
-                        >
-                          {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
-                          {ctaInfo.isAffiliate ? "Claim Rewards" : "Play & Redeem"}
-                        </a>
-                      </Button>
-                      {/* Micro Trust Signals */}
-                      <p className="text-center text-xs text-muted-foreground mt-2">
-                        <CheckCircle2 className="h-3 w-3 inline mr-1 text-green-600" />
-                        No signup · Takes 30 seconds
-                      </p>
-                    </>
-                  )}
+                  {/* CTA - Always shown */}
+                  <Button 
+                    asChild 
+                    className="w-full h-11 font-bold bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    <a 
+                      href={ctaInfo.url} 
+                      target="_blank"
+                      rel={ctaInfo.rel}
+                    >
+                      {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                      {ctaInfo.isAffiliate ? "Claim Rewards" : "Play Official Game"}
+                    </a>
+                  </Button>
+                  {/* Micro Trust Signals */}
+                  <p className="text-center text-xs text-muted-foreground mt-2">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1 text-green-600" />
+                    No signup · Takes 30 seconds
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -767,26 +761,22 @@ export function MonthlyCodesPageTemplate({
         </PageContainer>
       </section>
 
-      {/* Sticky CTA - show if any URL exists */}
-      {ctaInfo.url && (
-        <StickyGameCTA 
-          gameName={game.shortName || game.name}
-          affiliateUrl={ctaInfo.url}
-        />
-      )}
+      {/* Sticky CTA - Always shown */}
+      <StickyGameCTA 
+        gameName={game.shortName || game.name}
+        affiliateUrl={ctaInfo.url}
+      />
       
       {/* Post-copy sticky bar - appears after user copies a code */}
-      {ctaInfo.url && (
-        <PostCopyStickyBar
-          gameName={game.shortName || game.name}
-          affiliateUrl={ctaInfo.url}
-          ctaRel={ctaInfo.rel}
-          isAffiliate={ctaInfo.isAffiliate}
-        />
-      )}
+      <PostCopyStickyBar
+        gameName={game.shortName || game.name}
+        affiliateUrl={ctaInfo.url}
+        ctaRel={ctaInfo.rel}
+        isAffiliate={ctaInfo.isAffiliate}
+      />
       
-      {/* Exit Intent Popup */}
-      {ctaInfo.url && bestCode && (
+      {/* Exit Intent Popup - Always shown when there's a best code */}
+      {bestCode && (
         <ExitIntentPopup
           gameName={game.name}
           gameShortName={game.shortName}

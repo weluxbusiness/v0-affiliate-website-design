@@ -279,22 +279,20 @@ export default function TopGamesPage() {
                               <ArrowRight className="h-4 w-4 ml-2" />
                             </Link>
                           </Button>
-                          {ctaInfo.url && (
-                            <Button 
-                              asChild 
-                              className="bg-green-600 hover:bg-green-700 text-white"
+                          <Button 
+                            asChild 
+                            className="bg-green-600 hover:bg-green-700 text-white"
+                          >
+                            <a 
+                              href={ctaInfo.url} 
+                              target="_blank"
+                              rel={ctaInfo.rel}
                             >
-                              <a 
-                                href={ctaInfo.url} 
-                                target="_blank"
-                                rel={ctaInfo.rel}
-                              >
-                                {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
-                                {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Free Game"}
-                                <ExternalLink className="h-3 w-3 ml-1" />
-                              </a>
-                            </Button>
-                          )}
+                              {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1 fill-current" />}
+                              {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+                              <ExternalLink className="h-3 w-3 ml-1" />
+                            </a>
+                          </Button>
                         </div>
                       </div>
                     </div>

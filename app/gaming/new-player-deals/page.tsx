@@ -220,23 +220,21 @@ export default function NewPlayerDealsPage() {
                         </div>
                       </Link>
                       <div className="flex items-center gap-3">
-                        {/* Play Now CTA */}
-                        {ctaInfo.url && (
-                          <Button 
-                            asChild 
-                            className="h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                        {/* Play Now CTA - Always shown */}
+                        <Button 
+                          asChild 
+                          className="h-10 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                        >
+                          <a 
+                            href={ctaInfo.url} 
+                            target="_blank"
+                            rel={ctaInfo.rel}
                           >
-                            <a 
-                              href={ctaInfo.url} 
-                              target="_blank"
-                              rel={ctaInfo.rel}
-                            >
-                              {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
-                              {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Free Game"}
-                              <ExternalLink className="h-3.5 w-3.5 ml-2" />
-                            </a>
-                          </Button>
-                        )}
+                            {ctaInfo.isAffiliate ? <Gift className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2 fill-current" />}
+                            {ctaInfo.isAffiliate ? "Claim FREE Rewards" : "Play Official Game"}
+                            <ExternalLink className="h-3.5 w-3.5 ml-2" />
+                          </a>
+                        </Button>
                         <Link 
                           href={`/gaming/${game.slug}`}
                           className="text-sm font-medium text-primary hover:underline flex items-center gap-1 group"

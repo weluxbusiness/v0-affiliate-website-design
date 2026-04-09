@@ -541,11 +541,10 @@ export function GamePageTemplate({
                 </div>
               </div>
 
-              {/* Primary CTA - Desktop */}
-              {ctaInfo.url && (
-                <div className="shrink-0 flex flex-col gap-3 relative z-20">
-                  {/* Best Code Signal */}
-                  {bestCode && ctaInfo.isAffiliate && (
+              {/* Primary CTA - Desktop - Always shown */}
+              <div className="shrink-0 flex flex-col gap-3 relative z-20">
+                {/* Best Code Signal */}
+                {bestCode && ctaInfo.isAffiliate && (
                     <div className="flex items-center justify-center gap-2 bg-white/10 rounded-lg px-4 py-2">
                       <Sparkles className="h-4 w-4 text-amber-300" />
                       <span className="text-sm text-white/90">
@@ -622,7 +621,6 @@ export function GamePageTemplate({
                     </p>
                   )}
                 </div>
-              )}
             </div>
           </div>
         </PageContainer>
@@ -712,14 +710,13 @@ export function GamePageTemplate({
                         </code>
                       </div>
                     </div>
-                    
-                    {/* CTA */}
-                    {ctaInfo.url && (
-                      <Button 
-                        asChild 
-                        className={cn(
-                          "w-full h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
-                          ctaInfo.buttonStyle === 'affiliate' 
+        
+        {/* CTA - Always shown */}
+        <Button
+          asChild
+          className={cn(
+            "w-full h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
+            ctaInfo.buttonStyle === 'affiliate'
                             ? "bg-green-600 hover:bg-green-700 text-white" 
                             : "bg-blue-600 hover:bg-blue-700 text-white"
                         )}
@@ -738,7 +735,6 @@ export function GamePageTemplate({
                           <ExternalLink className="h-4 w-4 ml-2" />
                         </a>
                       </Button>
-                    )}
                     
                     {/* Urgency + Trust text for affiliate */}
                     {ctaInfo.isAffiliate && (
@@ -982,31 +978,29 @@ showAffiliateCTA={!!ctaInfo.url}
                                 </code>
                               </div>
                             </div>
-                            {ctaInfo.url && (
-                              <Button 
-                                asChild 
-                                size="lg"
-                                className={cn(
-                                  "h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
-                                  ctaInfo.buttonStyle === 'affiliate' 
-                                    ? "bg-purple-600 hover:bg-purple-700 text-white"
-                                    : "bg-blue-600 hover:bg-blue-700 text-white"
-                                )}
+                            <Button 
+                              asChild 
+                              size="lg"
+                              className={cn(
+                                "h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
+                                ctaInfo.buttonStyle === 'affiliate' 
+                                  ? "bg-purple-600 hover:bg-purple-700 text-white"
+                                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                              )}
+                            >
+                              <a 
+                                href={ctaInfo.url} 
+                                target="_blank"
+                                rel={ctaInfo.rel}
                               >
-                                <a 
-                                  href={ctaInfo.url} 
-                                  target="_blank"
-                                  rel={ctaInfo.rel}
-                                >
-                                  {ctaInfo.isAffiliate ? (
-                                    <Play className="h-5 w-5 mr-2 fill-current" />
-                                  ) : (
-                                    <Gamepad2 className="h-5 w-5 mr-2" />
-                                  )}
-                                  {ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Free'}
-                                </a>
-                              </Button>
-                            )}
+                                {ctaInfo.isAffiliate ? (
+                                  <Play className="h-5 w-5 mr-2 fill-current" />
+                                ) : (
+                                  <Gamepad2 className="h-5 w-5 mr-2" />
+                                )}
+                                {ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Official Game'}
+                              </a>
+                            </Button>
                           </div>
                         </div>
                       )
@@ -1019,9 +1013,9 @@ showAffiliateCTA={!!ctaInfo.url}
                         <PromoCodeCard 
                           key={code.id} 
                           code={code}
-                          showAffiliateCTA={!!ctaInfo.url}
-                          affiliateUrl={ctaInfo.url || ''}
-                          affiliateLabel={ctaInfo.isAffiliate ? `Play ${game.shortName || game.name} & Redeem` : `Play ${game.shortName || game.name}`}
+                          showAffiliateCTA={true}
+                          affiliateUrl={ctaInfo.url}
+                          affiliateLabel={ctaInfo.isAffiliate ? `Play ${game.shortName || game.name} & Redeem` : `Play Official Game`}
                           affiliateRel={ctaInfo.rel}
                         />
                       ))}
@@ -1216,30 +1210,28 @@ showAffiliateCTA={!!ctaInfo.url}
                   <h3 className="font-bold text-foreground text-lg">First time playing {game.shortName || game.name}?</h3>
                   <p className="text-muted-foreground text-sm">Use code GOFAST or MONKEYKING for a free Legendary champion</p>
                 </div>
-                {ctaInfo.url && (
-                  <Button 
-                    asChild 
-                    className={cn(
-                      "font-semibold shrink-0",
-                      ctaInfo.isAffiliate 
-                        ? "bg-purple-600 hover:bg-purple-700 text-white"
-                        : "bg-blue-600 hover:bg-blue-700 text-white"
-                    )}
+                <Button 
+                  asChild 
+                  className={cn(
+                    "font-semibold shrink-0",
+                    ctaInfo.isAffiliate 
+                      ? "bg-purple-600 hover:bg-purple-700 text-white"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  )}
+                >
+                  <a 
+                    href={ctaInfo.url} 
+                    target="_blank"
+                    rel={ctaInfo.rel}
                   >
-                    <a 
-                      href={ctaInfo.url} 
-                      target="_blank"
-                      rel={ctaInfo.rel}
-                    >
-                      {ctaInfo.isAffiliate ? (
-                        <Play className="h-4 w-4 mr-2 fill-current" />
-                      ) : (
-                        <Gamepad2 className="h-4 w-4 mr-2" />
-                      )}
-                      {ctaInfo.isAffiliate ? 'Start Playing Free' : 'Play Free'}
-                    </a>
-                  </Button>
-                )}
+                    {ctaInfo.isAffiliate ? (
+                      <Play className="h-4 w-4 mr-2 fill-current" />
+                    ) : (
+                      <Gamepad2 className="h-4 w-4 mr-2" />
+                    )}
+                    {ctaInfo.isAffiliate ? 'Start Playing Free' : 'Play Official Game'}
+                  </a>
+                </Button>
               </div>
             </div>
           </PageContainer>
@@ -1791,21 +1783,19 @@ showAffiliateCTA={!!ctaInfo.url}
         </PageContainer>
       </section>
 
-      {/* Sticky CTA - Mobile & Desktop */}
-      {ctaInfo.url && (
-        <StickyGameCTA
-          gameName={game.shortName || game.name}
-          affiliateUrl={ctaInfo.url}
-          ctaLabel={ctaInfo.label}
-          ctaRel={ctaInfo.rel}
-          isAffiliate={ctaInfo.isAffiliate}
-          trustText={ctaInfo.trustText}
-          urgencyText={ctaInfo.urgencyText}
-        />
-      )}
+      {/* Sticky CTA - Mobile & Desktop - Always shown */}
+      <StickyGameCTA
+        gameName={game.shortName || game.name}
+        affiliateUrl={ctaInfo.url}
+        ctaLabel={ctaInfo.label}
+        ctaRel={ctaInfo.rel}
+        isAffiliate={ctaInfo.isAffiliate}
+        trustText={ctaInfo.trustText}
+        urgencyText={ctaInfo.urgencyText}
+      />
 
-      {/* Exit Intent Popup */}
-      {bestCode && ctaInfo.url && (
+      {/* Exit Intent Popup - Always shown when there's a best code */}
+      {bestCode && (
         <ExitIntentPopup
           gameName={game.name}
           gameShortName={game.shortName}
@@ -1821,14 +1811,12 @@ showAffiliateCTA={!!ctaInfo.url}
       )}
       
       {/* Post-Copy Sticky Bar - appears after user copies a code */}
-      {ctaInfo.isAffiliate && ctaInfo.url && (
-        <PostCopyStickyBar
-          gameName={game.shortName || game.name}
-          affiliateUrl={ctaInfo.url}
-          ctaRel={ctaInfo.rel}
-          isAffiliate={ctaInfo.isAffiliate}
-        />
-      )}
+      <PostCopyStickyBar
+        gameName={game.shortName || game.name}
+        affiliateUrl={ctaInfo.url}
+        ctaRel={ctaInfo.rel}
+        isAffiliate={ctaInfo.isAffiliate}
+      />
       
       {/* SEO Internal Links - Popular Games & Latest Codes */}
       <SEOInternalLinks 
