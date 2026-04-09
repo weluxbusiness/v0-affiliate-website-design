@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Flame, Gamepad2, Tag, ArrowRight, Clock } from "lucide-react"
 
 /**
@@ -13,21 +14,33 @@ const trendingGamingPages = [
     href: '/gaming/genshin-impact', 
     label: 'Genshin Impact Codes',
     description: 'Free Primogems & rewards',
+    imageUrl: '/games/genshin-impact.webp',
+    initials: 'GI',
+    color: 'bg-amber-500',
   },
   { 
     href: '/gaming/raid-shadow-legends', 
     label: 'RAID Shadow Legends Codes',
     description: 'Free shards & energy',
+    imageUrl: '/games/raid-shadow-legends.png',
+    initials: 'RS',
+    color: 'bg-purple-600',
   },
   { 
     href: '/gaming/roblox', 
     label: 'Roblox Promo Codes',
     description: 'Free items & accessories',
+    imageUrl: '/games/roblox.png',
+    initials: 'RB',
+    color: 'bg-red-500',
   },
   { 
     href: '/gaming/fortnite', 
     label: 'Fortnite Codes',
     description: 'Free V-Bucks & skins',
+    imageUrl: '/games/fortnite.png',
+    initials: 'FN',
+    color: 'bg-blue-500',
   },
 ]
 
@@ -36,21 +49,29 @@ const trendingDealPages = [
     href: '/deals/price/laptops-under-500', 
     label: 'Laptops Under $500',
     description: 'Best budget laptops',
+    initials: 'LP',
+    color: 'bg-slate-600',
   },
   { 
     href: '/deals/price/headphones-under-100', 
     label: 'Headphones Under $100',
     description: 'Top-rated audio deals',
+    initials: 'HP',
+    color: 'bg-indigo-500',
   },
   { 
     href: '/deals/price/tvs-under-500', 
     label: 'TVs Under $500',
     description: '4K TV deals',
+    initials: 'TV',
+    color: 'bg-cyan-600',
   },
   { 
     href: '/deals/price/sneakers-under-100', 
     label: 'Sneakers Under $100',
     description: 'Top shoe deals',
+    initials: 'SN',
+    color: 'bg-orange-500',
   },
 ]
 
@@ -86,19 +107,37 @@ export function TrendingNowSection() {
               <span>Hot Gaming Codes</span>
             </div>
             <div className="space-y-2">
-              {trendingGamingPages.map((page) => (
+              {trendingGamingPages.map((page, index) => (
                 <Link
                   key={page.href}
                   href={page.href}
-                  className="flex items-center justify-between p-3 rounded-lg bg-card border border-border hover:border-primary/50 hover:bg-accent/50 transition-all group"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-primary/50 hover:bg-white/5 hover:scale-[1.02] transition-all group cursor-pointer"
                 >
-                  <div>
-                    <span className="font-medium text-foreground group-hover:text-primary transition-colors">
+                  {/* Game Icon */}
+                  {page.imageUrl ? (
+                    <div className="relative h-10 w-10 md:h-12 md:w-12 flex-shrink-0 rounded-xl overflow-hidden shadow-md">
+                      <Image
+                        src={page.imageUrl}
+                        alt={page.label}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 40px, 48px"
+                        priority={index === 0}
+                      />
+                    </div>
+                  ) : (
+                    <div className={`h-10 w-10 md:h-12 md:w-12 flex-shrink-0 rounded-xl ${page.color} shadow-md flex items-center justify-center`}>
+                      <span className="text-white font-bold text-sm">{page.initials}</span>
+                    </div>
+                  )}
+                  {/* Text Block */}
+                  <div className="flex-1 min-w-0">
+                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors block truncate">
                       {page.label}
                     </span>
-                    <p className="text-xs text-muted-foreground">{page.description}</p>
+                    <p className="text-xs text-muted-foreground truncate">{page.description}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="h-4 w-4 flex-shrink-0 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                 </Link>
               ))}
             </div>
@@ -115,15 +154,20 @@ export function TrendingNowSection() {
                 <Link
                   key={page.href}
                   href={page.href}
-                  className="flex items-center justify-between p-3 rounded-lg bg-card border border-border hover:border-primary/50 hover:bg-accent/50 transition-all group"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-primary/50 hover:bg-white/5 hover:scale-[1.02] transition-all group cursor-pointer"
                 >
-                  <div>
-                    <span className="font-medium text-foreground group-hover:text-primary transition-colors">
+                  {/* Category Icon Placeholder */}
+                  <div className={`h-10 w-10 md:h-12 md:w-12 flex-shrink-0 rounded-xl ${page.color} shadow-md flex items-center justify-center`}>
+                    <span className="text-white font-bold text-sm">{page.initials}</span>
+                  </div>
+                  {/* Text Block */}
+                  <div className="flex-1 min-w-0">
+                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors block truncate">
                       {page.label}
                     </span>
-                    <p className="text-xs text-muted-foreground">{page.description}</p>
+                    <p className="text-xs text-muted-foreground truncate">{page.description}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="h-4 w-4 flex-shrink-0 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                 </Link>
               ))}
             </div>
