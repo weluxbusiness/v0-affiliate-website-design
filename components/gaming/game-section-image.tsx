@@ -79,23 +79,22 @@ export function GameSectionImage({
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
         />
         
-        {/* Subtle overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
+        {/* NO OVERLAY - Clean image */}
         
-        {/* Badge */}
+        {/* Badge with shadow for contrast */}
         {(badgeInfo || customBadge) && (
           <div className="absolute top-3 left-3">
-            <Badge className={`font-semibold shadow-lg text-sm px-3 py-1 ${badgeInfo?.className || "bg-primary text-primary-foreground"}`}>
+            <Badge className={`font-semibold shadow-xl text-sm px-3 py-1 ${badgeInfo?.className || "bg-primary text-primary-foreground"}`}>
               {badgeInfo?.icon}
               {badgeInfo?.label || customBadge}
             </Badge>
           </div>
         )}
         
-        {/* Title */}
+        {/* Title with text shadow only (no background overlay) */}
         {title && (
           <div className="absolute bottom-0 left-0 right-0 p-4">
-            <h3 className="text-white font-bold text-lg drop-shadow-lg">
+            <h3 className="text-white font-bold text-lg drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               {title}
             </h3>
           </div>

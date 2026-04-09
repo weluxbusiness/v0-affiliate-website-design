@@ -6,6 +6,7 @@ import {
   Gift, 
   Users, 
   Calendar,
+  Clock,
   ExternalLink,
   HelpCircle,
   Zap,
@@ -33,7 +34,7 @@ import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
 import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getGameCtaInfo, hasGameSpecificAffiliateLinks, getRewardAffiliateUrl } from "@/lib/gaming-data"
 import { cn } from "@/lib/utils"
 import { getSeoUrl } from "@/lib/seo-routes"
-import { Clock, AlertCircle, BookOpen, CheckCircle2, ArrowRight, TrendingUp } from "lucide-react"
+import { AlertCircle, BookOpen, CheckCircle2, ArrowRight, TrendingUp } from "lucide-react"
 
 // Game-specific image configurations
 const gameImages: Record<string, {
@@ -309,18 +310,36 @@ export function GamePageTemplate({
           
           {/* Hero Image - Clean visual with subtle badge */}
           {images && (
-            <div className="mb-4 md:mb-8">
+            <div className="mb-4 md:mb-6">
               <GameHeroImage
                 src={images.hero}
                 alt={`${game.name} promo codes ${currentMonth.toLowerCase()} ${currentYear}`}
                 month={currentMonth}
                 year={currentYear}
                 codeCount={activeCodes.length}
-                showUpdatedBadge={true}
+                showUpdatedBadge={false}
                 priority={true}
               />
             </div>
           )}
+          
+          {/* Hero Info Bar - Key conversion info below image */}
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 mb-4 md:mb-6">
+            <div className="flex items-center gap-1.5 text-sm font-medium text-white">
+              <Flame className="h-4 w-4 text-orange-400" />
+              <span><strong>{activeCodes.length}</strong> Working Codes</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-white/30" />
+            <div className="flex items-center gap-1.5 text-sm font-medium text-white">
+              <Gift className="h-4 w-4 text-green-400" />
+              <span>Free Rewards</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-white/30" />
+            <div className="flex items-center gap-1.5 text-sm font-medium text-white">
+              <Clock className="h-4 w-4 text-blue-400" />
+              <span>Updated {currentMonth} {currentYear}</span>
+            </div>
+          </div>
 
           {/* Mobile: Compact header with logo + title + CTAs */}
           <div className="md:hidden">
