@@ -263,14 +263,15 @@ export function MonthlyCodesPageTemplate({
             />
           </div>
           
-          {/* Hero Image - High-converting visual */}
+          {/* Hero Image - Clean visual with subtle badge */}
           {images && (
             <div className="mb-8">
               <GameHeroImage
                 src={images.hero}
-                alt={`${game.name} codes ${month.toLowerCase()} ${year} - free rewards and working promo codes`}
-                title={`Working Codes ${month} ${year}`}
-                badge="Working Codes"
+                alt={`${game.name} codes ${month.toLowerCase()} ${year}`}
+                month={month}
+                year={year}
+                codeCount={activeCodes.length}
                 showUpdatedBadge={true}
                 priority={true}
               />
