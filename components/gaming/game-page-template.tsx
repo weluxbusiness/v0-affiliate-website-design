@@ -22,7 +22,7 @@ import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
 import { StickyGameCTA } from "@/components/gaming/sticky-game-cta"
 import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
-import { GameHeroImage } from "@/components/gaming/game-hero-image"
+
 import { GameSectionImage } from "@/components/gaming/game-section-image"
 import { CopyCodeButton, CopyProvider, PostCopyStickyBar } from "@/components/gaming/copy-code-button"
 import { Breadcrumbs, getGameBreadcrumbs } from "@/components/gaming/breadcrumbs"
@@ -308,22 +308,7 @@ export function GamePageTemplate({
             />
           </div>
           
-          {/* Hero Image - Clean visual with subtle badge */}
-          {images && (
-            <div className="mb-4 md:mb-6">
-              <GameHeroImage
-                src={images.hero}
-                alt={`${game.name} promo codes ${currentMonth.toLowerCase()} ${currentYear}`}
-                month={currentMonth}
-                year={currentYear}
-                codeCount={activeCodes.length}
-                showUpdatedBadge={false}
-                priority={true}
-              />
-            </div>
-          )}
-          
-          {/* Hero Info Bar - Key conversion info below image */}
+          {/* Hero Info Bar - Key conversion info */}
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 mb-4 md:mb-6">
             <div className="flex items-center gap-1.5 text-sm font-medium text-white">
               <Flame className="h-4 w-4 text-orange-400" />
