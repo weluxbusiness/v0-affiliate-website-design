@@ -16,7 +16,8 @@ import {
   Flame,
   Play,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Crown
 } from "lucide-react"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
@@ -31,7 +32,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Game, PromoCode, GameReward } from "@/lib/gaming-data"
-import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getGameCtaInfo, hasGameSpecificAffiliateLinks, getRewardAffiliateUrl } from "@/lib/gaming-data"
+import { getBestPromoCode, getActivePromoCodes, getExpiredPromoCodes, sortPromoCodesByValue, getGameLogoUrl, getGameCtaInfo, hasGameSpecificAffiliateLinks, getRewardAffiliateUrl, getChampionAffiliateUrl } from "@/lib/gaming-data"
 import { cn } from "@/lib/utils"
 import { getSeoUrl } from "@/lib/seo-routes"
 import { AlertCircle, BookOpen, CheckCircle2, ArrowRight, TrendingUp } from "lucide-react"
@@ -387,6 +388,30 @@ export function GamePageTemplate({
                 </Button>
               )}
               
+              {/* Secondary CTA - Champion Offer (gold/yellow gradient) */}
+              {ctaInfo.secondary && (
+                <div className="flex flex-col gap-1">
+                  <Button 
+                    size="lg" 
+                    asChild 
+                    className="w-full font-bold shadow-lg text-base h-12 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white"
+                  >
+                    <a 
+                      href={ctaInfo.secondary.url} 
+                      target="_blank"
+                      rel={ctaInfo.secondary.rel}
+                    >
+                      <Crown className="h-5 w-5 mr-2" />
+                      {ctaInfo.secondary.label}
+                      <ExternalLink className="h-4 w-4 ml-2" />
+                    </a>
+                  </Button>
+                  <p className="text-xs text-amber-300 text-center font-medium">
+                    {ctaInfo.secondary.sublabel}
+                  </p>
+                </div>
+              )}
+              
               {/* Urgency + Trust text (for affiliate) */}
               {ctaInfo.isAffiliate && (
                 <div className="text-center space-y-0.5">
@@ -581,6 +606,30 @@ export function GamePageTemplate({
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
+                  
+                  {/* Secondary CTA - Champion Offer (gold/yellow gradient) */}
+                  {ctaInfo.secondary && (
+                    <div className="flex flex-col gap-1">
+                      <Button 
+                        size="lg" 
+                        asChild 
+                        className="gap-2 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all px-8 py-5 text-base bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white"
+                      >
+                        <a 
+                          href={ctaInfo.secondary.url} 
+                          target="_blank"
+                          rel={ctaInfo.secondary.rel}
+                        >
+                          <Crown className="h-5 w-5" />
+                          {ctaInfo.secondary.label}
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </Button>
+                      <p className="text-xs text-amber-300 text-center font-medium">
+                        {ctaInfo.secondary.sublabel}
+                      </p>
+                    </div>
+                  )}
                   
                   {/* Urgency + Trust text (for affiliate) */}
                   {ctaInfo.isAffiliate && (
