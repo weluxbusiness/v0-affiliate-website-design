@@ -78,14 +78,15 @@ const AFFILIATE_BASE_URL = 'https://go.savesmart.bio'
 // GAME-SPECIFIC AFFILIATE CONFIG
 // Only games with explicit configs have affiliate links
 // Other games should NOT use affiliate links
-const gameAffiliateConfig: Record<string, { play?: string; reward?: string; champion?: string }> = {
+const gameAffiliateConfig: Record<string, { play?: string; reward?: string; champion?: string; champion2?: string }> = {
   'raid-shadow-legends': {
     play: `${AFFILIATE_BASE_URL}/play-raid`,
     reward: `${AFFILIATE_BASE_URL}/reward-raid`,
     champion: `${AFFILIATE_BASE_URL}/champion-raid`,
+    champion2: `${AFFILIATE_BASE_URL}/champion-raid`,
   },
   // Add more games here as affiliate partnerships are established
-  // 'game-slug': { play: 'url', reward: 'url', champion: 'url' }
+  // 'game-slug': { play: 'url', reward: 'url', champion: 'url', champion2: 'url' }
 }
 
 // Global affiliate links (fallback for all traffic monetization)
@@ -121,6 +122,15 @@ export function getRewardAffiliateUrl(game: Game): string | null {
 export function getChampionAffiliateUrl(game: Game): string | null {
   const config = gameAffiliateConfig[game.slug]
   return config?.champion || null
+}
+
+/**
+* Get the "Champion 2" affiliate link (second special offer CTAs)
+* Returns game-specific URL if configured, otherwise null
+*/
+export function getChampion2AffiliateUrl(game: Game): string | null {
+  const config = gameAffiliateConfig[game.slug]
+  return config?.champion2 || null
 }
 
 /**
@@ -163,9 +173,17 @@ export function getGameCtaInfo(game: Game): {
     isAffiliate: boolean
     rel: string
   } | null // Secondary CTA for special offers
+  tertiary: {
+    url: string
+    label: string
+    sublabel: string
+    isAffiliate: boolean
+    rel: string
+  } | null // Tertiary CTA for additional offers
 } {
   const affiliateUrl = getPlayAffiliateUrl(game)
   const championUrl = getChampionAffiliateUrl(game)
+  const champion2Url = getChampion2AffiliateUrl(game)
   const officialUrl = game.officialUrl || game.websiteUrl || null
   
   // Build secondary CTA if champion URL exists
@@ -173,6 +191,15 @@ export function getGameCtaInfo(game: Game): {
     url: championUrl,
     label: 'Play & Get Legendary Champion',
     sublabel: 'Exclusive new player bonus',
+    isAffiliate: true,
+    rel: 'nofollow sponsored noopener',
+  } : null
+  
+  // Build tertiary CTA if champion2 URL exists
+  const tertiaryCta = champion2Url ? {
+    url: champion2Url,
+    label: 'Start Playing & Get Bonus',
+    sublabel: 'Limited time offer',
     isAffiliate: true,
     rel: 'nofollow sponsored noopener',
   } : null
@@ -191,6 +218,7 @@ export function getGameCtaInfo(game: Game): {
       buttonStyle: 'affiliate',
       officialUrl: officialUrl, // For secondary CTA
       secondary: secondaryCta,
+      tertiary: tertiaryCta,
     }
   }
   
@@ -208,6 +236,7 @@ export function getGameCtaInfo(game: Game): {
       buttonStyle: 'official',
       officialUrl: officialUrl,
       secondary: secondaryCta,
+      tertiary: tertiaryCta,
     }
   }
   
@@ -227,6 +256,7 @@ export function getGameCtaInfo(game: Game): {
     buttonStyle: 'neutral',
     officialUrl: null,
     secondary: secondaryCta,
+    tertiary: tertiaryCta,
   }
 }
 

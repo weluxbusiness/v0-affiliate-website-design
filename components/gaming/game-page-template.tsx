@@ -412,6 +412,30 @@ export function GamePageTemplate({
                 </div>
               )}
               
+              {/* Tertiary CTA - Additional Offer (purple gradient) */}
+              {ctaInfo.tertiary && (
+                <div className="flex flex-col gap-1">
+                  <Button 
+                    size="lg" 
+                    asChild 
+                    className="w-full font-bold shadow-lg text-base h-12 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
+                  >
+                    <a 
+                      href={ctaInfo.tertiary.url} 
+                      target="_blank"
+                      rel={ctaInfo.tertiary.rel}
+                    >
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      {ctaInfo.tertiary.label}
+                      <ExternalLink className="h-4 w-4 ml-2" />
+                    </a>
+                  </Button>
+                  <p className="text-xs text-purple-300 text-center font-medium">
+                    {ctaInfo.tertiary.sublabel}
+                  </p>
+                </div>
+              )}
+              
               {/* Urgency + Trust text (for affiliate) */}
               {ctaInfo.isAffiliate && (
                 <div className="text-center space-y-0.5">
@@ -627,6 +651,30 @@ export function GamePageTemplate({
                       </Button>
                       <p className="text-xs text-amber-300 text-center font-medium">
                         {ctaInfo.secondary.sublabel}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Tertiary CTA - Additional Offer (purple gradient) */}
+                  {ctaInfo.tertiary && (
+                    <div className="flex flex-col gap-1">
+                      <Button 
+                        size="lg" 
+                        asChild 
+                        className="gap-2 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all px-8 py-5 text-base bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
+                      >
+                        <a 
+                          href={ctaInfo.tertiary.url} 
+                          target="_blank"
+                          rel={ctaInfo.tertiary.rel}
+                        >
+                          <Sparkles className="h-5 w-5" />
+                          {ctaInfo.tertiary.label}
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </Button>
+                      <p className="text-xs text-purple-300 text-center font-medium">
+                        {ctaInfo.tertiary.sublabel}
                       </p>
                     </div>
                   )}
