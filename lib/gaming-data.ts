@@ -82,7 +82,7 @@ const gameAffiliateConfig: Record<string, { play?: string; reward?: string; cham
   'raid-shadow-legends': {
     play: `${AFFILIATE_BASE_URL}/play-raid`,
     reward: `${AFFILIATE_BASE_URL}/reward-raid`,
-    champion: `${AFFILIATE_BASE_URL}/champion-reward`,
+    champion: `${AFFILIATE_BASE_URL}/champion-raid`,
   },
   // Add more games here as affiliate partnerships are established
   // 'game-slug': { play: 'url', reward: 'url', champion: 'url' }
