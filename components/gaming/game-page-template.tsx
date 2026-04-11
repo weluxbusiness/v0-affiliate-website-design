@@ -1035,11 +1035,9 @@ showAffiliateCTA={!!ctaInfo.url}
                               size="lg"
                               className={cn(
                                 "h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
-                                ctaInfo.secondary 
-                                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                                  : ctaInfo.buttonStyle === 'affiliate' 
-                                    ? "bg-purple-600 hover:bg-purple-700 text-white"
-                                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                                ctaInfo.buttonStyle === 'affiliate' 
+                                  ? "bg-purple-600 hover:bg-purple-700 text-white"
+                                  : "bg-blue-600 hover:bg-blue-700 text-white"
                               )}
                             >
                               <a 
