@@ -83,7 +83,7 @@ const gameAffiliateConfig: Record<string, { play?: string; reward?: string; cham
     play: `${AFFILIATE_BASE_URL}/play-raid`,
     reward: `${AFFILIATE_BASE_URL}/reward-raid`,
     champion: `${AFFILIATE_BASE_URL}/champion-raid`,
-    champion2: `${AFFILIATE_BASE_URL}/champion-raid`,
+    champion2: `${AFFILIATE_BASE_URL}/champion-reward`,
   },
   // Add more games here as affiliate partnerships are established
   // 'game-slug': { play: 'url', reward: 'url', champion: 'url', champion2: 'url' }
