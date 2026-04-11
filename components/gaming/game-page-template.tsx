@@ -412,6 +412,30 @@ export function GamePageTemplate({
                 </div>
               )}
               
+              {/* Tertiary CTA - Additional Offer (purple gradient) */}
+              {ctaInfo.tertiary && (
+                <div className="flex flex-col gap-1">
+                  <Button 
+                    size="lg" 
+                    asChild 
+                    className="w-full font-bold shadow-lg text-base h-12 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
+                  >
+                    <a 
+                      href={ctaInfo.tertiary.url} 
+                      target="_blank"
+                      rel={ctaInfo.tertiary.rel}
+                    >
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      {ctaInfo.tertiary.label}
+                      <ExternalLink className="h-4 w-4 ml-2" />
+                    </a>
+                  </Button>
+                  <p className="text-xs text-purple-300 text-center font-medium">
+                    {ctaInfo.tertiary.sublabel}
+                  </p>
+                </div>
+              )}
+              
               {/* Urgency + Trust text (for affiliate) */}
               {ctaInfo.isAffiliate && (
                 <div className="text-center space-y-0.5">
@@ -627,6 +651,30 @@ export function GamePageTemplate({
                       </Button>
                       <p className="text-xs text-amber-300 text-center font-medium">
                         {ctaInfo.secondary.sublabel}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Tertiary CTA - Additional Offer (purple gradient) */}
+                  {ctaInfo.tertiary && (
+                    <div className="flex flex-col gap-1">
+                      <Button 
+                        size="lg" 
+                        asChild 
+                        className="gap-2 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all px-8 py-5 text-base bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
+                      >
+                        <a 
+                          href={ctaInfo.tertiary.url} 
+                          target="_blank"
+                          rel={ctaInfo.tertiary.rel}
+                        >
+                          <Sparkles className="h-5 w-5" />
+                          {ctaInfo.tertiary.label}
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </Button>
+                      <p className="text-xs text-purple-300 text-center font-medium">
+                        {ctaInfo.tertiary.sublabel}
                       </p>
                     </div>
                   )}
@@ -1030,29 +1078,47 @@ showAffiliateCTA={!!ctaInfo.url}
                                 </code>
                               </div>
                             </div>
-                            <Button 
-                              asChild 
-                              size="lg"
-                              className={cn(
-                                "h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
-                                ctaInfo.buttonStyle === 'affiliate' 
-                                  ? "bg-purple-600 hover:bg-purple-700 text-white"
-                                  : "bg-blue-600 hover:bg-blue-700 text-white"
-                              )}
-                            >
-                              <a 
-                                href={ctaInfo.secondary?.url || ctaInfo.url} 
-                                target="_blank"
-                                rel={ctaInfo.secondary?.rel || ctaInfo.rel}
-                              >
-                                {ctaInfo.isAffiliate ? (
-                                  <Play className="h-5 w-5 mr-2 fill-current" />
-                                ) : (
-                                  <Gamepad2 className="h-5 w-5 mr-2" />
+                            <div className="flex flex-col sm:flex-row gap-2">
+                              <Button 
+                                asChild 
+                                size="lg"
+                                className={cn(
+                                  "h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
+                                  ctaInfo.buttonStyle === 'affiliate' 
+                                    ? "bg-purple-600 hover:bg-purple-700 text-white"
+                                    : "bg-blue-600 hover:bg-blue-700 text-white"
                                 )}
-                                {ctaInfo.secondary ? ctaInfo.secondary.label : (ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Official Game')}
-                              </a>
-                            </Button>
+                              >
+                                <a 
+                                  href={ctaInfo.secondary?.url || ctaInfo.url} 
+                                  target="_blank"
+                                  rel={ctaInfo.secondary?.rel || ctaInfo.rel}
+                                >
+                                  {ctaInfo.isAffiliate ? (
+                                    <Play className="h-5 w-5 mr-2 fill-current" />
+                                  ) : (
+                                    <Gamepad2 className="h-5 w-5 mr-2" />
+                                  )}
+                                  {ctaInfo.secondary ? ctaInfo.secondary.label : (ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Official Game')}
+                                </a>
+                              </Button>
+                              {ctaInfo.tertiary && (
+                                <Button 
+                                  asChild 
+                                  size="lg"
+                                  className="h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                                >
+                                  <a 
+                                    href={ctaInfo.tertiary.url} 
+                                    target="_blank"
+                                    rel={ctaInfo.tertiary.rel}
+                                  >
+                                    <Sparkles className="h-5 w-5 mr-2" />
+                                    {ctaInfo.tertiary.label}
+                                  </a>
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         </div>
                       )
