@@ -1035,22 +1035,24 @@ showAffiliateCTA={!!ctaInfo.url}
                               size="lg"
                               className={cn(
                                 "h-12 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all",
-                                ctaInfo.buttonStyle === 'affiliate' 
-                                  ? "bg-purple-600 hover:bg-purple-700 text-white"
-                                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                                ctaInfo.secondary 
+                                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                                  : ctaInfo.buttonStyle === 'affiliate' 
+                                    ? "bg-purple-600 hover:bg-purple-700 text-white"
+                                    : "bg-blue-600 hover:bg-blue-700 text-white"
                               )}
                             >
                               <a 
-                                href={ctaInfo.url} 
+                                href={ctaInfo.secondary?.url || ctaInfo.url} 
                                 target="_blank"
-                                rel={ctaInfo.rel}
+                                rel={ctaInfo.secondary?.rel || ctaInfo.rel}
                               >
                                 {ctaInfo.isAffiliate ? (
                                   <Play className="h-5 w-5 mr-2 fill-current" />
                                 ) : (
                                   <Gamepad2 className="h-5 w-5 mr-2" />
                                 )}
-                                {ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Official Game'}
+                                {ctaInfo.secondary ? ctaInfo.secondary.label : (ctaInfo.isAffiliate ? 'Play & Get Legendary Champion' : 'Play Official Game')}
                               </a>
                             </Button>
                           </div>
