@@ -27,7 +27,9 @@ import { ExitIntentPopup } from "@/components/gaming/exit-intent-popup"
 import { GameSectionImage } from "@/components/gaming/game-section-image"
 import { CopyCodeButton, CopyProvider, PostCopyStickyBar } from "@/components/gaming/copy-code-button"
 import { Breadcrumbs, getGameBreadcrumbs } from "@/components/gaming/breadcrumbs"
-import { SEOInternalLinks, SEOFooterLinks } from "@/components/gaming/seo-internal-links"
+import { SEOInternalLinks, SEOFooterLinks, NewCodesTodaySection, AuthoritySignalsSection } from "@/components/gaming/seo-internal-links"
+import { TrendingGamesSection } from "@/components/gaming/trending-games-section"
+import { GamingIntro } from "@/components/seo"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -910,6 +912,13 @@ export function GamePageTemplate({
           </PageContainer>
         </section>
       )}
+
+      {/* SEO Intro Section - Unique content with authority signals and how-to */}
+      <GamingIntro 
+        gameName={game.name}
+        codeCount={activeCodes.length}
+        className="border-b border-border"
+      />
 
       {/* Latest Working Codes Today - New Section for SEO */}
       {(() => {
@@ -1936,6 +1945,13 @@ showAffiliateCTA={!!ctaInfo.url}
         isAffiliate={ctaInfo.isAffiliate}
       />
       
+      {/* Trending Games Section - SEO Internal Linking */}
+      <TrendingGamesSection 
+        currentGameSlug={game.slug}
+        limit={8}
+        title="Trending Games"
+      />
+
       {/* SEO Internal Links - Popular Games & Latest Codes */}
       <SEOInternalLinks 
         currentGameSlug={game.slug}
@@ -1943,6 +1959,12 @@ showAffiliateCTA={!!ctaInfo.url}
         showLatestCodes={true}
         showMonthlyNav={true}
       />
+      
+      {/* New Codes Today Section */}
+      <NewCodesTodaySection currentGameSlug={game.slug} />
+      
+      {/* Authority Signals Section */}
+      <AuthoritySignalsSection />
       
       {/* SEO Footer Links */}
       <SEOFooterLinks currentGameSlug={game.slug} />
