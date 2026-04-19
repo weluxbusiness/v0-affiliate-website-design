@@ -339,11 +339,11 @@ export default async function SeoPage({ params }: PageProps) {
     notFound()
   }
   
-  // Handle low-value pages - redirect to main codes page via 301
-  // These pages cause index bloat and thin content issues
+  // Handle low-value pages - return 404 instead of redirect
+  // Redirects are already configured in next.config.mjs
+  // Returning 404 here prevents double-redirect issues that cause Google "Page with redirect" errors
   if (lowValueParsed) {
-    const { redirect } = await import('next/navigation')
-    redirect(`/${game.slug}-codes`)
+    notFound()
   }
   
   // Handle blog pages (noindexed but still accessible)

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { MonthlyCodesPageTemplate } from "@/components/gaming/monthly-codes-page-template"
 import { getGameBySlug, getRelatedGames, getActivePromoCodes } from "@/lib/gaming-data"
 
@@ -46,7 +46,7 @@ export default function MonopolyGOCodesApril2026Page() {
   const game = getGameBySlug(gameSlug)
   
   if (!game) {
-    redirect("/gaming")
+    notFound()
   }
 
   const relatedGames = getRelatedGames(game, 6)

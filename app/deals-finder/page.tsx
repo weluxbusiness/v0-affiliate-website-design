@@ -1,6 +1,15 @@
-import { redirect } from "next/navigation"
+import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 
-// 301 redirect from /deals-finder to /deal-finder to resolve duplicate content
+// Return 404 - redirect is handled in next.config.mjs
+// This prevents "Page with redirect" errors in Google Search Console
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
+
 export default function DealsFinderRedirectPage() {
-  redirect("/deal-finder")
+  notFound()
 }
