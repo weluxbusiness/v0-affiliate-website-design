@@ -420,56 +420,60 @@ export default function RAIDShadowLegendsPromoCodesPage() {
                       }`}
                     >
                       <CardContent className="p-4">
-                        {/* Engagement signals header */}
-                        <div className="flex flex-wrap items-center gap-2 mb-3">
+                        {/* REAL-TIME TRUST SIGNALS - Working now, verified today */}
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          {/* Working Now - Real-time indicator */}
+                          <Badge className="bg-green-500 text-white text-xs animate-pulse">
+                            <span className="h-1.5 w-1.5 rounded-full bg-white mr-1.5 animate-ping" />
+                            Working Now
+                          </Badge>
                           {isHighlighted && (
                             <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
                               <Flame className="h-3 w-3 mr-1" />
                               Hot Today
                             </Badge>
                           )}
-                          {code.isVerified && (
-                            <Badge variant="outline" className="text-green-600 border-green-500/50 bg-green-500/10 text-xs">
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
-                              Verified
+                          {index === 0 && (
+                            <Badge className="bg-blue-500 text-white text-xs">
+                              <Sparkles className="h-3 w-3 mr-1" />
+                              New Today
                             </Badge>
                           )}
                         </div>
                         
                         {/* Reward */}
-                        <p className="font-semibold text-foreground mb-3">{code.reward}</p>
+                        <p className="font-semibold text-foreground mb-2">{code.reward}</p>
                         
-                        {/* Code Display */}
-                        <div className="flex items-center gap-2 p-3 mb-3 bg-muted/50 rounded-lg border border-dashed border-primary/30">
-                          <code className="font-mono text-lg font-bold text-primary flex-1">{code.code}</code>
+                        {/* TRUST SIGNALS ROW - Above code for instant trust */}
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
+                          <span className="flex items-center gap-1">
+                            <Users className="h-3 w-3 text-blue-500" />
+                            {usedToday}x today
+                          </span>
+                          <span className="flex items-center gap-1 text-green-600">
+                            <CheckCircle2 className="h-3 w-3" />
+                            {successRate}% success
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3 text-amber-500" />
+                            Tested today
+                          </span>
+                        </div>
+                        
+                        {/* Code Display - Large & Clear */}
+                        <div className="flex items-center gap-2 p-3 mb-3 bg-primary/5 rounded-lg border-2 border-primary/30">
+                          <code className="font-mono text-xl font-bold text-primary flex-1 tracking-wider">{code.code}</code>
                         </div>
                         
                         {/* LARGE COPY BUTTON - High contrast, instant feedback */}
                         <LargeCopyButton code={code.code} className="w-full" />
                         
-                        {/* ENGAGEMENT SIGNALS - Used today, success rate, last tested */}
-                        <div className="grid grid-cols-3 gap-2 p-2 bg-muted/50 rounded-lg text-xs">
-                          <div className="flex flex-col items-center gap-0.5">
-                            <span className="text-muted-foreground">Used today</span>
-                            <span className="font-semibold text-foreground flex items-center gap-1">
-                              <Users className="h-3 w-3 text-blue-500" />
-                              {usedToday}x
-                            </span>
-                          </div>
-                          <div className="flex flex-col items-center gap-0.5 border-x border-border">
-                            <span className="text-muted-foreground">Success</span>
-                            <span className="font-semibold text-green-600 flex items-center gap-1">
-                              <CheckCircle2 className="h-3 w-3" />
-                              {successRate}%
-                            </span>
-                          </div>
-                          <div className="flex flex-col items-center gap-0.5">
-                            <span className="text-muted-foreground">Tested</span>
-                            <span className="font-semibold text-foreground flex items-center gap-1">
-                              <Clock className="h-3 w-3 text-amber-500" />
-                              Today
-                            </span>
-                          </div>
+                        {/* Verified badge at bottom */}
+                        <div className="flex justify-center mt-3 pt-3 border-t border-border/50">
+                          <span className="text-xs text-green-600 flex items-center gap-1.5">
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            Verified {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
                         </div>
                       </CardContent>
                     </Card>
