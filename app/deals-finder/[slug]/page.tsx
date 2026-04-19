@@ -1,11 +1,15 @@
-import { redirect } from "next/navigation"
+import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 
-interface PageProps {
-  params: Promise<{ slug: string }>
+// Return 404 - redirect is handled in next.config.mjs
+// This prevents "Page with redirect" errors in Google Search Console
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
 }
 
-// 301 redirect from /deals-finder/[slug] to /deal-finder/[slug] to resolve duplicate content
-export default async function DealsFinderSlugRedirectPage({ params }: PageProps) {
-  const { slug } = await params
-  redirect(`/deal-finder/${slug}`)
+export default function DealsFinderSlugRedirectPage() {
+  notFound()
 }

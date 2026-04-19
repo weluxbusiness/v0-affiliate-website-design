@@ -30,18 +30,24 @@ export async function GET() {
   // ============================================================
 
   // Quality-first sitemap ordering
-  // ONLY include sitemaps with verified high-quality content
+  // Hierarchical structure: Primary > Secondary > Tertiary
   const sitemaps = [
-    // === PRIMARY: Quality pages with custom SEO content ===
+    // === TIER 1: HIGH-PRIORITY - Custom SEO content ===
     `${baseUrl}/sitemap-quality.xml`,       // SUBMIT FIRST - only pages with SEO content
     `${baseUrl}/sitemap-gaming.xml`,        // Gaming promo codes (high engagement)
     
-    // === SECONDARY: Auto-discovered after quality pages indexed ===
+    // === TIER 2: SECONDARY - Authority content ===
     `${baseUrl}/sitemap-guides.xml`,        // Buying guides (authority content)
     `${baseUrl}/sitemap-comparisons.xml`,   // Comparison pages (high intent)
     `${baseUrl}/sitemap-brands.xml`,        // Brand pages
     `${baseUrl}/sitemap-categories.xml`,    // Category pages
     `${baseUrl}/sitemap-stores.xml`,        // Store pages
+    
+    // === TIER 3: EXPANDED COVERAGE - After core pages indexed ===
+    `${baseUrl}/sitemap-today.xml`,         // Daily deals (freshness signal)
+    `${baseUrl}/sitemap-trending.xml`,      // Trending pages (engagement)
+    `${baseUrl}/sitemap-best.xml`,          // Best deals per category
+    `${baseUrl}/sitemap-deal-finder.xml`,   // AI deal finder pages
   ]
   
   // EXCLUDED from index for quality-first strategy:

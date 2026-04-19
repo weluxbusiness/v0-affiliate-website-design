@@ -8,6 +8,7 @@ import { FAQSection } from "@/components/seo"
 import { gamingDealsFAQs } from "@/lib/seo/faq-data"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
 import { GameCardCompact, GamingCategoryFilter } from "@/components/gaming/gaming-internal-links"
+import { NewCodesTodaySection, AuthoritySignalsSection } from "@/components/gaming/seo-internal-links"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -667,6 +668,12 @@ export default async function GamingPage() {
           </div>
         </PageContainer>
       </section>
+
+      {/* New Codes Today Section - SEO freshness signal */}
+      <NewCodesTodaySection />
+      
+      {/* Authority Signals - Trust badges */}
+      <AuthoritySignalsSection />
 
       {/* FAQ Section */}
       <FAQSection

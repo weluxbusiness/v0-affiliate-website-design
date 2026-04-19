@@ -1,6 +1,6 @@
 import Link from "next/link"
 import type { Metadata } from "next"
-import { redirect } from "next/navigation"
+import { redirect, notFound } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { DealCard } from "@/components/deal-card"
@@ -93,9 +93,10 @@ export default async function CategoryBrandPaginationPage({ params }: PageProps)
   const brandSlug = brand.toLowerCase()
   const pageNum = parseInt(page, 10) || 1
   
-  // Redirect page 1 to base URL
+  // Return 404 for invalid page numbers to avoid redirect issues
+  // This prevents "Page with redirect" errors in Google Search Console
   if (pageNum === 1 || isNaN(pageNum) || pageNum < 1) {
-    redirect(`/deals/${categorySlug}/${brandSlug}`)
+    notFound()
   }
   
   const brandName = formatBrandName(brandSlug)
@@ -116,9 +117,10 @@ export default async function CategoryBrandPaginationPage({ params }: PageProps)
   
   const { deals, totalCount, totalPages } = result
   
-  // Redirect to main page if this page shouldn't exist
+  // Return 404 instead of redirect for non-existent pages
+  // This prevents "Page with redirect" errors in Google Search Console
   if (!deals || deals.length === 0 || totalPages <= 1 || pageNum > totalPages) {
-    redirect(`/deals/${categorySlug}/${brandSlug}`)
+    notFound()
   }
   
   // Calculate range for display

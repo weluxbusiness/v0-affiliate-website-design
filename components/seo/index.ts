@@ -40,3 +40,24 @@ export {
   CategoryRelatedDeals,
   GamingRelatedLinks,
 } from './related-deals-section'
+
+// Authority Signals (Trust badges)
+export {
+  UpdatedTodayBadge,
+  VerifiedCodesBadge,
+  WorkingCodesBadge,
+  TrustedByBadge,
+  TrendingBadge,
+  ActiveDealsBadge,
+  AuthoritySignalsRow,
+  AuthoritySignalsInline,
+  LastVerifiedBadge,
+} from './authority-signals'
+
+// SEO Intro Sections (Dynamic content)
+export {
+  DealsCategoryIntro,
+  StoreIntro,
+  GamingIntro,
+  CompactIntro,
+} from './seo-intro-section'

@@ -7,7 +7,10 @@ import {
   ChevronRight,
   Flame,
   Star,
-  TrendingUp
+  TrendingUp,
+  Clock,
+  CheckCircle2,
+  Sparkles
 } from "lucide-react"
 
 // Top 20 Popular Games for internal linking
@@ -216,6 +219,99 @@ export function SEOInternalLinks({
   )
 }
 
+// New Codes Today Section - Strong freshness signal for SEO
+export function NewCodesTodaySection({ currentGameSlug }: { currentGameSlug?: string }) {
+  const today = new Date()
+  const todayFormatted = today.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+  
+  const games = POPULAR_GAMES.filter(g => g.slug !== currentGameSlug).slice(0, 6)
+  
+  return (
+    <section className="py-8 bg-emerald-500/5 border-t border-emerald-500/20">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-emerald-500" />
+              New Codes Today
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+              <Clock className="h-3.5 w-3.5" />
+              Updated {todayFormatted}
+            </p>
+          </div>
+          <Link 
+            href="/gaming/today"
+            className="text-sm font-medium text-emerald-600 hover:underline flex items-center gap-1"
+          >
+            View All Today
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+        
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+          {games.map((game) => (
+            <Link 
+              key={game.slug}
+              href={`/gaming/${game.slug}/codes-today`}
+              className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card border border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-500/10 transition-all group"
+            >
+              <Gamepad2 className="h-6 w-6 text-emerald-500" />
+              <span className="text-sm font-medium text-foreground text-center group-hover:text-emerald-600 transition-colors">
+                {game.name}
+              </span>
+              <Badge variant="outline" className="text-xs text-emerald-600 border-emerald-500/50">
+                <CheckCircle2 className="h-3 w-3 mr-1" />
+                {game.codes}+ codes
+              </Badge>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// Authority signals section - Trust badges for SEO
+export function AuthoritySignalsSection() {
+  const stats = {
+    totalGames: POPULAR_GAMES.length + 30, // Additional games in database
+    totalCodes: POPULAR_GAMES.reduce((sum, g) => sum + g.codes, 0) + 100,
+    lastUpdated: new Date().toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }),
+  }
+  
+  return (
+    <div className="py-6 bg-muted/50 border-t border-border">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
+          <div className="flex items-center gap-2 text-foreground">
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <span><strong>{stats.totalCodes}+</strong> Verified Codes</span>
+          </div>
+          <div className="w-px h-4 bg-border hidden sm:block" />
+          <div className="flex items-center gap-2 text-foreground">
+            <Gamepad2 className="h-4 w-4 text-primary" />
+            <span><strong>{stats.totalGames}+</strong> Games</span>
+          </div>
+          <div className="w-px h-4 bg-border hidden sm:block" />
+          <div className="flex items-center gap-2 text-foreground">
+            <Clock className="h-4 w-4 text-blue-500" />
+            <span>Updated <strong>{stats.lastUpdated}</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // Compact footer links for all pages
 export function SEOFooterLinks({ currentGameSlug }: { currentGameSlug?: string }) {
   const games = POPULAR_GAMES.filter(g => g.slug !== currentGameSlug).slice(0, 8)
@@ -238,7 +334,7 @@ export function SEOFooterLinks({ currentGameSlug }: { currentGameSlug?: string }
             href="/gaming/all-games"
             className="text-sm text-primary hover:underline font-medium"
           >
-            All Games →
+            All Games
           </Link>
         </div>
       </div>

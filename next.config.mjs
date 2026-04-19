@@ -2,6 +2,11 @@ import { withSentryConfig } from "@sentry/nextjs"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // CRITICAL: Trailing slash consistency - prevents redirect issues
+  // All URLs will NOT have trailing slashes (e.g., /gaming not /gaming/)
+  // This prevents Google "Page with redirect" errors
+  trailingSlash: false,
+  
   // 301 Redirects: Consolidate all routes to high-value pages only
   // Goal: Reduce index bloat by redirecting low-value pages to main codes page
   async redirects() {
@@ -89,6 +94,45 @@ const nextConfig = {
       {
         source: '/gaming-guides/:slug',
         destination: '/',
+        permanent: true,
+      },
+      // ==== REDIRECT DUPLICATE DEAL FINDER ROUTES ====
+      // Consolidate deals-finder to deal-finder (canonical)
+      {
+        source: '/deals-finder',
+        destination: '/deal-finder',
+        permanent: true,
+      },
+      {
+        source: '/deals-finder/:slug',
+        destination: '/deal-finder/:slug',
+        permanent: true,
+      },
+      // ==== PAGINATION PAGE 1 REDIRECTS ====
+      // Page 1 should always use the canonical URL (no /page/1)
+      {
+        source: '/deals/:category/page/1',
+        destination: '/deals/:category',
+        permanent: true,
+      },
+      {
+        source: '/stores/:store/page/1',
+        destination: '/stores/:store',
+        permanent: true,
+      },
+      {
+        source: '/brands/:brand/page/1',
+        destination: '/brands/:brand',
+        permanent: true,
+      },
+      {
+        source: '/deals/:category/:brand/page/1',
+        destination: '/deals/:category/:brand',
+        permanent: true,
+      },
+      {
+        source: '/deals/:category/:brand/:store/page/1',
+        destination: '/deals/:category/:brand/:store',
         permanent: true,
       },
     ]

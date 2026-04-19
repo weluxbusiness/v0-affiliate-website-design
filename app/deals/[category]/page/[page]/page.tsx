@@ -88,9 +88,10 @@ export default async function CategoryPaginatedPage({ params }: PageProps) {
   const pageNum = parseInt(page, 10)
   const categorySlug = category.toLowerCase()
   
-  // Redirect page 1 to main category page (canonical)
+  // Page 1 should use the main page - return 404 to avoid redirect issues
+  // The redirect is handled in next.config.mjs or via canonical tag
   if (pageNum === 1) {
-    redirect(`/deals/${categorySlug}`)
+    notFound()
   }
   
   // Validate page number
@@ -105,10 +106,10 @@ export default async function CategoryPaginatedPage({ params }: PageProps) {
   const { deals, totalCount, totalPages, hasNextPage, hasPrevPage } = 
     await getDealsByCategoryPaginated(categoryName, pageNum)
   
-  // Redirect to main page if this page shouldn't exist
-  // Page 2+ only valid if there are enough deals to fill page 1
+  // Return 404 instead of redirect for non-existent pages
+  // This prevents "Page with redirect" errors in Google Search Console
   if (totalPages <= 1 || pageNum > totalPages) {
-    redirect(`/deals/${categorySlug}`)
+    notFound()
   }
   
   // Calculate correct range for display
