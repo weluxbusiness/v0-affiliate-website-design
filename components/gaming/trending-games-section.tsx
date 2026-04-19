@@ -332,6 +332,70 @@ export function NewCodesTodaySection({
 }
 
 /**
+ * Featured RAID Section - Promotes RAID from related game pages
+ * Used on Fortnite, Roblox, Apex Legends, Free Fire pages
+ */
+interface FeaturedRaidSectionProps {
+  currentGameSlug?: string
+  className?: string
+}
+
+export function FeaturedRaidSection({
+  currentGameSlug,
+  className,
+}: FeaturedRaidSectionProps) {
+  // Only show on specific game pages that should link to RAID
+  const targetGames = ['fortnite', 'roblox', 'apex-legends', 'free-fire', 'genshin-impact', 'honkai-star-rail']
+  
+  if (!currentGameSlug || !targetGames.includes(currentGameSlug)) {
+    return null
+  }
+
+  return (
+    <section className={cn("py-8 border-t border-purple-500/20 bg-gradient-to-b from-purple-500/5 to-transparent", className)}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-xl border border-purple-500/30 bg-card">
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-purple-500/10">
+              <Gamepad2 className="h-7 w-7 text-purple-500" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-bold text-foreground">RAID Shadow Legends Codes</h3>
+                <Badge className="bg-purple-500 text-white text-xs">
+                  <Flame className="h-3 w-3 mr-1" />
+                  Popular
+                </Badge>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">
+                Get 15+ working promo codes for free energy, silver, champions &amp; more rewards
+              </p>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Gift className="h-3.5 w-3.5 text-green-500" />
+                  Free Champions
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5 text-blue-500" />
+                  Updated Daily
+                </span>
+              </div>
+            </div>
+          </div>
+          <Link
+            href="/raid-shadow-legends-promo-codes"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-purple-500 text-white font-medium hover:bg-purple-600 transition-colors whitespace-nowrap"
+          >
+            Get RAID Codes
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/**
  * All Games Directory Section - For sitemap/SEO
  */
 export function AllGamesDirectorySection({
