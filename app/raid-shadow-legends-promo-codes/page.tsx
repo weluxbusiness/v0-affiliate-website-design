@@ -25,6 +25,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PageContainer } from "@/components/layout/page-container"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
+import { LargeCopyButton, CopyProvider, PostCopyStickyBar } from "@/components/gaming/copy-code-button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -278,6 +279,7 @@ export default function RAIDShadowLegendsPromoCodesPage() {
   }
 
   return (
+    <CopyProvider>
     <div className="min-h-screen bg-background">
       {/* Structured Data */}
       <script
@@ -352,30 +354,13 @@ export default function RAIDShadowLegendsPromoCodesPage() {
                 RAID Shadow Legends Promo Codes ({currentMonth} {currentYear}) – Free Rewards Today
               </h1>
 
-              {/* Expanded SEO Intro - 150-300 words with natural keyword usage */}
-              <div className="prose prose-lg max-w-3xl text-muted-foreground mb-6">
-                <p className="text-xl leading-relaxed hero-description">
-                  Looking for <strong className="text-foreground">RAID Shadow Legends promo codes</strong> that actually work? 
-                  You&apos;re in the right place. We maintain the most comprehensive and up-to-date list of all working 
-                  RAID Shadow Legends codes, verified daily by our team of dedicated gamers.
-                </p>
-                <p className="text-base leading-relaxed mt-4">
-                  RAID Shadow Legends promo codes give you free in-game rewards like energy, silver, XP boosts, 
-                  ancient shards, and even rare champions. These codes are released by Plarium during special events, 
-                  content creator partnerships, and milestone celebrations. Whether you&apos;re a new player just starting 
-                  your collection or a veteran looking to maximize your resources, redeeming RAID promo codes is the 
-                  fastest way to progress without spending money.
-                </p>
-                <p className="text-base leading-relaxed mt-4">
-                  We currently have <strong className="text-foreground">{activeCodes.length}+ active RAID Shadow Legends codes</strong> available, 
-                  including exclusive new player codes and limited-time event codes. Every code on this page has been 
-                  tested and verified to work as of {currentMonth} {currentYear}. Bookmark this page and check back 
-                  regularly – we update our RAID codes list within hours of new codes being released.
-                </p>
-              </div>
+              {/* FEATURED SNIPPET - Short definition paragraph for Google */}
+              <p className="text-lg text-muted-foreground mb-4 max-w-3xl">
+                <strong className="text-foreground">RAID Shadow Legends promo codes</strong> are special codes that give players free rewards like silver, energy, shards, and champions. New codes are released regularly and expire quickly.
+              </p>
 
-              {/* Last Updated */}
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
+              {/* Last Updated - Compact */}
+              <p className="text-sm text-muted-foreground flex items-center gap-2 mb-6">
                 <Calendar className="h-4 w-4" />
                 Last updated: {lastUpdated}
               </p>
@@ -383,23 +368,31 @@ export default function RAIDShadowLegendsPromoCodesPage() {
           </PageContainer>
         </section>
 
-        {/* Active Codes Section - ABOVE THE FOLD */}
-        <section className="py-10 md:py-12">
+        {/* Active Codes Section - IMMEDIATELY ABOVE THE FOLD */}
+        <section className="py-8 md:py-10">
           <PageContainer>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-                <Tag className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">
-                  Active RAID Shadow Legends Promo Codes
-                </h2>
-                <p className="text-sm text-muted-foreground">Verified and working as of {currentMonth} {currentYear}</p>
-              </div>
+            {/* PROMINENT ACTION MESSAGE */}
+            <div className="flex items-center gap-3 p-4 mb-6 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border border-amber-500/30">
+              <Flame className="h-6 w-6 text-amber-500 shrink-0" />
+              <p className="text-lg font-semibold text-foreground">
+                Copy a working code below and redeem it instantly in-game
+              </p>
             </div>
-            <p className="text-muted-foreground mb-6 ml-13">
-              Copy any code below and redeem it at <a href="https://raid.plarium.com/promo-codes" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">raid.plarium.com/promo-codes</a> for instant free rewards.
-            </p>
+
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <h2 className="text-2xl font-bold text-foreground">
+                All Working Codes ({activeCodes.length})
+              </h2>
+              <a 
+                href="https://raid.plarium.com/promo-codes" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-sm text-primary hover:underline flex items-center gap-1"
+              >
+                Redeem at raid.plarium.com
+                <ChevronRight className="h-4 w-4" />
+              </a>
+            </div>
 
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {/* Randomize code order based on day for freshness signal */}
@@ -446,21 +439,13 @@ export default function RAIDShadowLegendsPromoCodesPage() {
                         {/* Reward */}
                         <p className="font-semibold text-foreground mb-3">{code.reward}</p>
                         
-                        {/* Code Box */}
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="flex-1 flex items-center gap-2 border border-dashed border-primary/40 rounded-lg px-3 py-2 bg-primary/5">
-                            <Gift className="h-4 w-4 text-primary" />
-                            <code className="font-mono font-semibold text-primary">{code.code}</code>
-                          </div>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => navigator.clipboard.writeText(code.code)}
-                            className="shrink-0"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
+                        {/* Code Display */}
+                        <div className="flex items-center gap-2 p-3 mb-3 bg-muted/50 rounded-lg border border-dashed border-primary/30">
+                          <code className="font-mono text-lg font-bold text-primary flex-1">{code.code}</code>
                         </div>
+                        
+                        {/* LARGE COPY BUTTON - High contrast, instant feedback */}
+                        <LargeCopyButton code={code.code} className="w-full" />
                         
                         {/* ENGAGEMENT SIGNALS - Used today, success rate, last tested */}
                         <div className="grid grid-cols-3 gap-2 p-2 bg-muted/50 rounded-lg text-xs">
@@ -1074,6 +1059,14 @@ export default function RAIDShadowLegendsPromoCodesPage() {
       </main>
 
       <Footer />
+      
+      {/* Post-copy sticky bar - appears after user copies a code */}
+      <PostCopyStickyBar 
+        gameName="RAID Shadow Legends"
+        affiliateUrl="https://raid.plarium.com/promo-codes"
+        isAffiliate={false}
+      />
     </div>
+    </CopyProvider>
   )
 }
