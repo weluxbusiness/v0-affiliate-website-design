@@ -28,7 +28,7 @@ import { GameSectionImage } from "@/components/gaming/game-section-image"
 import { CopyCodeButton, CopyProvider, PostCopyStickyBar } from "@/components/gaming/copy-code-button"
 import { Breadcrumbs, getGameBreadcrumbs } from "@/components/gaming/breadcrumbs"
 import { SEOInternalLinks, SEOFooterLinks, NewCodesTodaySection, AuthoritySignalsSection } from "@/components/gaming/seo-internal-links"
-import { TrendingGamesSection } from "@/components/gaming/trending-games-section"
+import { TrendingGamesSection, FeaturedRaidSection } from "@/components/gaming/trending-games-section"
 import { GamingIntro } from "@/components/seo"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -274,6 +274,9 @@ export function GamePageTemplate({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.faqSchema) }}
         />
       )}
+
+      {/* Featured RAID Banner - Above the fold for global internal linking */}
+      <FeaturedRaidSection currentGameSlug={game.slug} variant="banner" />
 
       {/* Intent Match Block - Compact on mobile */}
       <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2 md:py-4">
@@ -1945,6 +1948,9 @@ showAffiliateCTA={!!ctaInfo.url}
         isAffiliate={ctaInfo.isAffiliate}
       />
       
+      {/* Featured RAID Section - Backlinks from related games */}
+      <FeaturedRaidSection currentGameSlug={game.slug} />
+
       {/* Trending Games Section - SEO Internal Linking */}
       <TrendingGamesSection 
         currentGameSlug={game.slug}

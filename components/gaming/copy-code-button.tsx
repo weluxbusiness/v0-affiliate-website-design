@@ -2,7 +2,7 @@
 
 import { useState, useEffect, createContext, useContext } from "react"
 import { Button } from "@/components/ui/button"
-import { Tag, Check, Gift, ExternalLink, X } from "lucide-react"
+import { Tag, Check, Gift, ExternalLink, X, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // Context to share copied state across components
@@ -109,6 +109,67 @@ export function CopyCodeButton({
             Copy Code
           </>
         )
+      )}
+    </Button>
+  )
+}
+
+// Large prominent copy button with instant feedback - optimized for CTR
+interface LargeCopyButtonProps {
+  code: string
+  className?: string
+}
+
+export function LargeCopyButton({ code, className }: LargeCopyButtonProps) {
+  const [copied, setCopied] = useState(false)
+  const copyContext = useCopyContext()
+
+  const handleCopy = async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(code)
+      } else {
+        const textArea = document.createElement('textarea')
+        textArea.value = code
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-9999px'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
+      }
+      setCopied(true)
+      copyContext?.setHasCopied(true, code)
+      setTimeout(() => setCopied(false), 2500)
+    } catch (err) {
+      console.error("Failed to copy:", err)
+      alert(`Copy this code: ${code}`)
+    }
+  }
+
+  return (
+    <Button
+      size="lg"
+      onClick={handleCopy}
+      className={cn(
+        "h-12 px-6 font-bold text-base transition-all duration-300 shadow-lg",
+        copied
+          ? "bg-green-500 hover:bg-green-500 text-white scale-105"
+          : "bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 hover:shadow-xl",
+        className
+      )}
+    >
+      {copied ? (
+        <>
+          <Check className="h-5 w-5 mr-2 animate-in zoom-in duration-200" />
+          Copied!
+        </>
+      ) : (
+        <>
+          <Copy className="h-5 w-5 mr-2" />
+          Copy Code
+        </>
       )}
     </Button>
   )
