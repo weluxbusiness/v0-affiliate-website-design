@@ -15,7 +15,7 @@ import {
   generateStoreSeoContent, 
   getStoreRelatedLinks 
 } from "@/components/seo-content-block"
-import { FAQSection } from "@/components/seo"
+import { FAQSection, StoreIntro } from "@/components/seo"
 import { storeFAQs } from "@/lib/seo/faq-data"
 import { CrossLinkSection } from "@/components/internal-links"
 import { getStoreBySlug, getStoreSlugs, getCategoriesForStore, getBrandSlugs } from "@/lib/seo-data"
@@ -185,6 +185,13 @@ export default async function StorePage({ params }: PageProps) {
             </div>
           </PageContainer>
         </section>
+
+        {/* SEO Intro Section - Unique content with authority signals */}
+        <StoreIntro 
+          storeName={storeName} 
+          dealCount={deals.length} 
+          className="border-b border-border"
+        />
 
         {/* Capital One Promo */}
         <section className="py-8">

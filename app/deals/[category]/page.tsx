@@ -18,6 +18,8 @@ import {
   getCategoryRelatedLinks 
 } from "@/components/seo-content-block"
 import { CategoryCrossLinks } from "@/components/internal-links"
+import { DealsCategoryIntro, FAQSection } from "@/components/seo"
+import { dealsCategoryFAQs } from "@/lib/seo/faq-data"
 import { getCategoryBySlug, getCategorySlugs, getStoresForCategory, getBrandSlugs } from "@/lib/seo-data"
 import { formatBrandName } from "@/lib/seo/content"
 import { getPopularCities, formatCityName } from "@/lib/cities"
@@ -283,6 +285,13 @@ export default async function CategoryDealsPage({ params }: PageProps) {
           </PageContainer>
         </section>
 
+        {/* SEO Intro Section - Unique content with authority signals */}
+        <DealsCategoryIntro 
+          categoryName={categoryName} 
+          dealCount={deals.length} 
+          className="border-b border-border"
+        />
+
         {/* Capital One Promo */}
         <section className="py-8">
           <PageContainer>
@@ -453,6 +462,14 @@ export default async function CategoryDealsPage({ params }: PageProps) {
             </div>
           </PageContainer>
         </section>
+
+        {/* FAQ Section with JSON-LD schema */}
+        <FAQSection
+          title={`${categoryName} Deals FAQ`}
+          subtitle={`Common questions about ${categoryName.toLowerCase()} deals and savings`}
+          faqs={dealsCategoryFAQs(categoryName)}
+          className="border-t border-border"
+        />
 
         {/* SEO Content Block */}
         <SeoContentBlock
