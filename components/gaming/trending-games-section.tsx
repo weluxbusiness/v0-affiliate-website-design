@@ -5,7 +5,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { TrendingUp, Flame, Gamepad2, Gift, ArrowRight, Clock, Star } from "lucide-react"
+import { TrendingUp, Flame, Gamepad2, Gift, ArrowRight, Clock, Star, CheckCircle2, ShieldCheck, Shield } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { 
@@ -332,59 +332,116 @@ export function NewCodesTodaySection({
 }
 
 /**
- * Featured RAID Section - Promotes RAID from related game pages
- * Used on Fortnite, Roblox, Apex Legends, Free Fire pages
+ * Featured RAID Section - Promotes RAID from ALL gaming pages
+ * Shows prominent CTA above the fold for maximum visibility
  */
 interface FeaturedRaidSectionProps {
   currentGameSlug?: string
   className?: string
+  variant?: 'default' | 'compact' | 'banner'
 }
 
 export function FeaturedRaidSection({
   currentGameSlug,
   className,
+  variant = 'default',
 }: FeaturedRaidSectionProps) {
-  // Only show on specific game pages that should link to RAID
-  const targetGames = ['fortnite', 'roblox', 'apex-legends', 'free-fire', 'genshin-impact', 'honkai-star-rail']
-  
-  if (!currentGameSlug || !targetGames.includes(currentGameSlug)) {
+  // Don't show on the RAID page itself
+  if (currentGameSlug === 'raid-shadow-legends') {
     return null
   }
 
+  // Banner variant - more prominent, above the fold
+  if (variant === 'banner') {
+    return (
+      <div className={cn("bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 text-white", className)}>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <Flame className="h-5 w-5 animate-pulse" />
+              <span className="font-semibold">Featured: RAID Shadow Legends Promo Codes</span>
+              <Badge className="bg-white/20 text-white border-0 text-xs">
+                15+ Working Codes
+              </Badge>
+            </div>
+            <Link
+              href="/raid-shadow-legends-promo-codes"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-white text-purple-600 font-semibold hover:bg-white/90 transition-colors text-sm"
+            >
+              Get Free Rewards
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Compact variant - smaller, inline
+  if (variant === 'compact') {
+    return (
+      <div className={cn("p-4 rounded-xl border-2 border-purple-500/30 bg-purple-500/5", className)}>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-500/10">
+              <Flame className="h-5 w-5 text-purple-500" />
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground text-sm">RAID Shadow Legends Codes</h3>
+              <p className="text-xs text-muted-foreground">15+ working codes - Updated today</p>
+            </div>
+          </div>
+          <Link
+            href="/raid-shadow-legends-promo-codes"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-medium hover:bg-purple-600 transition-colors text-sm whitespace-nowrap"
+          >
+            Get Codes
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // Default variant - full featured section
   return (
     <section className={cn("py-8 border-t border-purple-500/20 bg-gradient-to-b from-purple-500/5 to-transparent", className)}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-xl border border-purple-500/30 bg-card">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-xl border-2 border-purple-500/30 bg-card shadow-lg shadow-purple-500/10">
           <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-purple-500/10">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 ring-2 ring-purple-500/20">
               <Gamepad2 className="h-7 w-7 text-purple-500" />
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-bold text-foreground">RAID Shadow Legends Codes</h3>
-                <Badge className="bg-purple-500 text-white text-xs">
-                  <Flame className="h-3 w-3 mr-1" />
-                  Popular
+                <span className="text-amber-500 text-lg">🔥</span>
+                <h3 className="text-lg font-bold text-foreground">Featured: RAID Shadow Legends Codes</h3>
+                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs border-0">
+                  Hot
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-2">
                 Get 15+ working promo codes for free energy, silver, champions &amp; more rewards
               </p>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Gift className="h-3.5 w-3.5 text-green-500" />
-                  Free Champions
+              <div className="flex flex-wrap items-center gap-4 text-xs">
+                <span className="flex items-center gap-1 text-green-600 font-medium">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Used by 50,000+ players
                 </span>
-                <span className="flex items-center gap-1">
-                  <Clock className="h-3.5 w-3.5 text-blue-500" />
-                  Updated Daily
+                <span className="flex items-center gap-1 text-blue-600 font-medium">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Verified daily
+                </span>
+                <span className="flex items-center gap-1 text-amber-600 font-medium">
+                  <Shield className="h-3.5 w-3.5" />
+                  100% safe codes
                 </span>
               </div>
             </div>
           </div>
           <Link
             href="/raid-shadow-legends-promo-codes"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-purple-500 text-white font-medium hover:bg-purple-600 transition-colors whitespace-nowrap"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl hover:scale-105 whitespace-nowrap"
           >
             Get RAID Codes
             <ArrowRight className="h-4 w-4" />

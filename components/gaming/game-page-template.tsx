@@ -275,6 +275,9 @@ export function GamePageTemplate({
         />
       )}
 
+      {/* Featured RAID Banner - Above the fold for global internal linking */}
+      <FeaturedRaidSection currentGameSlug={game.slug} variant="banner" />
+
       {/* Intent Match Block - Compact on mobile */}
       <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2 md:py-4">
         <PageContainer>

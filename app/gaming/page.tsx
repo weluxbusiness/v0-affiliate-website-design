@@ -9,6 +9,7 @@ import { gamingDealsFAQs } from "@/lib/seo/faq-data"
 import { PromoCodeCard } from "@/components/gaming/promo-code-card"
 import { GameCardCompact, GamingCategoryFilter } from "@/components/gaming/gaming-internal-links"
 import { NewCodesTodaySection, AuthoritySignalsSection } from "@/components/gaming/seo-internal-links"
+import { FeaturedRaidSection } from "@/components/gaming/trending-games-section"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -208,9 +209,12 @@ export default async function GamingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.webPageSchema) }}
       />
       
-      <Header />
+<Header />
 
-      {/* Hero Section */}
+  {/* Featured RAID Banner - Above the fold for global internal linking */}
+  <FeaturedRaidSection variant="banner" />
+  
+  {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/90 to-primary text-white py-14 md:py-20 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <PageContainer>
